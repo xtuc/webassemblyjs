@@ -1,5 +1,7 @@
 // @flow
 
+const {malloc, ptrsize} = require('../../kernel/memory');
+
 function createInstance(n: Module): ModuleInstance {
   const exports = [];
   const types = [];
@@ -12,11 +14,11 @@ function createInstance(n: Module): ModuleInstance {
        * Find and instantiate exports
        */
       if (field.type === 'ModuleExport') {
-        const addr = 0x0;
+        const addr = malloc(ptrsize);
 
         const externalVal = {
           type: field.descr.type,
-          addr
+          addr,
         };
 
         exports.push(

@@ -1,3 +1,5 @@
+// @flow
+
 const {assert} = require('chai');
 
 const t = require('../../../lib/compiler/AST');
@@ -29,7 +31,8 @@ describe('module create interface', () => {
 
       assert.equal(module.exports[0].name, exportName);
       assert.equal(module.exports[0].value.type, 'Func');
-      assert.typeOf(module.exports[0].value.addr, 'Number');
+
+      assert.notEqual(module.exports[0].value.addr.index, 0);
     });
 
   });

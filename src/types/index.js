@@ -1,7 +1,12 @@
 // @flow
 /* eslint-disable */
 
-type Addr = any;
+type Bytes = number;
+
+type Addr = {
+  index: Bytes;
+  size: Bytes;
+};
 
 interface ExternalVal {
   type: string;

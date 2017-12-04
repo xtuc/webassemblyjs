@@ -4,7 +4,7 @@
 
 [libs]
 ./src/types/AST.js
-./src/types/instances.js
+./src/types/index.js
 
 [lints]
 
