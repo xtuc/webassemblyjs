@@ -1,6 +1,7 @@
 // @flow
 /* eslint-disable */
 type Valtype = 'i32' | 'i64' | 'f32' | 'f64';
+type ExportDescr = 'func' | 'table' | 'memory' | 'global';
 
 interface Node {
   type: string;
@@ -45,4 +46,14 @@ interface Instruction {
   type: 'Instr';
   id: string;
   args: ?Array<Number | string>;
+}
+
+
+interface ModuleExport {
+  type: 'ModuleExport';
+  name: string;
+  descr: {
+    type: ExportDescr;
+    id: string;
+  };
 }

@@ -22,6 +22,17 @@ export function module(id: ?string, fields: ?ModuleFields): Module {
   };
 }
 
+export function moduleExport(name: string, type: ExportDescr, id: string): ModuleExport {
+  return {
+    type: 'ModuleExport',
+    name,
+    descr: {
+      type,
+      id,
+    }
+  };
+}
+
 export function func(
   id: ?string,
   params: Array<Type>,

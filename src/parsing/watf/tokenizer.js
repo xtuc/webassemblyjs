@@ -32,6 +32,7 @@ const keywords = {
   func: 'func',
   param: 'param',
   result: 'result',
+  export: 'export',
 };
 
 const CloseParenToken = createToken(tokens.closeParen);
@@ -42,6 +43,7 @@ const NameToken = createToken(tokens.name);
 const IdentifierToken = createToken(tokens.identifier);
 const KeywordToken = createToken(tokens.keyword);
 const DotToken = createToken(tokens.dot);
+const StringToken = createToken(tokens.string);
 
 function tokenize(input: string) {
   let current = 0;
@@ -100,6 +102,27 @@ function tokenize(input: string) {
       value = parseInt(value);
 
       tokens.push(NumberToken(value));
+
+      continue;
+    }
+
+    if (char === '"') {
+      let value = '';
+
+      char = input[++current];
+
+      while (LETTERS.test(char)) {
+        value += char;
+        char = input[++current];
+      }
+
+      if (char !== '"') {
+        throw new Error('Unterminated string constant');
+      }
+
+      current++;
+
+      tokens.push(StringToken(value));
 
       continue;
     }

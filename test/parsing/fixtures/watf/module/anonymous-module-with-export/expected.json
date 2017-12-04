@@ -1,0 +1,19 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "ModuleExport",
+          "name": "add",
+          "descr": {
+            "type": "Func",
+            "id": "add"
+          }
+        }
+      ]
+    }
+  ]
+}
