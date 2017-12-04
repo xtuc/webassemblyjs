@@ -28,8 +28,8 @@ describe('module create interface', () => {
       assert.lengthOf(module.exports, 1);
 
       assert.equal(module.exports[0].name, exportName);
-
-      // TODO(sven): check for externalval ^
+      assert.equal(module.exports[0].value.type, 'Func');
+      assert.typeOf(module.exports[0].value.addr, 'Number');
     });
 
   });
