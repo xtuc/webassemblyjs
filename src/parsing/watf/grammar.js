@@ -10,17 +10,23 @@ const told = {
   expressionStatement() {},
 };
 
+function isKeyword(token: Object, id: string): boolean {
+  return token.type === tokens.keyword && token.value === id;
+}
+
 function parse(tokensList: Array<Object>): Program {
+  let current = 0;
 
   // Again we keep a `current` variable that we will use as a cursor.
-  let current = 0;
 
   // But this time we're going to use recursion instead of a `while` loop. So we
   // define a `walk` function.
   function walk() {
-
-    // Inside the walk function we start by grabbing the `current` token.
     let token = tokensList[current];
+
+    function eatToken() {
+      token = tokensList[++current];
+    }
 
     // We're going to split each type of token off into a different code path,
     // starting off with `number` tokens.
@@ -48,11 +54,94 @@ function parse(tokensList: Array<Object>): Program {
 
       // We'll increment `current` to skip the parenthesis since we don't care
       // about it in our AST.
-      token = tokensList[++current];
+      eatToken();
 
-      if (token.type === keywords.module) {
-        const name = null;
+      if (isKeyword(token, keywords.func)) {
+        eatToken();
+
+        let fnName = null;
+        let fnResult = null;
+
+        const fnBody = [];
+        const fnParams = [];
+
+        if (token.type === tokens.identifier) {
+          fnName = token.value;
+          eatToken();
+        }
+
+        if (token.type === tokens.openParen) {
+          eatToken();
+
+          while (
+            (token.type !== tokens.closeParen)
+          ) {
+
+            if (isKeyword(token, keywords.param)) {
+              eatToken();
+
+              let id;
+              let valtype;
+
+              if (token.type === tokens.identifier) {
+                id = token.value;
+                eatToken();
+              }
+
+              if (token.type === tokens.valtype) {
+                valtype = token.value;
+
+                eatToken();
+              } else {
+                throw new Error('Function param has no valtype');
+              }
+
+              fnParams.push({
+                id,
+                valtype,
+              });
+            }
+
+            if (isKeyword(token, keywords.result)) {
+              eatToken();
+
+              if (token.type === tokens.valtype) {
+                fnResult = token.value;
+
+                eatToken();
+              } else {
+                throw new Error('Function result has no valtype');
+              }
+            }
+
+            eatToken();
+          }
+        }
+
+        while (
+          (token.type !== tokens.closeParen)
+        ) {
+          // we'll call the `walk` function which will return a `node` and we'll
+          // push it into our `node.params`.
+          fnBody.push(walk());
+          token = tokensList[current];
+        }
+
+        eatToken();
+
+        return t.func(fnName, fnParams, fnResult, fnBody);
+      }
+
+      if (isKeyword(token, keywords.module)) {
+        eatToken();
+
+        let name = null;
         const moduleFields = [];
+
+        if (token.type === tokens.identifier) {
+          name = token.value;
+          eatToken();
+        }
 
         while (
           (token.type !== tokens.closeParen)
@@ -62,6 +151,8 @@ function parse(tokensList: Array<Object>): Program {
           moduleFields.push(walk());
           token = tokensList[current];
         }
+
+        eatToken();
 
         return t.module(name, moduleFields);
       }
@@ -79,7 +170,7 @@ function parse(tokensList: Array<Object>): Program {
       };
 
       // We increment `current` *again* to skip the name token.
-      token = tokensList[++current];
+      eatToken();
 
       // And now we want to loop through each token that will be the `params` of
       // our `CallExpression` until we encounter a closing parenthesis.

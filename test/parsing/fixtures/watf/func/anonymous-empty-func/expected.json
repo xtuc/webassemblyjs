@@ -1,0 +1,12 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": null,
+      "params": [],
+      "result": null,
+      "body": []
+    }
+  ]
+}

@@ -21,3 +21,18 @@ export function module(id: ?string, fields: ?ModuleFields): Module {
     fields,
   };
 }
+
+export function func(
+  id: ?string,
+  params: Array<Type>,
+  result: ?Type,
+  body: Array<Intruction>,
+): Func {
+  return {
+    type: 'Func',
+    id,
+    params,
+    result,
+    body,
+  };
+}

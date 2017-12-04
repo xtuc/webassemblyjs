@@ -27,3 +27,20 @@ interface Program {
   type: 'Program';
   body: [ Intruction | ModuleDeclaration ];
 }
+
+// TODO(sven): define types
+type Type = any;
+type Valtype = any;
+
+type FuncParam = {
+  id: ?string,
+  valtype: Valtype,
+};
+
+interface Func {
+  type: 'Func';
+  id: ?string;
+  params: Array<FuncParam>;
+  result: ?Type;
+  body: Array<Intruction>;
+}

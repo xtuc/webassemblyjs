@@ -1,0 +1,65 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": "test",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "TEST",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "0",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "$",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "!",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "#",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "@",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "=",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "\\",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "/",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "~",
+      "fields": []
+    },
+    {
+      "type": "Module",
+      "id": "*",
+      "fields": []
+    }
+  ]
+}

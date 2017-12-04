@@ -1,4 +1,7 @@
 // @flow
+const LETTERS = /[a-z0-9]/i;
+const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
+const valtypes = ['i32', 'i64', 'f32', 'f64'];
 
 function Token(type, value) {
   return {
@@ -17,19 +20,27 @@ const tokens = {
   number: 'number',
   string: 'string',
   name: 'name',
+  identifier: 'identifier',
+  valtype: 'valtype',
+
+  keyword: 'keyword',
 };
 
 const keywords = {
-  module: 'module'
+  module: 'module',
+  func: 'func',
+  param: 'param',
+  result: 'result',
 };
 
 const CloseParenToken = createToken(tokens.closeParen);
 const OpenParenToken = createToken(tokens.openParen);
 const NumberToken = createToken(tokens.number);
 const StringToken = createToken(tokens.string);
+const ValtypeToken = createToken(tokens.valtype);
 const NameToken = createToken(tokens.name);
-
-const ModuleKeywordToken = createToken(keywords.module);
+const IdentifierToken = createToken(tokens.identifier);
+const KeywordToken = createToken(tokens.keyword);
 
 function tokenize(input: string) {
   let current = 0;
@@ -55,6 +66,21 @@ function tokenize(input: string) {
       continue;
     }
 
+    if (char === '$') {
+      char = input[++current];
+
+      let value = '';
+
+      while (idchar.test(char)) {
+        value += char;
+        char = input[++current];
+      }
+
+      tokens.push(IdentifierToken(value));
+
+      continue;
+    }
+
     const WHITESPACE = /\s/;
     if (WHITESPACE.test(char)) {
       current++;
@@ -77,24 +103,23 @@ function tokenize(input: string) {
       continue;
     }
 
-    if (char === '"') {
-      let value = '';
+    // if (char === '"') {
+    //   let value = '';
 
-      char = input[++current];
+    //   char = input[++current];
 
-      while (char !== '"') {
-        value += char;
-        char = input[++current];
-      }
+    //   while (char !== '"') {
+    //     value += char;
+    //     char = input[++current];
+    //   }
 
-      char = input[++current];
+    //   char = input[++current];
 
-      tokens.push(StringToken(value));
+    //   tokens.push(StringToken(value));
 
-      continue;
-    }
+    //   continue;
+    // }
 
-    const LETTERS = /[a-z0-9:]/i;
     if (LETTERS.test(char)) {
       let value = '';
 
@@ -103,11 +128,28 @@ function tokenize(input: string) {
         char = input[++current];
       }
 
-      if (value === keywords.module) {
-        tokens.push(ModuleKeywordToken());
-      } else {
-        tokens.push(NameToken(value));
+      /*
+       * Handle keywords
+       */
+      if (typeof keywords[value] === 'string') {
+        tokens.push(KeywordToken(value));
+
+        continue;
       }
+
+      /*
+       * Handle types
+       */
+      if (valtypes.indexOf(value) !== -1) {
+        tokens.push(ValtypeToken(value));
+
+        continue;
+      }
+
+      /*
+       * Handle literals
+       */
+      tokens.push(NameToken(value));
 
       continue;
     }

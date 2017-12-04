@@ -1,0 +1,53 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": null,
+      "params": [
+        {
+          "id": "p",
+          "valtype": "i32"
+        }
+      ],
+      "result": null,
+      "body": []
+    },
+    {
+      "type": "Func",
+      "id": null,
+      "params": [
+        {
+          "id": "P",
+          "valtype": "i64"
+        }
+      ],
+      "result": null,
+      "body": []
+    },
+    {
+      "type": "Func",
+      "id": null,
+      "params": [
+        {
+          "id": "$",
+          "valtype": "f32"
+        }
+      ],
+      "result": null,
+      "body": []
+    },
+    {
+      "type": "Func",
+      "id": null,
+      "params": [
+        {
+          "id": "$",
+          "valtype": "f64"
+        }
+      ],
+      "result": null,
+      "body": []
+    }
+  ]
+}
