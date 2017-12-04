@@ -6,9 +6,9 @@ const {NO_DIFF_MESSAGE} = require('jest-diff/build/constants');
 const {writeFileSync, readFileSync} = require('fs');
 const path = require('path');
 
-const {parse} = require('../../lib');
+const {parse} = require('../../../lib');
 
-const testSuites = glob.sync('test/parsing/fixtures/**/actual.watf');
+const testSuites = glob.sync('test/compiler/parsing/fixtures/**/actual.watf');
 
 testSuites.forEach((suite) => {
 
