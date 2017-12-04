@@ -1,5 +1,5 @@
 // @flow
-const LETTERS = /[a-z0-9]/i;
+const LETTERS = /[a-z0-9_]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ['i32', 'i64', 'f32', 'f64'];
 
@@ -22,6 +22,7 @@ const tokens = {
   name: 'name',
   identifier: 'identifier',
   valtype: 'valtype',
+  dot: 'dot',
 
   keyword: 'keyword',
 };
@@ -36,11 +37,11 @@ const keywords = {
 const CloseParenToken = createToken(tokens.closeParen);
 const OpenParenToken = createToken(tokens.openParen);
 const NumberToken = createToken(tokens.number);
-const StringToken = createToken(tokens.string);
 const ValtypeToken = createToken(tokens.valtype);
 const NameToken = createToken(tokens.name);
 const IdentifierToken = createToken(tokens.identifier);
 const KeywordToken = createToken(tokens.keyword);
+const DotToken = createToken(tokens.dot);
 
 function tokenize(input: string) {
   let current = 0;
@@ -103,29 +104,37 @@ function tokenize(input: string) {
       continue;
     }
 
-    // if (char === '"') {
-    //   let value = '';
-
-    //   char = input[++current];
-
-    //   while (char !== '"') {
-    //     value += char;
-    //     char = input[++current];
-    //   }
-
-    //   char = input[++current];
-
-    //   tokens.push(StringToken(value));
-
-    //   continue;
-    // }
-
     if (LETTERS.test(char)) {
       let value = '';
 
       while (LETTERS.test(char)) {
         value += char;
         char = input[++current];
+      }
+
+      /*
+       * Handle MemberAccess
+       */
+      if (char === '.') {
+
+        if (valtypes.indexOf(value) !== -1) {
+          tokens.push(ValtypeToken(value));
+        } else {
+          tokens.push(NameToken(value));
+        }
+
+        value = '';
+        char = input[++current];
+
+        while (LETTERS.test(char)) {
+          value += char;
+          char = input[++current];
+        }
+
+        tokens.push(DotToken());
+        tokens.push(NameToken(value));
+
+        continue;
       }
 
       /*

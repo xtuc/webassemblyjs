@@ -7,7 +7,7 @@ export function identifier(name: string): Identifier {
   };
 }
 
-export function program(body: [ Intruction | Module ]): Program {
+export function program(body: Array<Instruction | Module>): Program {
   return {
     type: 'Program',
     body,
@@ -26,7 +26,7 @@ export function func(
   id: ?string,
   params: Array<Type>,
   result: ?Type,
-  body: Array<Intruction>,
+  body: Array<Instruction>,
 ): Func {
   return {
     type: 'Func',
@@ -35,4 +35,23 @@ export function func(
     result,
     body,
   };
+}
+
+export function instruction(id: string, args: ?Array<Number | string>): Instruction {
+
+  if (args && args.length > 0) {
+
+    return {
+      type: 'Instr',
+      id,
+      args,
+    };
+  } else {
+
+    return {
+      type: 'Instr',
+      id,
+      args: undefined,
+    };
+  }
 }

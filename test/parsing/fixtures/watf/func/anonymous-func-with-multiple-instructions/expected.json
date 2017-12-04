@@ -1,0 +1,31 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": null,
+      "params": [],
+      "result": null,
+      "body": [
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
+            "b"
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "i32.add"
+        }
+      ]
+    }
+  ]
+}

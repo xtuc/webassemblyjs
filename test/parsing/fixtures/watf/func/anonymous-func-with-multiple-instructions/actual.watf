@@ -1,0 +1,4 @@
+(func
+    get_local $a
+    get_local $b
+    i32.add))

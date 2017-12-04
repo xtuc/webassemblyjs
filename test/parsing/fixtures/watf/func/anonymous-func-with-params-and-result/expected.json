@@ -1,0 +1,21 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": null,
+      "params": [
+        {
+          "id": "a",
+          "valtype": "i32"
+        },
+        {
+          "id": "b",
+          "valtype": "i32"
+        }
+      ],
+      "result": "i32",
+      "body": []
+    }
+  ]
+}

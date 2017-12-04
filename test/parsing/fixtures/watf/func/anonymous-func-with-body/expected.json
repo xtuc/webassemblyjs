@@ -1,0 +1,17 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": null,
+      "params": [],
+      "result": null,
+      "body": [
+        {
+          "type": "Instr",
+          "id": "i32.add"
+        }
+      ]
+    }
+  ]
+}

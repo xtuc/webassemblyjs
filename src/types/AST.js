@@ -1,5 +1,6 @@
 // @flow
 /* eslint-disable */
+type Valtype = 'i32' | 'i64' | 'f32' | 'f64';
 
 interface Node {
   type: string;
@@ -8,10 +9,6 @@ interface Node {
 interface Identifier {
   type: 'Identifier';
   name: string;
-}
-
-interface Intruction {
-  // TODO(sven): ?
 }
 
 // TODO(sven): modulefields (https://webassembly.github.io/spec/text/modules.html#text-modulefield)
@@ -25,12 +22,11 @@ interface Module {
 
 interface Program {
   type: 'Program';
-  body: [ Intruction | ModuleDeclaration ];
+  body: Array<Instruction | Module>;
 }
 
 // TODO(sven): define types
 type Type = any;
-type Valtype = any;
 
 type FuncParam = {
   id: ?string,
@@ -42,5 +38,11 @@ interface Func {
   id: ?string;
   params: Array<FuncParam>;
   result: ?Type;
-  body: Array<Intruction>;
+  body: Array<Instruction>;
+}
+
+interface Instruction {
+  type: 'Instr';
+  id: string;
+  args: ?Array<Number | string>;
 }
