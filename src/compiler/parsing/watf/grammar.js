@@ -1,7 +1,7 @@
 // @flow
 
 const {tokens, keywords} = require('./tokenizer');
-const t = require('../AST');
+const t = require('../../AST');
 
 function isKeyword(token: Object, id: string): boolean {
   return token.type === tokens.keyword && token.value === id;

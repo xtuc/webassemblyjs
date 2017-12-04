@@ -1,6 +1,7 @@
 // @flow
+
 const {readFileSync} = require('fs');
-const {parseSource} = require('./parsing/watf');
+const {parseSource} = require('./compiler/parsing/watf');
 
 function getFileContent(filename: string): string {
   return readFileSync(filename, 'utf8');
