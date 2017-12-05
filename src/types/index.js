@@ -48,16 +48,27 @@ type ModuleInstance = {
   exports: Array<ExportInstance>;
 };
 
+/**
+ * Stack
+ */
 // https://webassembly.github.io/spec/exec/runtime.html#syntax-frame
 type StackFrame = {
   values: Array<any>;
 
   globals: Array<any>;
-  locals: Array<any>;
+  locals: Array<StackLocal>;
   code: Array<Instruction>;
 
   trace?: (number, string) => void;
 };
 
+type StackLocal = {
+  type: Valtype;
+  value: any;
+};
+
+/**
+ * Mocha
+ */
 declare var it;
 declare var describe;

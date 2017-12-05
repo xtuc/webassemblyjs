@@ -1,12 +1,12 @@
 // @flow
 
 export function createStackFrame(
-  instructions: Array<Instruction>,
-  locals: Array<any>,
+  code: Array<Instruction>,
+  locals: Array<StackLocals>,
 ): StackFrame {
 
   return {
-    code: instructions,
+    code,
     locals,
 
     globals: [],

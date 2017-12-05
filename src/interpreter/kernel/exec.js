@@ -5,14 +5,16 @@ export function executeStackFrame(frame: StackFrame): any {
   let pc = 0;
 
   function getLocal(index: number) {
-    if (typeof frame.locals[index] === 'undefined') {
+    const local = frame.locals[index];
+
+    if (typeof local === 'undefined') {
       throw new Error('Assertion error: no local value at index ' + index);
     }
 
-    frame.values.push(frame.locals[index]);
+    frame.values.push(local);
   }
 
-  function pushResult(res: any) {
+  function pushResult(res: StackLocal) {
     frame.values.push(res);
   }
 
@@ -88,7 +90,7 @@ export function executeStackFrame(frame: StackFrame): any {
   }
 
   // Return the item on top of the values/stack;
-  return frame.values.pop();
+  return frame.values.pop().value;
 }
 
 function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {

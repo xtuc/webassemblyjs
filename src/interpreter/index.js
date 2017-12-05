@@ -50,7 +50,16 @@ export function evaluateAst(ast: Node): UserlandModuleInstance {
             );
           }
 
-          const stackFrame = createStackFrame(funcinst.code, args);
+          const argsWithType = args.map((value: any, i: number): StackLocal => {
+            const type = funcinstArgs[i];
+
+            return {
+              value,
+              type,
+            };
+          });
+
+          const stackFrame = createStackFrame(funcinst.code, argsWithType);
 
           // stackFrame.trace = (pc, i) => console.log('trace exec', pc, i);
 

@@ -3,20 +3,30 @@
 type Sign = '+' | '-' | '/' | '*';
 
 // https://webassembly.github.io/spec/exec/instructions.html#exec-binop
-export function binop(c1: number, c2: number, sign: Sign): number {
+export function binop(c1: StackLocal, c2: StackLocal, sign: Sign): StackLocal {
+  const type = 'i32';
 
   switch (sign) {
   // https://webassembly.github.io/spec/exec/numerics.html#op-iadd
   case '+':
-    return c1 + c2;
+    return {
+      value: c1.value + c2.value,
+      type,
+    };
 
     // https://webassembly.github.io/spec/exec/numerics.html#op-isub
   case '-':
-    return c1 - c2;
+    return {
+      value: c1.value - c2.value,
+      type,
+    };
 
   // https://webassembly.github.io/spec/exec/numerics.html#op-imul
   case '*':
-    return c1 * c2;
+    return {
+      value: c1.value * c2.value,
+      type,
+    };
   }
 
   throw new Error('Unsupported binop: ' + sign);

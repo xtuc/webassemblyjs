@@ -11,86 +11,77 @@ describe('kernel exec', () => {
 
     describe('binop', () => {
 
-      describe('i32.add', () => {
+      const operations = [
+        {
+          name: 'i32.add',
 
-        it('should get the correct result', () => {
-          const code = [
+          args: [
+            {value: 1, type: 'i32'},
+            {value: 1, type: 'i32'},
+          ],
+
+          code: [
             t.instruction('get_local', [0]),
             t.instruction('get_local', [1]),
             t.instruction('i32.add'),
-          ];
+          ],
 
-          const stackFrame = createStackFrame(code, [1, 1]);
-          const res = executeStackFrame(stackFrame);
+          resEqual: 2,
+        },
 
-          assert.equal(res, 2);
-        });
+        {
+          name: 'i32.sub',
 
-        it('should assert validations', () => {
-          const code = [
-            t.instruction('i32.add'),
-          ];
+          args: [
+            {value: 1, type: 'i32'},
+            {value: 1, type: 'i32'},
+          ],
 
-          const stackFrame = createStackFrame(code, [1, 1]);
-          const fn = () => executeStackFrame(stackFrame);
-
-          assert.throws(fn, /Assertion error/);
-        });
-
-      });
-
-      describe('i32.sub', () => {
-
-        it('should get the correct result', () => {
-          const code = [
+          code: [
             t.instruction('get_local', [0]),
             t.instruction('get_local', [1]),
             t.instruction('i32.sub'),
-          ];
+          ],
 
-          const stackFrame = createStackFrame(code, [1, 1]);
-          const res = executeStackFrame(stackFrame);
+          resEqual: 0,
+        },
 
-          assert.equal(res, 0);
-        });
+        {
+          name: 'i32.mul',
 
-        it('should assert validations', () => {
-          const code = [
-            t.instruction('i32.sub'),
-          ];
+          args: [
+            {value: 2, type: 'i32'},
+            {value: 1, type: 'i32'},
+          ],
 
-          const stackFrame = createStackFrame(code, [1, 1]);
-          const fn = () => executeStackFrame(stackFrame);
-
-          assert.throws(fn, /Assertion error/);
-        });
-
-      });
-
-      describe('i32.mul', () => {
-
-        it('should get the correct result', () => {
-          const code = [
+          code: [
             t.instruction('get_local', [0]),
             t.instruction('get_local', [1]),
             t.instruction('i32.mul'),
-          ];
+          ],
 
-          const stackFrame = createStackFrame(code, [1, 2]);
-          const res = executeStackFrame(stackFrame);
+          resEqual: 2,
+        },
 
-          assert.equal(res, 2);
-        });
+      ];
 
-        it('should assert validations', () => {
-          const code = [
-            t.instruction('i32.mul'),
-          ];
+      operations.forEach((op) => {
 
-          const stackFrame = createStackFrame(code, [1, 1]);
-          const fn = () => executeStackFrame(stackFrame);
+        describe(op.name, () => {
+          it('should get the correct result', () => {
 
-          assert.throws(fn, /Assertion error/);
+            const stackFrame = createStackFrame(op.code, op.args);
+            const res = executeStackFrame(stackFrame);
+
+            assert.equal(res, op.resEqual);
+          });
+
+          it('should assert validations - 1 missing arg', () => {
+            const stackFrame = createStackFrame(op.code, op.args.slice(-1));
+            const fn = () => executeStackFrame(stackFrame);
+
+            assert.throws(fn, /Assertion error/);
+          });
         });
 
       });
