@@ -29,9 +29,6 @@ type ModuleInstance = {
   memaddrs: any;
   globaladdrs: any;
 
-  // TODO(sven): exports should have multiple exports,
-  // not according to https://webassembly.github.io/spec/exec/runtime.html#module-instances?
-  // https://github.com/WebAssembly/spec/issues/616
   exports: Array<ExportInstance>;
 };
 

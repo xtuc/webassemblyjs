@@ -1,17 +1,25 @@
 // @flow
+
 const LETTERS = /[a-z0-9_]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ['i32', 'i64', 'f32', 'f64'];
 
-function Token(type, value) {
+function isNewLine(char: string): boolean {
+  return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
+}
+
+function Token(type, value, line) {
   return {
     type,
     value,
+    loc: {
+      line,
+    }
   };
 }
 
-function createToken(type) {
-  return (v) => Token(type, v);
+function createToken(type: string) {
+  return (v: string, line: number) => Token(type, v, line);
 }
 
 const tokens = {
@@ -47,13 +55,14 @@ const StringToken = createToken(tokens.string);
 
 function tokenize(input: string) {
   let current = 0;
+  let line = 1;
   const tokens = [];
 
   while (current < input.length) {
     let char = input[current];
 
     if (char === '(') {
-      tokens.push(OpenParenToken(char));
+      tokens.push(OpenParenToken(char, line));
 
       // Then we increment `current`
       current++;
@@ -63,8 +72,20 @@ function tokenize(input: string) {
     }
 
     if (char === ')') {
-      tokens.push(CloseParenToken(char));
+      tokens.push(CloseParenToken(char, line));
 
+      current++;
+      continue;
+    }
+
+    if (isNewLine(char)) {
+      line++;
+      current++;
+      continue;
+    }
+
+    const WHITESPACE = /\s/;
+    if (WHITESPACE.test(char)) {
       current++;
       continue;
     }
@@ -79,14 +100,8 @@ function tokenize(input: string) {
         char = input[++current];
       }
 
-      tokens.push(IdentifierToken(value));
+      tokens.push(IdentifierToken(value, line));
 
-      continue;
-    }
-
-    const WHITESPACE = /\s/;
-    if (WHITESPACE.test(char)) {
-      current++;
       continue;
     }
 
@@ -101,7 +116,7 @@ function tokenize(input: string) {
 
       value = parseInt(value);
 
-      tokens.push(NumberToken(value));
+      tokens.push(NumberToken(value, line));
 
       continue;
     }
@@ -122,7 +137,7 @@ function tokenize(input: string) {
 
       current++;
 
-      tokens.push(StringToken(value));
+      tokens.push(StringToken(value, line));
 
       continue;
     }
@@ -141,9 +156,9 @@ function tokenize(input: string) {
       if (char === '.') {
 
         if (valtypes.indexOf(value) !== -1) {
-          tokens.push(ValtypeToken(value));
+          tokens.push(ValtypeToken(value, line));
         } else {
-          tokens.push(NameToken(value));
+          tokens.push(NameToken(value, line));
         }
 
         value = '';
@@ -154,8 +169,8 @@ function tokenize(input: string) {
           char = input[++current];
         }
 
-        tokens.push(DotToken());
-        tokens.push(NameToken(value));
+        tokens.push(DotToken(null, line));
+        tokens.push(NameToken(value, line));
 
         continue;
       }
@@ -164,7 +179,7 @@ function tokenize(input: string) {
        * Handle keywords
        */
       if (typeof keywords[value] === 'string') {
-        tokens.push(KeywordToken(value));
+        tokens.push(KeywordToken(value, line));
 
         continue;
       }
@@ -173,7 +188,7 @@ function tokenize(input: string) {
        * Handle types
        */
       if (valtypes.indexOf(value) !== -1) {
-        tokens.push(ValtypeToken(value));
+        tokens.push(ValtypeToken(value, line));
 
         continue;
       }
@@ -181,7 +196,7 @@ function tokenize(input: string) {
       /*
        * Handle literals
        */
-      tokens.push(NameToken(value));
+      tokens.push(NameToken(value, line));
 
       continue;
     }

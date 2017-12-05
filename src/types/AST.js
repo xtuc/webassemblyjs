@@ -3,8 +3,19 @@
 type Valtype = 'i32' | 'i64' | 'f32' | 'f64';
 type ExportDescr = 'func' | 'table' | 'memory' | 'global';
 
+interface Position {
+  line: number;
+  column: number;
+}
+
+interface SourceLocation {
+  start: Position;
+  end: Position;
+}
+
 interface Node {
   type: string;
+  loc: ?SourceLocation;
 }
 
 interface Identifier {

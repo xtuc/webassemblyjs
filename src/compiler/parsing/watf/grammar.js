@@ -19,9 +19,61 @@ function parse(tokensList: Array<Object>): Program {
       token = tokensList[++current];
     }
 
-    function parseFunc() {
+    function parseExport() {
+      if (token.type !== tokens.string) {
+        throw new Error('Expected string after export, got: ' + token.type);
+      }
+
+      const name = token.value;
+
       eatToken();
 
+      let type;
+      let id;
+
+      if (token.type === tokens.openParen) {
+        eatToken();
+
+        while (
+          (token.type !== tokens.closeParen)
+        ) {
+
+          if (isKeyword(token, keywords.func)) {
+            type = 'Func';
+
+            eatToken();
+            id = parseFunc().id;
+          }
+
+          eatToken();
+        }
+      }
+
+      return t.moduleExport(name, type, id);
+    }
+
+    function parseModule() {
+      let name = null;
+      const moduleFields = [];
+
+      if (token.type === tokens.identifier) {
+        name = token.value;
+        eatToken();
+      }
+
+      while (
+        (token.type !== tokens.closeParen)
+      ) {
+        moduleFields.push(walk());
+        token = tokensList[current];
+      }
+
+      eatToken();
+
+      return t.module(name, moduleFields);
+    }
+
+    function parseFunc() {
       let fnName = null;
       let fnResult = null;
 
@@ -33,6 +85,9 @@ function parse(tokensList: Array<Object>): Program {
         eatToken();
       }
 
+      /**
+       * Params and return type
+       */
       if (token.type === tokens.openParen) {
         eatToken();
 
@@ -94,30 +149,30 @@ function parse(tokensList: Array<Object>): Program {
       }
 
       /**
-       * Function body
+       * Parses a line into a instruction
        */
-      while (
-        (token.type !== tokens.closeParen)
-      ) {
+      function parseInstructionLine(line: number) {
 
         if (token.type === tokens.name || token.type === tokens.valtype) {
           let name = token.value;
-          const args = [];
 
           eatToken();
 
           if (token.type === tokens.dot) {
+            name += '.';
             eatToken();
 
-            name += '.';
-
             if (token.type !== tokens.name) {
-              throw new TypeError('Unknown token: ' + token.type + ', dot exepected');
+              throw new TypeError('Unknown token: ' + token.type + ', name expected');
             }
 
             name += token.value;
-
             eatToken();
+          }
+
+          if (token.loc.line !== line || token.type === tokens.closeParen) {
+            fnBody.push(t.instruction(name, []));
+            return;
           }
 
           /**
@@ -126,15 +181,27 @@ function parse(tokensList: Array<Object>): Program {
            * Currently only one argument is allowed
            */
           if (token.type === tokens.identifier || token.type === tokens.number) {
-            args.push(token.value);
-          }
+            fnBody.push(t.instruction(name, [token.value]));
 
-          fnBody.push(t.instruction(name, args));
+            eatToken();
+            return;
+          }
         } else {
-          throw new Error('Unexpected token in function body: ' + token.type);
+          throw new Error('Unexpected instruction in function body: ' + token.type);
         }
 
-        eatToken();
+        throw new Error('Unexpected trailing tokens for instructions: ' + token.type);
+      }
+
+      /**
+       * Function body
+       *
+       * One instruction per line, parse the current one
+       */
+      while (
+        token.type !== tokens.closeParen
+      ) {
+        parseInstructionLine(token.loc.line);
       }
 
       eatToken();
@@ -142,74 +209,23 @@ function parse(tokensList: Array<Object>): Program {
       return t.func(fnName, fnParams, fnResult, fnBody);
     }
 
-    // Next we're going to look for CallExpressions. We start this off when we
-    // encounter an open parenthesis.
     if (token.type === tokens.openParen) {
 
-      // We'll increment `current` to skip the parenthesis since we don't care
-      // about it in our AST.
       eatToken();
 
       if (isKeyword(token, keywords.export)) {
         eatToken();
-
-        if (token.type !== tokens.string) {
-          throw new Error('Expected string after export, got: ' + token.type);
-        }
-
-        const name = token.value;
-
-        eatToken();
-
-        let type;
-        let id;
-
-        if (token.type === tokens.openParen) {
-          eatToken();
-
-          while (
-            (token.type !== tokens.closeParen)
-          ) {
-
-            if (isKeyword(token, keywords.func)) {
-              type = 'Func';
-              id = parseFunc().id;
-            }
-
-            eatToken();
-          }
-        }
-
-        return t.moduleExport(name, type, id);
+        return parseExport();
       }
 
       if (isKeyword(token, keywords.func)) {
+        eatToken();
         return parseFunc();
       }
 
       if (isKeyword(token, keywords.module)) {
         eatToken();
-
-        let name = null;
-        const moduleFields = [];
-
-        if (token.type === tokens.identifier) {
-          name = token.value;
-          eatToken();
-        }
-
-        while (
-          (token.type !== tokens.closeParen)
-        ) {
-          // we'll call the `walk` function which will return a `node` and we'll
-          // push it into our `node.params`.
-          moduleFields.push(walk());
-          token = tokensList[current];
-        }
-
-        eatToken();
-
-        return t.module(name, moduleFields);
+        return parseModule();
       }
     }
 

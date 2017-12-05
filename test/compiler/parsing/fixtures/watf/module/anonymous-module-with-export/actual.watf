@@ -1,3 +1,3 @@
 (module
-    (export "add" (func $add))
+  (export "add" (func $add))
 )

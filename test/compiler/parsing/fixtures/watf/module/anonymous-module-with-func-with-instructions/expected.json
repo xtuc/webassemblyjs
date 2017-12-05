@@ -1,0 +1,27 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "id": "funcfoo",
+          "params": [],
+          "result": null,
+          "body": [
+            {
+              "type": "Instr",
+              "id": "i64.add"
+            },
+            {
+              "type": "Instr",
+              "id": "i32.add"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -18,7 +18,7 @@
           "type": "Instr",
           "id": "get_local",
           "args": [
-            "b"
+            0
           ]
         },
         {
