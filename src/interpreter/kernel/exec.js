@@ -1,4 +1,5 @@
 // @flow
+const {binop} = require('./instruction/binop');
 
 export function executeStackFrame(frame: StackFrame): any {
   let pc = 0;
@@ -11,46 +12,71 @@ export function executeStackFrame(frame: StackFrame): any {
     frame.values.push(frame.locals[index]);
   }
 
+  function pushResult(res: any) {
+    frame.values.push(res);
+  }
+
+  function pop2(): [any, any] {
+    assertNItemsOnStack(frame.values, 2);
+
+    const c2 = frame.values.pop();
+    const c1 = frame.values.pop();
+
+    return [c1, c2];
+  }
+
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
 
-    if (instruction.id === 'get_local') {
+    switch (instruction.id) {
+
+    /**
+       * Memory Instructions
+       *
+       * https://webassembly.github.io/spec/exec/instructions.html#memory-instructions
+       */
+    case 'get_local': {
       getLocal(instruction.args[0]);
+      break;
+    }
 
-    } else
+    /**
+       * Numeric Instructions
+       *
+       * https://webassembly.github.io/spec/exec/instructions.html#numeric-instructions
+       */
+    case 'i32.add': {
+      const [c1, c2] = pop2();
 
-    if (instruction.id === 'i32.add') {
+      pushResult(
+        binop(c2, c1, '+')
+      );
 
-      assertNItemsOnStack(frame.values, 2);
+      break;
+    }
 
-      const c2 = frame.values.pop();
-      const c1 = frame.values.pop();
+    case 'i32.sub': {
+      const [c1, c2] = pop2();
 
-      const res = binopt(c2, c1, '+');
+      pushResult(
+        binop(c2, c1, '-')
+      );
 
-      frame.values.push(res);
+      break;
+    }
 
-    } else if (instruction.id === 'i32.sub') {
+    case 'i32.mul': {
+      const [c1, c2] = pop2();
 
-      assertNItemsOnStack(frame.values, 2);
+      pushResult(
+        binop(c2, c1, '*')
+      );
 
-      const c2 = frame.values.pop();
-      const c1 = frame.values.pop();
+      break;
+    }
 
-      const res = binopt(c2, c1, '-');
-
-      frame.values.push(res);
-    } else if (instruction.id === 'i32.mul') {
-
-      assertNItemsOnStack(frame.values, 2);
-
-      const c2 = frame.values.pop();
-      const c1 = frame.values.pop();
-
-      const res = binopt(c2, c1, '*');
-
-      frame.values.push(res);
-    } else {
+    default:
+      // FIXME(sven): this is not spec compliant but great while developing
       throw new Error('Unknown operation: ' + instruction.id);
     }
 
@@ -69,23 +95,4 @@ function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {
   if (stack.length < numberOfItem) {
     throw new Error('Assertion error: expected ' + numberOfItem + ' on the stack');
   }
-}
-
-// https://webassembly.github.io/spec/exec/instructions.html#exec-binop
-function binopt(c1: number, c2: number, sign: string): number {
-  switch (sign) {
-  // https://webassembly.github.io/spec/exec/numerics.html#op-iadd
-  case '+':
-    return c1 + c2;
-
-    // https://webassembly.github.io/spec/exec/numerics.html#op-isub
-  case '-':
-    return c1 - c2;
-
-  // https://webassembly.github.io/spec/exec/numerics.html#op-imul
-  case '*':
-    return c1 * c2;
-  }
-
-  throw new Error('Unsupported binop: ' + sign);
 }
