@@ -28,7 +28,28 @@ export function executeStackFrame(frame: StackFrame): any {
       const c2 = frame.values.pop();
       const c1 = frame.values.pop();
 
-      const res = binopt(c2, c1);
+      const res = binopt(c2, c1, '+');
+
+      frame.values.push(res);
+
+    } else if (instruction.id === 'i32.sub') {
+
+      assertNItemsOnStack(frame.values, 2);
+
+      const c2 = frame.values.pop();
+      const c1 = frame.values.pop();
+
+      const res = binopt(c2, c1, '-');
+
+      frame.values.push(res);
+    } else if (instruction.id === 'i32.mul') {
+
+      assertNItemsOnStack(frame.values, 2);
+
+      const c2 = frame.values.pop();
+      const c1 = frame.values.pop();
+
+      const res = binopt(c2, c1, '*');
 
       frame.values.push(res);
     } else {
@@ -53,6 +74,20 @@ function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {
 }
 
 // https://webassembly.github.io/spec/exec/instructions.html#exec-binop
-function binopt(c1: number, c2: number): number {
-  return c1 + c2;
+function binopt(c1: number, c2: number, sign: string): number {
+  switch (sign) {
+  // https://webassembly.github.io/spec/exec/numerics.html#op-iadd
+  case '+':
+    return c1 + c2;
+
+    // https://webassembly.github.io/spec/exec/numerics.html#op-isub
+  case '-':
+    return c1 - c2;
+
+  // https://webassembly.github.io/spec/exec/numerics.html#op-imul
+  case '*':
+    return c1 * c2;
+  }
+
+  throw new Error('Unsupported binop: ' + sign);
 }
