@@ -1,0 +1,9 @@
+// @flow
+
+const m = WebAssembly.instantiate(watfmodule);
+
+assert.typeOf(m, 'object')
+assert.typeOf(m.exports, 'object')
+assert.typeOf(m.exports.add, 'function')
+
+ok();

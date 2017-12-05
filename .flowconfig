@@ -5,6 +5,7 @@
 [libs]
 ./src/types/AST.js
 ./src/types/index.js
+./src/types/userland.js
 
 [lints]
 

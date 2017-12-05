@@ -3,11 +3,11 @@
 const NULL = 0;
 
 // state
-let heap = null;
-let index = NULL;
+let heap, index;
 
 function initializeMemory(size: Bytes) {
   heap = Array(size);
+  index = NULL;
 }
 
 function dump() {

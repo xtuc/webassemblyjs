@@ -10,38 +10,41 @@ const {parse} = require('../../../lib');
 
 const testSuites = glob.sync('test/compiler/parsing/fixtures/**/actual.watf');
 
-testSuites.forEach((suite) => {
+describe('compiler', () => {
 
-  it(suite, () => new Promise((resolve) => {
-    function check(code) {
-      const expectedFile = path.join(path.dirname(suite), 'expected.json');
+  testSuites.forEach((suite) => {
 
-      let expected;
-      try {
-        expected = readFileSync(expectedFile, 'utf8');
-      } catch (e) {
-        expected = code;
+    it(suite, () => new Promise((resolve) => {
+      function check(code) {
+        const expectedFile = path.join(path.dirname(suite), 'expected.json');
 
-        writeFileSync(expectedFile, code);
+        let expected;
+        try {
+          expected = readFileSync(expectedFile, 'utf8');
+        } catch (e) {
+          expected = code;
 
-        console.log('Write expected file', expectedFile);
+          writeFileSync(expectedFile, code);
+
+          console.log('Write expected file', expectedFile);
+        }
+
+        const out = diff(code.trim(), expected.trim());
+
+        if (out !== null && out !== NO_DIFF_MESSAGE) {
+          throw new Error('\n' + out);
+        }
+
+        // When one line the error is not caught
+        if (code.trim() !== expected.trim()) {
+          throw new Error('Assertion error');
+        }
+
+        resolve();
       }
 
-      const out = diff(code.trim(), expected.trim());
-
-      if (out !== null && out !== NO_DIFF_MESSAGE) {
-        throw new Error('\n' + out);
-      }
-
-      // When one line the error is not caught
-      if (code.trim() !== expected.trim()) {
-        throw new Error('Assertion error');
-      }
-
-      resolve();
-    }
-
-    parse(suite, check);
-  }));
+      parse(suite, check);
+    }));
+  });
 });
 

@@ -3,6 +3,10 @@
 type Valtype = 'i32' | 'i64' | 'f32' | 'f64';
 type ExportDescr = 'func' | 'table' | 'memory' | 'global';
 
+type NodePath = {
+  node: Node;
+};
+
 interface Position {
   line: number;
   column: number;
