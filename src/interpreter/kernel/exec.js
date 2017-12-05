@@ -11,7 +11,6 @@ export function executeStackFrame(frame: StackFrame): any {
     frame.values.push(frame.locals[index]);
   }
 
-
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
 
@@ -20,7 +19,6 @@ export function executeStackFrame(frame: StackFrame): any {
 
     } else
 
-    // https://webassembly.github.io/spec/exec/instructions.html#exec-binop
     if (instruction.id === 'i32.add') {
 
       assertNItemsOnStack(frame.values, 2);

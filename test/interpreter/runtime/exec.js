@@ -95,7 +95,6 @@ describe('kernel exec', () => {
 
       });
 
-
     });
   });
 });

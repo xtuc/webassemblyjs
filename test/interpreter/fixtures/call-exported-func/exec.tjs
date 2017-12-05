@@ -3,6 +3,6 @@ const m = WebAssembly.instantiate(watfmodule);
 const res = m.exports.add(1, 1);
 
 assert.typeOf(res, 'number');
-assert.equal(res, 2)
+assert.equal(res, 2);
 
 ok();
