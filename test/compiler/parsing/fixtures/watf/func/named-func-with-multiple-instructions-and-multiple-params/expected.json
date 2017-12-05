@@ -1,0 +1,40 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": "add",
+      "params": [
+        {
+          "id": "lhs",
+          "valtype": "i32"
+        },
+        {
+          "id": "rhs",
+          "valtype": "i32"
+        }
+      ],
+      "result": "i32",
+      "body": [
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
+            "a"
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
+            0
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "i32.add"
+        }
+      ]
+    }
+  ]
+}

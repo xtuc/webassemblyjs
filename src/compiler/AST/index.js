@@ -66,3 +66,14 @@ export function instruction(id: string, args: ?Array<Number | string>): Instruct
     };
   }
 }
+
+export function withLoc(n: Node, end: Position, start: Position): Node {
+  const loc = {
+    start,
+    end,
+  };
+
+  n.loc = loc;
+
+  return n;
+}

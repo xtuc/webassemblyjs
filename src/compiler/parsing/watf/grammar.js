@@ -85,67 +85,71 @@ function parse(tokensList: Array<Object>): Program {
         eatToken();
       }
 
-      /**
-       * Params and return type
-       */
-      if (token.type === tokens.openParen) {
+      function parseSignature() {
         eatToken();
 
-        while (
-          (token.type !== tokens.closeParen)
-        ) {
-
-          /**
-           * Function params
-           */
-          if (isKeyword(token, keywords.param)) {
-            eatToken();
-
-            let id;
-            let valtype;
-
-            if (token.type === tokens.identifier) {
-              id = token.value;
-              eatToken();
-            }
-
-            if (token.type === tokens.valtype) {
-              valtype = token.value;
-
-              eatToken();
-            } else {
-              throw new Error('Function param has no valtype');
-            }
-
-            fnParams.push({
-              id,
-              valtype,
-            });
-          }
-
-          /**
-           * Function result
-           */
-          if (isKeyword(token, keywords.result)) {
-            eatToken();
-
-            if (token.type === tokens.valtype) {
-
-              // Already declared the result, but not supported yet by WebAssembly
-              if (fnResult !== null) {
-                throw new Error('Multiple return types are not supported yet');
-              }
-
-              fnResult = token.value;
-
-              eatToken();
-            } else {
-              throw new Error('Function result has no valtype');
-            }
-          }
-
+        /**
+         * Function params
+         */
+        if (isKeyword(token, keywords.param)) {
           eatToken();
+
+          let id;
+          let valtype;
+
+          if (token.type === tokens.identifier) {
+            id = token.value;
+            eatToken();
+          }
+
+          if (token.type === tokens.valtype) {
+            valtype = token.value;
+
+            eatToken();
+          } else {
+            throw new Error('Function param has no valtype');
+          }
+
+          fnParams.push({
+            id,
+            valtype,
+          });
+        } else
+
+        /**
+         * Else the result result
+         */
+        if (isKeyword(token, keywords.result)) {
+          eatToken();
+
+          if (token.type === tokens.valtype) {
+
+            // Already declared the result, but not supported yet by WebAssembly
+            if (fnResult !== null) {
+              throw new Error('Multiple return types are not supported yet');
+            }
+
+            fnResult = token.value;
+
+            eatToken();
+          } else {
+            throw new Error('Function result has no valtype');
+          }
         }
+      }
+
+      /**
+       * Parses signature
+       *
+       * Params and return type
+       */
+
+      while (
+        (token.type === tokens.openParen)
+      ) {
+        parseSignature();
+
+        eatToken(); // close paren
       }
 
       /**
