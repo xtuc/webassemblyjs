@@ -1,12 +1,15 @@
 // @flow
 
 function cloneNode(o: Node): Node {
-  let output, v, key;
-  output = Array.isArray(o) ? [] : {};
+  let v, key;
+  const output = Array.isArray(o) ? [] : {};
   for (key in o) {
+    // $FlowIgnore
     v = o[key];
+    // $FlowIgnore
     output[key] = (typeof v === 'object') ? cloneNode(v) : v;
   }
+  // $FlowIgnore
   return output;
 }
 
@@ -24,6 +27,7 @@ export function walk(
   if (n.type === 'Program') {
     cb(n.type, createPath(n));
 
+    // $FlowIgnore
     n.body.forEach((x) => walk(x, cb));
   }
 
@@ -31,12 +35,20 @@ export function walk(
     cb(n.type, createPath(n));
 
     if (typeof n.fields !== 'undefined') {
+      // $FlowIgnore
       n.fields.forEach((x) => walk(x, cb));
     }
   }
 
   if (n.type === 'ModuleExport') {
     cb(n.type, createPath(n));
+  }
+
+  if (n.type === 'Func') {
+    cb(n.type, createPath(n));
+
+    // $FlowIgnore
+    n.body.forEach((x) => walk(x, cb));
   }
 }
 

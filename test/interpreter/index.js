@@ -11,7 +11,6 @@ const vm = require('vm');
 const {WebAssembly} = require('../../lib');
 
 const testSuites = glob.sync('test/interpreter/fixtures/**/module.watf');
-console.log(testSuites);
 
 describe('interpreter', () => {
 

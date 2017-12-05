@@ -3,6 +3,11 @@
 
 type Bytes = number;
 
+type Functype = [
+  Array<Valtype>,
+  Array<Valtype>,
+];
+
 type Addr = {
   index: Bytes;
   size: Bytes;
@@ -22,6 +27,17 @@ type ExportInstance = {
   value: ExternalVal;
 };
 
+type FuncInstance = {
+  type: Functype;
+  module: ModuleInstance; // its originating module
+
+  // TODO(sven): according to the spec the code property is a string
+  // see https://webassembly.github.io/spec/exec/runtime.html#function-instances
+  // but in the context of an interpreter it make no sense to me.
+  // I'll store the instructions from the function body here.
+  code: Array<Instruction>;
+};
+
 type ModuleInstance = {
   types: any;
   funcaddrs: any;
@@ -32,3 +48,16 @@ type ModuleInstance = {
   exports: Array<ExportInstance>;
 };
 
+// https://webassembly.github.io/spec/exec/runtime.html#syntax-frame
+type StackFrame = {
+  values: Array<any>;
+
+  globals: Array<any>;
+  locals: Array<any>;
+  code: Array<Instruction>;
+
+  trace?: (number, string) => void;
+};
+
+declare var it;
+declare var describe;

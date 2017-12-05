@@ -19,7 +19,7 @@ interface SourceLocation {
 
 interface Node {
   type: string;
-  loc: ?SourceLocation;
+  loc?: SourceLocation;
 }
 
 interface Identifier {

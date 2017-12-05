@@ -27,8 +27,6 @@ export function parse(filename: string, cb: (string) => void) {
   cb(JSON.stringify(ast, null, 2));
 }
 
-
-
 export const WebAssembly = {
 
   instantiate(content: string/*, importObject: Object */): ModuleInstance {

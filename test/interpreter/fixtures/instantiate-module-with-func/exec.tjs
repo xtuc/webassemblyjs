@@ -1,5 +1,3 @@
-// @flow
-
 const m = WebAssembly.instantiate(watfmodule);
 
 assert.typeOf(m, 'object')
