@@ -9,6 +9,48 @@ const {createStackFrame} = require('../../../lib/interpreter/kernel/stackframe')
 describe('kernel exec', () => {
   describe('instructions', () => {
 
+    describe('control', () => {
+      it('should execute nop', () => {
+        let pc;
+
+        const code = [
+          t.instruction('nop'),
+          t.instruction('nop'),
+          t.instruction('nop'),
+        ];
+
+        const stackFrame = createStackFrame(code, []);
+        stackFrame.trace = (x) => (pc = x);
+
+        executeStackFrame(stackFrame);
+
+        assert.equal(code.length, pc + 1);
+      });
+    });
+
+    describe('administrative', () => {
+
+      it('should stop executing the stackframe at trap', () => {
+        let pc;
+
+        const code = [
+          t.instruction('nop'),
+          t.instruction('nop'),
+          t.instruction('trap'),
+          t.instruction('nop'),
+          t.instruction('nop'),
+        ];
+
+        const stackFrame = createStackFrame(code, []);
+        stackFrame.trace = (x) => (pc = x);
+
+        executeStackFrame(stackFrame);
+
+        assert.notEqual(code.length, pc + 1);
+        assert.equal(pc, 1);
+      });
+    });
+
     describe('binop', () => {
 
       const operations = [
