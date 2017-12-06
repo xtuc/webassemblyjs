@@ -162,7 +162,7 @@ function parse(tokensList: Array<Object>): Program {
           parseLoop()
         );
 
-        return
+        return;
       } else {
         throw new Error('Unexpected instruction in function body: ' + token.type);
       }

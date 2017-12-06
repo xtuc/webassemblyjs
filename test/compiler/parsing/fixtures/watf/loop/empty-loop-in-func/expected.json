@@ -13,10 +13,12 @@
           "body": [
             {
               "type": "LoopInstruction",
+              "id": "loop",
               "instr": []
             },
             {
               "type": "LoopInstruction",
+              "id": "loop",
               "label": "1",
               "instr": []
             }

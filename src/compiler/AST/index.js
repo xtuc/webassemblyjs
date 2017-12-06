@@ -82,6 +82,7 @@ export function loopInstruction(
 
   return {
     type: 'LoopInstruction',
+    id: 'loop',
     label,
     resulttype,
     instr,
