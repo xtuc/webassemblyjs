@@ -1,0 +1,29 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "LoopInstruction",
+          "instr": [
+            {
+              "type": "Instr",
+              "id": "nop"
+            }
+          ]
+        },
+        {
+          "type": "LoopInstruction",
+          "instr": [
+            {
+              "type": "Instr",
+              "id": "nop"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

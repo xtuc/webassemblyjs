@@ -19,6 +19,42 @@ function parse(tokensList: Array<Object>): Program {
       token = tokensList[++current];
     }
 
+    function parseLoop() {
+      let label;
+      let result;
+      const instr = [];
+
+      if (token.type === tokens.identifier) {
+        label = token.value;
+        eatToken();
+      }
+
+      if (token.type === tokens.valtype) {
+        result = token.value;
+        eatToken();
+      }
+
+      /**
+       * Loop instructions
+       *
+       * Parses a line into a instruction
+       */
+      if (token.type === tokens.openParen) {
+        eatToken();
+
+        while (
+          (token.type !== tokens.closeParen)
+        ) {
+          parseInstructionLine(token.loc.line, instr);
+          eatToken();
+        }
+      }
+
+      eatToken();
+
+      return t.loopInstruction(label, result, instr);
+    }
+
     function parseExport() {
       if (token.type !== tokens.string) {
         throw new Error('Expected string after export, got: ' + token.type);
@@ -71,6 +107,51 @@ function parse(tokensList: Array<Object>): Program {
       eatToken();
 
       return t.module(name, moduleFields);
+    }
+
+    /**
+     * Parses a line into a instruction
+     */
+    function parseInstructionLine(line: number, acc: Array<any>) {
+
+      if (token.type === tokens.name || token.type === tokens.valtype) {
+        let name = token.value;
+
+        eatToken();
+
+        if (token.type === tokens.dot) {
+          name += '.';
+          eatToken();
+
+          if (token.type !== tokens.name) {
+            throw new TypeError('Unknown token: ' + token.type + ', name expected');
+          }
+
+          name += token.value;
+          eatToken();
+        }
+
+        if (token.loc.line !== line || token.type === tokens.closeParen) {
+          acc.push(t.instruction(name, []));
+          return;
+        }
+
+        /**
+         * Handle arguments
+         *
+         * Currently only one argument is allowed
+         */
+        if (token.type === tokens.identifier || token.type === tokens.number) {
+          acc.push(t.instruction(name, [token.value]));
+
+          eatToken();
+          return;
+        }
+      } else {
+        throw new Error('Unexpected instruction in function body: ' + token.type);
+      }
+
+      throw new Error('Unexpected trailing tokens for instructions: ' + token.type);
     }
 
     function parseFunc() {
@@ -153,51 +234,6 @@ function parse(tokensList: Array<Object>): Program {
       }
 
       /**
-       * Parses a line into a instruction
-       */
-      function parseInstructionLine(line: number) {
-
-        if (token.type === tokens.name || token.type === tokens.valtype) {
-          let name = token.value;
-
-          eatToken();
-
-          if (token.type === tokens.dot) {
-            name += '.';
-            eatToken();
-
-            if (token.type !== tokens.name) {
-              throw new TypeError('Unknown token: ' + token.type + ', name expected');
-            }
-
-            name += token.value;
-            eatToken();
-          }
-
-          if (token.loc.line !== line || token.type === tokens.closeParen) {
-            fnBody.push(t.instruction(name, []));
-            return;
-          }
-
-          /**
-           * Handle arguments
-           *
-           * Currently only one argument is allowed
-           */
-          if (token.type === tokens.identifier || token.type === tokens.number) {
-            fnBody.push(t.instruction(name, [token.value]));
-
-            eatToken();
-            return;
-          }
-        } else {
-          throw new Error('Unexpected instruction in function body: ' + token.type);
-        }
-
-        throw new Error('Unexpected trailing tokens for instructions: ' + token.type);
-      }
-
-      /**
        * Function body
        *
        * One instruction per line, parse the current one
@@ -205,7 +241,7 @@ function parse(tokensList: Array<Object>): Program {
       while (
         token.type !== tokens.closeParen
       ) {
-        parseInstructionLine(token.loc.line);
+        parseInstructionLine(token.loc.line, fnBody);
       }
 
       eatToken();
@@ -220,6 +256,11 @@ function parse(tokensList: Array<Object>): Program {
       if (isKeyword(token, keywords.export)) {
         eatToken();
         return parseExport();
+      }
+
+      if (isKeyword(token, keywords.loop)) {
+        eatToken();
+        return parseLoop();
       }
 
       if (isKeyword(token, keywords.func)) {

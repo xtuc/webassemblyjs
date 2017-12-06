@@ -1,0 +1,21 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "LoopInstruction",
+          "resulttype": "i32",
+          "instr": [
+            {
+              "type": "Instr",
+              "id": "nop"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

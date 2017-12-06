@@ -41,6 +41,7 @@ const keywords = {
   param: 'param',
   result: 'result',
   export: 'export',
+  loop: 'loop',
 };
 
 const CloseParenToken = createToken(tokens.closeParen);

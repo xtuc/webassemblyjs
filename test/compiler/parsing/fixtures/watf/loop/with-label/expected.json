@@ -1,0 +1,16 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "LoopInstruction",
+          "label": "1",
+          "instr": []
+        }
+      ]
+    }
+  ]
+}

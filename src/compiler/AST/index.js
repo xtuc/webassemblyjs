@@ -1,5 +1,11 @@
 // @flow
 
+function assert(cond: boolean) {
+  if (!cond) {
+    throw new Error('assertion error');
+  }
+}
+
 export function identifier(name: string): Identifier {
   return {
     type: 'Identifier',
@@ -65,6 +71,21 @@ export function instruction(id: string, args: ?Array<Number | string>): Instruct
       args: undefined,
     };
   }
+}
+
+export function loopInstruction(
+  label: ?Identifier,
+  resulttype: ?Valtype,
+  instr: Array<Instruction>,
+): LoopInstruction {
+  assert(typeof instr === 'object' && typeof instr.length !== 'undefined');
+
+  return {
+    type: 'LoopInstruction',
+    label,
+    resulttype,
+    instr,
+  };
 }
 
 export function withLoc(n: Node, end: Position, start: Position): Node {

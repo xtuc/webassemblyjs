@@ -72,3 +72,12 @@ interface ModuleExport {
     id: string;
   };
 }
+
+type LoopInstruction = {
+  ...Instruction;
+
+  type: 'LoopInstruction';
+  label: ?Identifier;
+  resulttype: ?Valtype;
+  instr: Array<Instruction>;
+}
