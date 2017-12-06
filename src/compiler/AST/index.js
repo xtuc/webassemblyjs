@@ -80,6 +80,20 @@ export function loopInstruction(
   };
 }
 
+export function blockInstruction(
+  label: ?Identifier,
+  instr: Array<Instruction>,
+): BlockInstruction {
+  assert(typeof instr === 'object' && typeof instr.length !== 'undefined');
+
+  return {
+    type: 'BlockInstruction',
+    id: 'block',
+    label,
+    instr,
+  };
+}
+
 export function withLoc(n: Node, end: Position, start: Position): Node {
   const loc = {
     start,

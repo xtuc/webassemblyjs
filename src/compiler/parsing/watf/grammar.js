@@ -19,6 +19,49 @@ function parse(tokensList: Array<Object>): Program {
       token = tokensList[++current];
     }
 
+    function parseListOfInstructions(acc: Array<Instruction>) {
+      if (token.type === tokens.openParen) {
+        eatToken();
+      }
+
+      while (
+        (token.type !== tokens.closeParen)
+      ) {
+        if (token.type === tokens.openParen) {
+          eatToken();
+        }
+
+        parseInstructionLine(token.loc.line, acc);
+
+        eatToken();
+      }
+
+      eatToken(); // Closing paren
+    }
+
+    function parseBlock() {
+      let label;
+      const instr = [];
+
+      if (token.type === tokens.identifier) {
+        label = token.value;
+        eatToken();
+      }
+
+      /**
+       * Block instructions
+       *
+       * Parses a line into a instruction
+       */
+      if (token.type === tokens.openParen) {
+        eatToken();
+
+        parseListOfInstructions(instr);
+      }
+
+      return t.blockInstruction(label, instr);
+    }
+
     function parseLoop() {
       let label;
       let result;
@@ -180,6 +223,16 @@ function parse(tokensList: Array<Object>): Program {
         );
 
         return;
+      } else if (isKeyword(token, keywords.block)) {
+
+        eatToken(); // keyword
+
+        acc.push(
+          parseBlock()
+        );
+
+        return;
+
       } else {
         throw new Error('Unexpected instruction in function body: ' + token.type);
       }

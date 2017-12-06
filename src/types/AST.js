@@ -41,9 +41,6 @@ interface Program {
   body: Array<Instruction | Module>;
 }
 
-// TODO(sven): define types
-type Type = any;
-
 type FuncParam = {
   id: ?string,
   valtype: Valtype,
@@ -53,7 +50,7 @@ interface Func {
   type: 'Func';
   id: ?string;
   params: Array<FuncParam>;
-  result: ?Type;
+  result: ?Valtype;
   body: Array<Instruction>;
 }
 
@@ -79,5 +76,13 @@ type LoopInstruction = {
   type: 'LoopInstruction';
   label: ?Identifier;
   resulttype: ?Valtype;
+  instr: Array<Instruction>;
+}
+
+type BlockInstruction = {
+  ...Instruction;
+
+  type: 'BlockInstruction';
+  label: ?Identifier;
   instr: Array<Instruction>;
 }
