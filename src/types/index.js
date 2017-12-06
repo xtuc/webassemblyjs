@@ -59,7 +59,7 @@ type StackFrame = {
   locals: Array<StackLocal>;
   code: Array<Instruction>;
 
-  trace?: (number, string) => void;
+  trace?: (number, number, Instruction) => void;
 };
 
 type StackLocal = {

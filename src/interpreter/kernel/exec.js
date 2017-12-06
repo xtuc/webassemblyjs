@@ -1,7 +1,11 @@
 // @flow
-const {binop} = require('./instruction/binop');
 
-export function executeStackFrame(frame: StackFrame): any {
+const TRAPPED = 'TRAPPED';
+
+const {binop} = require('./instruction/binop');
+const {createStackFrame} = require('./stackframe');
+
+export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   let pc = 0;
 
   function getLocal(index: number) {
@@ -45,6 +49,24 @@ export function executeStackFrame(frame: StackFrame): any {
       break;
     }
 
+    case 'loop': {
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-loop
+      const loop = instruction;
+
+      if (loop.instr.length > 0) {
+        const childStackFrame = createStackFrame(loop.instr, frame.locals);
+        childStackFrame.trace = frame.trace;
+
+        const res = executeStackFrame(childStackFrame, depth + 1);
+
+        if (res === TRAPPED) {
+          return;
+        }
+      }
+
+      break;
+    }
+
     /**
      * Administrative Instructions
      *
@@ -53,7 +75,7 @@ export function executeStackFrame(frame: StackFrame): any {
     case 'trap': {
       // signalling abrupt termination
       // https://webassembly.github.io/spec/exec/runtime.html#syntax-trap
-      return;
+      return TRAPPED;
     }
 
     /**
@@ -103,11 +125,11 @@ export function executeStackFrame(frame: StackFrame): any {
 
     default:
       // FIXME(sven): this is not spec compliant but great while developing
-      throw new Error('Unknown operation: ' + instruction.id);
+      throw new Error('Unknown operation: ' + instruction.type + ' (' + instruction.id + ')');
     }
 
     if (typeof frame.trace === 'function') {
-      frame.trace(pc, instruction.id);
+      frame.trace(depth, pc, instruction);
     }
 
     pc++;

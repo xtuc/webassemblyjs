@@ -20,11 +20,45 @@ describe('kernel exec', () => {
         ];
 
         const stackFrame = createStackFrame(code, []);
-        stackFrame.trace = (x) => (pc = x);
+        stackFrame.trace = (_, x) => (pc = x);
 
         executeStackFrame(stackFrame);
 
         assert.equal(code.length, pc + 1);
+      });
+
+      it('should execute the body of loop in a child stack frame', () => {
+        let maxDepth = 0;
+
+        const loopCode = [
+          t.instruction('nop'),
+          t.instruction('nop'),
+        ];
+
+        const loop = [
+          t.loopInstruction(undefined, undefined, loopCode),
+        ];
+
+        const stackFrame = createStackFrame(loop, []);
+        stackFrame.trace = (depth, pc) => {
+
+          if (depth === 0) {
+            assert.equal(pc, 0);
+          }
+
+          if (depth === 1) {
+            assert.isAtLeast(pc, 0);
+            assert.isBelow(pc, 2);
+          }
+
+          if (maxDepth < depth) {
+            maxDepth = depth;
+          }
+        };
+
+        executeStackFrame(stackFrame);
+
+        assert.equal(maxDepth, 1);
       });
     });
 
@@ -42,7 +76,31 @@ describe('kernel exec', () => {
         ];
 
         const stackFrame = createStackFrame(code, []);
-        stackFrame.trace = (x) => (pc = x);
+        stackFrame.trace = (_, x) => (pc = x);
+
+        executeStackFrame(stackFrame);
+
+        assert.notEqual(code.length, pc + 1);
+        assert.equal(pc, 1);
+      });
+
+      it('should stop executing the stackframe at trap in child and propagate up the stack', () => {
+        let pc;
+
+        const code = [
+          t.instruction('nop'),
+          t.instruction('nop'),
+
+          t.loopInstruction(undefined, undefined, [
+            t.instruction('trap'),
+          ]),
+
+          t.instruction('nop'),
+          t.instruction('nop'),
+        ];
+
+        const stackFrame = createStackFrame(code, []);
+        stackFrame.trace = (_, x) => (pc = x);
 
         executeStackFrame(stackFrame);
 
