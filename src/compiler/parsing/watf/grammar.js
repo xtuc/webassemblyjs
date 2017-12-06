@@ -113,6 +113,7 @@ function parse(tokensList: Array<Object>): Program {
      * Parses a line into a instruction
      */
     function parseInstructionLine(line: number, acc: Array<any>) {
+      const args = [];
 
       /**
        * A simple instruction
@@ -145,11 +146,27 @@ function parse(tokensList: Array<Object>): Program {
          * Currently only one argument is allowed
          */
         if (token.type === tokens.identifier || token.type === tokens.number) {
-          acc.push(t.instruction(name, [token.value]));
+          args.push(token.value);
 
           eatToken();
-          return;
         }
+
+        /**
+         * Argument is a new instruction
+         *
+         * Currently only one allowed
+         */
+        if (token.type === tokens.openParen) {
+          eatToken(); // open paren
+
+          parseInstructionLine(token.loc.line, args);
+
+          eatToken(); // close paren
+        }
+
+        acc.push(t.instruction(name, args));
+
+        return;
       } else
 
       /**
