@@ -114,6 +114,9 @@ function parse(tokensList: Array<Object>): Program {
      */
     function parseInstructionLine(line: number, acc: Array<any>) {
 
+      /**
+       * A simple instruction
+       */
       if (token.type === tokens.name || token.type === tokens.valtype) {
         let name = token.value;
 
@@ -147,6 +150,19 @@ function parse(tokensList: Array<Object>): Program {
           eatToken();
           return;
         }
+      } else
+
+      /**
+       * Else a instruction with a keyword (loop or block)
+       */
+      if (isKeyword(token, keywords.loop)) {
+        eatToken(); // keyword
+
+        acc.push(
+          parseLoop()
+        );
+
+        return
       } else {
         throw new Error('Unexpected instruction in function body: ' + token.type);
       }
@@ -166,8 +182,15 @@ function parse(tokensList: Array<Object>): Program {
         eatToken();
       }
 
-      function parseSignature() {
-        eatToken();
+      function parseMaybeInstruction() {
+        if (token.type === tokens.closeParen) {
+          return;
+        }
+
+        return parseInstructionLine(token.loc.line, fnBody);
+      }
+
+      function parseMaybeSignature() {
 
         /**
          * Function params
@@ -217,6 +240,7 @@ function parse(tokensList: Array<Object>): Program {
             throw new Error('Function result has no valtype');
           }
         }
+
       }
 
       /**
@@ -224,13 +248,15 @@ function parse(tokensList: Array<Object>): Program {
        *
        * Params and return type
        */
-
       while (
         (token.type === tokens.openParen)
       ) {
-        parseSignature();
+        eatToken(); // open paren
 
-        eatToken(); // close paren
+        parseMaybeSignature();
+        parseMaybeInstruction();
+
+        eatToken(); // close parens
       }
 
       /**
