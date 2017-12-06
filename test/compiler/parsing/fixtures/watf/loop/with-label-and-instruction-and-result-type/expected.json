@@ -13,7 +13,8 @@
           "instr": [
             {
               "type": "Instr",
-              "id": "nop"
+              "id": "nop",
+              "args": []
             }
           ]
         }

@@ -32,7 +32,8 @@
         },
         {
           "type": "Instr",
-          "id": "i32.add"
+          "id": "i32.add",
+          "args": []
         }
       ]
     }

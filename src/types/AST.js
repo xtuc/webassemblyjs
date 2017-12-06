@@ -60,7 +60,7 @@ interface Func {
 interface Instruction {
   type: 'Instr';
   id: string;
-  args: ?Array<Number | string>;
+  args: Array<Number | string>;
 }
 
 

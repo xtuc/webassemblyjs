@@ -2,7 +2,7 @@
 
 export function createStackFrame(
   code: Array<Instruction>,
-  locals: Array<StackLocals>,
+  locals: Array<StackLocal>,
 ): StackFrame {
 
   return {

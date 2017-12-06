@@ -54,23 +54,12 @@ export function func(
   };
 }
 
-export function instruction(id: string, args: ?Array<Number | string>): Instruction {
-
-  if (args && args.length > 0) {
-
-    return {
-      type: 'Instr',
-      id,
-      args,
-    };
-  } else {
-
-    return {
-      type: 'Instr',
-      id,
-      args: undefined,
-    };
-  }
+export function instruction(id: string, args: Array<Number | string> = []): Instruction {
+  return {
+    type: 'Instr',
+    id,
+    args,
+  };
 }
 
 export function loopInstruction(
