@@ -8,7 +8,7 @@ const path = require('path');
 
 const {_debug} = require('../../../lib');
 
-const testSuites = glob.sync('test/compiler/parsing/fixtures/**/actual.watf');
+const testSuites = glob.sync('test/compiler/parsing/fixtures/**/actual.wast');
 
 describe('compiler', () => {
 

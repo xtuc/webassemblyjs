@@ -9,7 +9,7 @@ const vm = require('vm');
 
 const WebAssembly = require('../../lib');
 
-const testSuites = glob.sync('test/interpreter/fixtures/**/module.watf');
+const testSuites = glob.sync('test/interpreter/fixtures/**/module.wast');
 
 describe('interpreter', () => {
 
