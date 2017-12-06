@@ -55,6 +55,8 @@ export function func(
 }
 
 export function instruction(id: string, args: Array<Number | string> = []): Instruction {
+  assert(typeof args === 'object' && typeof args.length !== 'undefined');
+
   return {
     type: 'Instr',
     id,

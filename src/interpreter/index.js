@@ -63,7 +63,11 @@ export function evaluateAst(ast: Node): UserlandModuleInstance {
 
           // stackFrame.trace = (pc, i) => console.log('trace exec', pc, i);
 
-          return executeStackFrame(stackFrame);
+          const res = executeStackFrame(stackFrame);
+
+          if (typeof res !== 'undefined') {
+            return res.value;
+          }
         };
 
       });

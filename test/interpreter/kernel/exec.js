@@ -109,6 +109,51 @@ describe('kernel exec', () => {
       });
     });
 
+    describe('memory', () => {
+
+      const operations = [
+
+        {
+          name: 'i32.const',
+
+          args: [],
+
+          code: [
+            t.instruction('i32.const', [10]),
+          ],
+
+          resEqual: 10,
+        },
+
+        {
+          name: 'set_local',
+
+          args: [],
+
+          code: [
+            t.instruction('set_local', [0,
+              t.instruction('i32.const', [10])
+            ]),
+            t.instruction('get_local', [0]),
+          ],
+
+          resEqual: 10,
+        },
+
+      ];
+
+      operations.forEach((op) => {
+
+        it(op.name + ' should result in a correct state', () => {
+          const stackFrame = createStackFrame(op.code, op.args);
+          const res = executeStackFrame(stackFrame).value;
+
+          assert.equal(res, op.resEqual);
+        });
+
+      });
+    });
+
     describe('binop', () => {
 
       const operations = [
@@ -171,7 +216,7 @@ describe('kernel exec', () => {
           it('should get the correct result', () => {
 
             const stackFrame = createStackFrame(op.code, op.args);
-            const res = executeStackFrame(stackFrame);
+            const res = executeStackFrame(stackFrame).value;
 
             assert.equal(res, op.resEqual);
           });

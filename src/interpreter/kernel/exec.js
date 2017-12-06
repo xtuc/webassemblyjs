@@ -3,6 +3,7 @@
 const TRAPPED = 'TRAPPED';
 
 const {binop} = require('./instruction/binop');
+const i32 = require('../runtime/values/i32');
 const {createStackFrame} = require('./stackframe');
 
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
@@ -16,6 +17,10 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     }
 
     frame.values.push(local);
+  }
+
+  function setLocal(index: number, value: StackLocal) {
+    frame.locals[index] = value;
   }
 
   function pushResult(res: StackLocal) {
@@ -37,6 +42,22 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     const instruction = frame.code[pc];
 
     switch (instruction.id) {
+
+    case 'i32.const': {
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-const
+
+      const n = instruction.args[0];
+
+      if (typeof n === 'undefined') {
+        throw new Error('i32.const requires one argument, none given.');
+      }
+
+      pushResult(
+        i32.createValue(n)
+      );
+
+      break;
+    }
 
     /**
      * Control Instructions
@@ -84,7 +105,36 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
      * https://webassembly.github.io/spec/exec/instructions.html#memory-instructions
      */
     case 'get_local': {
-      getLocal(instruction.args[0]);
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-get-local
+      const index = instruction.args[0];
+
+      if (typeof index === 'undefined') {
+        throw new Error('get_local requires one argument, none given.');
+      }
+
+      getLocal(index);
+
+      break;
+    }
+
+    case 'set_local': {
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-set-local
+      const index = instruction.args[0];
+      const init = instruction.args[1];
+
+      if (init.type === 'Instr') {
+        const childStackFrame = createStackFrame([init], frame.locals);
+        childStackFrame.trace = frame.trace;
+
+        const res = executeStackFrame(childStackFrame, depth + 1);
+
+        if (res === TRAPPED) {
+          return;
+        }
+
+        setLocal(index, res);
+      }
+
       break;
     }
 
@@ -137,7 +187,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
   // Return the item on top of the values/stack;
   if (frame.values.length > 0) {
-    return frame.values.pop().value;
+    return frame.values.pop();
   }
 }
 
