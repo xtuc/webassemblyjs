@@ -117,6 +117,55 @@ describe('kernel exec', () => {
           assert.equal(res.value, 10);
         });
       });
+
+      describe('if', () => {
+
+        it('should NOT execute consequent when test is zero', () => {
+          const code = [
+            t.ifInstruction([
+              t.instruction('i32.const', [0]),
+            ], [
+              t.instruction('i32.const', [10])
+            ], []),
+          ];
+
+          const stackFrame = createStackFrame(code, []);
+          const res = executeStackFrame(stackFrame);
+
+          assert.typeOf(res, 'undefined');
+        });
+
+        it('should NOT execute consequent but alternate when test is zero', () => {
+          const code = [
+            t.ifInstruction([
+              t.instruction('i32.const', [0]),
+            ], null, [
+              t.instruction('i32.const', [10]),
+            ]),
+          ];
+
+          const stackFrame = createStackFrame(code, []);
+          const res = executeStackFrame(stackFrame);
+
+          assert.typeOf(res, 'undefined');
+        });
+
+        it('should execute consequent when test is non-zero', () => {
+          const code = [
+            t.ifInstruction([
+              t.instruction('i32.const', [1]),
+            ], null, [
+              t.instruction('i32.const', [10]),
+            ]),
+          ];
+
+          const stackFrame = createStackFrame(code, []);
+          const res = executeStackFrame(stackFrame);
+
+          assert.equal(res.value, 10);
+        });
+
+      });
     });
 
     describe('administrative', () => {

@@ -175,6 +175,61 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    case 'if': {
+
+      /**
+       * Execute test
+       */
+      const childStackFrame = createStackFrame(instruction.test, frame.locals);
+      childStackFrame.trace = frame.trace;
+
+      const res = executeStackFrame(childStackFrame, depth + 1);
+
+      if (res === TRAPPED) {
+        return;
+      }
+
+      if (!isZero(res)) {
+
+        /**
+         * Execute consequent
+         */
+        const childStackFrame = createStackFrame(instruction.consequent, frame.locals);
+        childStackFrame.trace = frame.trace;
+
+        const res = executeStackFrame(childStackFrame, depth + 1);
+
+        if (res === TRAPPED) {
+          return;
+        }
+
+        if (typeof res !== 'undefined') {
+          pushResult(res);
+        }
+
+      } else if (typeof instruction.alternate !== 'undefined' && instruction.alternate.length > 0) {
+
+        /**
+         * Execute alternate
+         */
+        const childStackFrame = createStackFrame(instruction.alternate, frame.locals);
+        childStackFrame.trace = frame.trace;
+
+        const res = executeStackFrame(childStackFrame, depth + 1);
+
+        if (res === TRAPPED) {
+          return;
+        }
+
+        if (typeof res !== 'undefined') {
+          pushResult(res);
+        }
+
+      }
+
+      break;
+    }
+
     /**
      * Administrative Instructions
      *
@@ -282,4 +337,18 @@ function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {
   if (stack.length < numberOfItem) {
     throw new Error('Assertion error: expected ' + numberOfItem + ' on the stack');
   }
+}
+
+function valueEq(l: StackLocal, r: StackLocal): boolean {
+  return l.value == r.value && l.type == r.type;
+}
+
+function isZero(v: StackLocal): boolean {
+  if (typeof v === 'undefined') {
+    return false;
+  }
+
+  const zero = i32.createValue(0);
+
+  return valueEq(v, zero);
 }
