@@ -6,7 +6,7 @@ const {NO_DIFF_MESSAGE} = require('jest-diff/build/constants');
 const {writeFileSync, readFileSync} = require('fs');
 const path = require('path');
 
-const {parse} = require('../../../lib');
+const {_debug} = require('../../../lib');
 
 const testSuites = glob.sync('test/compiler/parsing/fixtures/**/actual.watf');
 
@@ -46,7 +46,7 @@ describe('compiler', () => {
 
       const code = readFileSync(suite, 'utf8');
 
-      parse(code, check);
+      _debug.parse(code, check);
     }));
   });
 });

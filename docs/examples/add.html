@@ -10,7 +10,7 @@
       }
     </style>
 
-    <script src="https://bundle.run/webassembly-interpreter@0.0.2"></script>
+    <script src="https://bundle.run/webassembly-interpreter@0.0.3"></script>
   </head>
   <body>
 
@@ -30,7 +30,7 @@
 
     <pre id="exec">
 var code = document.getElementById("input").innerText;
-var module = webassemblyInterpreter.default.instantiate(code);
+var module = webassemblyInterpreter.instantiate(code);
 
 var res = module.exports.add(1, 1);
 document.getElementById("res").innerHTML = JSON.stringify(res, null, 2);

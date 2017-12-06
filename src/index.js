@@ -11,7 +11,7 @@ const {initializeMemory} = require('./interpreter/kernel/memory');
  */
 initializeMemory(1024);
 
-export function parse(content: string, cb: (ast: Node) => void) {
+function parse(content: string, cb: (ast: Node) => void) {
   const ast = parseSource(content);
 
   cb(ast);
@@ -28,4 +28,8 @@ const WebAssembly = {
 
 };
 
-export default WebAssembly;
+module.exports = WebAssembly;
+
+module.exports._debug = {
+  parse,
+};

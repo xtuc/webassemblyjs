@@ -3,12 +3,11 @@
 const glob = require('glob');
 const chai = require('chai');
 const diff = require('jest-diff');
-const {NO_DIFF_MESSAGE} = require('jest-diff/build/constants');
-const {writeFileSync, readFileSync} = require('fs');
+const {readFileSync} = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const WebAssembly = require('../../lib').default;
+const WebAssembly = require('../../lib');
 
 const testSuites = glob.sync('test/interpreter/fixtures/**/module.watf');
 
