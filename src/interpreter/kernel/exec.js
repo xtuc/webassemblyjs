@@ -109,7 +109,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const res = executeStackFrame(childStackFrame, depth + 1);
 
         if (res === TRAPPED) {
-          return;
+          return TRAPPED;
         }
       }
 
@@ -145,7 +145,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const res = executeStackFrame(childStackFrame, depth + 1);
 
         if (res === TRAPPED) {
-          return;
+          return TRAPPED;
         }
 
         if (typeof res !== 'undefined') {
@@ -186,7 +186,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const res = executeStackFrame(childStackFrame, depth + 1);
 
       if (res === TRAPPED) {
-        return;
+        return TRAPPED;
       }
 
       if (!isZero(res)) {
@@ -200,7 +200,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const res = executeStackFrame(childStackFrame, depth + 1);
 
         if (res === TRAPPED) {
-          return;
+          return TRAPPED;
         }
 
         if (typeof res !== 'undefined') {
@@ -218,7 +218,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const res = executeStackFrame(childStackFrame, depth + 1);
 
         if (res === TRAPPED) {
-          return;
+          return TRAPPED;
         }
 
         if (typeof res !== 'undefined') {
@@ -271,7 +271,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const res = executeStackFrame(childStackFrame, depth + 1);
 
         if (res === TRAPPED) {
-          return;
+          return TRAPPED;
         }
 
         setLocal(index, res);
