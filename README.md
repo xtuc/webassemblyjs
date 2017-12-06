@@ -4,6 +4,10 @@
 
 This is meant to be a polyfill entirely written in JavaScript and with no dependencies at runtime.
 
+## Examples
+
+- [add](https://xtuc.github.io/js-webassembly-interpreter/examples/add.html)
+
 ## Components
 
 ### Compiler
