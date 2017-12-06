@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Add</title>
+
+    <style>
+      pre {
+        border: 1px solid lightgray;
+      }
+    </style>
+
+    <script src="https://bundle.run/webassembly-interpreter@0.0.2"></script>
+  </head>
+  <body>
+
+    Input:
+
+    <pre id="input">
+(module
+ (func $add (param i32) (param i32) (result i32)
+  get_local 0
+  get_local 1
+  i32.add)
+ (export "add" (func $add))
+)
+    </pre>
+
+    JS:
+
+    <pre id="exec">
+var code = document.getElementById("input").innerText;
+var module = webassemblyInterpreter.default.instantiate(code);
+
+var res = module.exports.add(1, 1);
+document.getElementById("res").innerHTML = JSON.stringify(res, null, 2);
+    </pre>
+
+    Result:
+
+    <pre id="res"></pre>
+
+    <script>
+      eval(document.getElementById("exec").innerText);
+    </script>
+  </body>
+</html>
