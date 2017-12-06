@@ -62,6 +62,73 @@ function parse(tokensList: Array<Object>): Program {
       return t.blockInstruction(label, instr);
     }
 
+    function parseIf() {
+      const consequent = [];
+      const alternate = [];
+
+      let result;
+
+      /**
+       * Test instruction
+       */
+      if (token.type !== tokens.openParen) {
+        throw new Error('Invalid if construction: missing test or signature');
+      }
+
+      eatToken(); // Opening paren
+
+      const acc = [];
+
+      /**
+       * Parse result type if provided
+       */
+      if (isKeyword(token, keywords.result)) {
+        eatToken();
+
+        result = token.value;
+
+        eatToken(); // Valtype
+        eatToken(); // Closing paren
+
+        eatToken(); // Opening paren
+      }
+
+      parseInstructionLine(token.loc.line, acc);
+
+      const test = acc.pop();
+
+      eatToken(); // Closing paren
+
+      eatToken(); // Opening paren
+
+      /**
+       * then
+       */
+      if (!isKeyword(token, keywords.then)) {
+        throw new Error('Invalid if construction: missing then');
+      }
+
+      eatToken(); // then keyword
+
+      parseListOfInstructions(consequent);
+
+      /**
+       * parse else if found
+       */
+
+      if (token.type === tokens.openParen) {
+        eatToken();
+
+        if (isKeyword(token, keywords.else)) {
+          eatToken();
+
+          parseListOfInstructions(alternate);
+        }
+      }
+
+      return t.ifInstruction(test, result, consequent, alternate);
+    }
+
     function parseLoop() {
       let label;
       let result;
@@ -229,6 +296,16 @@ function parse(tokensList: Array<Object>): Program {
 
         acc.push(
           parseBlock()
+        );
+
+        return;
+
+      } else if (isKeyword(token, keywords.if)) {
+
+        eatToken(); // Keyword
+
+        acc.push(
+          parseIf()
         );
 
         return;

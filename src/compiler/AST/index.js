@@ -94,6 +94,23 @@ export function blockInstruction(
   };
 }
 
+export function ifInstruction(
+  test: Instruction,
+  result: ?Valtype,
+  consequent: Array<Instruction>,
+  alternate: Array<Instruction>,
+): IfInstruction {
+
+  return {
+    type: 'IfInstruction',
+    id: 'if',
+    test,
+    result,
+    consequent,
+    alternate,
+  };
+}
+
 export function withLoc(n: Node, end: Position, start: Position): Node {
   const loc = {
     start,
