@@ -1,4 +1,27 @@
 {
+  "name": "webassembly-interpreter",
+  "version": "0.0.1",
+  "keywords": [
+    "webassembly",
+    "interpreter",
+    "javascript",
+    "ast",
+    "compiler",
+    "parser",
+    "polyfill"
+  ],
+  "description": "WebAssembly interpreter",
+  "main": "lib/index.js",
+  "license": "GNU GPLv2",
+  "scripts": {
+    "test": "make test",
+    "build": "make build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/js-webassembly-interpreter.git"
+  },
+  "author": "Sven Sauleau",
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.34",
     "@babel/core": "^7.0.0-beta.34",
