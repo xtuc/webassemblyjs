@@ -5,6 +5,8 @@ const {assert} = require('chai');
 const t = require('../../../lib/compiler/AST');
 const modulevalue = require('../../../lib/interpreter/runtime/values/module');
 const funcvalue = require('../../../lib/interpreter/runtime/values/func');
+const i32 = require('../../../lib/interpreter/runtime/values/i32');
+const label = require('../../../lib/interpreter/runtime/values/label');
 
 describe('module create interface', () => {
 
@@ -73,5 +75,27 @@ describe('module create interface', () => {
       assert.deepEqual(instance.type[0], ['i32', 'i32']);
       assert.deepEqual(instance.type[1], ['i32']);
     });
+  });
+
+  it('i32 createValue should return the correct value', () => {
+    const v = i32.createValue(1);
+
+    assert.typeOf(v, 'object');
+    assert.typeOf(v.type, 'string');
+    assert.typeOf(v.value, 'number');
+
+    assert.equal(v.value, 1);
+    assert.equal(v.type, 'i32');
+  });
+
+  it('label createValue should return the correct value', () => {
+    const v = label.createValue('name');
+
+    assert.typeOf(v, 'object');
+    assert.typeOf(v.type, 'string');
+    assert.typeOf(v.value, 'string');
+
+    assert.equal(v.value, 'name');
+    assert.equal(v.type, 'label');
   });
 });

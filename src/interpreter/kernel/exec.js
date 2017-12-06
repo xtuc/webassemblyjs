@@ -4,6 +4,7 @@ const TRAPPED = 'TRAPPED';
 
 const {binop} = require('./instruction/binop');
 const i32 = require('../runtime/values/i32');
+const label = require('../runtime/values/label');
 const {createStackFrame} = require('./stackframe');
 
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
@@ -25,6 +26,21 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
   function pushResult(res: StackLocal) {
     frame.values.push(res);
+  }
+
+  function pop1(type: string): any {
+    assertNItemsOnStack(frame.values, 1);
+
+    const v = frame.values.pop();
+
+    if (v.type !== type) {
+      throw new Error(
+        'Internal failure: expected value of type ' + type
+        + ' on top of the stack, give type: ' + v.type
+      );
+    }
+
+    return v;
   }
 
   // FIXME(sven): assert that the values are of the same type
@@ -84,6 +100,65 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           return;
         }
       }
+
+      break;
+    }
+
+    case 'block': {
+      const block = instruction;
+
+      /**
+       * Used to keep track of the number of values added on top of the stack
+       * because we need to remove the label after the execution of this block.
+       */
+      let numberOfValuesAddedOnTopOfTheStack = 0;
+
+      /**
+       * When entering block push the label onto the stack
+       */
+      if (typeof block.label === 'string') {
+
+        pushResult(
+          label.createValue(block.label)
+        );
+
+        // TODO(sven): Should the label + code be stored in the frame.labels as
+        // well? Otherwise how can you jump to the same block again for example?
+      }
+
+      if (block.instr.length > 0) {
+        const childStackFrame = createStackFrame(block.instr, frame.locals);
+        childStackFrame.trace = frame.trace;
+
+        const res = executeStackFrame(childStackFrame, depth + 1);
+
+        if (res === TRAPPED) {
+          return;
+        }
+
+        if (typeof res !== 'undefined') {
+          pushResult(res);
+          numberOfValuesAddedOnTopOfTheStack++;
+        }
+      }
+
+      /**
+       * Wen exiting the block
+       *
+       * > Let m be the number of values on the top of the stack
+       *
+       * The Stack (values) are seperated by StackFrames and we are running on
+       * one single thread, there's no need to check if values were added.
+       *
+       * We tracked it in numberOfValuesAddedOnTopOfTheStack anyway.
+       */
+      const topOfTheStack = frame.values.slice(frame.values.length - numberOfValuesAddedOnTopOfTheStack);
+
+      frame.values.splice(frame.values.length - numberOfValuesAddedOnTopOfTheStack);
+
+      pop1('label');
+
+      frame.values = [...frame.values, ...topOfTheStack];
 
       break;
     }

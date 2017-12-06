@@ -60,6 +60,63 @@ describe('kernel exec', () => {
 
         assert.equal(maxDepth, 1);
       });
+
+      describe('block', () => {
+
+        it('should enter and execute an empty block', () => {
+          const code = [
+            t.blockInstruction('label', []),
+          ];
+
+          const stackFrame = createStackFrame(code, []);
+          executeStackFrame(stackFrame);
+        });
+
+        it('should enter a block and execute instructions', () => {
+          let maxDepth = 0;
+          let instructionExecuted = 0;
+
+          const code = [
+            t.blockInstruction('label', [
+              t.instruction('nop'),
+              t.instruction('nop'),
+              t.instruction('nop'),
+            ]),
+          ];
+
+          const stackFrame = createStackFrame(code, []);
+
+          stackFrame.trace = (depth, pc) => {
+            instructionExecuted++;
+
+            if (depth === 0) {
+              assert.equal(pc, 0);
+            }
+
+            if (maxDepth < depth) {
+              maxDepth = depth;
+            }
+          };
+
+          executeStackFrame(stackFrame);
+
+          assert.equal(maxDepth, 1);
+          assert.equal(instructionExecuted, 4);
+        });
+
+        it('should remove the label when existing the block', () => {
+          const code = [
+            t.blockInstruction('label', [
+              t.instruction('i32.const', [10]),
+            ]),
+          ];
+
+          const stackFrame = createStackFrame(code, []);
+          const res = executeStackFrame(stackFrame);
+
+          assert.equal(res.value, 10);
+        });
+      });
     });
 
     describe('administrative', () => {
