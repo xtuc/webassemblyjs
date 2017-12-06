@@ -1,0 +1,70 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "id": "temp_0",
+          "params": [],
+          "result": "i32",
+          "body": [
+            {
+              "type": "Instr",
+              "id": "call",
+              "args": [
+                "const-i32"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ModuleExport",
+          "name": "type-i32",
+          "descr": {
+            "type": "Func",
+            "id": "temp_0"
+          }
+        },
+        {
+          "type": "Func",
+          "id": "temp_0",
+          "params": [],
+          "result": null,
+          "body": []
+        },
+        {
+          "type": "ModuleExport",
+          "name": "an",
+          "descr": {
+            "type": "Func",
+            "id": "temp_0"
+          }
+        },
+        {
+          "type": "Func",
+          "id": "temp_0",
+          "params": [],
+          "result": null,
+          "body": [
+            {
+              "type": "Instr",
+              "id": "nop",
+              "args": []
+            }
+          ]
+        },
+        {
+          "type": "ModuleExport",
+          "name": "an",
+          "descr": {
+            "type": "Func",
+            "id": "temp_0"
+          }
+        }
+      ]
+    }
+  ]
+}

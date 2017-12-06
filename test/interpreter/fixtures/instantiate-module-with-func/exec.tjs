@@ -2,6 +2,10 @@ const m = WebAssembly.instantiate(watfmodule);
 
 assert.typeOf(m, 'object')
 assert.typeOf(m.exports, 'object')
+
 assert.typeOf(m.exports.add, 'function')
+assert.typeOf(m.exports.an, 'function')
+
+m.exports.an();
 
 ok();

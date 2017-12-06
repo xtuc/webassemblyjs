@@ -4,6 +4,15 @@ const LETTERS = /[a-z0-9_]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ['i32', 'i64', 'f32', 'f64'];
 
+/**
+ * FIXME(sven): this is not spec compliant
+ * A name string must form a valid UTF-8 encoding as defined by Unicode
+ * (Section 2.5) (http://www.unicode.org/versions/Unicode10.0.0/)
+ *
+ * https://webassembly.github.io/spec/text/values.html#names
+ */
+const name = /[a-z0-9_-]/i;
+
 function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
 }
@@ -131,7 +140,7 @@ function tokenize(input: string) {
 
       char = input[++current];
 
-      while (LETTERS.test(char)) {
+      while (name.test(char)) {
         value += char;
         char = input[++current];
       }

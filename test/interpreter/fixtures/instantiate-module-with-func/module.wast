@@ -1,4 +1,5 @@
 (module
- (func $add)
- (export "add" (func $add))
+  (func (export "an"))
+  (func $add)
+  (export "add" (func $add))
 )

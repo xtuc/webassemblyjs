@@ -3,12 +3,22 @@
 const {tokens, keywords} = require('./tokenizer');
 const t = require('../../AST');
 
+let inc = 0;
+
+function getUniqueName(prefix: string = 'temp'): string {
+  return prefix + '_' + inc;
+}
+
 function isKeyword(token: Object, id: string): boolean {
   return token.type === tokens.keyword && token.value === id;
 }
 
 function parse(tokensList: Array<Object>): Program {
   let current = 0;
+
+  const state = {
+    registredExportedFuncs: [],
+  };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
   // define a `walk` function.
@@ -211,6 +221,18 @@ function parse(tokensList: Array<Object>): Program {
         (token.type !== tokens.closeParen)
       ) {
         moduleFields.push(walk());
+
+        if (state.registredExportedFuncs.length > 0) {
+
+          state.registredExportedFuncs.forEach((decl) => {
+            moduleFields.push(
+              t.moduleExport(decl.name, 'Func', decl.id)
+            );
+          });
+
+          state.registredExportedFuncs = [];
+        }
+
         token = tokensList[current];
       }
 
@@ -366,6 +388,36 @@ function parse(tokensList: Array<Object>): Program {
             valtype,
           });
         } else
+
+        /**
+         * Else an export
+         */
+        if (isKeyword(token, keywords.export)) {
+          eatToken();
+
+          if (token.type !== tokens.string) {
+            throw new Error('Function export expected a string, ' + token.type + ' given');
+          }
+
+          const name = token.value;
+
+          /**
+           * Func export shorthand, we trait it as a syntaxic sugar.
+           * A export ModuleField will be added later.
+           *
+           * We give the anonymous function a generated name and export it.
+           */
+          const id = getUniqueName();
+
+          fnName = id;
+
+          state.registredExportedFuncs.push({
+            name,
+            id,
+          });
+
+          eatToken(); // Closing paren
+        }
 
         /**
          * Else the result result
