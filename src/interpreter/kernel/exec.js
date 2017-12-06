@@ -28,7 +28,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     frame.values.push(res);
   }
 
-  function pop1(type: string): any {
+  function pop1(type: Valtype): any {
     assertNItemsOnStack(frame.values, 1);
 
     const v = frame.values.pop();
@@ -43,13 +43,25 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     return v;
   }
 
-  // FIXME(sven): assert that the values are of the same type
-  // > Assert: due to validation, two values of value type t are on the top of the stack
-  function pop2(): [any, any] {
+  function pop2(type1: Valtype, type2: Valtype): [any, any] {
     assertNItemsOnStack(frame.values, 2);
 
     const c2 = frame.values.pop();
     const c1 = frame.values.pop();
+
+    if (c2.type !== type2) {
+      throw new Error(
+        'Internal failure: expected c2 value of type ' + type2
+        + ' on top of the stack, give type: ' + c2.type
+      );
+    }
+
+    if (c1.type !== type2) {
+      throw new Error(
+        'Internal failure: expected c1 value of type ' + type2
+        + ' on top of the stack, give type: ' + c1.type
+      );
+    }
 
     return [c1, c2];
   }
@@ -219,7 +231,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
      * https://webassembly.github.io/spec/exec/instructions.html#numeric-instructions
      */
     case 'i32.add': {
-      const [c1, c2] = pop2();
+      const [c1, c2] = pop2('i32', 'i32');
 
       pushResult(
         binop(c2, c1, '+')
@@ -229,7 +241,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     }
 
     case 'i32.sub': {
-      const [c1, c2] = pop2();
+      const [c1, c2] = pop2('i32', 'i32');
 
       pushResult(
         binop(c2, c1, '-')
@@ -239,7 +251,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     }
 
     case 'i32.mul': {
-      const [c1, c2] = pop2();
+      const [c1, c2] = pop2('i32', 'i32');
 
       pushResult(
         binop(c2, c1, '*')
