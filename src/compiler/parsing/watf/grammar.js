@@ -322,6 +322,25 @@ function parse(tokensList: Array<Object>): Program {
 
         return;
 
+      } else if (isKeyword(token, keywords.call)) {
+        eatToken(); // keyword
+
+        let index;
+
+        if (token.type === tokens.identifier) {
+          index = t.identifier(token.value);
+          eatToken();
+        } else if (token.type === tokens.number) {
+          index = t.numberLiteral(token.value);
+          eatToken();
+        }
+
+        acc.push(
+          t.callInstruction(index)
+        );
+
+        return;
+
       } else if (isKeyword(token, keywords.if)) {
 
         eatToken(); // Keyword

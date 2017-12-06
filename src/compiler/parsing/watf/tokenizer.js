@@ -55,6 +55,7 @@ const keywords = {
   if: 'if',
   then: 'then',
   else: 'else',
+  call: 'call',
 };
 
 const CloseParenToken = createToken(tokens.closeParen);

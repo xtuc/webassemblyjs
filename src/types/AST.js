@@ -2,6 +2,7 @@
 /* eslint-disable */
 type Valtype = 'i32' | 'i64' | 'f32' | 'f64' | 'label';
 type ExportDescr = 'func' | 'table' | 'memory' | 'global';
+type Index = NumberLiteral | Identifier;
 
 type NodePath = {
   node: Node;
@@ -20,6 +21,11 @@ interface SourceLocation {
 interface Node {
   type: string;
   loc?: SourceLocation;
+}
+
+interface NumberLiteral {
+  type: 'NumberLiteral';
+  value: number;
 }
 
 interface Identifier {
@@ -95,4 +101,11 @@ type IfInstruction = {
   result: ?Valtype;
   consequent: Array<Instruction>;
   alternate: Array<Instruction>;
+}
+
+type CallInstruction = {
+  ...Instruction;
+
+  type: 'CallInstruction';
+  index: Index;
 }

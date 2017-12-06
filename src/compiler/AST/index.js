@@ -94,6 +94,27 @@ export function blockInstruction(
   };
 }
 
+export function numberLiteral(
+  value: number,
+): NumberLiteral {
+
+  return {
+    type: 'NumberLiteral',
+    value,
+  };
+}
+
+export function callInstruction(
+  index: Index,
+): CallInstruction {
+
+  return {
+    type: 'CallInstruction',
+    id: 'call',
+    index,
+  };
+}
+
 export function ifInstruction(
   test: Instruction,
   result: ?Valtype,

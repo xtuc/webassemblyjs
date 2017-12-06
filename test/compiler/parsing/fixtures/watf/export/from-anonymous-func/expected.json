@@ -12,11 +12,12 @@
           "result": "i32",
           "body": [
             {
-              "type": "Instr",
+              "type": "CallInstruction",
               "id": "call",
-              "args": [
-                "const-i32"
-              ]
+              "index": {
+                "type": "Identifier",
+                "name": "const-i32"
+              }
             }
           ]
         },
