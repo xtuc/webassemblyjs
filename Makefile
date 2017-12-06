@@ -12,3 +12,6 @@ test: build
 
 lint:
 	$(FLOW) src/
+
+publish: build
+	npm publish

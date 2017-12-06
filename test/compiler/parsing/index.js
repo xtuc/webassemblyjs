@@ -15,8 +15,9 @@ describe('compiler', () => {
   testSuites.forEach((suite) => {
 
     it(suite, () => new Promise((resolve) => {
-      function check(code) {
+      function check(ast) {
         const expectedFile = path.join(path.dirname(suite), 'expected.json');
+        const code = JSON.stringify(ast, null, 2);
 
         let expected;
         try {
@@ -43,7 +44,9 @@ describe('compiler', () => {
         resolve();
       }
 
-      parse(suite, check);
+      const code = readFileSync(suite, 'utf8');
+
+      parse(code, check);
     }));
   });
 });

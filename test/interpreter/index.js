@@ -8,7 +8,7 @@ const {writeFileSync, readFileSync} = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const {WebAssembly} = require('../../lib');
+const WebAssembly = require('../../lib').default;
 
 const testSuites = glob.sync('test/interpreter/fixtures/**/module.watf');
 
