@@ -80,92 +80,129 @@ describe('module create interface', () => {
     });
   });
 
-  it('i32 createValue should return the correct value', () => {
-    const v = i32.createValue(1);
+  describe('integer 32bits', () => {
 
-    assert.typeOf(v, 'object');
-    assert.typeOf(v.type, 'string');
-    assert.typeOf(v.value, 'number');
+    it('createValue should return the correct value', () => {
+      const v = i32.createValue(1);
 
-    assert.equal(v.value, 1);
-    assert.equal(v.type, 'i32');
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
+
+      assert.equal(v.value, 1);
+      assert.equal(v.type, 'i32');
+    });
+
+    it('createValue should overflow and result to 1', () => {
+      const v = i32.createValue(Math.pow(2, 32) + 1);
+
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
+
+      assert.equal(v.value, 1);
+      assert.equal(v.type, 'i32');
+    });
+
+    it('createValue should return an int from a float', () => {
+      const v = i32.createValue(1.1);
+
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
+
+      assert.equal(v.value, 1);
+      assert.equal(v.type, 'i32');
+    });
+
   });
 
-  it('i32 createValue should return an int from a float', () => {
-    const v = i32.createValue(1.1);
+  describe('integer 64bits', () => {
 
-    assert.typeOf(v, 'object');
-    assert.typeOf(v.type, 'string');
-    assert.typeOf(v.value, 'number');
+    it('createValue should return the correct value', () => {
+      const v = i64.createValue(1);
 
-    assert.equal(v.value, 1);
-    assert.equal(v.type, 'i32');
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
+
+      assert.equal(v.value, 1);
+      assert.equal(v.type, 'i64');
+    });
+
+    it('createValue should return an int from a float', () => {
+      const v = i64.createValue(1.1);
+
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
+
+      assert.equal(v.value, 1);
+      assert.equal(v.type, 'i64');
+    });
+
+    it('createValue should overflow and result to 0', () => {
+      const v = i64.createValue(Math.pow(2, 64) + 1);
+
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
+
+      assert.equal(v.value, 0);
+      assert.equal(v.type, 'i64');
+    });
   });
 
-  it('i64 createValue should return the correct value', () => {
-    const v = i64.createValue(1);
+  describe('float 32bits', () => {
 
-    assert.typeOf(v, 'object');
-    assert.typeOf(v.type, 'string');
-    assert.typeOf(v.value, 'number');
+    it('createValue should return a float', () => {
+      const v = f32.createValue(1.0);
 
-    assert.equal(v.value, 1);
-    assert.equal(v.type, 'i64');
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
+
+      assert.equal(v.value, 1.0);
+      assert.equal(v.type, 'f32');
+    });
+
+    it('createValue should return a float from a int', () => {
+      const v = f32.createValue(1);
+
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
+
+      assert.equal(v.value, 1.0);
+      assert.equal(v.type, 'f32');
+    });
+
   });
 
-  it('i64 createValue should return an int from a float', () => {
-    const v = i64.createValue(1.1);
+  describe('float 64bits', () => {
 
-    assert.typeOf(v, 'object');
-    assert.typeOf(v.type, 'string');
-    assert.typeOf(v.value, 'number');
+    it('createValue should return a float', () => {
+      const v = f64.createValue(1.0);
 
-    assert.equal(v.value, 1);
-    assert.equal(v.type, 'i64');
-  });
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
 
-  it('f32 createValue should return a float', () => {
-    const v = f32.createValue(1.0);
+      assert.equal(v.value, 1.0);
+      assert.equal(v.type, 'f64');
+    });
 
-    assert.typeOf(v, 'object');
-    assert.typeOf(v.type, 'string');
-    assert.typeOf(v.value, 'number');
+    it('createValue should return a float from a int', () => {
+      const v = f64.createValue(1);
 
-    assert.equal(v.value, 1.0);
-    assert.equal(v.type, 'f32');
-  });
+      assert.typeOf(v, 'object');
+      assert.typeOf(v.type, 'string');
+      assert.typeOf(v.value, 'number');
 
-  it('f32 createValue should return a float from a int', () => {
-    const v = f32.createValue(1);
+      assert.equal(v.value, 1.0);
+      assert.equal(v.type, 'f64');
+    });
 
-    assert.typeOf(v, 'object');
-    assert.typeOf(v.type, 'string');
-    assert.typeOf(v.value, 'number');
-
-    assert.equal(v.value, 1.0);
-    assert.equal(v.type, 'f32');
-  });
-
-  it('f64 createValue should return a float', () => {
-    const v = f64.createValue(1.0);
-
-    assert.typeOf(v, 'object');
-    assert.typeOf(v.type, 'string');
-    assert.typeOf(v.value, 'number');
-
-    assert.equal(v.value, 1.0);
-    assert.equal(v.type, 'f64');
-  });
-
-  it('f64 createValue should return a float from a int', () => {
-    const v = f64.createValue(1);
-
-    assert.typeOf(v, 'object');
-    assert.typeOf(v.type, 'string');
-    assert.typeOf(v.value, 'number');
-
-    assert.equal(v.value, 1.0);
-    assert.equal(v.type, 'f64');
   });
 
   it('label createValue should return the correct value', () => {
