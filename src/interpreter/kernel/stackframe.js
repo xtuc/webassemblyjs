@@ -40,7 +40,14 @@ export function createChildStackFrame(
   parent: StackFrame,
   code: Array<Instruction>,
 ): StackFrame {
-  const {locals, originatingModule} = parent;
+  const {
+    locals,
+    originatingModule,
+    labels,
+  } = parent;
 
-  return createStackFrame(code, locals, originatingModule);
+  const frame = createStackFrame(code, locals, originatingModule);
+  frame.labels = labels;
+
+  return frame;
 }

@@ -41,8 +41,8 @@ export function moduleExport(name: string, type: ExportDescr, id: string): Modul
 
 export function func(
   id: ?string,
-  params: Array<Type>,
-  result: ?Type,
+  params: Array<FuncParam>,
+  result: ?Valtype,
   body: Array<Instruction>,
 ): Func {
   return {

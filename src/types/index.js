@@ -57,6 +57,7 @@ type StackFrame = {
 
   globals: Array<any>;
   locals: Array<StackLocal>;
+  labels: Object;
   code: Array<Instruction>;
 
   originatingModule: ModuleInstance;

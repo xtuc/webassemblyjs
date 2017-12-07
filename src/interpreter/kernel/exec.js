@@ -69,6 +69,29 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
 
+    switch (instruction.type) {
+
+    /**
+     * Function declaration
+     *
+     * FIXME(sven): seems unspecified in the spec but it's required for the `call`
+     * instruction.
+     */
+    case 'Func': {
+      const func = instruction;
+
+      /**
+       * Register the function into the stack frame labels
+       */
+      if (typeof func.id === 'string') {
+        frame.labels[func.id] = func;
+      }
+
+      break;
+    }
+
+    }
+
     switch (instruction.id) {
 
     case 'i32.const': {
@@ -116,6 +139,39 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    case 'call': {
+      // According to the spec call doesn't support an Identifier as argument
+      // but the Script syntax supports it.
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-call
+
+      const call = instruction;
+
+      if (call.index.type === 'Identifier') {
+        const element = frame.labels[call.index.name];
+
+        if (typeof element === 'undefined') {
+          throw new Error('Cannot call ' + call.index.name + ': label not found on the call stack');
+        }
+
+        if (element.type === 'Func') {
+
+          const childStackFrame = createChildStackFrame(frame, element.body);
+
+          const res = executeStackFrame(childStackFrame, depth + 1);
+
+          if (res === TRAPPED) {
+            return TRAPPED;
+          }
+
+          if (typeof res !== 'undefined') {
+            pushResult(res);
+          }
+        }
+      }
+
+      break;
+    }
+
     case 'block': {
       const block = instruction;
 
@@ -133,9 +189,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         pushResult(
           label.createValue(block.label)
         );
-
-        // TODO(sven): Should the label + code be stored in the frame.labels as
-        // well? Otherwise how can you jump to the same block again for example?
       }
 
       if (block.instr.length > 0) {
@@ -314,10 +367,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
       break;
     }
-
-    default:
-      // FIXME(sven): this is not spec compliant but great while developing
-      throw new Error('Unknown operation: ' + instruction.type + ' (' + instruction.id + ')');
     }
 
     if (typeof frame.trace === 'function') {
