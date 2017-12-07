@@ -60,6 +60,7 @@ export function objectInstruction(
   args: Array<Number | string> = [],
 ): Instruction {
   assert(typeof args === 'object' && typeof args.length !== 'undefined');
+  assert(typeof object === 'string');
 
   return {
     type: 'Instr',

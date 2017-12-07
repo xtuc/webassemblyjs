@@ -1,6 +1,6 @@
 // @flow
 
-type Sign = '+' | '-' | '/' | '*';
+type Sign = '+' | '-' | '/' | '*' | '&' | '|' | '^' | '~';
 
 const i32 = require('../../runtime/values/i32');
 const i64 = require('../../runtime/values/i64');
@@ -32,6 +32,18 @@ function binop(
   // https://webassembly.github.io/spec/exec/numerics.html#op-idiv-s
   case '/':
     return createValue(c1.value / c2.value);
+
+  // https://webassembly.github.io/spec/exec/numerics.html#op-iand
+  case '&':
+    return createValue(c1.value & c2.value);
+
+  // https://webassembly.github.io/spec/exec/numerics.html#op-ior
+  case '|':
+    return createValue(c1.value | c2.value);
+
+  // https://webassembly.github.io/spec/exec/numerics.html#op-ixor
+  case '^':
+    return createValue(c1.value ^ c2.value);
   }
 
   throw new Error('Unsupported binop: ' + sign);

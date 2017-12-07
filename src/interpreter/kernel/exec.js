@@ -103,66 +103,54 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
     switch (instruction.id) {
 
-    case 'i64.const': {
+    case 'const': {
       // https://webassembly.github.io/spec/exec/instructions.html#exec-const
 
       const n = instruction.args[0];
 
       if (typeof n === 'undefined') {
-        throw new Error('i64.const requires one argument, none given.');
+        throw new Error('const requires one argument, none given.');
       }
 
-      pushResult(
-        i64.createValue(n)
-      );
+      switch (instruction.object) {
 
-      break;
-    }
+      case 'i32': {
+        pushResult(
+          i32.createValue(n)
+        );
 
-    case 'i32.const': {
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-const
-
-      const n = instruction.args[0];
-
-      if (typeof n === 'undefined') {
-        throw new Error('i32.const requires one argument, none given.');
+        break;
       }
 
-      pushResult(
-        i32.createValue(n)
-      );
+      case 'i64': {
+        pushResult(
+          i64.createValue(n)
+        );
 
-      break;
-    }
-
-    case 'f32.const': {
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-const
-
-      const n = instruction.args[0];
-
-      if (typeof n === 'undefined') {
-        throw new Error('f32.const requires one argument, none given.');
+        break;
       }
 
-      pushResult(
-        f32.createValue(n)
-      );
 
-      break;
-    }
+      case 'f32': {
+        pushResult(
+          f32.createValue(n)
+        );
 
-    case 'f64.const': {
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-const
-
-      const n = instruction.args[0];
-
-      if (typeof n === 'undefined') {
-        throw new Error('f64.const requires one argument, none given.');
+        break;
       }
 
-      pushResult(
-        f64.createValue(n)
-      );
+      case 'f64': {
+        pushResult(
+          f64.createValue(n)
+        );
+
+        break;
+      }
+
+      default:
+        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+
+      }
 
       break;
     }
@@ -411,7 +399,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         pushResult(
           res
-        )
+        );
       }
 
       break;
@@ -422,16 +410,158 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
      *
      * https://webassembly.github.io/spec/exec/instructions.html#numeric-instructions
      */
+    case 'add': {
 
-    /**
-     * Integer 32 bits
-     */
-    case 'i32.add': {
-      const [c1, c2] = pop2('i32', 'i32');
+      switch (instruction.object) {
 
-      pushResult(
-        binopi32(c2, c1, '+')
-      );
+      case 'i32': {
+        const [c1, c2] = pop2('i32', 'i32');
+
+        pushResult(
+          binopi32(c2, c1, '+')
+        );
+
+        break;
+      }
+
+      case 'i64': {
+        const [c1, c2] = pop2('i64', 'i64');
+
+        pushResult(
+          binopi64(c2, c1, '+')
+        );
+
+        break;
+      }
+
+      case 'f32': {
+        const [c1, c2] = pop2('f32', 'f32');
+
+        pushResult(
+          binopf32(c2, c1, '+')
+        );
+
+        break;
+      }
+
+      case 'f64': {
+        const [c1, c2] = pop2('f64', 'f64');
+
+        pushResult(
+          binopf64(c2, c1, '+')
+        );
+
+        break;
+      }
+
+      default:
+        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+
+      }
+
+      break;
+    }
+
+    case 'mul': {
+
+      switch (instruction.object) {
+
+      case 'i32': {
+        const [c1, c2] = pop2('i32', 'i32');
+
+        pushResult(
+          binopi32(c2, c1, '*')
+        );
+
+        break;
+      }
+
+      case 'i64': {
+        const [c1, c2] = pop2('i64', 'i64');
+
+        pushResult(
+          binopi64(c2, c1, '*')
+        );
+
+        break;
+      }
+
+      case 'f32': {
+        const [c1, c2] = pop2('f32', 'f32');
+
+        pushResult(
+          binopf32(c2, c1, '*')
+        );
+
+        break;
+      }
+
+      case 'f64': {
+        const [c1, c2] = pop2('f64', 'f64');
+
+        pushResult(
+          binopf64(c2, c1, '*')
+        );
+
+        break;
+      }
+
+      default:
+        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+
+      }
+
+      break;
+    }
+
+    case 'sub': {
+
+      switch (instruction.object) {
+
+      case 'i32': {
+        const [c1, c2] = pop2('i32', 'i32');
+
+        pushResult(
+          binopi32(c2, c1, '-')
+        );
+
+        break;
+      }
+
+      case 'i64': {
+        const [c1, c2] = pop2('i64', 'i64');
+
+        pushResult(
+          binopi64(c2, c1, '-')
+        );
+
+        break;
+      }
+
+      case 'f32': {
+        const [c1, c2] = pop2('f32', 'f32');
+
+        pushResult(
+          binopf32(c2, c1, '-')
+        );
+
+        break;
+      }
+
+      case 'f64': {
+        const [c1, c2] = pop2('f64', 'f64');
+
+        pushResult(
+          binopf64(c2, c1, '-')
+        );
+
+        break;
+      }
+
+      default:
+        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+
+      }
 
       break;
     }
@@ -440,167 +570,56 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
      * There is two seperated operation for both signed and unsigned integer,
      * but since the host environment will handle that, we don't have too :)
      */
-    case 'i32.div_u':
-    case 'i32.div_s': {
-      const [c1, c2] = pop2('i32', 'i32');
+    case 'div_s':
+    case 'div_u':
+    case 'div': {
 
-      pushResult(
-        binopi32(c2, c1, '/')
-      );
+      switch (instruction.object) {
 
-      break;
-    }
+      case 'i32': {
+        const [c1, c2] = pop2('i32', 'i32');
 
-    case 'i32.sub': {
-      const [c1, c2] = pop2('i32', 'i32');
+        pushResult(
+          binopi32(c2, c1, '/')
+        );
 
-      pushResult(
-        binopi32(c2, c1, '-')
-      );
+        break;
+      }
 
-      break;
-    }
+      case 'i64': {
+        const [c1, c2] = pop2('i64', 'i64');
 
-    case 'i32.mul': {
-      const [c1, c2] = pop2('i32', 'i32');
+        pushResult(
+          binopi64(c2, c1, '/')
+        );
 
-      pushResult(
-        binopi32(c2, c1, '*')
-      );
+        break;
+      }
 
-      break;
-    }
+      case 'f32': {
+        const [c1, c2] = pop2('f32', 'f32');
 
-    /**
-     * Integer 64 bits
-     */
-    case 'i64.add': {
-      const [c1, c2] = pop2('i64', 'i64');
+        pushResult(
+          binopf32(c2, c1, '/')
+        );
 
-      pushResult(
-        binopi64(c2, c1, '+')
-      );
+        break;
+      }
 
-      break;
-    }
+      case 'f64': {
+        const [c1, c2] = pop2('f64', 'f64');
 
-    /**
-     * There is two seperated operation for both signed and unsigned integer,
-     * but since the host environment will handle that, we don't have too :)
-     */
-    case 'i64.div_u':
-    case 'i64.div_s': {
-      const [c1, c2] = pop2('i64', 'i64');
+        pushResult(
+          binopf64(c2, c1, '/')
+        );
 
-      pushResult(
-        binopi64(c2, c1, '/')
-      );
+        break;
+      }
 
-      break;
-    }
+      default:
+        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
 
-    case 'i64.sub': {
-      const [c1, c2] = pop2('i64', 'i64');
-
-      pushResult(
-        binopi64(c2, c1, '-')
-      );
-
-      break;
-    }
-
-    case 'i64.mul': {
-      const [c1, c2] = pop2('i64', 'i64');
-
-      pushResult(
-        binopi64(c2, c1, '*')
-      );
-
-      break;
-    }
-
-    /**
-     * Float 32 bits
-     */
-    case 'f32.add': {
-      const [c1, c2] = pop2('f32', 'f32');
-
-      pushResult(
-        binopf32(c2, c1, '+')
-      );
-
-      break;
-    }
-
-    case 'f32.div': {
-      const [c1, c2] = pop2('f32', 'f32');
-
-      pushResult(
-        binopf32(c2, c1, '/')
-      );
-
-      break;
-    }
-
-    case 'f32.sub': {
-      const [c1, c2] = pop2('f32', 'f32');
-
-      pushResult(
-        binopf32(c2, c1, '-')
-      );
-
-      break;
-    }
-
-    case 'f32.mul': {
-      const [c1, c2] = pop2('f32', 'f32');
-
-      pushResult(
-        binopf32(c2, c1, '*')
-      );
-
-      break;
-    }
-
-    /**
-     * Float 64 bits
-     */
-    case 'f64.add': {
-      const [c1, c2] = pop2('f64', 'f64');
-
-      pushResult(
-        binopf64(c2, c1, '+')
-      );
-
-      break;
-    }
-
-    case 'f64.div': {
-      const [c1, c2] = pop2('f64', 'f64');
-
-      pushResult(
-        binopf64(c2, c1, '/')
-      );
-
-      break;
-    }
-
-    case 'f64.sub': {
-      const [c1, c2] = pop2('f64', 'f64');
-
-      pushResult(
-        binopf64(c2, c1, '-')
-      );
-
-      break;
-    }
-
-    case 'f64.mul': {
-      const [c1, c2] = pop2('f64', 'f64');
-
-      pushResult(
-        binopf64(c2, c1, '*')
-      );
+      }
 
       break;
     }
@@ -622,7 +641,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
 function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {
   if (stack.length < numberOfItem) {
-    throw new Error('Assertion error: expected ' + numberOfItem + ' on the stack');
+    throw new Error('Assertion error: expected ' + numberOfItem + ' on the stack, found ' + stack.length);
   }
 }
 
