@@ -73,6 +73,20 @@ describe('kernel exec - memory instructions', () => {
       resEqual: 10,
     },
 
+    {
+      name: 'tee_local',
+
+      args: [],
+
+      code: [
+        t.instruction('tee_local', [0,
+          t.instruction('i32.const', [2])
+        ]),
+      ],
+
+      resEqual: 2,
+    },
+
   ];
 
   operations.forEach((op) => {

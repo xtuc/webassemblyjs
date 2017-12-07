@@ -386,6 +386,31 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    case 'tee_local': {
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-tee-local
+      const index = instruction.args[0];
+      const init = instruction.args[1];
+
+      if (init.type === 'Instr') {
+        const childStackFrame = createChildStackFrame(frame, [init]);
+        childStackFrame.trace = frame.trace;
+
+        const res = executeStackFrame(childStackFrame, depth + 1);
+
+        if (res === TRAPPED) {
+          return TRAPPED;
+        }
+
+        setLocal(index, res);
+
+        pushResult(
+          res
+        )
+      }
+
+      break;
+    }
+
     /**
      * Numeric Instructions
      *
