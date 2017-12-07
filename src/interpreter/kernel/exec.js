@@ -426,6 +426,21 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    /**
+     * There is two seperated operation for both signed and unsigned integer,
+     * but since the host environment will handle that, we don't have too :)
+     */
+    case 'i32.div_u':
+    case 'i32.div_s': {
+      const [c1, c2] = pop2('i32', 'i32');
+
+      pushResult(
+        binop(c2, c1, '/')
+      );
+
+      break;
+    }
+
     case 'i32.sub': {
       const [c1, c2] = pop2('i32', 'i32');
 

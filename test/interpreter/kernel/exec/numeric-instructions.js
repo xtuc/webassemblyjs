@@ -60,6 +60,40 @@ describe('kernel exec - numeric instructions', () => {
       resEqual: 2,
     },
 
+    {
+      name: 'i32.div_s',
+
+      args: [
+        {value: 2, type: 'i32'},
+        {value: 10, type: 'i32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.instruction('i32.div_s'),
+      ],
+
+      resEqual: 5,
+    },
+
+    {
+      name: 'i32.div_u',
+
+      args: [
+        {value: 2, type: 'i32'},
+        {value: 10, type: 'i32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.instruction('i32.div_u'),
+      ],
+
+      resEqual: 5,
+    },
+
   ];
 
   operations.forEach((op) => {
