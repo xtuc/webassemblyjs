@@ -59,7 +59,7 @@ export function evaluateAst(ast: Node): UserlandModuleInstance {
             };
           });
 
-          const stackFrame = createStackFrame(funcinst.code, argsWithType);
+          const stackFrame = createStackFrame(funcinst.code, argsWithType, funcinst.originatingModule);
 
           // stackFrame.trace = (pc, i) => console.log('trace exec', pc, i);
 

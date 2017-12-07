@@ -28,7 +28,7 @@ function Token(type, value, line) {
 }
 
 function createToken(type: string) {
-  return (v: string, line: number) => Token(type, v, line);
+  return (v: string | number, line: number) => Token(type, v, line);
 }
 
 const tokens = {
@@ -184,7 +184,7 @@ function tokenize(input: string) {
           char = input[++current];
         }
 
-        tokens.push(DotToken(null, line));
+        tokens.push(DotToken('.', line));
         tokens.push(NameToken(value, line));
 
         continue;
@@ -193,6 +193,7 @@ function tokenize(input: string) {
       /*
        * Handle keywords
        */
+      // $FlowIgnore
       if (typeof keywords[value] === 'string') {
         tokens.push(KeywordToken(value, line));
 

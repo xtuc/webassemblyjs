@@ -3,7 +3,7 @@
 const {tokens, keywords} = require('./tokenizer');
 const t = require('../../AST');
 
-let inc = 0;
+const inc = 0;
 
 function getUniqueName(prefix: string = 'temp'): string {
   return prefix + '_' + inc;
@@ -22,7 +22,7 @@ function parse(tokensList: Array<Object>): Program {
 
   // But this time we're going to use recursion instead of a `while` loop. So we
   // define a `walk` function.
-  function walk() {
+  function walk(): Node {
     let token = tokensList[current];
 
     function eatToken() {
@@ -49,7 +49,7 @@ function parse(tokensList: Array<Object>): Program {
       eatToken(); // Closing paren
     }
 
-    function parseBlock() {
+    function parseBlock(): BlockInstruction {
       let label;
       const instr = [];
 
@@ -72,7 +72,7 @@ function parse(tokensList: Array<Object>): Program {
       return t.blockInstruction(label, instr);
     }
 
-    function parseIf() {
+    function parseIf(): IfInstruction {
       const consequent = [];
       const alternate = [];
 
@@ -139,7 +139,7 @@ function parse(tokensList: Array<Object>): Program {
       return t.ifInstruction(test, result, consequent, alternate);
     }
 
-    function parseLoop() {
+    function parseLoop(): LoopInstruction {
       let label;
       let result;
       const instr = [];
@@ -175,7 +175,7 @@ function parse(tokensList: Array<Object>): Program {
       return t.loopInstruction(label, result, instr);
     }
 
-    function parseExport() {
+    function parseExport(): ModuleExport {
       if (token.type !== tokens.string) {
         throw new Error('Expected string after export, got: ' + token.type);
       }
@@ -208,7 +208,7 @@ function parse(tokensList: Array<Object>): Program {
       return t.moduleExport(name, type, id);
     }
 
-    function parseModule() {
+    function parseModule(): Module {
       let name = null;
       const moduleFields = [];
 
@@ -355,10 +355,11 @@ function parse(tokensList: Array<Object>): Program {
         throw new Error('Unexpected instruction in function body: ' + token.type);
       }
 
+      // $FlowIgnore
       throw new Error('Unexpected trailing tokens for instructions: ' + token.type);
     }
 
-    function parseFunc() {
+    function parseFunc(): Func {
       let fnName = null;
       let fnResult = null;
 
@@ -521,17 +522,14 @@ function parse(tokensList: Array<Object>): Program {
     throw new TypeError('Unknown token: ' + token.type);
   }
 
-  // Now, we're going to create our AST which will have a root which is a
-  // `Program` node.
   const body = [];
 
   while (current < tokensList.length) {
     body.push(
-      walk() // to statement
+      walk()
     );
   }
 
-  // At the end of our parser we'll return the AST.
   return t.program(body);
 }
 

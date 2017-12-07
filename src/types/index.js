@@ -13,6 +13,11 @@ type Addr = {
   size: Bytes;
 };
 
+type FuncAddr = Addr;
+type TableAddr = Addr;
+type MemAddr = Addr;
+type GlobalAddr = Addr;
+
 interface ExternalVal {
   type: string;
   addr: Addr;
@@ -40,10 +45,11 @@ type FuncInstance = {
 
 type ModuleInstance = {
   types: any;
-  funcaddrs: any;
-  tableaddrs: any;
-  memaddrs: any;
-  globaladdrs: any;
+
+  funcaddrs: Array<FuncAddr>;
+  tableaddrs: Array<TableAddr>;
+  memaddrs: Array<MemAddr>;
+  globaladdrs: Array<GlobalAddr>;
 
   exports: Array<ExportInstance>;
 };

@@ -13,7 +13,7 @@ function cloneNode(o: Node): Node {
   return output;
 }
 
-function createPath(node: Node): NodePath {
+function createPath(node: Node): NodePath<Node> {
 
   return {
     node: cloneNode(node),
@@ -22,7 +22,7 @@ function createPath(node: Node): NodePath {
 
 export function walk(
   n: Node,
-  cb: (type: string, path: NodePath) => void,
+  cb: (type: string, path: NodePath<Node>) => void,
 ) {
   if (n.type === 'Program') {
     cb(n.type, createPath(n));
@@ -54,7 +54,7 @@ export function walk(
 
 export function traverse(n: Node, visitor: Object) {
 
-  walk(n, (type: string, path: NodePath) => {
+  walk(n, (type: string, path: NodePath<Node>) => {
 
     if (typeof visitor[type] === 'function') {
       visitor[type](path);

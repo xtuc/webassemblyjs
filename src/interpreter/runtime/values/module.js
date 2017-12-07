@@ -1,6 +1,6 @@
 // @flow
 
-const {malloc, ptrsize, set} = require('../../kernel/memory');
+const {malloc, set} = require('../../kernel/memory');
 const {traverse} = require('../../../compiler/AST/traverse');
 const func = require('./func');
 
@@ -9,8 +9,13 @@ function createInstance(n: Module): ModuleInstance {
   // Keep a ref to the module instance
   const moduleInstance = {
     types: [],
-    exports: [],
+
     funcaddrs: [],
+    tableaddrs: [],
+    memaddrs: [],
+    globaladdrs: [],
+
+    exports: [],
   };
 
   /**
@@ -24,8 +29,7 @@ function createInstance(n: Module): ModuleInstance {
    */
   traverse(n, {
 
-    Func(path: NodePath) {
-      const node: Func = path.node;
+    Func({node}: NodePath<Func>) {
       const funcinstance = func.createInstance(node, moduleInstance);
 
       const addr = malloc(1 /* size of the funcinstance struct */);
@@ -42,8 +46,7 @@ function createInstance(n: Module): ModuleInstance {
 
   traverse(n, {
 
-    ModuleExport(path: NodePath) {
-      const node: ModuleExport = path.node;
+    ModuleExport({node}: NodePath<ModuleExport>) {
 
       if (node.descr.type === 'Func') {
         const instantiatedFuncAddr = instantiatedFuncs[node.descr.id];

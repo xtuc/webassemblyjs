@@ -13,7 +13,7 @@ export function identifier(name: string): Identifier {
   };
 }
 
-export function program(body: Array<Instruction | Module>): Program {
+export function program(body: Array<Node>): Program {
   return {
     type: 'Program',
     body,

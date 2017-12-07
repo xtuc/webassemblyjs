@@ -19,11 +19,9 @@ function parse(content: string, cb: (ast: Node) => void) {
 
 const WebAssembly = {
 
-  instantiate(content: string/*, importObject: Object */): ModuleInstance {
+  instantiate(content: string/*, importObject: Object */): UserlandModuleInstance {
     const ast = parseSource(content);
-    const result = evaluateAst(ast);
-
-    return result;
+    return evaluateAst(ast);
   }
 
 };
