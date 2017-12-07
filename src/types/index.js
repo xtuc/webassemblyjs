@@ -59,6 +59,8 @@ type StackFrame = {
   locals: Array<StackLocal>;
   code: Array<Instruction>;
 
+  originatingModule: ModuleInstance;
+
   trace?: (number, number, Instruction) => void;
 };
 

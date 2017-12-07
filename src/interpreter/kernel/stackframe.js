@@ -3,6 +3,7 @@
 export function createStackFrame(
   code: Array<Instruction>,
   locals: Array<StackLocal>,
+  originatingModule: ModuleInstance,
 ): StackFrame {
 
   return {
@@ -20,10 +21,26 @@ export function createStackFrame(
     labels: {},
 
     /**
-     * Local applicatif Stack for the current stackframe
+     * Local applicatif Stack for the current stackframe.
      *
      * https://webassembly.github.io/spec/exec/runtime.html#stack
      */
     values: [],
+
+    /**
+     * We keep a reference to its originating module.
+     *
+     * When we need to lookup a function by addr for example.
+     */
+    originatingModule,
   };
+}
+
+export function createChildStackFrame(
+  parent: StackFrame,
+  code: Array<Instruction>,
+): StackFrame {
+  const {locals, originatingModule} = parent;
+
+  return createStackFrame(code, locals, originatingModule);
 }

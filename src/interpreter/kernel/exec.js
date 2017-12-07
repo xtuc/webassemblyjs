@@ -5,7 +5,7 @@ const TRAPPED = 'TRAPPED';
 const {binop} = require('./instruction/binop');
 const i32 = require('../runtime/values/i32');
 const label = require('../runtime/values/label');
-const {createStackFrame} = require('./stackframe');
+const {createChildStackFrame} = require('./stackframe');
 
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   let pc = 0;
@@ -103,7 +103,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const loop = instruction;
 
       if (loop.instr.length > 0) {
-        const childStackFrame = createStackFrame(loop.instr, frame.locals);
+        const childStackFrame = createChildStackFrame(frame, loop.instr);
         childStackFrame.trace = frame.trace;
 
         const res = executeStackFrame(childStackFrame, depth + 1);
@@ -139,7 +139,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       if (block.instr.length > 0) {
-        const childStackFrame = createStackFrame(block.instr, frame.locals);
+        const childStackFrame = createChildStackFrame(frame, block.instr);
         childStackFrame.trace = frame.trace;
 
         const res = executeStackFrame(childStackFrame, depth + 1);
@@ -180,7 +180,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       /**
        * Execute test
        */
-      const childStackFrame = createStackFrame(instruction.test, frame.locals);
+      const childStackFrame = createChildStackFrame(frame, instruction.test);
       childStackFrame.trace = frame.trace;
 
       const res = executeStackFrame(childStackFrame, depth + 1);
@@ -194,7 +194,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         /**
          * Execute consequent
          */
-        const childStackFrame = createStackFrame(instruction.consequent, frame.locals);
+        const childStackFrame = createChildStackFrame(frame, instruction.consequent);
         childStackFrame.trace = frame.trace;
 
         const res = executeStackFrame(childStackFrame, depth + 1);
@@ -212,7 +212,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         /**
          * Execute alternate
          */
-        const childStackFrame = createStackFrame(instruction.alternate, frame.locals);
+        const childStackFrame = createChildStackFrame(frame, instruction.alternate);
         childStackFrame.trace = frame.trace;
 
         const res = executeStackFrame(childStackFrame, depth + 1);
@@ -265,7 +265,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const init = instruction.args[1];
 
       if (init.type === 'Instr') {
-        const childStackFrame = createStackFrame([init], frame.locals);
+        const childStackFrame = createChildStackFrame(frame, [init]);
         childStackFrame.trace = frame.trace;
 
         const res = executeStackFrame(childStackFrame, depth + 1);
