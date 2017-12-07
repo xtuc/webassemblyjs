@@ -252,23 +252,29 @@ function parse(tokensList: Array<Object>): Program {
        */
       if (token.type === tokens.name || token.type === tokens.valtype) {
         let name = token.value;
+        let object;
 
         eatToken();
 
         if (token.type === tokens.dot) {
-          name += '.';
+          object = name;
           eatToken();
 
           if (token.type !== tokens.name) {
             throw new TypeError('Unknown token: ' + token.type + ', name expected');
           }
 
-          name += token.value;
+          name = token.value;
           eatToken();
         }
 
         if (token.loc.line !== line || token.type === tokens.closeParen) {
-          acc.push(t.instruction(name, []));
+          if (typeof object === 'undefined') {
+            acc.push(t.instruction(name, []));
+          } else {
+            acc.push(t.objectInstruction(name, object, []));
+          }
+
           return;
         }
 
@@ -296,7 +302,11 @@ function parse(tokensList: Array<Object>): Program {
           eatToken(); // close paren
         }
 
-        acc.push(t.instruction(name, args));
+        if (typeof object === 'undefined') {
+          acc.push(t.instruction(name, args));
+        } else {
+          acc.push(t.objectInstruction(name, object, args));
+        }
 
         return;
       } else
@@ -333,6 +343,10 @@ function parse(tokensList: Array<Object>): Program {
         } else if (token.type === tokens.number) {
           index = t.numberLiteral(token.value);
           eatToken();
+        }
+
+        if (typeof index === 'undefined') {
+          throw new Error('Missing argument in call instruciton');
         }
 
         acc.push(

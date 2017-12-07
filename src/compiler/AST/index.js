@@ -54,6 +54,21 @@ export function func(
   };
 }
 
+export function objectInstruction(
+  id: string,
+  object: Valtype,
+  args: Array<Number | string> = [],
+): Instruction {
+  assert(typeof args === 'object' && typeof args.length !== 'undefined');
+
+  return {
+    type: 'Instr',
+    id,
+    object,
+    args,
+  };
+}
+
 export function instruction(id: string, args: Array<Number | string> = []): Instruction {
   assert(typeof args === 'object' && typeof args.length !== 'undefined');
 

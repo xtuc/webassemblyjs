@@ -13,18 +13,9 @@
           "body": [
             {
               "type": "Instr",
-              "id": "set_local",
-              "args": [
-                0,
-                {
-                  "type": "Instr",
-                  "id": "const",
-                  "object": "i32",
-                  "args": [
-                    1
-                  ]
-                }
-              ]
+              "id": "add",
+              "object": "i32",
+              "args": []
             }
           ]
         }

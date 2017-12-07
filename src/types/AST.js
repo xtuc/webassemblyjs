@@ -60,12 +60,17 @@ interface Func {
   body: Array<Instruction>;
 }
 
+type ObjectInstruction = {
+  ...Instruction;
+
+  object: Valtype;
+}
+
 interface Instruction {
   type: 'Instr';
   id: string;
   args: Array<Number | string>;
 }
-
 
 interface ModuleExport {
   type: 'ModuleExport';

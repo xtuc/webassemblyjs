@@ -9,7 +9,8 @@
       "body": [
         {
           "type": "Instr",
-          "id": "i32.add",
+          "id": "add",
+          "object": "i32",
           "args": []
         }
       ]

@@ -13,12 +13,14 @@
           "body": [
             {
               "type": "Instr",
-              "id": "i64.add",
+              "id": "add",
+              "object": "i64",
               "args": []
             },
             {
               "type": "Instr",
-              "id": "i32.add",
+              "id": "add",
+              "object": "i32",
               "args": []
             }
           ]
