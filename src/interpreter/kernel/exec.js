@@ -2,7 +2,7 @@
 
 const TRAPPED = 'TRAPPED';
 
-const {binop} = require('./instruction/binop');
+const {binopi32, binopi64} = require('./instruction/binopi');
 const i32 = require('../runtime/values/i32');
 const i64 = require('../runtime/values/i64');
 const f32 = require('../runtime/values/f32');
@@ -416,11 +416,15 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
      *
      * https://webassembly.github.io/spec/exec/instructions.html#numeric-instructions
      */
+
+    /**
+     * Integer 32 bits
+     */
     case 'i32.add': {
       const [c1, c2] = pop2('i32', 'i32');
 
       pushResult(
-        binop(c2, c1, '+')
+        binopi32(c2, c1, '+')
       );
 
       break;
@@ -435,7 +439,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const [c1, c2] = pop2('i32', 'i32');
 
       pushResult(
-        binop(c2, c1, '/')
+        binopi32(c2, c1, '/')
       );
 
       break;
@@ -445,7 +449,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const [c1, c2] = pop2('i32', 'i32');
 
       pushResult(
-        binop(c2, c1, '-')
+        binopi32(c2, c1, '-')
       );
 
       break;
@@ -455,11 +459,60 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const [c1, c2] = pop2('i32', 'i32');
 
       pushResult(
-        binop(c2, c1, '*')
+        binopi32(c2, c1, '*')
       );
 
       break;
     }
+
+    /**
+     * Integer 64 bits
+     */
+    case 'i64.add': {
+      const [c1, c2] = pop2('i64', 'i64');
+
+      pushResult(
+        binopi64(c2, c1, '+')
+      );
+
+      break;
+    }
+
+    /**
+     * There is two seperated operation for both signed and unsigned integer,
+     * but since the host environment will handle that, we don't have too :)
+     */
+    case 'i64.div_u':
+    case 'i64.div_s': {
+      const [c1, c2] = pop2('i64', 'i64');
+
+      pushResult(
+        binopi64(c2, c1, '/')
+      );
+
+      break;
+    }
+
+    case 'i64.sub': {
+      const [c1, c2] = pop2('i64', 'i64');
+
+      pushResult(
+        binopi64(c2, c1, '-')
+      );
+
+      break;
+    }
+
+    case 'i64.mul': {
+      const [c1, c2] = pop2('i64', 'i64');
+
+      pushResult(
+        binopi64(c2, c1, '*')
+      );
+
+      break;
+    }
+
     }
 
     if (typeof frame.trace === 'function') {

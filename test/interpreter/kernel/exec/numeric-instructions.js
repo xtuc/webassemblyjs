@@ -9,6 +9,11 @@ const {createStackFrame} = require('../../../../lib/interpreter/kernel/stackfram
 describe('kernel exec - numeric instructions', () => {
 
   const operations = [
+
+    /**
+     * Integer 32 bits
+     */
+
     {
       name: 'i32.add',
 
@@ -94,6 +99,129 @@ describe('kernel exec - numeric instructions', () => {
       resEqual: 5,
     },
 
+    {
+      name: 'i32.div_u',
+
+      args: [
+        {value: 2, type: 'i32'},
+        {value: 10, type: 'i32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.instruction('i32.div_u'),
+      ],
+
+      resEqual: 5,
+    },
+
+
+    /**
+     * Integer 64 bits
+     */
+
+    {
+      name: 'i64.add',
+
+      args: [
+        {value: 1, type: 'i64'},
+        {value: 1, type: 'i64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.instruction('i64.add'),
+      ],
+
+      resEqual: 2,
+    },
+
+    {
+      name: 'i64.sub',
+
+      args: [
+        {value: 1, type: 'i64'},
+        {value: 1, type: 'i64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.instruction('i64.sub'),
+      ],
+
+      resEqual: 0,
+    },
+
+    {
+      name: 'i64.mul',
+
+      args: [
+        {value: 2, type: 'i64'},
+        {value: 1, type: 'i64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.instruction('i64.mul'),
+      ],
+
+      resEqual: 2,
+    },
+
+    {
+      name: 'i64.div_s',
+
+      args: [
+        {value: 2, type: 'i64'},
+        {value: 10, type: 'i64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.instruction('i64.div_s'),
+      ],
+
+      resEqual: 5,
+    },
+
+    {
+      name: 'i64.div_u',
+
+      args: [
+        {value: 2, type: 'i64'},
+        {value: 10, type: 'i64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.instruction('i64.div_u'),
+      ],
+
+      resEqual: 5,
+    },
+
+    {
+      name: 'i64.div_u',
+
+      args: [
+        {value: 2, type: 'i64'},
+        {value: 10, type: 'i64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.instruction('i64.div_u'),
+      ],
+
+      resEqual: 5,
+    },
   ];
 
   operations.forEach((op) => {

@@ -3,8 +3,7 @@
 type Sign = '+' | '-' | '/' | '*';
 
 // https://webassembly.github.io/spec/exec/instructions.html#exec-binop
-export function binop(c1: StackLocal, c2: StackLocal, sign: Sign): StackLocal {
-  const type = 'i32';
+function binopi(type: Valtype, c1: StackLocal, c2: StackLocal, sign: Sign) {
 
   switch (sign) {
   // https://webassembly.github.io/spec/exec/numerics.html#op-iadd
@@ -38,4 +37,12 @@ export function binop(c1: StackLocal, c2: StackLocal, sign: Sign): StackLocal {
   }
 
   throw new Error('Unsupported binop: ' + sign);
+}
+
+export function binopi32(c1: StackLocal, c2: StackLocal, sign: Sign): StackLocal {
+  return binopi('i32', c1, c2, sign);
+}
+
+export function binopi64(c1: StackLocal, c2: StackLocal, sign: Sign): StackLocal {
+  return binopi('i64', c1, c2, sign);
 }
