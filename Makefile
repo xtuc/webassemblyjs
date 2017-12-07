@@ -15,3 +15,6 @@ lint:
 
 publish: build
 	npm publish
+
+repl: build
+	node ./lib/repl
