@@ -288,6 +288,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
      *
      * https://webassembly.github.io/spec/exec/runtime.html#administrative-instructions
      */
+    case 'unreachable':
+    // https://webassembly.github.io/spec/exec/instructions.html#exec-unreachable
     case 'trap': {
       // signalling abrupt termination
       // https://webassembly.github.io/spec/exec/runtime.html#syntax-trap
