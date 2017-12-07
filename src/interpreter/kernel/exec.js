@@ -2,7 +2,13 @@
 
 const TRAPPED = 'TRAPPED';
 
-const {binopi32, binopi64} = require('./instruction/binopi');
+const {
+  binopi32,
+  binopi64,
+
+  binopf32,
+  binopf64,
+} = require('./instruction/binop');
 const i32 = require('../runtime/values/i32');
 const i64 = require('../runtime/values/i64');
 const f32 = require('../runtime/values/f32');
@@ -508,6 +514,92 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
       pushResult(
         binopi64(c2, c1, '*')
+      );
+
+      break;
+    }
+
+    /**
+     * Float 32 bits
+     */
+    case 'f32.add': {
+      const [c1, c2] = pop2('f32', 'f32');
+
+      pushResult(
+        binopf32(c2, c1, '+')
+      );
+
+      break;
+    }
+
+    case 'f32.div': {
+      const [c1, c2] = pop2('f32', 'f32');
+
+      pushResult(
+        binopf32(c2, c1, '/')
+      );
+
+      break;
+    }
+
+    case 'f32.sub': {
+      const [c1, c2] = pop2('f32', 'f32');
+
+      pushResult(
+        binopf32(c2, c1, '-')
+      );
+
+      break;
+    }
+
+    case 'f32.mul': {
+      const [c1, c2] = pop2('f32', 'f32');
+
+      pushResult(
+        binopf32(c2, c1, '*')
+      );
+
+      break;
+    }
+
+    /**
+     * Float 64 bits
+     */
+    case 'f64.add': {
+      const [c1, c2] = pop2('f64', 'f64');
+
+      pushResult(
+        binopf64(c2, c1, '+')
+      );
+
+      break;
+    }
+
+    case 'f64.div': {
+      const [c1, c2] = pop2('f64', 'f64');
+
+      pushResult(
+        binopf64(c2, c1, '/')
+      );
+
+      break;
+    }
+
+    case 'f64.sub': {
+      const [c1, c2] = pop2('f64', 'f64');
+
+      pushResult(
+        binopf64(c2, c1, '-')
+      );
+
+      break;
+    }
+
+    case 'f64.mul': {
+      const [c1, c2] = pop2('f64', 'f64');
+
+      pushResult(
+        binopf64(c2, c1, '*')
       );
 
       break;
