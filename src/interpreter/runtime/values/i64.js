@@ -1,6 +1,6 @@
 // @flow
 
-const type = 'i32';
+const type = 'i64';
 
 export function createValue(value: number): StackLocal {
 

@@ -4,6 +4,9 @@ const TRAPPED = 'TRAPPED';
 
 const {binop} = require('./instruction/binop');
 const i32 = require('../runtime/values/i32');
+const i64 = require('../runtime/values/i64');
+const f32 = require('../runtime/values/f32');
+const f64 = require('../runtime/values/f64');
 const label = require('../runtime/values/label');
 const {createChildStackFrame} = require('./stackframe');
 
@@ -94,6 +97,22 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
     switch (instruction.id) {
 
+    case 'i64.const': {
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-const
+
+      const n = instruction.args[0];
+
+      if (typeof n === 'undefined') {
+        throw new Error('i64.const requires one argument, none given.');
+      }
+
+      pushResult(
+        i64.createValue(n)
+      );
+
+      break;
+    }
+
     case 'i32.const': {
       // https://webassembly.github.io/spec/exec/instructions.html#exec-const
 
@@ -105,6 +124,38 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
       pushResult(
         i32.createValue(n)
+      );
+
+      break;
+    }
+
+    case 'f32.const': {
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-const
+
+      const n = instruction.args[0];
+
+      if (typeof n === 'undefined') {
+        throw new Error('f32.const requires one argument, none given.');
+      }
+
+      pushResult(
+        f32.createValue(n)
+      );
+
+      break;
+    }
+
+    case 'f64.const': {
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-const
+
+      const n = instruction.args[0];
+
+      if (typeof n === 'undefined') {
+        throw new Error('f64.const requires one argument, none given.');
+      }
+
+      pushResult(
+        f64.createValue(n)
       );
 
       break;
