@@ -46,6 +46,8 @@ To be as close as possible to a native environement the execution relies on Stac
 
 The context in which StackFrames are executed is the call stack.
 
+The stack call depth is unspecified currently by WebAssembly and is controlled by the host environement, its limit might vary.
+
 #### Runtime
 
 Our runtime instance values.
