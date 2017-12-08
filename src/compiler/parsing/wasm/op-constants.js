@@ -8,6 +8,13 @@ const types = {
   result: 0x40,
 };
 
+const exportTypes = {
+  func: 0x00,
+  table: 0x01,
+  mem: 0x02,
+  global: 0x03,
+};
+
 const valtypes = {
   0x7f: 'i32',
   0x7e: 'i64',
@@ -255,4 +262,5 @@ module.exports = {
   moduleVersion,
   types,
   valtypes,
+  exportTypes,
 };

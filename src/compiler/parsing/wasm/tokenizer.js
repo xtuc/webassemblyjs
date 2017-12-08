@@ -8,6 +8,10 @@ const {
   moduleVersion,
   sections,
 } = require('./op-constants');
+const {decode} = require('./LEB128');
+
+console.log(decode(Buffer.from([0x08])).value.toJSON());
+console.log(decode(Buffer.from([0xE5, 0x8E, 0x26])).value.toJSON());
 
 type Byte = number;
 
@@ -35,8 +39,18 @@ export function tokenize(buf: Buffer) {
   const tokens = [];
   let offset = 0;
 
+  function debug(msg: string) {
+    console.log('at #', offset + 1, ':', msg);
+  }
+
+  /**
+   * TODO(sven): we can atually use a same structure
+   * we are adding incrementally new features
+   */
   const state = {
     elementsInTypeSection: [],
+    elementsInFuncSection: [],
+    elementsInExportSection: [],
   };
 
   function eatBytes(n: number) {
@@ -64,6 +78,8 @@ export function tokenize(buf: Buffer) {
       throw new Error('magic header not detected');
     }
 
+    debug('module header');
+
     eatBytes(4);
   }
 
@@ -74,6 +90,8 @@ export function tokenize(buf: Buffer) {
       throw new Error('unknown wasm version: ' + version.join(' '));
     }
 
+    debug('module version');
+
     eatBytes(4);
   }
 
@@ -82,6 +100,8 @@ export function tokenize(buf: Buffer) {
     // Int on 1byte
     const length = byteToUi32(readByte());
     eatBytes(1);
+
+    debug('parse vec of ' + length);
 
     if (length === 0) {
       return [];
@@ -108,6 +128,7 @@ export function tokenize(buf: Buffer) {
   // Type section
   // https://webassembly.github.io/spec/binary/modules.html#binary-typesec
   function parseTypeSection(numberOfTypes: number) {
+    debug('parse section type');
 
     for (let i = 0; i < numberOfTypes; i++) {
 
@@ -118,8 +139,10 @@ export function tokenize(buf: Buffer) {
         const params: Array<Valtype> = parseVec((b) => valtypes[b]);
         const result: Array<Valtype> = parseVec((b) => valtypes[b]);
 
-        console.log('type', params, '->', result);
-        state.elementsInTypeSection.push({});
+        state.elementsInTypeSection.push({
+          params,
+          result,
+        });
       }
 
       i++;
@@ -133,20 +156,110 @@ export function tokenize(buf: Buffer) {
   // Function section
   // https://webassembly.github.io/spec/binary/modules.html#function-section
   function parseFuncSection() {
-    throw 'f';
+    debug('parse section func');
+
     const indices: Array<number> = parseVec(byteToUi32);
 
-    console.log('indices', indices);
+    indices.forEach((index: number) => {
+      const signature = state.elementsInTypeSection[index];
+
+      if (typeof signature === 'undefined') {
+        throw new Error('Internal error: function signature not found');
+      }
+
+      state.elementsInFuncSection.push({
+        signature,
+      });
+    });
+  }
+
+  // Export section
+  // https://webassembly.github.io/spec/binary/modules.html#export-section
+  function parseExportSection() {
+    debug('parse section export');
+
+    const numberOfExport = byteToUi32(readByte());
+    eatBytes(1);
+
+    debug(numberOfExport + ' export(s)');
+
+    // Parse vector of exports
+    for (let i = 0; i < numberOfExport; i++) {
+
+      const nameStringLength = byteToUi32(readByte());
+      eatBytes(1);
+
+      const nameByteArray = readBytes(nameStringLength);
+      eatBytes(nameStringLength);
+
+      const name = String.fromCharCode(...nameByteArray);
+
+      const type = readByte();
+      eatBytes(1);
+
+      const index = readByte();
+      eatBytes(1);
+
+      const signature = state.elementsInTypeSection[index];
+
+      if (typeof signature === 'undefined') {
+        throw new Error('Internal error: function signature not found');
+      }
+
+      state.elementsInExportSection.push({
+        name,
+        type,
+        signature,
+        index,
+      });
+
+    }
+  }
+
+  // Code section
+  // https://webassembly.github.io/spec/binary/modules.html#code-section
+  function parseCodeSection() {
+    debug('parse section code');
+
+    const numberOfFuncs = byteToUi32(readByte());
+    eatBytes(1);
+
+    debug(numberOfFuncs + ' function(s)');
+
+    // Parse vector of function
+    for (let i = 0; i < numberOfFuncs; i++) {
+      const numberOfDecl = readByte();
+      eatBytes(1);
+
+      const locals: Array<Valtype> = parseVec((b) => valtypes[b]);
+      const code = [];
+
+      for (let i = 0; i < numberOfDecl; i++) {
+        const instructionByte = readByte();
+        eatBytes(1);
+
+        const instruction = symbols[instructionByte];
+
+        if (typeof instruction === 'undefined') {
+          throw new Error('Unexpected instruction: ' + instructionByte);
+        }
+
+        // FIXME(sven): test if the instruction has args before that
+        const arg = byteToUi32(readByte());
+        eatBytes(1);
+
+        console.log(instruction, arg);
+      }
+
+    }
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
   function parseSection() {
-    console.log('parse section at', offset);
-
     const sectionId = readByte();
     eatBytes(1);
 
-    console.log('sectionid', sectionId);
+    debug('start parse section ' + sectionId);
 
     /**
      * The size of the section can be ignore, see
@@ -154,32 +267,52 @@ export function tokenize(buf: Buffer) {
      */
     eatBytes(1);
 
-    if (sectionId === sections.typeSection) {
+    switch (sectionId) {
+
+    case sections.typeSection: {
       const numberOfTypes = byteToUi32(readByte());
       eatBytes(1);
 
       parseTypeSection(numberOfTypes);
-    } else if (sectionId === sections.importSection) {
+      break;
+    }
 
+    case sections.importSection: {
       throw new Error('importSection not implemented yet');
+      break;
+    }
 
-    } else if (sectionId === sections.funcSection) {
+    case sections.funcSection: {
       parseFuncSection();
-    } else {
+      break;
+    }
+
+    case sections.exportSection: {
+      parseExportSection();
+      break;
+    }
+
+    case sections.codeSection: {
+      parseCodeSection();
+      break;
+    }
+
+    default: {
       console.log(offset);
       throw new Error('Unexpected section: ' + JSON.stringify(sectionId));
     }
 
-    // FIXUP section size
-    // Ignore it for now
-    eatBytes(1);
+    }
+
+    debug('end parse section ' + sectionId);
   }
 
   parseModuleHeader();
   parseVersion();
 
-  parseSection();
-  parseSection();
+  while (offset < buf.length) {
+    parseSection();
+  }
 
   return tokens;
 }
