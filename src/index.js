@@ -1,6 +1,7 @@
 // @flow
 
 const {parseSource} = require('./compiler/parsing/watf');
+const {parseBinary} = require('./compiler/parsing/wasm');
 const {evaluateAst} = require('./interpreter');
 const {initializeMemory} = require('./interpreter/kernel/memory');
 
@@ -11,12 +12,6 @@ const {initializeMemory} = require('./interpreter/kernel/memory');
  */
 initializeMemory(1024);
 
-function parse(content: string, cb: (ast: Node) => void) {
-  const ast = parseSource(content);
-
-  cb(ast);
-}
-
 const WebAssembly = {
 
   instantiate(content: string/*, importObject: Object */): UserlandModuleInstance {
@@ -26,8 +21,21 @@ const WebAssembly = {
 
 };
 
-module.exports = WebAssembly;
+const _debug = {
 
-module.exports._debug = {
-  parse,
+  parseWATF(content: string, cb: (ast: Node) => void) {
+    const ast = parseSource(content);
+
+    cb(ast);
+  },
+
+  parseWASM(content: Buffer, cb: (ast: Node) => void) {
+    const ast = parseBinary(content);
+
+    cb(ast);
+  },
+
 };
+
+module.exports = WebAssembly;
+module.exports._debug = _debug;
