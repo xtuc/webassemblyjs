@@ -1,4 +1,52 @@
 {
   "type": "Program",
-  "body": []
+  "body": [
+    {
+      "type": "Module",
+      "fields": [
+        {
+          "type": "ModuleExport",
+          "name": "add",
+          "descr": {
+            "type": "func",
+            "id": "id?????"
+          }
+        },
+        {
+          "type": "Func",
+          "id": "id????",
+          "params": [
+            {
+              "valtype": "i32"
+            },
+            {
+              "valtype": "i32"
+            }
+          ],
+          "result": "i32",
+          "body": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                0
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                1
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "i32_add",
+              "args": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

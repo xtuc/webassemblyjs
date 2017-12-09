@@ -33,13 +33,12 @@ interface Identifier {
   name: string;
 }
 
-// TODO(sven): modulefields (https://webassembly.github.io/spec/text/modules.html#text-modulefield)
-type ModuleFields = any
+type ModuleFields = Array<Node>;
 
 interface Module {
   type: 'Module';
   id: ?string;
-  fields: ?ModuleFields;
+  fields: ModuleFields;
 }
 
 interface Program {

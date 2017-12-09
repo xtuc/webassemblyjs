@@ -1,5 +1,3 @@
-// @flow
-
 const illegalop = 'illegal';
 
 const magicModuleHeader = [0x00, 0x61, 0x73, 0x6d];
@@ -23,10 +21,10 @@ const types = {
 };
 
 const exportTypes = {
-  func: 0x00,
-  table: 0x01,
-  mem: 0x02,
-  global: 0x03,
+  0x00: 'func',
+  0x01: 'table',
+  0x02: 'mem',
+  0x03: 'global',
 };
 
 const valtypes = {

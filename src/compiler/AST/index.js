@@ -20,7 +20,7 @@ export function program(body: Array<Node>): Program {
   };
 }
 
-export function module(id: ?string, fields: ?ModuleFields): Module {
+export function module(id: ?string, fields: ModuleFields): Module {
   return {
     type: 'Module',
     id,

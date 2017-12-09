@@ -4,6 +4,7 @@ const t = require('../../AST');
 
 const {
   symbols,
+  exportTypes,
   types,
   magicModuleHeader,
   valtypes,
@@ -215,7 +216,7 @@ export function decode(buf: Buffer): Node {
 
       const name = String.fromCharCode(...nameByteArray);
 
-      const type = readByte();
+      const typeIndex = readByte();
       eatBytes(1);
 
       const index = readByte();
@@ -229,7 +230,7 @@ export function decode(buf: Buffer): Node {
 
       state.elementsInExportSection.push({
         name,
-        type,
+        type: exportTypes[typeIndex],
         signature,
         index,
       });
@@ -359,11 +360,60 @@ export function decode(buf: Buffer): Node {
   parseModuleHeader();
   parseVersion();
 
-  const body = [];
-
+  /**
+   * All the generate declaration are going to be stored in our state
+   */
   while (offset < buf.length) {
     parseSection();
   }
 
-  return t.program(body);
+
+  /**
+   * Transform the state into AST nodes
+   */
+  const moduleFields = [];
+
+  state.elementsInExportSection.forEach((moduleExport) => {
+
+    // moduleExport = {
+    //   name,
+    //   type,
+    //   signature,
+    //   index,
+    // }
+
+    moduleFields.push(
+      t.moduleExport(moduleExport.name, moduleExport.type, 'id?????')
+    );
+  });
+
+  state.elementsInFuncSection.forEach((func, codeIndex) => {
+
+    // func = {
+    //   signature,
+    // }
+
+    const params = func.signature.params.map((valtype: Valtype) => ({
+      valtype,
+      id: undefined,
+    }));
+
+    // code = {
+    //   code,
+    //   locals,
+    // }
+
+    const code = state.elementsInCodeSection[codeIndex];
+
+    const body = code.code.map(({instruction, args}) => {
+      return t.instruction(instruction.name, args);
+    });
+
+    moduleFields.push(
+      t.func('id????', params, func.signature.result[0], body)
+    );
+  });
+
+  const module = t.module(undefined, moduleFields);
+  return t.program([module]);
 }
