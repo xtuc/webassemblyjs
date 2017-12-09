@@ -14,10 +14,15 @@ initializeMemory(1024);
 
 const WebAssembly = {
 
-  instantiate(content: string/*, importObject: Object */): UserlandModuleInstance {
+  instantiate(buff: Buffer/*, importObject: Object */): UserlandModuleInstance {
+    const ast = parseBinary(buff);
+    return evaluateAst(ast);
+  },
+
+  instantiateFromSource(content: string): UserlandModuleInstance {
     const ast = parseSource(content);
     return evaluateAst(ast);
-  }
+  },
 
 };
 

@@ -1,4 +1,4 @@
-const m = WebAssembly.instantiate(watfmodule);
+const m = WebAssembly.instantiateFromSource(watfmodule);
 
 const res = m.exports.add(1, 1);
 
