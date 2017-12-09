@@ -9,7 +9,7 @@
           "name": "addTwo",
           "descr": {
             "type": "func",
-            "id": "id?????"
+            "id": "func_0"
           }
         },
         {
@@ -17,12 +17,12 @@
           "name": "test",
           "descr": {
             "type": "func",
-            "id": "id?????"
+            "id": "func_0"
           }
         },
         {
           "type": "Func",
-          "id": "id????",
+          "id": "func_0",
           "params": [
             {
               "valtype": "i32"
@@ -56,7 +56,7 @@
         },
         {
           "type": "Func",
-          "id": "id????",
+          "id": "func_0",
           "params": [
             {
               "valtype": "i32"

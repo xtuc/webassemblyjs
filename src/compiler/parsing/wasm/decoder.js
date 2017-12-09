@@ -187,7 +187,10 @@ export function decode(buf: Buffer): Node {
           throw new Error('Internal error: function signature not found');
         }
 
+        const id = 'func_' + index;
+
         state.elementsInFuncSection.push({
+          id,
           signature,
         });
       });
@@ -232,6 +235,7 @@ export function decode(buf: Buffer): Node {
         name,
         type: exportTypes[typeIndex],
         signature: func.signature,
+        id: func.id,
         index,
       });
 
@@ -383,11 +387,15 @@ export function decode(buf: Buffer): Node {
     // }
 
     moduleFields.push(
-      t.moduleExport(moduleExport.name, moduleExport.type, 'id?????')
+      t.moduleExport(
+        moduleExport.name,
+        moduleExport.type,
+        moduleExport.id,
+      )
     );
   });
 
-  state.elementsInFuncSection.forEach((func, codeIndex) => {
+  state.elementsInFuncSection.forEach((func, funcIndex) => {
 
     // func = {
     //   signature,
@@ -403,14 +411,14 @@ export function decode(buf: Buffer): Node {
     //   locals,
     // }
 
-    const code = state.elementsInCodeSection[codeIndex];
+    const code = state.elementsInCodeSection[funcIndex];
 
     const body = code.code.map(({instruction, args}) => {
       return t.instruction(instruction.name, args);
     });
 
     moduleFields.push(
-      t.func('id????', params, func.signature.result[0], body)
+      t.func(func.id, params, func.signature.result[0], body)
     );
   });
 
