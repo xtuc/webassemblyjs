@@ -8,16 +8,13 @@ const {
   moduleVersion,
   sections,
 } = require('./op-constants');
-const {decode} = require('./LEB128');
-
-console.log(decode(Buffer.from([0x08])).value.toJSON());
-console.log(decode(Buffer.from([0xE5, 0x8E, 0x26])).value.toJSON());
+const {decodeUInt32, MAX_NUMBER_OF_BYTE_U32} = require('./LEB128');
 
 type Byte = number;
 
-// FIXME(sven): find a better way. Uint32Array needs to be polyfiled.
-function byteToUi32(b: Byte): number {
-  return (new Uint32Array([b]))[0];
+type U32 = {
+  value: number;
+  nextIndex: number;
 }
 
 function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
@@ -67,6 +64,19 @@ export function tokenize(buf: Buffer) {
     return arr;
   }
 
+  /**
+   * Decode an unsigned 32bits integer
+   *
+   * The length will be handled by the leb librairy, we pass the max number of
+   * byte.
+   */
+  function readU32(): U32 {
+    const bytes = readBytes(MAX_NUMBER_OF_BYTE_U32);
+    const buffer = Buffer.from(bytes);
+
+    return decodeUInt32(buffer);
+  }
+
   function readByte(): Byte {
     return readBytes(1)[0];
   }
@@ -98,8 +108,9 @@ export function tokenize(buf: Buffer) {
   function parseVec<T>(cast: (Byte) => T): Array<T> {
 
     // Int on 1byte
-    const length = byteToUi32(readByte());
-    eatBytes(1);
+    const u32 = readU32();
+    const length = u32.value;
+    eatBytes(u32.nextIndex);
 
     debug('parse vec of ' + length);
 
@@ -158,19 +169,25 @@ export function tokenize(buf: Buffer) {
   function parseFuncSection() {
     debug('parse section func');
 
-    const indices: Array<number> = parseVec(byteToUi32);
+    const indices: Array<number> = parseVec((x) => x);
 
-    indices.forEach((index: number) => {
-      const signature = state.elementsInTypeSection[index];
+    indices
+      .map((byte) => {
+        const buffer = Buffer.from([byte]);
 
-      if (typeof signature === 'undefined') {
-        throw new Error('Internal error: function signature not found');
-      }
+        return decodeUInt32(buffer).value;
+      })
+      .forEach((index: number) => {
+        const signature = state.elementsInTypeSection[index];
 
-      state.elementsInFuncSection.push({
-        signature,
+        if (typeof signature === 'undefined') {
+          throw new Error('Internal error: function signature not found');
+        }
+
+        state.elementsInFuncSection.push({
+          signature,
+        });
       });
-    });
   }
 
   // Export section
@@ -178,16 +195,18 @@ export function tokenize(buf: Buffer) {
   function parseExportSection() {
     debug('parse section export');
 
-    const numberOfExport = byteToUi32(readByte());
-    eatBytes(1);
+    const u32 = readU32();
+    const numberOfExport = u32.value;
+    eatBytes(u32.nextIndex);
 
     debug(numberOfExport + ' export(s)');
 
     // Parse vector of exports
     for (let i = 0; i < numberOfExport; i++) {
 
-      const nameStringLength = byteToUi32(readByte());
-      eatBytes(1);
+      const u32 = readU32();
+      const nameStringLength = u32.value;
+      eatBytes(u32.nextIndex);
 
       const nameByteArray = readBytes(nameStringLength);
       eatBytes(nameStringLength);
@@ -221,8 +240,9 @@ export function tokenize(buf: Buffer) {
   function parseCodeSection() {
     debug('parse section code');
 
-    const numberOfFuncs = byteToUi32(readByte());
-    eatBytes(1);
+    const u32 = readU32();
+    const numberOfFuncs = u32.value;
+    eatBytes(u32.nextIndex);
 
     debug(numberOfFuncs + ' function(s)');
 
@@ -245,8 +265,9 @@ export function tokenize(buf: Buffer) {
         }
 
         // FIXME(sven): test if the instruction has args before that
-        const arg = byteToUi32(readByte());
-        eatBytes(1);
+        const u32 = readU32();
+        const arg = u32.value;
+        eatBytes(u32.nextIndex);
 
         console.log(instruction, arg);
       }
@@ -270,8 +291,9 @@ export function tokenize(buf: Buffer) {
     switch (sectionId) {
 
     case sections.typeSection: {
-      const numberOfTypes = byteToUi32(readByte());
-      eatBytes(1);
+      const u32 = readU32();
+      const numberOfTypes = u32.value;
+      eatBytes(u32.nextIndex);
 
       parseTypeSection(numberOfTypes);
       break;

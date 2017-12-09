@@ -1,6 +1,19 @@
 /**
  * Initial implementation from https://github.com/brodybits/leb
+ *
+ * See licence in /docs/thirdparty-licenses.txt
+ *
+ * Changes made by the xtuc/js-webassembly-interpreter contributors:
+ * - refactor: move alls functions into one file and remove the unused functions
+ * - feat: remove decode on signed values
+ * - feat: added some constants
  */
+
+/**
+ * According to https://webassembly.github.io/spec/binary/values.html#binary-int
+ * max = ceil(32/7)
+ */
+export const MAX_NUMBER_OF_BYTE_U32 = 5;
 
 /** Maximum length of kept temporary buffers. */
 const TEMP_BUF_MAXIMUM_LENGTH = 20;
@@ -8,7 +21,7 @@ const TEMP_BUF_MAXIMUM_LENGTH = 20;
 /** Pool of buffers, where `bufPool[x].length === x`. */
 const bufPool = [];
 
-export function decode(encodedBuffer, index) {
+function decode(encodedBuffer, index) {
   index = (index === undefined) ? 0 : index;
 
   let length = encodedLength(encodedBuffer, index);
@@ -143,4 +156,73 @@ function bufFree(buffer) {
   if (length < TEMP_BUF_MAXIMUM_LENGTH) {
     bufPool[length] = buffer;
   }
+}
+
+export function decodeUInt32(encodedBuffer, index) {
+  const result = decode(encodedBuffer, index);
+  const parsed = bufReadUInt(result.value);
+  const value = parsed.value;
+
+  bufFree(result.value);
+
+  return {value: value, nextIndex: result.nextIndex};
+}
+
+/**
+ * Reads an arbitrary unsigned int from a buffer.
+ */
+function bufReadUInt(buffer) {
+  const length = buffer.length;
+  let result = 0;
+  let lossy = false;
+
+  // Note: See above in re bit manipulation.
+
+  if (length < 7) {
+    // Common case which can't possibly be lossy (see above).
+    for (let i = length - 1; i >= 0; i--) {
+      result = (result * 0x100) + buffer[i];
+    }
+  } else {
+    for (let i = length - 1; i >= 0; i--) {
+      const one = buffer[i];
+      result *= 0x100;
+      if (isLossyToAdd(result, one)) {
+        lossy = true;
+      }
+      result += one;
+    }
+  }
+
+  return {value: result, lossy: lossy};
+}
+
+/**
+ * Gets whether trying to add the second number to the first is lossy
+ * (inexact). The first number is meant to be an accumulated result.
+ */
+function isLossyToAdd(accum, num) {
+  if (num === 0) {
+    return false;
+  }
+
+  const lowBit = lowestBit(num);
+  const added = accum + lowBit;
+
+  if (added === accum) {
+    return true;
+  }
+
+  if ((added - lowBit) !== accum) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Masks off all but the lowest bit set of the given number.
+ */
+function lowestBit(num) {
+  return num & -num;
 }
