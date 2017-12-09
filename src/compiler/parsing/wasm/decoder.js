@@ -1,5 +1,7 @@
 // @flow
 
+const t = require('../../AST');
+
 const {
   symbols,
   types,
@@ -32,12 +34,11 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
   return true;
 }
 
-export function tokenize(buf: Buffer) {
-  const tokens = [];
+export function decode(buf: Buffer): Node {
   let offset = 0;
 
   function debug(msg: string) {
-    console.log('at #', offset + 1, ':', msg);
+    // console.log('at #', offset + 1, ':', msg);
   }
 
   /**
@@ -48,6 +49,7 @@ export function tokenize(buf: Buffer) {
     elementsInTypeSection: [],
     elementsInFuncSection: [],
     elementsInExportSection: [],
+    elementsInCodeSection: [],
   };
 
   function eatBytes(n: number) {
@@ -264,14 +266,38 @@ export function tokenize(buf: Buffer) {
           throw new Error('Unexpected instruction: ' + instructionByte);
         }
 
-        // FIXME(sven): test if the instruction has args before that
-        const u32 = readU32();
-        const arg = u32.value;
-        eatBytes(u32.nextIndex);
+        /**
+         * End of the function
+         */
+        if (instruction.name === 'end') {
+          break;
+        }
 
-        console.log(instruction, arg);
+        const args = [];
+
+        for (let i = 0; i < instruction.numberOfArgs; i++) {
+          const u32 = readU32();
+          eatBytes(u32.nextIndex);
+
+          args.push(u32.value);
+        }
+
+        code.push({
+          instruction,
+          args,
+        });
       }
 
+      state.elementsInCodeSection.push({
+        code,
+        locals,
+      });
+
+      /**
+       * FIXME(sven): ignore for now the function body size
+       */
+      const u32 = readU32();
+      eatBytes(u32.nextIndex);
     }
   }
 
@@ -283,10 +309,11 @@ export function tokenize(buf: Buffer) {
     debug('start parse section ' + sectionId);
 
     /**
-     * The size of the section can be ignore, see
-     * https://github.com/WebAssembly/spec/issues/620, it's one byte.
+     * FIXME(sven): ignore for new the section size
      */
-    eatBytes(1);
+    const u32 = readU32();
+    const sectionSize = u32.value; // eslint-disable-line
+    eatBytes(u32.nextIndex);
 
     switch (sectionId) {
 
@@ -332,9 +359,11 @@ export function tokenize(buf: Buffer) {
   parseModuleHeader();
   parseVersion();
 
+  const body = [];
+
   while (offset < buf.length) {
     parseSection();
   }
 
-  return tokens;
+  return t.program(body);
 }

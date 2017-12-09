@@ -1,11 +1,9 @@
 // @flow
 
-const {parse} = require('./grammar');
-const {tokenize} = require('./tokenizer');
+const {decode} = require('./decoder');
 
 export function parseBinary(buf: Buffer): Node {
-  const tokens = tokenize(buf);
-  const ast = parse(tokens);
+  const ast = decode(buf);
 
   return ast;
 }
