@@ -115,7 +115,7 @@ export function decode(buf: Buffer): Node {
     const length = u32.value;
     eatBytes(u32.nextIndex);
 
-    debug('parse vec of ' + length);
+    debug('parse vec of ' + length + ' elements');
 
     if (length === 0) {
       return [];
@@ -222,16 +222,16 @@ export function decode(buf: Buffer): Node {
       const index = readByte();
       eatBytes(1);
 
-      const signature = state.elementsInTypeSection[index];
+      const func = state.elementsInFuncSection[index];
 
-      if (typeof signature === 'undefined') {
-        throw new Error('Internal error: function signature not found');
+      if (typeof func === 'undefined') {
+        throw new Error('Internal error: function signature not found in export section');
       }
 
       state.elementsInExportSection.push({
         name,
         type: exportTypes[typeIndex],
-        signature,
+        signature: func.signature,
         index,
       });
 
@@ -251,13 +251,17 @@ export function decode(buf: Buffer): Node {
 
     // Parse vector of function
     for (let i = 0; i < numberOfFuncs; i++) {
-      const numberOfDecl = readByte();
-      eatBytes(1);
+      debug('start parsing function');
 
-      const locals: Array<Valtype> = parseVec((b) => valtypes[b]);
+      // Body size of the function, ignore it for now
+      const bodySizeU32 = readU32();
+      eatBytes(bodySizeU32.nextIndex);
+
+      const locals: Array<Valtype> = parseVec((b) =>  valtypes[b]);
       const code = [];
 
-      for (let i = 0; i < numberOfDecl; i++) {
+      // Decode instructions until the end
+      while (true) {
         const instructionByte = readByte();
         eatBytes(1);
 
@@ -294,11 +298,7 @@ export function decode(buf: Buffer): Node {
         locals,
       });
 
-      /**
-       * FIXME(sven): ignore for now the function body size
-       */
-      const u32 = readU32();
-      eatBytes(u32.nextIndex);
+      debug('end parsing function, ' + code.length + ' instruction(s)');
     }
   }
 

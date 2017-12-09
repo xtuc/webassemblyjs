@@ -6,11 +6,53 @@
       "fields": [
         {
           "type": "ModuleExport",
-          "name": "add",
+          "name": "addTwo",
           "descr": {
             "type": "func",
             "id": "id?????"
           }
+        },
+        {
+          "type": "ModuleExport",
+          "name": "test",
+          "descr": {
+            "type": "func",
+            "id": "id?????"
+          }
+        },
+        {
+          "type": "Func",
+          "id": "id????",
+          "params": [
+            {
+              "valtype": "i32"
+            },
+            {
+              "valtype": "i32"
+            }
+          ],
+          "result": "i32",
+          "body": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                0
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                1
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "i32_add",
+              "args": []
+            }
+          ]
         },
         {
           "type": "Func",
