@@ -30,7 +30,7 @@
 
     <pre id="exec">
 var code = document.getElementById("input").innerText;
-var module = webassemblyInterpreter.instantiate(code);
+var module = webassemblyInterpreter.instantiateFromSource(code);
 
 var res = module.exports.add(1, 1);
 document.getElementById("res").innerHTML = JSON.stringify(res, null, 2);

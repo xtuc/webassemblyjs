@@ -1,4 +1,4 @@
-const m = WebAssembly.instantiate(watfmodule);
+const m = WebAssembly.instantiateFromSource(watfmodule);
 
 assert.typeOf(m, 'object')
 assert.typeOf(m.exports, 'object')

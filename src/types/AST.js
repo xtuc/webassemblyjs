@@ -1,5 +1,5 @@
 // @flow
-/* eslint-disable */
+
 type Valtype = 'i32' | 'i64' | 'f32' | 'f64' | 'label';
 type ExportDescr = 'func' | 'table' | 'memory' | 'global';
 type Index = NumberLiteral | Identifier;
@@ -33,13 +33,12 @@ interface Identifier {
   name: string;
 }
 
-// TODO(sven): modulefields (https://webassembly.github.io/spec/text/modules.html#text-modulefield)
-type ModuleFields = any
+type ModuleFields = Array<Node>;
 
 interface Module {
   type: 'Module';
   id: ?string;
-  fields: ?ModuleFields;
+  fields: ModuleFields;
 }
 
 interface Program {

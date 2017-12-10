@@ -1,7 +1,9 @@
+// @flow
+
 const {parse} = require('./grammar');
 const {tokenize} = require('./tokenizer');
 
-function parseSource(source) {
+function parseSource(source: string): Node {
   const tokens = tokenize(source);
   const ast = parse(tokens);
 
