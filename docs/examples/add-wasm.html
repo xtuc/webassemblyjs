@@ -10,7 +10,7 @@
       }
     </style>
 
-    <script src="https://bundle.run/webassembly-interpreter@0.0.5"></script>
+    <script src="https://bundle.run/webassembly-interpreter@0.0.6"></script>
   </head>
   <body>
 
@@ -23,12 +23,15 @@ request.responseType = 'arraybuffer';
 request.send();
 
 request.onload = function() {
-    var bytes = request.response;
+  var bytes = request.response;
 
-    var module = webassemblyInterpreter.instantiate(bytes);
-    var res = module.exports.add(1, 1);
+  webassemblyInterpreter
+    .instantiate(bytes)
+    .then((module) => {
 
-    document.getElementById("res").innerHTML = JSON.stringify(res, null, 2);
+      var res = module.exports.add(1, 1);
+      document.getElementById("res").innerHTML = JSON.stringify(res, null, 2);
+    });
 };
     </pre>
 
