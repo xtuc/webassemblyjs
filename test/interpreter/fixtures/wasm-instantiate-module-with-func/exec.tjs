@@ -3,10 +3,8 @@ const m = WebAssembly.instantiate(wasmmodule);
 assert.typeOf(m, 'object')
 assert.typeOf(m.exports, 'object')
 
-assert.typeOf(m.exports.addTwo, 'function')
-assert.typeOf(m.exports.test, 'function')
+assert.typeOf(m.exports.add, 'function')
 
-m.exports.addTwo(1,2);
-m.exports.test(1,2);
+assert.equal(m.exports.add(1, 1), 2);
 
 ok();
