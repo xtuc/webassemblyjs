@@ -1,0 +1,8 @@
+const m = WebAssembly.instantiateFromSource(watfmodule);
+
+
+const fn = m.exports.trap;
+
+assert.throws(fn, WebAssembly.runtimeError, 'Execution has been trapped');
+
+ok();

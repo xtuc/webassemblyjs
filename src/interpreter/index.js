@@ -5,6 +5,8 @@ const {createInstance} = require('./runtime/values/module');
 const {get} = require('./kernel/memory');
 const {executeStackFrame} = require('./kernel/exec');
 const {createStackFrame} = require('./kernel/stackframe');
+const {isTrapped} = require('./kernel/signals');
+const {RuntimeError} = require('./errors');
 
 export function evaluateAst(ast: Node): UserlandModuleInstance {
   const exports = {};
@@ -62,6 +64,10 @@ export function evaluateAst(ast: Node): UserlandModuleInstance {
           // stackFrame.trace = (depth, pc, i) => console.log('trace exec', pc, i);
 
           const res = executeStackFrame(stackFrame);
+
+          if (isTrapped(res)) {
+            throw new RuntimeError('Execution has been trapped');
+          }
 
           if (typeof res !== 'undefined') {
             return res.value;

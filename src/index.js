@@ -4,6 +4,7 @@ const {parseSource} = require('./compiler/parsing/watf');
 const {parseBinary} = require('./compiler/parsing/wasm');
 const {evaluateAst} = require('./interpreter');
 const {initializeMemory} = require('./interpreter/kernel/memory');
+const {RuntimeError} = require('./interpreter/errors');
 
 /**
  * Initialize the memory chunk used for allocation
@@ -35,6 +36,7 @@ const WebAssembly = {
     return evaluateAst(ast);
   },
 
+  RuntimeError,
 };
 
 const _debug = {

@@ -1,7 +1,5 @@
 // @flow
 
-const TRAPPED = 'TRAPPED';
-
 const {
   binopi32,
   binopi64,
@@ -15,6 +13,7 @@ const f32 = require('../runtime/values/f32');
 const f64 = require('../runtime/values/f64');
 const label = require('../runtime/values/label');
 const {createChildStackFrame} = require('./stackframe');
+const {createTrap, isTrapped} = require('./signals');
 
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   let pc = 0;
@@ -176,8 +175,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         const res = executeStackFrame(childStackFrame, depth + 1);
 
-        if (res === TRAPPED) {
-          return TRAPPED;
+        if (isTrapped(res)) {
+          return res;
         }
       }
 
@@ -204,8 +203,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
           const res = executeStackFrame(childStackFrame, depth + 1);
 
-          if (res === TRAPPED) {
-            return TRAPPED;
+          if (isTrapped(res)) {
+            return res;
           }
 
           if (typeof res !== 'undefined') {
@@ -242,8 +241,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         const res = executeStackFrame(childStackFrame, depth + 1);
 
-        if (res === TRAPPED) {
-          return TRAPPED;
+        if (isTrapped(res)) {
+          return res;
         }
 
         if (typeof res !== 'undefined') {
@@ -283,8 +282,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
       const res = executeStackFrame(childStackFrame, depth + 1);
 
-      if (res === TRAPPED) {
-        return TRAPPED;
+      if (isTrapped(res)) {
+        return res;
       }
 
       if (!isZero(res)) {
@@ -297,8 +296,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         const res = executeStackFrame(childStackFrame, depth + 1);
 
-        if (res === TRAPPED) {
-          return TRAPPED;
+        if (isTrapped(res)) {
+          return res;
         }
 
         if (typeof res !== 'undefined') {
@@ -315,8 +314,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         const res = executeStackFrame(childStackFrame, depth + 1);
 
-        if (res === TRAPPED) {
-          return TRAPPED;
+        if (isTrapped(res)) {
+          return res;
         }
 
         if (typeof res !== 'undefined') {
@@ -338,7 +337,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     case 'trap': {
       // signalling abrupt termination
       // https://webassembly.github.io/spec/exec/runtime.html#syntax-trap
-      return TRAPPED;
+      return createTrap();
     }
 
     /**
@@ -370,8 +369,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         const res = executeStackFrame(childStackFrame, depth + 1);
 
-        if (res === TRAPPED) {
-          return TRAPPED;
+        if (isTrapped(res)) {
+          return res;
         }
 
         setLocal(index, res);
@@ -391,8 +390,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         const res = executeStackFrame(childStackFrame, depth + 1);
 
-        if (res === TRAPPED) {
-          return TRAPPED;
+        if (isTrapped(res)) {
+          return res;
         }
 
         setLocal(index, res);

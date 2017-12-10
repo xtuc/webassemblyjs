@@ -75,6 +75,8 @@ type StackLocal = {
   value: any;
 };
 
+type Signal = number;
+
 /**
  * Mocha
  */
