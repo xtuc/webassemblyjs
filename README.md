@@ -25,7 +25,7 @@ The parsing is available for the following formats:
 
 - [WebAssembly Text Format](https://webassembly.github.io/spec/text/index.html) (watf)
 - [WAST Script Syntax](https://github.com/WebAssembly/spec/tree/master/interpreter#scripts) (wast)
-- (soon) [WebAssembly Binary Format](https://webassembly.github.io/spec/binary/index.html) (wasm)
+- [WebAssembly Binary Format](https://webassembly.github.io/spec/binary/index.html) (wasm)
 
 ### Interpreter
 
@@ -52,6 +52,10 @@ The stack call depth is unspecified currently by WebAssembly and is controlled b
 #### Runtime
 
 Our runtime instance values.
+
+#### Signals
+
+- `trap` signal which aborts the execution
 
 ## Notes
 
