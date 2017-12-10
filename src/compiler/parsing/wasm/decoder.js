@@ -384,7 +384,18 @@ export function decode(ab: ArrayBuffer): Node {
     const code = state.elementsInCodeSection[funcIndex];
 
     const body = code.code.map((instr) => {
-      return t.instruction(instr.instruction.name, instr.args);
+
+      if (typeof instr.instruction.object === 'string') {
+
+        return t.objectInstruction(
+          instr.instruction.name,
+          instr.instruction.object,
+          instr.args
+        );
+      } else {
+
+        return t.instruction(instr.instruction.name, instr.args);
+      }
     });
 
     moduleFields.push(

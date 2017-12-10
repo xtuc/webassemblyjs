@@ -34,7 +34,8 @@
             },
             {
               "type": "Instr",
-              "id": "i32_add",
+              "id": "add",
+              "object": "i32",
               "args": []
             }
           ]
@@ -68,7 +69,8 @@
             },
             {
               "type": "Instr",
-              "id": "i32_add",
+              "id": "add",
+              "object": "i32",
               "args": []
             }
           ]

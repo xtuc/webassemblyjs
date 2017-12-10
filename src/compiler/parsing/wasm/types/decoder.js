@@ -9,6 +9,7 @@ type U32 = {
 
 type Symbol = {
   name: string;
+  object?: Valtype;
   numberOfArgs: number;
 };
 
