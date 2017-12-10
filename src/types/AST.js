@@ -1,5 +1,5 @@
 // @flow
-/* eslint-disable */
+
 type Valtype = 'i32' | 'i64' | 'f32' | 'f64' | 'label';
 type ExportDescr = 'func' | 'table' | 'memory' | 'global';
 type Index = NumberLiteral | Identifier;

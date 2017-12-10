@@ -3,22 +3,15 @@
 const t = require('../../AST');
 
 const {
-  symbols,
+  symbolsByByte,
   exportTypes,
   types,
   magicModuleHeader,
   valtypes,
   moduleVersion,
   sections,
-} = require('./op-constants');
+} = require('./constants');
 const {decodeUInt32, MAX_NUMBER_OF_BYTE_U32} = require('./LEB128');
-
-type Byte = number;
-
-type U32 = {
-  value: number;
-  nextIndex: number;
-}
 
 function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
 
@@ -38,7 +31,7 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
 export function decode(buf: Buffer): Node {
   let offset = 0;
 
-  function debug(msg: string) {
+  function debug(msg: string) { // eslint-disable-line
     // console.log('at #', offset + 1, ':', msg);
   }
 
@@ -46,7 +39,7 @@ export function decode(buf: Buffer): Node {
    * TODO(sven): we can atually use a same structure
    * we are adding incrementally new features
    */
-  const state = {
+  const state: State = {
     elementsInTypeSection: [],
     elementsInFuncSection: [],
     elementsInExportSection: [],
@@ -165,7 +158,9 @@ export function decode(buf: Buffer): Node {
 
   // Import section
   // https://webassembly.github.io/spec/binary/modules.html#binary-importsec
-  function parseImportSection() {}
+  function parseImportSection() {
+    throw new Error('Parsing the import section is not implemented yet');
+  }
 
   // Function section
   // https://webassembly.github.io/spec/binary/modules.html#function-section
@@ -187,7 +182,7 @@ export function decode(buf: Buffer): Node {
           throw new Error('Internal error: function signature not found');
         }
 
-        const id = 'func_' + index;
+        const id = t.identifier('func_' + index);
 
         state.elementsInFuncSection.push({
           id,
@@ -269,7 +264,7 @@ export function decode(buf: Buffer): Node {
         const instructionByte = readByte();
         eatBytes(1);
 
-        const instruction = symbols[instructionByte];
+        const instruction = symbolsByByte[instructionByte];
 
         if (typeof instruction === 'undefined') {
           throw new Error('Unexpected instruction: ' + instructionByte);
@@ -332,7 +327,7 @@ export function decode(buf: Buffer): Node {
     }
 
     case sections.importSection: {
-      throw new Error('importSection not implemented yet');
+      parseImportSection();
       break;
     }
 
@@ -377,48 +372,32 @@ export function decode(buf: Buffer): Node {
    */
   const moduleFields = [];
 
-  state.elementsInExportSection.forEach((moduleExport) => {
-
-    // moduleExport = {
-    //   name,
-    //   type,
-    //   signature,
-    //   index,
-    // }
+  state.elementsInExportSection.forEach((moduleExport: ElementInExportSection) => {
 
     moduleFields.push(
       t.moduleExport(
         moduleExport.name,
         moduleExport.type,
-        moduleExport.id,
+        moduleExport.id.name,
       )
     );
   });
 
-  state.elementsInFuncSection.forEach((func, funcIndex) => {
-
-    // func = {
-    //   signature,
-    // }
+  state.elementsInFuncSection.forEach((func: ElementInFuncSection, funcIndex) => {
 
     const params = func.signature.params.map((valtype: Valtype) => ({
       valtype,
       id: undefined,
     }));
 
-    // code = {
-    //   code,
-    //   locals,
-    // }
-
     const code = state.elementsInCodeSection[funcIndex];
 
-    const body = code.code.map(({instruction, args}) => {
-      return t.instruction(instruction.name, args);
+    const body = code.code.map((instr) => {
+      return t.instruction(instr.instruction.name, instr.args);
     });
 
     moduleFields.push(
-      t.func(func.id, params, func.signature.result[0], body)
+      t.func(func.id.name, params, func.signature.result[0], body)
     );
   });
 

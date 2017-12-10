@@ -6,6 +6,7 @@
 ./src/types/AST.js
 ./src/types/index.js
 ./src/types/userland.js
+./src/compiler/parsing/wasm/types/decoder.js
 
 [lints]
 

@@ -3,12 +3,10 @@ const illegalop = 'illegal';
 const magicModuleHeader = [0x00, 0x61, 0x73, 0x6d];
 const moduleVersion = [0x01, 0x00, 0x00, 0x00];
 
-type Symbol = {
-  name: string;
-  numberOfArgs: number;
-};
-
-function createSymbol(name: string, numberOfArgs: number = 0): Symbol {
+function createSymbol(
+  name/*: string */,
+  numberOfArgs/*: number*/ = 0,
+)/*: Symbol*/ {
   return {
     name,
     numberOfArgs,
@@ -49,7 +47,7 @@ const sections = {
   dataSection: 11,
 };
 
-const symbols = {
+const symbolsByByte = {
   0x00: createSymbol('unreachable'),
   0x01: createSymbol('nop'),
 
@@ -268,7 +266,7 @@ const symbols = {
 };
 
 module.exports = {
-  symbols,
+  symbolsByByte,
   sections,
   magicModuleHeader,
   moduleVersion,
