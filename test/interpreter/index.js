@@ -24,7 +24,7 @@ describe('interpreter', () => {
 
     testSuites.forEach((suite) => {
 
-      it(suite, () => new Promise((resolve) => {
+      describe(suite, () => {
         const execFile = path.join(path.dirname(suite), 'exec.tjs');
 
         const module = readFileSync(suite, 'utf8');
@@ -35,11 +35,11 @@ describe('interpreter', () => {
           watfmodule: module,
           console: global.console,
           assert: chai.assert,
-          ok: resolve,
+          it,
         };
 
         vm.runInNewContext(exec, sandbox);
-      }));
+      });
     });
 
   });
@@ -49,7 +49,7 @@ describe('interpreter', () => {
 
     testSuites.forEach((suite) => {
 
-      it(suite, () => new Promise((resolve) => {
+      describe(suite, () => {
         const execFile = path.join(path.dirname(suite), 'exec.tjs');
 
         const module = toArrayBuffer(new Buffer(readFileSync(suite, 'binary')));
@@ -60,11 +60,11 @@ describe('interpreter', () => {
           wasmmodule: module,
           console: global.console,
           assert: chai.assert,
-          ok: resolve,
+          it,
         };
 
         vm.runInNewContext(exec, sandbox);
-      }));
+      });
     });
 
   });

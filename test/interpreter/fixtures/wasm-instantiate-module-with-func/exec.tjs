@@ -1,10 +1,14 @@
 const m = WebAssembly.instantiate(wasmmodule);
 
-assert.typeOf(m, 'object')
-assert.typeOf(m.exports, 'object')
+it('should be an object', () => {
+  assert.typeOf(m, 'object')
+  assert.typeOf(m.exports, 'object')
+});
 
-assert.typeOf(m.exports.add, 'function')
+it('should have callable exports', () => {
+  assert.typeOf(m.exports.add, 'function')
+});
 
-assert.equal(m.exports.add(1, 1), 2);
-
-ok();
+it('should compute the correct value', () => {
+  assert.equal(m.exports.add(1, 1), 2);
+});
