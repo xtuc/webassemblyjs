@@ -6,7 +6,8 @@ This is meant to be a polyfill entirely written in JavaScript and with no depend
 
 ## Examples
 
-- [add](https://xtuc.github.io/js-webassembly-interpreter/examples/add.html)
+- [add WebAssembly Text Format](https://xtuc.github.io/js-webassembly-interpreter/examples/add-watf.html)
+- [add WebAssembly Binary Format](https://xtuc.github.io/js-webassembly-interpreter/examples/add-wasm.html)
 
 ## Components
 

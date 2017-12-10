@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Add wasm</title>
+
+    <style>
+      pre {
+        border: 1px solid lightgray;
+      }
+    </style>
+
+    <script src="https://bundle.run/webassembly-interpreter@0.0.4"></script>
+  </head>
+  <body>
+
+    JS:
+
+    <pre id="exec">
+request = new XMLHttpRequest();
+request.open('GET', 'add.wasm');
+request.responseType = 'arraybuffer';
+request.send();
+
+request.onload = function() {
+    var bytes = request.response;
+
+    var module = webassemblyInterpreter.instantiate(bytes);
+    var res = module.exports.add(1, 1);
+
+    document.getElementById("res").innerHTML = JSON.stringify(res, null, 2);
+};
+    </pre>
+
+    Result:
+
+    <pre id="res"></pre>
+
+    <script>
+      eval(document.getElementById("exec").innerText);
+    </script>
+  </body>
+</html>

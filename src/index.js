@@ -14,7 +14,18 @@ initializeMemory(1024);
 
 const WebAssembly = {
 
-  instantiate(buff: Buffer/*, importObject: Object */): UserlandModuleInstance {
+  instantiate(buff: ArrayBuffer/*, importObject: Object */): UserlandModuleInstance {
+
+    if (
+      buff instanceof ArrayBuffer === false
+      && buff instanceof Uint8Array === false
+    ) {
+      throw new Error(
+        'Module must be either an ArrayBuffer or an Uint8Array (BufferSource), '
+          + (typeof buff) + ' given'
+      );
+    }
+
     const ast = parseBinary(buff);
     return evaluateAst(ast);
   },
@@ -34,7 +45,7 @@ const _debug = {
     cb(ast);
   },
 
-  parseWASM(content: Buffer, cb: (ast: Node) => void) {
+  parseWASM(content: ArrayBuffer, cb: (ast: Node) => void) {
     const ast = parseBinary(content);
 
     cb(ast);

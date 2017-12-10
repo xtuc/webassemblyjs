@@ -8,6 +8,15 @@ const path = require('path');
 
 const {_debug} = require('../../../lib');
 
+function toArrayBuffer(buf) {
+  var ab = new ArrayBuffer(buf.length);
+  var view = new Uint8Array(ab);
+  for (var i = 0; i < buf.length; ++i) {
+    view[i] = buf[i];
+  }
+  return ab;
+}
+
 describe('compiler', () => {
 
   describe('WATF parsing', () => {
@@ -87,7 +96,7 @@ describe('compiler', () => {
           resolve();
         }
 
-        const bin = new Buffer(readFileSync(suite, 'binary'));
+        const bin = toArrayBuffer(new Buffer(readFileSync(suite, 'binary')));
 
         _debug.parseWASM(bin, check);
       }));

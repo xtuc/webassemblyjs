@@ -2,12 +2,20 @@
 
 const glob = require('glob');
 const chai = require('chai');
-const diff = require('jest-diff');
 const {readFileSync} = require('fs');
 const path = require('path');
 const vm = require('vm');
 
 const WebAssembly = require('../../lib');
+
+function toArrayBuffer(buf) {
+  var ab = new ArrayBuffer(buf.length);
+  var view = new Uint8Array(ab);
+  for (var i = 0; i < buf.length; ++i) {
+    view[i] = buf[i];
+  }
+  return ab;
+}
 
 describe('interpreter', () => {
 
@@ -44,7 +52,7 @@ describe('interpreter', () => {
       it(suite, () => new Promise((resolve) => {
         const execFile = path.join(path.dirname(suite), 'exec.tjs');
 
-        const module = new Buffer(readFileSync(suite, 'binary'));
+        const module = toArrayBuffer(new Buffer(readFileSync(suite, 'binary')));
         const exec = readFileSync(execFile, 'utf8');
 
         const sandbox = {

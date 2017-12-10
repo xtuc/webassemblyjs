@@ -28,7 +28,9 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
   return true;
 }
 
-export function decode(buf: Buffer): Node {
+export function decode(ab: ArrayBuffer): Node {
+  const buf = new Uint8Array(ab);
+
   let offset = 0;
 
   function debug(msg: string) { // eslint-disable-line
