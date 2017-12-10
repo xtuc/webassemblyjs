@@ -19,10 +19,10 @@ const types = {
 };
 
 const exportTypes = {
-  0x00: 'func',
-  0x01: 'table',
-  0x02: 'mem',
-  0x03: 'global',
+  0x00: 'Func',
+  0x01: 'Table',
+  0x02: 'Mem',
+  0x03: 'Global',
 };
 
 const valtypes = {

@@ -77,7 +77,7 @@
           "type": "ModuleExport",
           "name": "addTwo",
           "descr": {
-            "type": "func",
+            "type": "Func",
             "id": "func_0"
           }
         },
@@ -85,7 +85,7 @@
           "type": "ModuleExport",
           "name": "test",
           "descr": {
-            "type": "func",
+            "type": "Func",
             "id": "func_0"
           }
         }

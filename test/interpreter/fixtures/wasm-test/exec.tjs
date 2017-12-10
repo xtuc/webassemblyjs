@@ -1,5 +1,0 @@
-const m = WebAssembly.instantiate(wasmmodule);
-
-m.exports.add();
-
-ok();

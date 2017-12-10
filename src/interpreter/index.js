@@ -11,9 +11,7 @@ export function evaluateAst(ast: Node): UserlandModuleInstance {
 
   traverse(ast, {
 
-    Module(path) {
-      const node: Module = path.node;
-
+    Module({node}: NodePath<Module>) {
       const instance = createInstance(node);
 
       instance.exports.forEach((exportinst) => {
@@ -61,7 +59,7 @@ export function evaluateAst(ast: Node): UserlandModuleInstance {
 
           const stackFrame = createStackFrame(funcinst.code, argsWithType, funcinst.originatingModule);
 
-          // stackFrame.trace = (pc, i) => console.log('trace exec', pc, i);
+          // stackFrame.trace = (depth, pc, i) => console.log('trace exec', pc, i);
 
           const res = executeStackFrame(stackFrame);
 

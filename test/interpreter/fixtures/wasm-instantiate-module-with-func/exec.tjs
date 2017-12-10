@@ -1,0 +1,12 @@
+const m = WebAssembly.instantiate(wasmmodule);
+
+assert.typeOf(m, 'object')
+assert.typeOf(m.exports, 'object')
+
+assert.typeOf(m.exports.addTwo, 'function')
+assert.typeOf(m.exports.test, 'function')
+
+m.exports.addTwo(1,2);
+m.exports.test(1,2);
+
+ok();
