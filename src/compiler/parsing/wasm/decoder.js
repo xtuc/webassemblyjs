@@ -372,17 +372,6 @@ export function decode(buf: Buffer): Node {
    */
   const moduleFields = [];
 
-  state.elementsInExportSection.forEach((moduleExport: ElementInExportSection) => {
-
-    moduleFields.push(
-      t.moduleExport(
-        moduleExport.name,
-        moduleExport.type,
-        moduleExport.id.name,
-      )
-    );
-  });
-
   state.elementsInFuncSection.forEach((func: ElementInFuncSection, funcIndex) => {
 
     const params = func.signature.params.map((valtype: Valtype) => ({
@@ -401,6 +390,17 @@ export function decode(buf: Buffer): Node {
     );
   });
 
-  const module = t.module(undefined, moduleFields);
+  state.elementsInExportSection.forEach((moduleExport: ElementInExportSection) => {
+
+    moduleFields.push(
+      t.moduleExport(
+        moduleExport.name,
+        moduleExport.type,
+        moduleExport.id.name,
+      )
+    );
+  });
+
+  const module = t.module(null, moduleFields);
   return t.program([module]);
 }

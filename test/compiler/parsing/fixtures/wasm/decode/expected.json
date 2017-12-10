@@ -3,7 +3,76 @@
   "body": [
     {
       "type": "Module",
+      "id": null,
       "fields": [
+        {
+          "type": "Func",
+          "id": "func_0",
+          "params": [
+            {
+              "valtype": "i32"
+            },
+            {
+              "valtype": "i32"
+            }
+          ],
+          "result": "i32",
+          "body": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                0
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                1
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "i32_add",
+              "args": []
+            }
+          ]
+        },
+        {
+          "type": "Func",
+          "id": "func_0",
+          "params": [
+            {
+              "valtype": "i32"
+            },
+            {
+              "valtype": "i32"
+            }
+          ],
+          "result": "i32",
+          "body": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                0
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                1
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "i32_add",
+              "args": []
+            }
+          ]
+        },
         {
           "type": "ModuleExport",
           "name": "addTwo",
@@ -19,74 +88,6 @@
             "type": "func",
             "id": "func_0"
           }
-        },
-        {
-          "type": "Func",
-          "id": "func_0",
-          "params": [
-            {
-              "valtype": "i32"
-            },
-            {
-              "valtype": "i32"
-            }
-          ],
-          "result": "i32",
-          "body": [
-            {
-              "type": "Instr",
-              "id": "get_local",
-              "args": [
-                0
-              ]
-            },
-            {
-              "type": "Instr",
-              "id": "get_local",
-              "args": [
-                1
-              ]
-            },
-            {
-              "type": "Instr",
-              "id": "i32_add",
-              "args": []
-            }
-          ]
-        },
-        {
-          "type": "Func",
-          "id": "func_0",
-          "params": [
-            {
-              "valtype": "i32"
-            },
-            {
-              "valtype": "i32"
-            }
-          ],
-          "result": "i32",
-          "body": [
-            {
-              "type": "Instr",
-              "id": "get_local",
-              "args": [
-                0
-              ]
-            },
-            {
-              "type": "Instr",
-              "id": "get_local",
-              "args": [
-                1
-              ]
-            },
-            {
-              "type": "Instr",
-              "id": "i32_add",
-              "args": []
-            }
-          ]
         }
       ]
     }
