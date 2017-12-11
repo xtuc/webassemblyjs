@@ -10,7 +10,7 @@ const {Table} = require('./interpreter/runtime/values/table');
 
 const WebAssembly = {
 
-  instantiate(buff: ArrayBuffer, importObject: Object = {}): Promise<Instance> {
+  instantiate(buff: ArrayBuffer, importObject: ImportObject = {}): Promise<Instance> {
 
     return new Promise((resolve, reject) => {
 
@@ -45,11 +45,11 @@ const WebAssembly = {
     });
   },
 
-  instantiateFromSource(content: string): Instance {
+  instantiateFromSource(content: string, importObject: ImportObject = {}): Instance {
     const ast = parseSource(content);
     const module = createCompiledModule(ast);
 
-    return new Instance(module, {});
+    return new Instance(module, importObject);
   },
 
   Instance,

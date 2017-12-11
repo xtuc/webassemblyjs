@@ -4,6 +4,7 @@ const {assert} = require('chai');
 
 const t = require('../../../lib/compiler/AST');
 const modulevalue = require('../../../lib/interpreter/runtime/values/module');
+const tablevalue = require('../../../lib/interpreter/runtime/values/table');
 const funcvalue = require('../../../lib/interpreter/runtime/values/func');
 const i32 = require('../../../lib/interpreter/runtime/values/i32');
 const i64 = require('../../../lib/interpreter/runtime/values/i64');
@@ -218,5 +219,20 @@ describe('module create interface', () => {
 
     assert.equal(v.value, 'name');
     assert.equal(v.type, 'label');
+  });
+
+  describe('table', () => {
+
+    it('should initialized with a given length', () => {
+      const table = new tablevalue.Table({
+        initial: 2,
+        element: 'anyfunc',
+      });
+
+      assert.equal(table.length, 2);
+      assert.isNull(table.get(0));
+      assert.isNull(table.get(1));
+    });
+
   });
 });

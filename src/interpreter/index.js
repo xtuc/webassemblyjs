@@ -17,8 +17,9 @@ export class Instance {
 
   _allocator: Allocator;
   _moduleInstance: ModuleInstance;
+  _table: ?TableInstance;
 
-  constructor(module: Module, importObject?: any) {
+  constructor(module: Module, importObject: ImportObject) {
 
     if (module instanceof Module === false) {
 
@@ -34,6 +35,19 @@ export class Instance {
      * Create Module's memory allocator
      */
     this._allocator = createAllocator(DEFAULT_MEMORY);
+
+    /**
+     * Use importObject:
+     *
+     * - Table if provided
+     * - Memory if provided
+     */
+    if (typeof importObject.js === 'object') {
+
+      if (typeof importObject.js.tbl === 'object') {
+        this._table = importObject.js.tbl;
+      }
+    }
 
     const ast = module._ast;
     const moduleAst = getModuleFromProgram(ast);
@@ -51,6 +65,14 @@ export class Instance {
         exportinst,
         this._allocator,
       );
+
+      if (this._table != undefined) {
+
+        this._table.push(
+          this.exports[exportinst.name]
+        );
+      }
+
     });
 
     this._moduleInstance = moduleInstance;
@@ -101,6 +123,7 @@ function createHostfunc(
      * Check number of argument passed vs the function arity
      */
     const funcinstArgs = funcinst.type[0];
+
     if (args.length !== funcinstArgs.length) {
       throw new Error(
         'Function called with ' + args.length + ' arguments but '

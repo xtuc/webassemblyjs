@@ -1,0 +1,20 @@
+const tbl = new WebAssembly.Table({initial: 0, element: 'anyfunc'});
+
+const importObj = {
+  js: {
+    tbl,
+  },
+};
+
+WebAssembly.instantiateFromSource(watfmodule, importObj);
+
+it('should have entries in the table', () => {
+  assert.lengthOf(tbl, 1);
+
+  assert.typeOf(tbl.get(0), 'function');
+});
+
+it('should trigger the trap at first function', () => {
+  const fn = tbl.get(0);
+  assert.throws(fn);
+});

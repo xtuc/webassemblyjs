@@ -94,3 +94,8 @@ interface Allocator {
   set(Addr, any): void;
   free(Addr): void;
 }
+
+interface TableInstance {
+  get(number): ?Hostfunc;
+  push(Hostfunc): void;
+}
