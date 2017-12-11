@@ -94,7 +94,7 @@ describe('compiler', () => {
           resolve();
         }
 
-        const bin = toArrayBuffer(new Buffer(readFileSync(suite, 'binary')));
+        const bin = toArrayBuffer(readFileSync(suite, null));
 
         _debug.parseWASM(bin, check);
       }));

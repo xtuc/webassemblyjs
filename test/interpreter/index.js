@@ -50,7 +50,7 @@ describe('interpreter', () => {
       describe(suite, () => {
         const execFile = path.join(path.dirname(suite), 'exec.tjs');
 
-        const module = toArrayBuffer(new Buffer(readFileSync(suite, 'binary')));
+        const module = toArrayBuffer(readFileSync(suite, null));
         const exec = readFileSync(execFile, 'utf8');
 
         const sandbox = {
