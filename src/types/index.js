@@ -82,3 +82,15 @@ type Signal = number;
  */
 declare var it;
 declare var describe;
+
+interface Memory {
+  buffer: Array<any>;
+  offset: number;
+}
+
+interface Allocator {
+  malloc(Bytes): Addr;
+  get(Addr): any;
+  set(Addr, any): void;
+  free(Addr): void;
+}

@@ -2,26 +2,23 @@
 
 const {assert} = require('chai');
 
-const {
-  initializeMemory,
-  malloc,
-  set,
-  get,
-} = require('../../../lib/interpreter/kernel/memory');
+const {Memory} = require('../../../lib/interpreter/runtime/values/memory');
+const {createAllocator} = require('../../../lib/interpreter/kernel/memory');
 
 describe('kernel - memory management', () => {
+  const memory = new Memory({initial: 100});
 
   describe('memory allocation', () => {
 
     it('should start from NULL and increment', () => {
       const size = 8;
 
-      initializeMemory(512);
-      const p = malloc(size);
+      const allocator = createAllocator(memory);
+      const p = allocator.malloc(size);
 
       assert.equal(p.index, size);
 
-      const p2 = malloc(size);
+      const p2 = allocator.malloc(size);
       assert.equal(p2.index, size * 2);
     });
 
@@ -30,23 +27,23 @@ describe('kernel - memory management', () => {
   describe('set/get', () => {
 
     it('should get an empty value', () => {
-      initializeMemory(512);
-      const p = malloc(8);
+      const allocator = createAllocator(memory);
+      const p = allocator.malloc(8);
 
-      const value = get(p);
+      const value = allocator.get(p);
 
       assert.equal(value, undefined);
     });
 
     it('should get and set a value', () => {
-      initializeMemory(32);
+      const allocator = createAllocator(memory);
 
       const data = 1;
-      const p = malloc(1);
+      const p = allocator.malloc(1);
 
-      set(p, data);
+      allocator.set(p, data);
 
-      const value = get(p);
+      const value = allocator.get(p);
 
       assert.equal(value, data);
     });

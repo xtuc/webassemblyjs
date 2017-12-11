@@ -1,10 +1,9 @@
 // @flow
 
-const {malloc, set} = require('../../kernel/memory');
 const {traverse} = require('../../../compiler/AST/traverse');
 const func = require('./func');
 
-function createInstance(n: Module): ModuleInstance {
+function createInstance(allocator: Allocator, n: Module): ModuleInstance {
 
   // Keep a ref to the module instance
   const moduleInstance = {
@@ -32,8 +31,8 @@ function createInstance(n: Module): ModuleInstance {
     Func({node}: NodePath<Func>) {
       const funcinstance = func.createInstance(node, moduleInstance);
 
-      const addr = malloc(1 /* size of the funcinstance struct */);
-      set(addr, funcinstance);
+      const addr = allocator.malloc(1 /* size of the funcinstance struct */);
+      allocator.set(addr, funcinstance);
 
       moduleInstance.funcaddrs.push(addr);
 

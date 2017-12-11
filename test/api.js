@@ -23,7 +23,7 @@ describe('WebAssembly JavaScript API', () => {
 
     it('should be a function with 2 arguments', () => {
       assert.typeOf(WebAssembly.instantiate, 'Function');
-      assert.equal(WebAssembly.instantiate.length, 2);
+      assert.equal(WebAssembly.instantiate.length, 1 /* + one optional */);
     });
 
     it('should return a promise', () => {

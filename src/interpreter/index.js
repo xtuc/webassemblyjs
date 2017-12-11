@@ -2,16 +2,20 @@
 
 const {traverse} = require('../compiler/AST/traverse');
 const modulevalue = require('./runtime/values/module');
-const {get} = require('./kernel/memory');
 const {executeStackFrame} = require('./kernel/exec');
 const {createStackFrame} = require('./kernel/stackframe');
 const {isTrapped} = require('./kernel/signals');
 const {RuntimeError} = require('../errors');
 const {Module} = require('../compiler/compile/module');
+const {Memory} = require('./runtime/values/memory');
+const {createAllocator} = require('./kernel/memory');
+
+const DEFAULT_MEMORY = new Memory({initial: 1, maximum: 1024});
 
 export class Instance {
   exports: any;
 
+  _allocator: Allocator;
   _moduleInstance: ModuleInstance;
 
   constructor(module: Module, importObject?: any) {
@@ -26,6 +30,11 @@ export class Instance {
 
     this.exports = {};
 
+    /**
+     * Create Module's memory allocator
+     */
+    this._allocator = createAllocator(DEFAULT_MEMORY);
+
     const ast = module._ast;
     const moduleAst = getModuleFromProgram(ast);
 
@@ -33,10 +42,15 @@ export class Instance {
       throw new Error('Module not found');
     }
 
-    const moduleInstance = modulevalue.createInstance(moduleAst);
+    const moduleInstance = modulevalue.createInstance(this._allocator, moduleAst);
 
     moduleInstance.exports.forEach((exportinst) => {
-      this.exports[exportinst.name] = createHostfunc(moduleInstance, exportinst);
+
+      this.exports[exportinst.name] = createHostfunc(
+        moduleInstance,
+        exportinst,
+        this._allocator,
+      );
     });
 
     this._moduleInstance = moduleInstance;
@@ -56,7 +70,11 @@ function getModuleFromProgram(ast: Program): ?Module {
   return module;
 }
 
-function createHostfunc(moduleinst: ModuleInstance, exportinst: ExportInstance): Hostfunc {
+function createHostfunc(
+  moduleinst: ModuleInstance,
+  exportinst: ExportInstance,
+  allocator: Allocator,
+): Hostfunc {
 
   return function hostfunc(...args) {
     const exportinstAddr = exportinst.value.addr;
@@ -73,7 +91,7 @@ function createHostfunc(moduleinst: ModuleInstance, exportinst: ExportInstance):
       );
     }
 
-    const funcinst = get(exportinstAddr);
+    const funcinst = allocator.get(exportinstAddr);
 
     if (funcinst === null) {
       throw new Error(`Function was not found at addr ${exportinstAddr.index}`);

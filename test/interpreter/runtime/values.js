@@ -10,14 +10,18 @@ const i64 = require('../../../lib/interpreter/runtime/values/i64');
 const f32 = require('../../../lib/interpreter/runtime/values/f32');
 const f64 = require('../../../lib/interpreter/runtime/values/f64');
 const label = require('../../../lib/interpreter/runtime/values/label');
+const {Memory} = require('../../../lib/interpreter/runtime/values/memory');
+const {createAllocator} = require('../../../lib/interpreter/kernel/memory');
 
 describe('module create interface', () => {
+  const memory = new Memory({initial: 100});
+  const allocator = createAllocator(memory);
 
   describe('module exports', () => {
 
     it('should handle no export', () => {
       const node = t.module();
-      const instance = modulevalue.createInstance(node);
+      const instance = modulevalue.createInstance(allocator, node);
 
       assert.typeOf(instance.exports, 'array');
       assert.lengthOf(instance.exports, 0);
@@ -31,7 +35,7 @@ describe('module create interface', () => {
         t.moduleExport(exportName, 'Func', exportName)
       ]);
 
-      const instance = modulevalue.createInstance(node);
+      const instance = modulevalue.createInstance(allocator, node);
 
       assert.typeOf(instance.exports, 'array');
       assert.lengthOf(instance.exports, 1);
