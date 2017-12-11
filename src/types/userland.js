@@ -1,5 +1,19 @@
 // @flow
 
-type UserlandModuleInstance = {
-  exports: any;
+type CompiledModule = {
+  exports: Array<CompiledModuleExportDescr>;
+  imports: Array<CompiledModuleImportDescr>;
 }
+
+type CompiledModuleExportDescr = {
+  name: string;
+  kind: string;
+}
+
+type CompiledModuleImportDescr = {
+  module: string;
+  name: string;
+  kind: string;
+}
+
+type Hostfunc = any;

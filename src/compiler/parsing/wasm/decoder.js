@@ -28,7 +28,7 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
   return true;
 }
 
-export function decode(ab: ArrayBuffer): Node {
+export function decode(ab: ArrayBuffer): Program {
   const buf = new Uint8Array(ab);
 
   let offset = 0;

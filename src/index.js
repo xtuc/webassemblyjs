@@ -2,9 +2,10 @@
 
 const {parseSource} = require('./compiler/parsing/watf');
 const {parseBinary} = require('./compiler/parsing/wasm');
-const {evaluateAst} = require('./interpreter');
+const {Instance} = require('./interpreter');
 const {initializeMemory} = require('./interpreter/kernel/memory');
-const {RuntimeError} = require('./interpreter/errors');
+const {RuntimeError, CompileError, LinkError} = require('./errors');
+const {createCompiledModule, Module} = require('./compiler/compile/module');
 
 /**
  * Initialize the memory chunk used for allocation
@@ -15,7 +16,7 @@ initializeMemory(1024);
 
 const WebAssembly = {
 
-  instantiate(buff: ArrayBuffer/*, importObject: Object */): Promise<UserlandModuleInstance> {
+  instantiate(buff: ArrayBuffer, importObject?: Object): Promise<Instance> {
 
     return new Promise((resolve, reject) => {
 
@@ -25,25 +26,43 @@ const WebAssembly = {
       ) {
         return reject(
           'Module must be either an ArrayBuffer or an Uint8Array (BufferSource), '
-            + (typeof buff) + ' given'
+            + (typeof buff) + ' given.'
         );
       }
 
       const ast = parseBinary(buff);
+      const module = createCompiledModule(ast);
 
       resolve(
-        evaluateAst(ast)
+        new Instance(module)
       );
 
     });
   },
 
-  instantiateFromSource(content: string): UserlandModuleInstance {
-    const ast = parseSource(content);
-    return evaluateAst(ast);
+  compile(buff: ArrayBuffer): Promise<CompiledModule> {
+
+    return new Promise((resolve) => {
+      const ast = parseBinary(buff);
+
+      resolve(
+        createCompiledModule(ast)
+      );
+    });
   },
 
+  instantiateFromSource(content: string): Instance {
+    const ast = parseSource(content);
+    const module = createCompiledModule(ast);
+
+    return new Instance(module, {});
+  },
+
+  Instance,
+  Module,
   RuntimeError,
+  LinkError,
+  CompileError,
 };
 
 const _debug = {
