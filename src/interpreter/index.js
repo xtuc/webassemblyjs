@@ -119,9 +119,7 @@ function createHostfunc(
 
     const stackFrame = createStackFrame(funcinst.code, argsWithType, funcinst.originatingModule);
 
-    if (typeof window !== 'undefined' && typeof window._enableStackframeExecutionTracing === 'function') {
-      stackFrame.trace = window._enableStackframeExecutionTracing;
-    }
+    stackFrame.trace = (depth, pc, i) => console.log('trace exec', 'depth:' + depth, 'pc:' + pc, i);
 
     const res = executeStackFrame(stackFrame);
 
