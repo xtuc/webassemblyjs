@@ -9,12 +9,10 @@ const path = require('path');
 const {_debug} = require('../../../lib');
 
 function toArrayBuffer(buf) {
-  var ab = new ArrayBuffer(buf.length);
-  var view = new Uint8Array(ab);
-  for (var i = 0; i < buf.length; ++i) {
-    view[i] = buf[i];
-  }
-  return ab;
+  return buf.buffer.slice(
+    buf.byteOffset,
+    buf.byteOffset + buf.byteLength
+  );
 }
 
 describe('compiler', () => {
