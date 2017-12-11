@@ -5,7 +5,6 @@
  *
  * Changes made by the xtuc/js-webassembly-interpreter contributors:
  * - refactor: move alls functions into one file and remove the unused functions
- * - feat: remove decode on signed values
  * - feat: added some constants
  */
 
@@ -15,13 +14,19 @@
  */
 export const MAX_NUMBER_OF_BYTE_U32 = 5;
 
+/**
+ * According to https://webassembly.github.io/spec/binary/values.html#binary-int
+ * max = ceil(64/7)
+ */
+export const MAX_NUMBER_OF_BYTE_U64 = 10;
+
 /** Maximum length of kept temporary buffers. */
 const TEMP_BUF_MAXIMUM_LENGTH = 20;
 
 /** Pool of buffers, where `bufPool[x].length === x`. */
 const bufPool = [];
 
-function decode(encodedBuffer, index) {
+function decodeBufferCommon(encodedBuffer, index, signed) {
   index = (index === undefined) ? 0 : index;
 
   let length = encodedLength(encodedBuffer, index);
@@ -37,10 +42,23 @@ function decode(encodedBuffer, index) {
     length--;
   }
 
-  const signed = false;
+  let signBit;
+  let signByte;
 
-  const signBit = 0;
-  const signByte = 0;
+  if (signed) {
+    // Sign-extend the last byte.
+    let lastByte = result[byteLength - 1];
+    const endBit = outIndex % 8;
+    if (endBit !== 0) {
+      const shift = 32 - endBit; // 32 because JS bit ops work on 32-bit ints.
+      lastByte = result[byteLength - 1] = ((lastByte << shift) >> shift) & 0xff;
+    }
+    signBit = lastByte >> 7;
+    signByte = signBit * 0xff;
+  } else {
+    signBit = 0;
+    signByte = 0;
+  }
 
   // Slice off any superfluous bytes, that is, ones that add no meaningful
   // bits (because the value would be the same if they were removed).
@@ -158,8 +176,19 @@ function bufFree(buffer) {
   }
 }
 
+export function decodeUInt64(encodedBuffer, index) {
+  const result = decodeBufferCommon(encodedBuffer, index, false);
+  const parsed = bufReadUInt(result.value);
+  const value = parsed.value;
+
+  bufFree(result.value);
+
+  return {value: value, nextIndex: result.nextIndex, lossy: parsed.lossy};
+}
+
+
 export function decodeUInt32(encodedBuffer, index) {
-  const result = decode(encodedBuffer, index);
+  const result = decodeBufferCommon(encodedBuffer, index, false);
   const parsed = bufReadUInt(result.value);
   const value = parsed.value;
 
