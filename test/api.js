@@ -74,4 +74,30 @@ describe('WebAssembly JavaScript API', () => {
 
   });
 
+  describe('WebAssembly.Table', () => {
+
+    it('should have a constructor', () => {
+      assert.typeOf(WebAssembly.Table, 'function');
+      assert.typeOf(WebAssembly.Table.constructor, 'Function');
+      assert.equal(WebAssembly.Table.length, 1);
+    });
+
+    it('should expect a TableDescriptor object', () => {
+      const fn = () => new WebAssembly.Table('');
+
+      assert.throws(fn, TypeError, 'TableDescriptor must be an object');
+    });
+
+    it('should ensure that initial < maximum', () => {
+      const fn = () => new WebAssembly.Table({
+        element: 'anyfunc',
+        initial: 10,
+        maximum: 1,
+      });
+
+      assert.throws(fn, RangeError, 'Initial number can not be higher than the maximum');
+    });
+
+  });
+
 });

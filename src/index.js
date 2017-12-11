@@ -7,6 +7,7 @@ const {initializeMemory} = require('./interpreter/kernel/memory');
 const {RuntimeError, CompileError, LinkError} = require('./errors');
 const {createCompiledModule, Module} = require('./compiler/compile/module');
 const {Memory} = require('./interpreter/kernel/memory');
+const {Table} = require('./interpreter/runtime/values/table');
 
 /**
  * Initialize the memory chunk used for allocation
@@ -62,6 +63,7 @@ const WebAssembly = {
   Instance,
   Module,
   Memory,
+  Table,
   RuntimeError,
   LinkError,
   CompileError,

@@ -22,3 +22,9 @@ type MemoryDescriptor = {
   initial: number;
   maximum?: number;
 };
+
+type TableDescriptor = {
+  element: string;
+  initial: number;
+  maximum?: number;
+};
