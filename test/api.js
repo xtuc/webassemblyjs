@@ -50,7 +50,26 @@ describe('WebAssembly JavaScript API', () => {
       assert.typeOf(WebAssembly.compile, 'function');
     });
 
-    xit('should return a WebAssembly.Module instance', () => {
+  });
+
+  describe('WebAssembly.Memory', () => {
+
+    it('should have a constructor', () => {
+      assert.typeOf(WebAssembly.Memory, 'function');
+      assert.typeOf(WebAssembly.Memory.constructor, 'Function');
+      assert.equal(WebAssembly.Memory.length, 1);
+    });
+
+    it('should expect a MemoryDescriptor object', () => {
+      const fn = () => new WebAssembly.Memory('');
+
+      assert.throws(fn, TypeError, 'MemoryDescriptor must be an object');
+    });
+
+    it('should ensure that initial < maximum', () => {
+      const fn = () => new WebAssembly.Memory({initial: 10, maximum: 1});
+
+      assert.throws(fn, RangeError, 'Initial memory can not be higher than the maximum');
     });
 
   });

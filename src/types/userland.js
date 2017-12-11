@@ -17,3 +17,8 @@ type CompiledModuleImportDescr = {
 }
 
 type Hostfunc = any;
+
+type MemoryDescriptor = {
+  initial: number;
+  maximum?: number;
+};
