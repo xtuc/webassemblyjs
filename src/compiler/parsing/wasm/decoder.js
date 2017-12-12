@@ -2,8 +2,6 @@
 
 const t = require('../../AST');
 
-const DEBUG = false;
-
 const {
   importTypes,
   symbolsByByte,
@@ -49,13 +47,13 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
   return true;
 }
 
-export function decode(ab: ArrayBuffer): Program {
+export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   const buf = new Uint8Array(ab);
 
   let offset = 0;
 
   function dump(b: Array<Byte>, msg: string) {
-    if (!DEBUG) return;
+    if (!printDump) return;
 
     const pad = '\t\t\t\t\t\t\t\t\t\t';
 
@@ -69,7 +67,7 @@ export function decode(ab: ArrayBuffer): Program {
   }
 
   function dumpSep(msg: string) {
-    if (!DEBUG) return;
+    if (!printDump) return;
 
     console.log(';', msg);
   }
