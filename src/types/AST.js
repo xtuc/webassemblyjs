@@ -121,22 +121,51 @@ type Limit = {
   max?: number;
 }
 
-type GlobalImportDescr = {
-  type: 'GlobalImportDescr';
-  valtype: Valtype;
-  mutability: Mutability;
-};
-
 type FuncImportDescr = {
   type: 'FuncImportDescr';
   value: NumberLiteral;
 }
 
-type ImportDescr = FuncImportDescr | GlobalImportDescr;
+type ImportDescr = FuncImportDescr | GlobalType;
 
 interface ModuleImport {
   type: 'ModuleImport';
   module: string;
   name: string;
   descr: ImportDescr;
+}
+
+type Table = {
+  type: 'Table';
+  elementType: 'anyfunc';
+  limits: Limit;
+}
+
+type Memory = {
+  type: 'Memory';
+  limits: Limit;
+}
+
+type ByteArray = {
+  type: 'Bytes';
+  values: Array<Byte>;
+}
+
+type Data = {
+  type: 'Data';
+  memoryIndex: Index;
+  offset: Array<Node>;
+  init: ByteArray;
+}
+
+type Global = {
+  type: 'Global';
+  globalType: GlobalType;
+  init: Array<Node>;
+}
+
+type GlobalType = {
+  type: 'GlobalType';
+  valtype: Valtype;
+  mutability: Mutability;
 }

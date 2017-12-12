@@ -83,7 +83,7 @@ type Signal = number;
 declare var it;
 declare var describe;
 
-interface Memory {
+interface MemoryInstance {
   buffer: Array<any>;
   offset: number;
 }

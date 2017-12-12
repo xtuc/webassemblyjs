@@ -6,7 +6,7 @@ export const NULL = 0x0;
 // FIXME(sven): remove this ^
 export const ptrsize = 1;
 
-export function createAllocator(memory: Memory): Allocator {
+export function createAllocator(memory: MemoryInstance): Allocator {
   const heap = memory.buffer;
 
   if (heap === null) {

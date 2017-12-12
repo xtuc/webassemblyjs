@@ -198,3 +198,64 @@ export function funcImportDescr(value: NumberLiteral): FuncImportDescr {
     value,
   };
 }
+
+export function table(elementType: string, limits: Limit): Table {
+
+  return {
+    type: 'Table',
+    elementType,
+    limits,
+  };
+}
+
+export function limits(min: number, max?: number): Limit {
+
+  return {
+    type: 'Limit',
+    min,
+    max,
+  };
+}
+
+export function memory(limits: Limit): Memory {
+
+  return {
+    type: 'Memory',
+    limits,
+  };
+}
+
+export function data(memoryIndex: Index, offset: Array<Node>, init: ByteArray): Data {
+
+  return {
+    type: 'Data',
+    memoryIndex,
+    offset,
+    init,
+  };
+}
+
+export function global(globalType: GlobalType, init: Array<Node>): Global {
+
+  return {
+    type: 'Global',
+    globalType,
+    init,
+  };
+}
+
+export function globalType(valtype: Valtype, mut: Mutability): GlobalType {
+
+  return {
+    type: 'GlobalType',
+    valtype,
+    mut,
+  };
+}
+
+export function byteArray(values: Array<Byte>): ByteArray {
+  return {
+    type: 'Bytes',
+    values,
+  };
+}

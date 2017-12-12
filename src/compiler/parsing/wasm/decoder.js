@@ -233,6 +233,7 @@ export function decode(ab: ArrayBuffer): Program {
   // Type section
   // https://webassembly.github.io/spec/binary/modules.html#binary-typesec
   function parseTypeSection(numberOfTypes: number) {
+
     dump([numberOfTypes], 'num types');
 
     for (let i = 0; i < numberOfTypes; i++) {
@@ -311,9 +312,7 @@ export function decode(ab: ArrayBuffer): Program {
 
       } else if (descrType === 'global') {
 
-        const globalType = parseGlobalType();
-
-        importDescr = t.globalImportDescr(globalType.type, globalType.globalType);
+        importDescr = parseGlobalType();
 
       } else {
         throw new Error('Unsupported import of type: ' + descrType);
@@ -621,7 +620,8 @@ export function decode(ab: ArrayBuffer): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
-  function parseTableSection() {
+  function parseTableSection(): Array<Table> {
+    const tables = [];
 
     const u32 = readU32();
     const numberOfTable = u32.value;
@@ -630,28 +630,32 @@ export function decode(ab: ArrayBuffer): Program {
     dump([numberOfTable], 'num tables');
 
     for (let i = 0; i < numberOfTable; i++) {
-      const elementType = readByte();
+      const elementTypeByte = readByte();
       eatBytes(1);
 
-      dump([elementType], 'element type');
+      dump([elementTypeByte], 'element type');
 
-      if (typeof tableTypes[elementType] === 'undefined') {
+      const elementType = tableTypes[elementTypeByte];
+
+      if (typeof elementType === 'undefined') {
         throw new Error('Unknown element type in table: ' + toHex(elementType));
       }
 
       const limitType = readByte();
       eatBytes(1);
 
+      let min, max;
+
       if (limitHasMaximum[limitType] === true) {
 
         const u32min = readU32();
-        const min = u32min.value;
+        min = u32min.value;
         eatBytes(u32min.nextIndex);
 
         dump([min], 'min');
 
         const u32max = readU32();
-        const max = u32max.value;
+        max = u32max.value;
         eatBytes(u32max.nextIndex);
 
         dump([max], 'max');
@@ -659,16 +663,22 @@ export function decode(ab: ArrayBuffer): Program {
       } else {
 
         const u32min = readU32();
-        const min = u32min.value;
+        min = u32min.value;
         eatBytes(u32min.nextIndex);
 
         dump([min], 'min');
       }
+
+      tables.push(
+        t.table(elementType, t.limits(min, max))
+      );
     }
+
+    return tables;
   }
 
   // https://webassembly.github.io/spec/binary/types.html#global-types
-  function parseGlobalType() {
+  function parseGlobalType(): GlobalType {
 
     const valtypeByte = readByte();
     eatBytes(1);
@@ -690,13 +700,11 @@ export function decode(ab: ArrayBuffer): Program {
       throw new Error('Unknown global type: ' + toHex(globalTypeByte));
     }
 
-    return {
-      type,
-      globalType,
-    };
+    return t.globalType(type, globalType);
   }
 
-  function parseGlobalSection() {
+  function parseGlobalSection(): Array<Global> {
+    const globals = [];
 
     const numberOfGlobalsu32 = readU32();
     const numberOfGlobals = numberOfGlobalsu32.value;
@@ -706,17 +714,22 @@ export function decode(ab: ArrayBuffer): Program {
 
     for (let i = 0; i < numberOfGlobals; i++) {
 
-      parseGlobalType();
+      const globalType = parseGlobalType();
 
       /**
        * Global expressions
        */
-      const body = [];
+      const init = [];
 
-      parseInstructionBlock(body);
+      parseInstructionBlock(init);
+
+      globals.push(
+        t.global(globalType, init)
+      );
 
     }
 
+    return globals;
   }
 
   function parseElemSection() {
@@ -764,7 +777,8 @@ export function decode(ab: ArrayBuffer): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#memory-section
-  function parseMemorySection() {
+  function parseMemorySection(): Array<Memory> {
+    const memories = [];
 
     const numberOfElementsu32 = readU32();
     const numberOfElements = numberOfElementsu32.value;
@@ -777,16 +791,18 @@ export function decode(ab: ArrayBuffer): Program {
       const limitType = readByte();
       eatBytes(1);
 
+      let min, max;
+
       if (limitHasMaximum[limitType] === true) {
 
         const u32min = readU32();
-        const min = u32min.value;
+        min = u32min.value;
         eatBytes(u32min.nextIndex);
 
         dump([min], 'min');
 
         const u32max = readU32();
-        const max = u32max.value;
+        max = u32max.value;
         eatBytes(u32max.nextIndex);
 
         dump([max], 'max');
@@ -794,14 +810,18 @@ export function decode(ab: ArrayBuffer): Program {
       } else {
 
         const u32min = readU32();
-        const min = u32min.value;
+        min = u32min.value;
         eatBytes(u32min.nextIndex);
 
         dump([min], 'min');
       }
 
+      memories.push(
+        t.memory(t.limits(min, max))
+      );
     }
 
+    return memories;
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-startsec
@@ -821,7 +841,8 @@ export function decode(ab: ArrayBuffer): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#data-section
-  function parseDataSection() {
+  function parseDataSection(): Array<Data> {
+    const dataEntries = [];
 
     const numberOfElementsu32 = readU32();
     const numberOfElements = numberOfElementsu32.value;
@@ -840,10 +861,25 @@ export function decode(ab: ArrayBuffer): Program {
       const instrus = [];
       parseInstructionBlock(instrus);
 
-      const bytes: Array<Byte> = parseVec((b) => b);
+      let bytes: Array<Byte> = parseVec((b) => b);
 
-      dump(bytes, 'bytes');
+      // FIXME(sven): the Go binary can store > 100kb of data here
+      // my testing suite doesn't handle that.
+      // Disabling for now.
+      bytes = [];
+
+      dump([], 'init');
+
+      dataEntries.push(
+        t.data(
+          t.numberLiteral(memoryIndex),
+          instrus,
+          t.byteArray(bytes),
+        )
+      );
     }
+
+    return dataEntries;
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
@@ -875,8 +911,7 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      parseTableSection();
-      break;
+      return parseTableSection();
     }
 
     case sections.importSection: {
@@ -937,8 +972,7 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      parseGlobalSection();
-      break;
+      return parseGlobalSection();
     }
 
     case sections.memorySection: {
@@ -946,8 +980,7 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      parseMemorySection();
-      break;
+      return parseMemorySection();
     }
 
     case sections.dataSection: {
@@ -955,17 +988,17 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      parseDataSection();
-      break;
+      return parseDataSection();
     }
 
     case sections.customSection: {
       dumpSep('section Custom');
       dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+      dump([sectionSizeInBytes], 'section size');
 
       // We don't need to parse it, just eat all the bytes
       eatBytes(sectionSizeInBytes);
+
       break;
     }
 
@@ -974,6 +1007,8 @@ export function decode(ab: ArrayBuffer): Program {
     }
 
     }
+
+    return [];
   }
 
   parseModuleHeader();
@@ -986,10 +1021,7 @@ export function decode(ab: ArrayBuffer): Program {
    */
   while (offset < buf.length) {
     const nodes = parseSection();
-
-    if (typeof nodes !== 'undefined' && nodes.length > 0) {
-      moduleFields.push(nodes);
-    }
+    moduleFields.push(...nodes);
   }
 
   /**
