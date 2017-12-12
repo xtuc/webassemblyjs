@@ -42,6 +42,19 @@ const valtypes = {
   0x7c: 'f64',
 };
 
+const limitHasMaximum = {
+  0x00: false,
+  0x01: true,
+};
+
+const tableTypes = {
+  0x70: 'anyfunc',
+};
+
+const resultTypes = Object.assign({}, valtypes, {
+  0x40: 'empty',
+});
+
 const sections = {
   customSection: 0,
   typeSection: 1,
@@ -283,4 +296,7 @@ module.exports = {
   types,
   valtypes,
   exportTypes,
+  resultTypes,
+  limitHasMaximum,
+  tableTypes,
 };

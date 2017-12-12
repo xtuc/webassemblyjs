@@ -4,6 +4,9 @@ const t = require('../../AST');
 
 const {
   symbolsByByte,
+  resultTypes,
+  tableTypes,
+  limitHasMaximum,
   exportTypes,
   types,
   magicModuleHeader,
@@ -12,6 +15,10 @@ const {
   sections,
 } = require('./constants');
 const {decodeUInt32, MAX_NUMBER_OF_BYTE_U32} = require('./LEB128');
+
+function toHex(n: number): string {
+  return '0x' + Number(n).toString('16');
+}
 
 function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
 
@@ -33,8 +40,15 @@ export function decode(ab: ArrayBuffer): Program {
 
   let offset = 0;
 
-  function debug(msg: string) { // eslint-disable-line
-    // console.log('at #', offset + 1, ':', msg);
+  function dump(b: Array<Byte>, msg: string) {
+    const pad = '\t\t\t\t';
+    b = b.map(toHex).join(' ');
+
+    console.log(b, pad, ';', msg);
+  }
+
+  function dumpSep(msg: string) {
+    console.log(';', msg);
   }
 
   /**
@@ -86,7 +100,7 @@ export function decode(ab: ArrayBuffer): Program {
       throw new Error('magic header not detected');
     }
 
-    debug('module header');
+    dump(header, 'wasm magic: header');
 
     eatBytes(4);
   }
@@ -98,7 +112,7 @@ export function decode(ab: ArrayBuffer): Program {
       throw new Error('unknown wasm version: ' + version.join(' '));
     }
 
-    debug('module version');
+    dump(version, 'wasm version');
 
     eatBytes(4);
   }
@@ -110,7 +124,7 @@ export function decode(ab: ArrayBuffer): Program {
     const length = u32.value;
     eatBytes(u32.nextIndex);
 
-    debug('parse vec of ' + length + ' elements');
+    dump([length], 'number');
 
     if (length === 0) {
       return [];
@@ -128,6 +142,8 @@ export function decode(ab: ArrayBuffer): Program {
         throw new Error('Internal failure: parseVec could not cast the value');
       }
 
+      dump([byte], value);
+
       elements.push(value);
     }
 
@@ -137,14 +153,17 @@ export function decode(ab: ArrayBuffer): Program {
   // Type section
   // https://webassembly.github.io/spec/binary/modules.html#binary-typesec
   function parseTypeSection(numberOfTypes: number) {
-    debug('parse section type');
+    dump([numberOfTypes], 'num types');
 
     for (let i = 0; i < numberOfTypes; i++) {
+      dumpSep('type ' + i);
 
       const type = readByte();
       eatBytes(1);
 
       if (type == types.func) {
+        dump([type], 'func');
+
         const params: Array<Valtype> = parseVec((b) => valtypes[b]);
         const result: Array<Valtype> = parseVec((b) => valtypes[b]);
 
@@ -167,8 +186,6 @@ export function decode(ab: ArrayBuffer): Program {
   // Function section
   // https://webassembly.github.io/spec/binary/modules.html#function-section
   function parseFuncSection() {
-    debug('parse section func');
-
     const indices: Array<number> = parseVec((x) => x);
 
     indices
@@ -196,13 +213,11 @@ export function decode(ab: ArrayBuffer): Program {
   // Export section
   // https://webassembly.github.io/spec/binary/modules.html#export-section
   function parseExportSection() {
-    debug('parse section export');
-
     const u32 = readU32();
     const numberOfExport = u32.value;
     eatBytes(u32.nextIndex);
 
-    debug(numberOfExport + ' export(s)');
+    dump([numberOfExport], 'num exports');
 
     // Parse vector of exports
     for (let i = 0; i < numberOfExport; i++) {
@@ -211,16 +226,24 @@ export function decode(ab: ArrayBuffer): Program {
       const nameStringLength = u32.value;
       eatBytes(u32.nextIndex);
 
+      dump([nameStringLength], 'string length');
+
       const nameByteArray = readBytes(nameStringLength);
       eatBytes(nameStringLength);
 
       const name = String.fromCharCode(...nameByteArray);
 
+      dump(nameByteArray, `export name (${name})`);
+
       const typeIndex = readByte();
       eatBytes(1);
 
+      dump([typeIndex], 'export kind');
+
       const index = readByte();
       eatBytes(1);
+
+      dump([index], 'export func index');
 
       const func = state.elementsInFuncSection[index];
 
@@ -242,21 +265,22 @@ export function decode(ab: ArrayBuffer): Program {
   // Code section
   // https://webassembly.github.io/spec/binary/modules.html#code-section
   function parseCodeSection() {
-    debug('parse section code');
-
     const u32 = readU32();
     const numberOfFuncs = u32.value;
     eatBytes(u32.nextIndex);
 
-    debug(numberOfFuncs + ' function(s)');
+    dump([numberOfFuncs], 'number functions');
 
     // Parse vector of function
     for (let i = 0; i < numberOfFuncs; i++) {
-      debug('start parsing function');
+
+      dumpSep('function body ' + i);
 
       // Body size of the function, ignore it for now
       const bodySizeU32 = readU32();
       eatBytes(bodySizeU32.nextIndex);
+
+      dump([0x0], 'function body size (guess)');
 
       const locals: Array<Valtype> = parseVec((b) =>  valtypes[b]);
       const code = [];
@@ -267,6 +291,8 @@ export function decode(ab: ArrayBuffer): Program {
         eatBytes(1);
 
         const instruction = symbolsByByte[instructionByte];
+
+        dump([instructionByte], instruction.name);
 
         if (typeof instruction === 'undefined') {
           throw new Error('Unexpected instruction: ' + instructionByte);
@@ -285,6 +311,8 @@ export function decode(ab: ArrayBuffer): Program {
           const u32 = readU32();
           eatBytes(u32.nextIndex);
 
+          dump([u32.value], 'local index');
+
           args.push(u32.value);
         }
 
@@ -298,9 +326,67 @@ export function decode(ab: ArrayBuffer): Program {
         code,
         locals,
       });
-
-      debug('end parsing function, ' + code.length + ' instruction(s)');
     }
+  }
+
+  // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
+  function parseTableSection() {
+
+    const u32 = readU32();
+    const numberOfTable = u32.value;
+    eatBytes(u32.nextIndex);
+
+    for (let i = 0; i < numberOfTable; i++) {
+
+      const elementType = readByte();
+      eatBytes(1);
+
+      if (typeof tableTypes[elementType] === 'undefined') {
+        throw new Error('Unknown element type in table: ' + toHex(elementType));
+      }
+
+      console.log('element type', elementType);
+
+      const limitType = readByte();
+      eatBytes(1);
+
+      if (limitHasMaximum[limitType] === true) {
+
+        const u32min = readU32();
+        const min = u32min.value;
+        eatBytes(u32min.nextIndex);
+
+        const u32max = readU32();
+        const max = u32max.value;
+        eatBytes(u32max.nextIndex);
+
+        console.log('table with (min max)', min, max);
+
+      } else {
+
+        const u32min = readU32();
+        const min = u32min.value;
+        eatBytes(u32min.nextIndex);
+
+        console.log('table with (min)', min);
+      }
+    }
+  }
+
+  // https://webassembly.github.io/spec/binary/modules.html#binary-startsec
+  function parseStartSection() {
+
+    const u32 = readU32();
+    const startFuncIndex = u32.value;
+    eatBytes(u32.nextIndex);
+
+    const func = state.elementsInFuncSection[startFuncIndex];
+
+    if (typeof func === 'undefined') {
+      throw new Error('Unknown start function');
+    }
+
+    console.log('startFuncIndex', startFuncIndex);
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
@@ -308,18 +394,17 @@ export function decode(ab: ArrayBuffer): Program {
     const sectionId = readByte();
     eatBytes(1);
 
-    debug('start parse section ' + sectionId);
-
-    /**
-     * FIXME(sven): ignore for new the section size
-     */
     const u32 = readU32();
-    const sectionSize = u32.value; // eslint-disable-line
+    const sectionSizeInBytes = u32.value;
     eatBytes(u32.nextIndex);
 
     switch (sectionId) {
 
     case sections.typeSection: {
+      dumpSep('section Type');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
       const u32 = readU32();
       const numberOfTypes = u32.value;
       eatBytes(u32.nextIndex);
@@ -328,34 +413,71 @@ export function decode(ab: ArrayBuffer): Program {
       break;
     }
 
+    case sections.tableSection: {
+      dumpSep('section Table');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
+      parseTableSection();
+      break;
+    }
+
     case sections.importSection: {
+      dumpSep('section Import');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
       parseImportSection();
       break;
     }
 
     case sections.funcSection: {
+      dumpSep('section Function');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
       parseFuncSection();
       break;
     }
 
     case sections.exportSection: {
+      dumpSep('section Export');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
       parseExportSection();
       break;
     }
 
     case sections.codeSection: {
+      dumpSep('section Code');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
       parseCodeSection();
       break;
     }
 
+    case sections.startSection: {
+      dumpSep('section Start');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
+      parseStartSection();
+      break;
+    }
+
+    case sections.customSection: {
+      // We don't need to parse it, just eat all the bytes
+      eatBytes(sectionSizeInBytes);
+      break;
+    }
+
     default: {
-      console.log(offset);
       throw new Error('Unexpected section: ' + JSON.stringify(sectionId));
     }
 
     }
-
-    debug('end parse section ' + sectionId);
   }
 
   parseModuleHeader();
@@ -367,7 +489,6 @@ export function decode(ab: ArrayBuffer): Program {
   while (offset < buf.length) {
     parseSection();
   }
-
 
   /**
    * Transform the state into AST nodes
