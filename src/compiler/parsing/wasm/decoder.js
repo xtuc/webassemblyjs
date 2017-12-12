@@ -2,10 +2,14 @@
 
 const t = require('../../AST');
 
+const DEBUG = true;
+
 const {
+  importTypes,
   symbolsByByte,
   blockTypes,
   tableTypes,
+  globalTypes,
   limitHasMaximum,
   exportTypes,
   types,
@@ -24,6 +28,7 @@ const {
 } = require('./LEB128');
 
 const ieee754 = require('./ieee754');
+const {utf8ArrayToStr} = require('./utf8');
 
 function toHex(n: number): string {
   return '0x' + Number(n).toString('16');
@@ -50,7 +55,7 @@ export function decode(ab: ArrayBuffer): Program {
   let offset = 0;
 
   function dump(b: Array<Byte>, msg: string) {
-    return;
+    if (!DEBUG) return;
 
     const pad = '\t\t\t\t\t\t\t\t\t\t';
 
@@ -64,7 +69,7 @@ export function decode(ab: ArrayBuffer): Program {
   }
 
   function dumpSep(msg: string) {
-    return;
+    if (!DEBUG) return;
 
     console.log(';', msg);
   }
@@ -127,6 +132,20 @@ export function decode(ab: ArrayBuffer): Program {
     return {
       value,
       nextIndex: ieee754.NUMBER_OF_BYTE_F32,
+    };
+  }
+
+  function readUTF8String(): UTF8String {
+    const lenu32 = readU32();
+    const len = lenu32.value;
+    eatBytes(lenu32.nextIndex);
+
+    const bytes = readBytes(len);
+    const value = utf8ArrayToStr(bytes);
+
+    return {
+      value,
+      nextIndex: len,
     };
   }
 
@@ -235,19 +254,66 @@ export function decode(ab: ArrayBuffer): Program {
       }
     }
 
-    /**
-     * FIXME(sven): there's somehow a trailing empty function at the end of some
-     * type section. Ignore it for now but we'll need to investigate
-     */
-    if (readByte() === types.func) {
-      eatBytes(1);
-    }
   }
 
   // Import section
   // https://webassembly.github.io/spec/binary/modules.html#binary-importsec
   function parseImportSection() {
-    throw new Error('Parsing the import section is not implemented yet');
+
+    const numberOfImportsu32 = readU32();
+    const numberOfImports = numberOfImportsu32.value;
+    eatBytes(numberOfImportsu32.nextIndex);
+
+    for (let i = 0; i < numberOfImports; i++) {
+
+      /**
+       * Module name
+       */
+      const moduleName = readUTF8String();
+      eatBytes(moduleName.nextIndex);
+
+      dump([], `module name (${moduleName.value})`);
+
+      /**
+       * Name
+       */
+      const name = readUTF8String();
+      eatBytes(name.nextIndex);
+
+      dump([], `name (${name.value})`);
+
+      /**
+       * Import descr
+       */
+      const descrTypeByte = readByte();
+      eatBytes(1);
+
+      const descrType = importTypes[descrTypeByte];
+
+      dump([descrTypeByte], 'import type');
+
+      if (typeof descrType === 'undefined') {
+        throw new Error('Unknown import description type: ' + toHex(descrTypeByte));
+      }
+
+      if (descrType === 'func') {
+
+        const indexU32 = readU32();
+        const index = indexU32.value;
+        eatBytes(indexU32.nextIndex);
+
+        dump([index], 'index');
+
+      } else if (descrType === 'global') {
+
+        parseGlobalType();
+
+      } else {
+        throw new Error('Unsupported import of type: ' + descrType);
+      }
+
+    }
+
   }
 
   // Function section
@@ -294,19 +360,10 @@ export function decode(ab: ArrayBuffer): Program {
       /**
        * Name
        */
+      const name = readUTF8String();
+      eatBytes(name.nextIndex);
 
-      const u32 = readU32();
-      const nameStringLength = u32.value;
-      eatBytes(u32.nextIndex);
-
-      dump([nameStringLength], 'string length');
-
-      const nameByteArray = readBytes(nameStringLength);
-      eatBytes(nameStringLength);
-
-      const name = String.fromCharCode(...nameByteArray);
-
-      dump(nameByteArray, `export name (${name})`);
+      dump([], `export name (${name.value})`);
 
       /**
        * exportdescr
@@ -599,6 +656,54 @@ export function decode(ab: ArrayBuffer): Program {
     }
   }
 
+  // https://webassembly.github.io/spec/binary/types.html#global-types
+  function parseGlobalType() {
+
+    const valtypeByte = readByte();
+    eatBytes(1);
+
+    const type = valtypes[valtypeByte];
+
+    dump([valtypeByte], 'valtype type');
+
+    if (typeof type === 'undefined') {
+      throw new Error('Unknown valtype: ' + toHex(valtypeByte));
+    }
+
+    const globalTypeByte = readByte();
+    const globalType = globalTypes[globalTypeByte];
+
+    dump([globalTypeByte], 'global type');
+
+    if (typeof globalType === 'undefined') {
+      throw new Error('Unknown global type: ' + toHex(globalTypeByte));
+    }
+
+  }
+
+  function parseGlobalSection() {
+
+    const numberOfGlobalsu32 = readU32();
+    const numberOfGlobals = numberOfGlobalsu32.value;
+    eatBytes(numberOfGlobalsu32.nextIndex);
+
+    dump([numberOfGlobals], 'num globals');
+
+    for (let i = 0; i < numberOfGlobals; i++) {
+
+      parseGlobalType();
+
+      /**
+       * Global expressions
+       */
+      const body = [];
+
+      parseInstructionBlock(body);
+
+    }
+
+  }
+
   function parseElemSection() {
 
     const numberOfElementsu32 = readU32();
@@ -618,43 +723,68 @@ export function decode(ab: ArrayBuffer): Program {
       /**
        * Parse instructions
        */
-      while (true) {
-        const instructionByte = readByte();
-        eatBytes(1);
-
-        const instruction = symbolsByByte[instructionByte];
-
-        if (typeof instruction === 'undefined') {
-          throw new Error('Unexpected instruction: ' + toHex(instructionByte));
-        }
-
-        /**
-         * End of the function
-         */
-        if (instruction.name === 'end') {
-          break;
-        }
-
-        dump([instructionByte], instruction.name);
-
-        const args = [];
-
-        for (let i = 0; i < instruction.numberOfArgs; i++) {
-          const u32 = readU32();
-          eatBytes(u32.nextIndex);
-
-          dump([u32.value], 'local index');
-
-          args.push(u32.value);
-        }
-
-      }
+      const instr = [];
+      parseInstructionBlock(instr);
 
       /**
        * Parse ( vector function index ) *
        */
-      // TODO(sven): todo
-      // but how can you determine the end of list of vectors?
+      const indicesu32 = readU32();
+      const indices = indicesu32.value;
+      eatBytes(indicesu32.nextIndex);
+
+      dump([indices], 'num indices');
+
+      for (let i = 0; i < indices; i++) {
+
+        const indexu32 = readU32();
+        const index = indexu32.value;
+        eatBytes(indexu32.nextIndex);
+
+        dump([index], 'index');
+      }
+
+    }
+
+  }
+
+  // https://webassembly.github.io/spec/binary/modules.html#memory-section
+  function parseMemorySection() {
+
+    const numberOfElementsu32 = readU32();
+    const numberOfElements = numberOfElementsu32.value;
+    eatBytes(numberOfElementsu32.nextIndex);
+
+    dump([numberOfElements], 'num elements');
+
+    for (let i = 0; i < numberOfElements; i++) {
+
+      const limitType = readByte();
+      eatBytes(1);
+
+      if (limitHasMaximum[limitType] === true) {
+
+        const u32min = readU32();
+        const min = u32min.value;
+        eatBytes(u32min.nextIndex);
+
+        dump([min], 'min');
+
+        const u32max = readU32();
+        const max = u32max.value;
+        eatBytes(u32max.nextIndex);
+
+        dump([max], 'max');
+
+      } else {
+
+        const u32min = readU32();
+        const min = u32min.value;
+        eatBytes(u32min.nextIndex);
+
+        dump([min], 'min');
+      }
+
     }
 
   }
@@ -666,13 +796,13 @@ export function decode(ab: ArrayBuffer): Program {
     const startFuncIndex = u32.value;
     eatBytes(u32.nextIndex);
 
+    dump([startFuncIndex], 'index');
+
     const func = state.elementsInFuncSection[startFuncIndex];
 
     if (typeof func === 'undefined') {
-      // throw new Error('Unknown start function');
+      throw new Error('Unknown start function');
     }
-
-    console.log('startFuncIndex', startFuncIndex);
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
@@ -713,9 +843,7 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      eatBytes(sectionSizeInBytes);
-
-      // parseImportSection();
+      parseImportSection();
       break;
     }
 
@@ -751,10 +879,7 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      // FIXME(sven): ignore for now
-      eatBytes(sectionSizeInBytes);
-
-      // parseStartSection();
+      parseStartSection();
       break;
     }
 
@@ -763,15 +888,28 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      eatBytes(sectionSizeInBytes);
-
-      // parseElemSection();
-
+      parseElemSection();
       break;
     }
 
-    case sections.globalSection:
-    case sections.memorySection:
+    case sections.globalSection: {
+      dumpSep('section Global');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
+      parseGlobalSection();
+      break;
+    }
+
+    case sections.memorySection: {
+      dumpSep('section Memory');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
+      parseMemorySection();
+      break;
+    }
+
     case sections.dataSection:
     case sections.customSection: {
       dumpSep('section Custom');

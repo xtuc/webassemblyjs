@@ -11,6 +11,11 @@ type U64 = U32;
 type F32 = U32;
 type F64 = U32;
 
+type UTF8String = {
+  value: string;
+  nextIndex: number;
+};
+
 type Symbol = {
   name: string;
   object?: Valtype;

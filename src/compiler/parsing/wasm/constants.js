@@ -55,6 +55,18 @@ const blockTypes = Object.assign({}, valtypes, {
   0x40: 'empty',
 });
 
+const globalTypes = {
+  0x00: 'const',
+  0x01: 'var',
+};
+
+const importTypes = {
+  0x00: 'func',
+  0x01: 'table',
+  0x02: 'mem',
+  0x03: 'global',
+};
+
 const sections = {
   customSection: 0,
   typeSection: 1,
@@ -299,4 +311,6 @@ module.exports = {
   blockTypes,
   limitHasMaximum,
   tableTypes,
+  globalTypes,
+  importTypes,
 };
