@@ -805,6 +805,32 @@ export function decode(ab: ArrayBuffer): Program {
     }
   }
 
+  // https://webassembly.github.io/spec/binary/modules.html#data-section
+  function parseDataSection() {
+
+    const numberOfElementsu32 = readU32();
+    const numberOfElements = numberOfElementsu32.value;
+    eatBytes(numberOfElementsu32.nextIndex);
+
+    dump([numberOfElements], 'num elements');
+
+    for (let i = 0; i < numberOfElements; i++) {
+
+      const memoryIndexu32 = readU32();
+      const memoryIndex = memoryIndexu32.value;
+      eatBytes(memoryIndexu32.nextIndex);
+
+      dump([memoryIndex], 'memory index');
+
+      const instrus = [];
+      parseInstructionBlock(instrus);
+
+      const bytes: Array<Byte> = parseVec((b) => b);
+
+      dump(bytes, 'bytes');
+    }
+  }
+
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
   function parseSection() {
     const sectionId = readByte();
@@ -910,7 +936,15 @@ export function decode(ab: ArrayBuffer): Program {
       break;
     }
 
-    case sections.dataSection:
+    case sections.dataSection: {
+      dumpSep('section Data');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
+      parseDataSection();
+      break;
+    }
+
     case sections.customSection: {
       dumpSep('section Custom');
       dump([sectionId], 'section code');
