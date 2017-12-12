@@ -158,3 +158,43 @@ export function withLoc(n: Node, end: Position, start: Position): Node {
 
   return n;
 }
+
+/**
+ * Import
+ */
+
+export function moduleImport(
+  module: string,
+  name: string,
+  descr: ImportDescr,
+): ModuleImport {
+
+  return {
+    type: 'ModuleImport',
+    module,
+    name,
+    descr,
+  };
+}
+
+export function globalImportDescr(
+  valtype: Valtype,
+  mutability: Mutability,
+): GlobalImportDescr {
+
+  return {
+    type: 'GlobalImportDescr',
+    elementType: 'anyfunc',
+
+    valtype,
+    mutability,
+  };
+}
+
+export function funcImportDescr(value: NumberLiteral): FuncImportDescr {
+
+  return {
+    type: 'FuncImportDescr',
+    value,
+  };
+}

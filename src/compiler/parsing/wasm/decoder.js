@@ -2,7 +2,7 @@
 
 const t = require('../../AST');
 
-const DEBUG = true;
+const DEBUG = false;
 
 const {
   importTypes,
@@ -258,7 +258,8 @@ export function decode(ab: ArrayBuffer): Program {
 
   // Import section
   // https://webassembly.github.io/spec/binary/modules.html#binary-importsec
-  function parseImportSection() {
+  function parseImportSection(): Array<ModuleImport> {
+    const imports = [];
 
     const numberOfImportsu32 = readU32();
     const numberOfImports = numberOfImportsu32.value;
@@ -296,6 +297,8 @@ export function decode(ab: ArrayBuffer): Program {
         throw new Error('Unknown import description type: ' + toHex(descrTypeByte));
       }
 
+      let importDescr;
+
       if (descrType === 'func') {
 
         const indexU32 = readU32();
@@ -304,16 +307,24 @@ export function decode(ab: ArrayBuffer): Program {
 
         dump([index], 'index');
 
+        importDescr = t.funcImportDescr(t.numberLiteral(index));
+
       } else if (descrType === 'global') {
 
-        parseGlobalType();
+        const globalType = parseGlobalType();
+
+        importDescr = t.globalImportDescr(globalType.type, globalType.globalType);
 
       } else {
         throw new Error('Unsupported import of type: ' + descrType);
       }
 
+      imports.push(
+        t.moduleImport(moduleName.value, name.value, importDescr)
+      );
     }
 
+    return imports;
   }
 
   // Function section
@@ -382,17 +393,17 @@ export function decode(ab: ArrayBuffer): Program {
 
       const func = state.elementsInFuncSection[index];
 
-      // if (typeof func === 'undefined') {
-      //   throw new Error('Internal error: entry not found in function section');
-      // }
+      if (typeof func === 'undefined') {
+        throw new Error('Internal error: entry not found in function section');
+      }
 
-      // state.elementsInExportSection.push({
-      //   name,
-      //   type: exportTypes[typeIndex],
-      //   signature: func.signature,
-      //   id: func.id,
-      //   index,
-      // });
+      state.elementsInExportSection.push({
+        name: name.value,
+        type: exportTypes[typeIndex],
+        signature: func.signature,
+        id: func.id,
+        index,
+      });
 
     }
   }
@@ -679,6 +690,10 @@ export function decode(ab: ArrayBuffer): Program {
       throw new Error('Unknown global type: ' + toHex(globalTypeByte));
     }
 
+    return {
+      type,
+      globalType,
+    };
   }
 
   function parseGlobalSection() {
@@ -832,7 +847,7 @@ export function decode(ab: ArrayBuffer): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
-  function parseSection() {
+  function parseSection(): Array<Node> {
     const sectionId = readByte();
     eatBytes(1);
 
@@ -869,8 +884,7 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      parseImportSection();
-      break;
+      return parseImportSection();
     }
 
     case sections.funcSection: {
@@ -965,18 +979,22 @@ export function decode(ab: ArrayBuffer): Program {
   parseModuleHeader();
   parseVersion();
 
+  const moduleFields = [];
+
   /**
    * All the generate declaration are going to be stored in our state
    */
   while (offset < buf.length) {
-    parseSection();
+    const nodes = parseSection();
+
+    if (typeof nodes !== 'undefined' && nodes.length > 0) {
+      moduleFields.push(nodes);
+    }
   }
 
   /**
    * Transform the state into AST nodes
    */
-  const moduleFields = [];
-
   state.elementsInFuncSection.forEach((func: ElementInFuncSection, funcIndex) => {
 
     const params = func.signature.params.map((valtype: Valtype) => ({

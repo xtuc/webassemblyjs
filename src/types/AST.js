@@ -3,6 +3,7 @@
 type Valtype = 'i32' | 'i64' | 'f32' | 'f64' | 'label';
 type ExportDescr = 'func' | 'table' | 'memory' | 'global';
 type Index = NumberLiteral | Identifier;
+type Mutability = 'const' | 'var';
 
 type NodePath<T> = {
   node: T;
@@ -112,4 +113,30 @@ type CallInstruction = {
 
   type: 'CallInstruction';
   index: Index;
+}
+
+type Limit = {
+  type: 'Limit';
+  min: number;
+  max?: number;
+}
+
+type GlobalImportDescr = {
+  type: 'GlobalImportDescr';
+  valtype: Valtype;
+  mutability: Mutability;
+};
+
+type FuncImportDescr = {
+  type: 'FuncImportDescr';
+  value: NumberLiteral;
+}
+
+type ImportDescr = FuncImportDescr | GlobalImportDescr;
+
+interface ModuleImport {
+  type: 'ModuleImport';
+  module: string;
+  name: string;
+  descr: ImportDescr;
 }
