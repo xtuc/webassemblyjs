@@ -7,6 +7,10 @@ type U32 = {
   nextIndex: number;
 }
 
+type U64 = U32;
+type F32 = U32;
+type F64 = U32;
+
 type Symbol = {
   name: string;
   object?: Valtype;

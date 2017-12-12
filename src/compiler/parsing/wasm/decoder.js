@@ -4,7 +4,7 @@ const t = require('../../AST');
 
 const {
   symbolsByByte,
-  resultTypes,
+  blockTypes,
   tableTypes,
   limitHasMaximum,
   exportTypes,
@@ -14,7 +14,16 @@ const {
   moduleVersion,
   sections,
 } = require('./constants');
-const {decodeUInt32, MAX_NUMBER_OF_BYTE_U32} = require('./LEB128');
+
+const {
+  decodeUInt32,
+  MAX_NUMBER_OF_BYTE_U32,
+
+  decodeUInt64,
+  MAX_NUMBER_OF_BYTE_U64,
+} = require('./LEB128');
+
+const ieee754 = require('./ieee754');
 
 function toHex(n: number): string {
   return '0x' + Number(n).toString('16');
@@ -41,13 +50,22 @@ export function decode(ab: ArrayBuffer): Program {
   let offset = 0;
 
   function dump(b: Array<Byte>, msg: string) {
-    const pad = '\t\t\t\t';
-    b = b.map(toHex).join(' ');
+    return;
 
-    console.log(b, pad, ';', msg);
+    const pad = '\t\t\t\t\t\t\t\t\t\t';
+
+    if (b.length < 5) {
+      b = b.map(toHex).join(' ');
+    } else {
+      b = '...';
+    }
+
+    console.log(toHex(offset) + ':\t', b, pad, ';', msg);
   }
 
   function dumpSep(msg: string) {
+    return;
+
     console.log(';', msg);
   }
 
@@ -76,6 +94,42 @@ export function decode(ab: ArrayBuffer): Program {
     return arr;
   }
 
+  function readF64(): F64 {
+    const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F64);
+    const buffer = Buffer.from(bytes);
+
+    const value = ieee754.decode(
+      buffer,
+      0,
+      true,
+      ieee754.SINGLE_PRECISION_MANTISSA,
+      ieee754.NUMBER_OF_BYTE_F64,
+    );
+
+    return {
+      value,
+      nextIndex: ieee754.NUMBER_OF_BYTE_F64,
+    };
+  }
+
+  function readF32(): F32 {
+    const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F32);
+    const buffer = Buffer.from(bytes);
+
+    const value = ieee754.decode(
+      buffer,
+      0,
+      true,
+      ieee754.SINGLE_PRECISION_MANTISSA,
+      ieee754.NUMBER_OF_BYTE_F32,
+    );
+
+    return {
+      value,
+      nextIndex: ieee754.NUMBER_OF_BYTE_F32,
+    };
+  }
+
   /**
    * Decode an unsigned 32bits integer
    *
@@ -87,6 +141,13 @@ export function decode(ab: ArrayBuffer): Program {
     const buffer = Buffer.from(bytes);
 
     return decodeUInt32(buffer);
+  }
+
+  function readU64(): U64 {
+    const bytes = readBytes(MAX_NUMBER_OF_BYTE_U64);
+    const buffer = Buffer.from(bytes);
+
+    return decodeUInt64(buffer);
   }
 
   function readByte(): Byte {
@@ -138,11 +199,11 @@ export function decode(ab: ArrayBuffer): Program {
 
       const value = cast(byte);
 
+      dump([byte], value);
+
       if (typeof value === 'undefined') {
         throw new Error('Internal failure: parseVec could not cast the value');
       }
-
-      dump([byte], value);
 
       elements.push(value);
     }
@@ -172,8 +233,14 @@ export function decode(ab: ArrayBuffer): Program {
           result,
         });
       }
+    }
 
-      i++;
+    /**
+     * FIXME(sven): there's somehow a trailing empty function at the end of some
+     * type section. Ignore it for now but we'll need to investigate
+     */
+    if (readByte() === types.func) {
+      eatBytes(1);
     }
   }
 
@@ -186,28 +253,30 @@ export function decode(ab: ArrayBuffer): Program {
   // Function section
   // https://webassembly.github.io/spec/binary/modules.html#function-section
   function parseFuncSection() {
-    const indices: Array<number> = parseVec((x) => x);
 
-    indices
-      .map((byte) => {
-        const buffer = Buffer.from([byte]);
+    const numberOfFunctionsu32 = readU32();
+    const numberOfFunctions = numberOfFunctionsu32.value;
+    eatBytes(numberOfFunctionsu32.nextIndex);
 
-        return decodeUInt32(buffer).value;
-      })
-      .forEach((index: number) => {
-        const signature = state.elementsInTypeSection[index];
+    for (let i = 0; i < numberOfFunctions; i++) {
 
-        if (typeof signature === 'undefined') {
-          throw new Error('Internal error: function signature not found');
-        }
+      const indexU32 = readU32();
+      const index = indexU32.value;
+      eatBytes(indexU32.nextIndex);
 
-        const id = t.identifier('func_' + index);
+      const signature = state.elementsInTypeSection[index];
 
-        state.elementsInFuncSection.push({
-          id,
-          signature,
-        });
+      if (typeof signature === 'undefined') {
+        throw new Error('Internal error: function signature not found');
+      }
+
+      const id = t.identifier('func_' + index);
+
+      state.elementsInFuncSection.push({
+        id,
+        signature,
       });
+    }
   }
 
   // Export section
@@ -222,6 +291,10 @@ export function decode(ab: ArrayBuffer): Program {
     // Parse vector of exports
     for (let i = 0; i < numberOfExport; i++) {
 
+      /**
+       * Name
+       */
+
       const u32 = readU32();
       const nameStringLength = u32.value;
       eatBytes(u32.nextIndex);
@@ -235,29 +308,34 @@ export function decode(ab: ArrayBuffer): Program {
 
       dump(nameByteArray, `export name (${name})`);
 
+      /**
+       * exportdescr
+       */
+
       const typeIndex = readByte();
       eatBytes(1);
 
       dump([typeIndex], 'export kind');
 
-      const index = readByte();
-      eatBytes(1);
+      const indexu32 = readU32();
+      const index = indexu32.value;
+      eatBytes(indexu32.nextIndex);
 
       dump([index], 'export func index');
 
       const func = state.elementsInFuncSection[index];
 
-      if (typeof func === 'undefined') {
-        throw new Error('Internal error: function signature not found in export section');
-      }
+      // if (typeof func === 'undefined') {
+      //   throw new Error('Internal error: entry not found in function section');
+      // }
 
-      state.elementsInExportSection.push({
-        name,
-        type: exportTypes[typeIndex],
-        signature: func.signature,
-        id: func.id,
-        index,
-      });
+      // state.elementsInExportSection.push({
+      //   name,
+      //   type: exportTypes[typeIndex],
+      //   signature: func.signature,
+      //   id: func.id,
+      //   index,
+      // });
 
     }
   }
@@ -276,26 +354,278 @@ export function decode(ab: ArrayBuffer): Program {
 
       dumpSep('function body ' + i);
 
-      // Body size of the function, ignore it for now
+      // the u32 size of the function code in bytes
+      // Ignore it for now
       const bodySizeU32 = readU32();
       eatBytes(bodySizeU32.nextIndex);
 
       dump([0x0], 'function body size (guess)');
 
-      const locals: Array<Valtype> = parseVec((b) =>  valtypes[b]);
       const code = [];
 
+      /**
+       * Parse locals
+       */
+      const funcLocalNumU32 = readU32();
+      const funcLocalNum = funcLocalNumU32.value;
+      eatBytes(funcLocalNumU32.nextIndex);
+
+      dump([funcLocalNum], 'num locals');
+
+      const locals = [];
+
+      for (let i = 0; i < funcLocalNum; i++) {
+
+        const localCountU32 = readU32();
+        const localCount = localCountU32.value;
+        eatBytes(localCountU32.nextIndex);
+
+        dump([localCount], 'num local');
+
+        const valtypeByte = readByte();
+        eatBytes(1);
+
+        const type = valtypes[valtypeByte];
+
+        dump([valtypeByte], type);
+
+        if (typeof type === 'undefined') {
+          throw new Error('Unexpected valtype: ' + toHex(valtypeByte));
+        }
+      }
+
       // Decode instructions until the end
+      parseInstructionBlock(code);
+
+      state.elementsInCodeSection.push({
+        code,
+        locals,
+      });
+    }
+  }
+
+  function parseInstructionBlock(code: Array<any>) {
+
+    while (true) {
+
+      const instructionByte = readByte();
+      eatBytes(1);
+
+      const instruction = symbolsByByte[instructionByte];
+
+      dump([instructionByte], instruction.name);
+
+      if (typeof instruction === 'undefined') {
+        throw new Error('Unexpected instruction: ' + toHex(instructionByte));
+      }
+
+      /**
+       * End of the function
+       */
+      if (instruction.name === 'end') {
+        break;
+      }
+
+      const args = [];
+
+      if (
+        instruction.name === 'block'
+        || instruction.name === 'loop'
+        || instruction.name === 'if'
+      ) {
+
+        const blocktypeByte = readByte();
+        eatBytes(1);
+
+        const blocktype = blockTypes[blocktypeByte];
+
+        dump([blocktypeByte], 'blocktype');
+
+        if (typeof blocktype === 'undefined') {
+          throw new Error('Unexpected blocktype: ' + toHex(blocktypeByte));
+        }
+
+        const childCode = [];
+
+        parseInstructionBlock(childCode);
+
+      } else if (instruction.name === 'br_table') {
+
+        const indicesu32 = readU32();
+        const indices = indicesu32.value;
+        eatBytes(indicesu32.nextIndex);
+
+        dump([indices], 'num indices');
+
+        for (let i = 0; i < indices; i++) {
+
+          const indexu32 = readU32();
+          const index = indexu32.value;
+          eatBytes(indexu32.nextIndex);
+
+          dump([index], 'index');
+        }
+
+        const labelIndexu32 = readU32();
+        const labelIndex = labelIndexu32.value;
+        eatBytes(labelIndexu32.nextIndex);
+
+        dump([labelIndex], 'label index');
+
+      } else
+
+      /**
+       * Memory instructions
+       */
+      if (instructionByte >= 0x28 && instructionByte <= 0x40) {
+
+        const aligun32 = readU32();
+        const align = aligun32.value;
+        eatBytes(aligun32.nextIndex);
+
+        dump([align], 'align');
+
+        const offsetu32 = readU32();
+        const offset = offsetu32.value;
+        eatBytes(offsetu32.nextIndex);
+
+        dump([offset], 'offset');
+
+      } else
+
+      /**
+       * Numeric instructions
+       */
+      if (instructionByte >= 0x41 && instructionByte <= 0x44) {
+
+        if (instruction.object === 'i32') {
+          const valueu32 = readU32();
+          const value = valueu32.value;
+          eatBytes(valueu32.nextIndex);
+
+          dump([value], 'value');
+        }
+
+        if (instruction.object === 'i64') {
+          const valueu64 = readU64();
+          const value = valueu64.value;
+          eatBytes(valueu64.nextIndex);
+
+          dump([value], 'value');
+        }
+
+        if (instruction.object === 'f32') {
+          const valuef32 = readF32();
+          const value = valuef32.value;
+          eatBytes(valuef32.nextIndex);
+
+          dump([value], 'value');
+        }
+
+
+        if (instruction.object === 'f64') {
+          const valuef64 = readF64();
+          const value = valuef64.value;
+          eatBytes(valuef64.nextIndex);
+
+          dump([value], 'value');
+        }
+
+      } else {
+
+        for (let i = 0; i < instruction.numberOfArgs; i++) {
+          const u32 = readU32();
+          eatBytes(u32.nextIndex);
+
+          dump([u32.value], 'argument ' + i);
+
+          args.push(u32.value);
+        }
+
+      }
+
+      code.push({
+        instruction,
+        args,
+      });
+
+    }
+  }
+
+  // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
+  function parseTableSection() {
+
+    const u32 = readU32();
+    const numberOfTable = u32.value;
+    eatBytes(u32.nextIndex);
+
+    dump([numberOfTable], 'num tables');
+
+    for (let i = 0; i < numberOfTable; i++) {
+      const elementType = readByte();
+      eatBytes(1);
+
+      dump([elementType], 'element type');
+
+      if (typeof tableTypes[elementType] === 'undefined') {
+        throw new Error('Unknown element type in table: ' + toHex(elementType));
+      }
+
+      const limitType = readByte();
+      eatBytes(1);
+
+      if (limitHasMaximum[limitType] === true) {
+
+        const u32min = readU32();
+        const min = u32min.value;
+        eatBytes(u32min.nextIndex);
+
+        dump([min], 'min');
+
+        const u32max = readU32();
+        const max = u32max.value;
+        eatBytes(u32max.nextIndex);
+
+        dump([max], 'max');
+
+      } else {
+
+        const u32min = readU32();
+        const min = u32min.value;
+        eatBytes(u32min.nextIndex);
+
+        dump([min], 'min');
+      }
+    }
+  }
+
+  function parseElemSection() {
+
+    const numberOfElementsu32 = readU32();
+    const numberOfElements = numberOfElementsu32.value;
+    eatBytes(numberOfElementsu32.nextIndex);
+
+    dump([numberOfElements], 'num elements');
+
+    for (let i = 0; i < numberOfElements; i++) {
+
+      const tableindexu32 = readU32();
+      const tableindex = tableindexu32.value;
+      eatBytes(tableindexu32.nextIndex);
+
+      dump([tableindex], 'table index');
+
+      /**
+       * Parse instructions
+       */
       while (true) {
         const instructionByte = readByte();
         eatBytes(1);
 
         const instruction = symbolsByByte[instructionByte];
 
-        dump([instructionByte], instruction.name);
-
         if (typeof instruction === 'undefined') {
-          throw new Error('Unexpected instruction: ' + instructionByte);
+          throw new Error('Unexpected instruction: ' + toHex(instructionByte));
         }
 
         /**
@@ -304,6 +634,8 @@ export function decode(ab: ArrayBuffer): Program {
         if (instruction.name === 'end') {
           break;
         }
+
+        dump([instructionByte], instruction.name);
 
         const args = [];
 
@@ -316,61 +648,15 @@ export function decode(ab: ArrayBuffer): Program {
           args.push(u32.value);
         }
 
-        code.push({
-          instruction,
-          args,
-        });
       }
 
-      state.elementsInCodeSection.push({
-        code,
-        locals,
-      });
+      /**
+       * Parse ( vector function index ) *
+       */
+      // TODO(sven): todo
+      // but how can you determine the end of list of vectors?
     }
-  }
 
-  // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
-  function parseTableSection() {
-
-    const u32 = readU32();
-    const numberOfTable = u32.value;
-    eatBytes(u32.nextIndex);
-
-    for (let i = 0; i < numberOfTable; i++) {
-
-      const elementType = readByte();
-      eatBytes(1);
-
-      if (typeof tableTypes[elementType] === 'undefined') {
-        throw new Error('Unknown element type in table: ' + toHex(elementType));
-      }
-
-      console.log('element type', elementType);
-
-      const limitType = readByte();
-      eatBytes(1);
-
-      if (limitHasMaximum[limitType] === true) {
-
-        const u32min = readU32();
-        const min = u32min.value;
-        eatBytes(u32min.nextIndex);
-
-        const u32max = readU32();
-        const max = u32max.value;
-        eatBytes(u32max.nextIndex);
-
-        console.log('table with (min max)', min, max);
-
-      } else {
-
-        const u32min = readU32();
-        const min = u32min.value;
-        eatBytes(u32min.nextIndex);
-
-        console.log('table with (min)', min);
-      }
-    }
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-startsec
@@ -383,7 +669,7 @@ export function decode(ab: ArrayBuffer): Program {
     const func = state.elementsInFuncSection[startFuncIndex];
 
     if (typeof func === 'undefined') {
-      throw new Error('Unknown start function');
+      // throw new Error('Unknown start function');
     }
 
     console.log('startFuncIndex', startFuncIndex);
@@ -427,7 +713,9 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      parseImportSection();
+      eatBytes(sectionSizeInBytes);
+
+      // parseImportSection();
       break;
     }
 
@@ -463,11 +751,33 @@ export function decode(ab: ArrayBuffer): Program {
       dump([sectionId], 'section code');
       dump([0x0], 'section size (ignore)');
 
-      parseStartSection();
+      // FIXME(sven): ignore for now
+      eatBytes(sectionSizeInBytes);
+
+      // parseStartSection();
       break;
     }
 
+    case sections.elemSection: {
+      dumpSep('section Element');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
+      eatBytes(sectionSizeInBytes);
+
+      // parseElemSection();
+
+      break;
+    }
+
+    case sections.globalSection:
+    case sections.memorySection:
+    case sections.dataSection:
     case sections.customSection: {
+      dumpSep('section Custom');
+      dump([sectionId], 'section code');
+      dump([0x0], 'section size (ignore)');
+
       // We don't need to parse it, just eat all the bytes
       eatBytes(sectionSizeInBytes);
       break;

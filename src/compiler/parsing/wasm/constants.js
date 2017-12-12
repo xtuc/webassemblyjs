@@ -51,7 +51,7 @@ const tableTypes = {
   0x70: 'anyfunc',
 };
 
-const resultTypes = Object.assign({}, valtypes, {
+const blockTypes = Object.assign({}, valtypes, {
   0x40: 'empty',
 });
 
@@ -75,8 +75,8 @@ const symbolsByByte = {
   0x01: createSymbol('nop'),
 
   0x02: createSymbol('block', 1),
-  0x03: createSymbol('loop'),
-  0x04: createSymbol('if'),
+  0x03: createSymbol('loop', 1),
+  0x04: createSymbol('if', 1),
 
   0x05: createSymbol('else'),
   0x06: illegalop,
@@ -86,13 +86,13 @@ const symbolsByByte = {
   0x0a: illegalop,
   0x0b: createSymbol('end'),
 
-  0x0c: createSymbol('br'),
-  0x0d: createSymbol('br_if'),
+  0x0c: createSymbol('br', 1),
+  0x0d: createSymbol('br_if', 1),
   0x0e: createSymbol('br_table'),
   0x0f: createSymbol('return'),
 
-  0x10: createSymbol('call'),
-  0x11: createSymbol('call_indirect'),
+  0x10: createSymbol('call', 1),
+  0x11: createSymbol('call_indirect', 2),
 
   0x12: illegalop,
   0x13: illegalop,
@@ -296,7 +296,7 @@ module.exports = {
   types,
   valtypes,
   exportTypes,
-  resultTypes,
+  blockTypes,
   limitHasMaximum,
   tableTypes,
 };
