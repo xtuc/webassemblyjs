@@ -44,6 +44,15 @@ export function walk(
     cb(n.type, createPath(n));
   }
 
+  if (n.type === 'ModuleImport') {
+    cb(n.type, createPath(n));
+    cb(n.descr.type, createPath(n.descr));
+  }
+
+  if (n.type === 'Global') {
+    cb(n.type, createPath(n));
+  }
+
   if (n.type === 'Func') {
     cb(n.type, createPath(n));
 

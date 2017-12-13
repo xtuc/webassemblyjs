@@ -2,6 +2,7 @@
 
 const {traverse} = require('../../../compiler/AST/traverse');
 const func = require('./func');
+const global = require('./global');
 
 function createInstance(allocator: Allocator, n: Module): ModuleInstance {
 
@@ -39,6 +40,15 @@ function createInstance(allocator: Allocator, n: Module): ModuleInstance {
       if (typeof node.id === 'string') {
         instantiatedFuncs[node.id] = addr;
       }
+    },
+
+    Global({node}: NodePath<Global>) {
+      const globalinstance = global.createInstance(allocator, node);
+
+      const addr = allocator.malloc(1 /* size of the funcinstance struct */);
+      allocator.set(addr, globalinstance);
+
+      moduleInstance.globaladdrs.push(addr);
     }
 
   });

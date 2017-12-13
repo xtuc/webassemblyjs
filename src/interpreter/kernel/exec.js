@@ -480,6 +480,67 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    case 'set_global': {
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-set-global
+      const index = instruction.args[0];
+
+      // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
+      const globaladdr = frame.originatingModule.globaladdrs[index];
+
+      if (typeof globaladdr === 'undefined') {
+        throw new RuntimeError(`Global address ${index} not found`);
+      }
+
+      // 4. Assert: due to validation, S.globals[a] exists.
+      const globalinst = frame.allocator.get(globaladdr);
+
+      if (typeof globalinst !== 'object') {
+
+        throw new RuntimeError(
+          `Unexpected data for global at ${globaladdr}`
+        );
+      }
+
+      // 7. Pop the value val from the stack.
+      const val = pop1();
+
+      // 8. Replace glob.value with the value val.
+      globalinst.value = val;
+
+      frame.allocator.set(globaladdr, globalinst);
+
+      break;
+    }
+
+    case 'get_global': {
+      // https://webassembly.github.io/spec/exec/instructions.html#exec-get-global
+      const index = instruction.args[0];
+
+      // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
+      const globaladdr = frame.originatingModule.globaladdrs[index];
+
+      if (typeof globaladdr === 'undefined') {
+        throw new RuntimeError(`Global address ${index} not found`);
+      }
+
+      // 4. Assert: due to validation, S.globals[a] exists.
+      const globalinst = frame.allocator.get(globaladdr);
+
+      if (typeof globalinst !== 'object') {
+
+        throw new RuntimeError(
+          `Unexpected data for global at ${globaladdr}`
+        );
+      }
+
+      // 7. Pop the value val from the stack.
+      pushResult(
+        globalinst.value
+      );
+
+      break;
+    }
+
     /**
      * Numeric Instructions
      *

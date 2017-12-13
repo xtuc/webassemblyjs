@@ -4,6 +4,7 @@ const {assert} = require('chai');
 
 const t = require('../../../lib/compiler/AST');
 const modulevalue = require('../../../lib/interpreter/runtime/values/module');
+const globalvalue = require('../../../lib/interpreter/runtime/values/global');
 const tablevalue = require('../../../lib/interpreter/runtime/values/table');
 const funcvalue = require('../../../lib/interpreter/runtime/values/func');
 const i32 = require('../../../lib/interpreter/runtime/values/i32');
@@ -232,6 +233,29 @@ describe('module create interface', () => {
       assert.equal(table.length, 2);
       assert.isNull(table.get(0));
       assert.isNull(table.get(1));
+    });
+
+  });
+
+  describe('global', () => {
+
+    it('should have a value', () => {
+      const initNode = t.objectInstruction(
+        'const',
+        'i32',
+        [10]
+      );
+
+      const node = t.global(
+        t.globalType('i32', 'const'),
+        [initNode]
+      );
+
+      const instance = globalvalue.createInstance(allocator, node);
+
+      assert.typeOf(instance, 'object');
+      assert.equal(instance.mutability, 'const');
+      assert.equal(instance.value, 10);
     });
 
   });

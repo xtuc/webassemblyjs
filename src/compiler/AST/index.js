@@ -248,12 +248,12 @@ export function global(globalType: GlobalType, init: Array<Node>): Global {
   };
 }
 
-export function globalType(valtype: Valtype, mut: Mutability): GlobalType {
+export function globalType(valtype: Valtype, mutability: Mutability): GlobalType {
 
   return {
     type: 'GlobalType',
     valtype,
-    mut,
+    mutability,
   };
 }
 
