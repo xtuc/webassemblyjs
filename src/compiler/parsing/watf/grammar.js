@@ -3,9 +3,11 @@
 const {tokens, keywords} = require('./tokenizer');
 const t = require('../../AST');
 
-const inc = 0;
+let inc = 0;
 
 function getUniqueName(prefix: string = 'temp'): string {
+  inc++;
+
   return prefix + '_' + inc;
 }
 
@@ -50,7 +52,7 @@ function parse(tokensList: Array<Object>): Program {
     }
 
     function parseBlock(): BlockInstruction {
-      let label;
+      let label = getUniqueName();
       const instr = [];
 
       if (token.type === tokens.identifier) {
