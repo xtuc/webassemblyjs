@@ -161,7 +161,7 @@ type Data = {
 type Global = {
   type: 'Global';
   globalType: GlobalType;
-  init: Array<Node>;
+  init: Array<Instruction>;
 }
 
 type GlobalType = {

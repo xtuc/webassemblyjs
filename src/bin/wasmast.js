@@ -2,6 +2,7 @@
 // @flow
 
 const {decode} = require('../compiler/parsing/wasm/decoder');
+const fastast = require('../compiler/printer/fast-ast');
 const {readFileSync} = require('fs');
 
 function toArrayBuffer(buf) {
@@ -20,6 +21,4 @@ if (typeof filename === 'undefined') {
 const buff = toArrayBuffer(readFileSync(filename, null));
 const ast = decode(buff);
 
-console.log(
-  JSON.stringify(ast, null, 4)
-);
+fastast.print(ast);
