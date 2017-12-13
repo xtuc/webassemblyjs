@@ -86,14 +86,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
 
-    console.log(
-      'trace exec',
-      'depth:' + depth,
-      'pc:' + pc,
-      'instruction:' + instruction.type,
-      'v:' + instruction.id,
-    );
-
     switch (instruction.type) {
 
     /**
