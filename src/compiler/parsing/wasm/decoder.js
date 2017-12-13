@@ -589,6 +589,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         instructionAlreadyCreated = true;
 
       } else if (instruction.name === 'br_table') {
+        const tableLabels = [];
 
         const indicesu32 = readU32();
         const indices = indicesu32.value;
@@ -603,6 +604,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           eatBytes(indexu32.nextIndex);
 
           dump([index], 'index');
+
+          tableLabels.push(
+            t.numberLiteral(index)
+          );
         }
 
         const labelIndexu32 = readU32();
@@ -610,6 +615,14 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         eatBytes(labelIndexu32.nextIndex);
 
         dump([labelIndex], 'label index');
+
+        const brTableInstructionNode = t.brTableInstruction(
+          tableLabels,
+          t.numberLiteral(labelIndex),
+        );
+
+        code.push(brTableInstructionNode);
+        instructionAlreadyCreated = true;
 
       } else
 
