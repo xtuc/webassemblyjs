@@ -14,6 +14,15 @@ const f64 = require('../runtime/values/f64');
 const label = require('../runtime/values/label');
 const {createChildStackFrame} = require('./stackframe');
 const {createTrap, isTrapped} = require('./signals');
+const {RuntimeError} = require('../../errors');
+
+// TODO(sven): can remove asserts call at compile to gain perf in prod
+function assert(cond) {
+
+  if (!cond) {
+    throw new RuntimeError('Assertion error');
+  }
+}
 
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   let pc = 0;
@@ -22,7 +31,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     const local = frame.locals[index];
 
     if (typeof local === 'undefined') {
-      throw new Error('Assertion error: no local value at index ' + index);
+      throw new RuntimeError('Assertion error: no local value at index ' + index);
     }
 
     frame.values.push(local);
@@ -42,7 +51,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     const v = frame.values.pop();
 
     if (v.type !== type) {
-      throw new Error(
+      throw new RuntimeError(
         'Internal failure: expected value of type ' + type
         + ' on top of the stack, give type: ' + v.type
       );
@@ -58,14 +67,14 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     const c1 = frame.values.pop();
 
     if (c2.type !== type2) {
-      throw new Error(
+      throw new RuntimeError(
         'Internal failure: expected c2 value of type ' + type2
         + ' on top of the stack, give type: ' + c2.type
       );
     }
 
     if (c1.type !== type2) {
-      throw new Error(
+      throw new RuntimeError(
         'Internal failure: expected c1 value of type ' + type2
         + ' on top of the stack, give type: ' + c1.type
       );
@@ -108,7 +117,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const n = instruction.args[0];
 
       if (typeof n === 'undefined') {
-        throw new Error('const requires one argument, none given.');
+        throw new RuntimeError('const requires one argument, none given.');
       }
 
       switch (instruction.object) {
@@ -147,7 +156,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
 
       }
 
@@ -168,6 +177,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     case 'loop': {
       // https://webassembly.github.io/spec/exec/instructions.html#exec-loop
       const loop = instruction;
+
+      assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
 
       if (loop.instr.length > 0) {
         const childStackFrame = createChildStackFrame(frame, loop.instr);
@@ -194,7 +205,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const element = frame.labels[call.index.name];
 
         if (typeof element === 'undefined') {
-          throw new Error('Cannot call ' + call.index.name + ': label not found on the call stack');
+          throw new RuntimeError('Cannot call ' + call.index.name + ': label not found on the call stack');
         }
 
         if (element.type === 'Func') {
@@ -234,6 +245,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           label.createValue(block.label)
         );
       }
+
+      assert(typeof block.instr === 'object' && typeof block.instr.length !== 'undefined');
 
       if (block.instr.length > 0) {
         const childStackFrame = createChildStackFrame(frame, block.instr);
@@ -350,7 +363,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const index = instruction.args[0];
 
       if (typeof index === 'undefined') {
-        throw new Error('get_local requires one argument, none given.');
+        throw new RuntimeError('get_local requires one argument, none given.');
       }
 
       getLocal(index);
@@ -454,7 +467,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
 
       }
 
@@ -506,7 +519,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
 
       }
 
@@ -558,7 +571,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
 
       }
 
@@ -616,7 +629,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new Error('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
 
       }
 
@@ -640,7 +653,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
 function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {
   if (stack.length < numberOfItem) {
-    throw new Error('Assertion error: expected ' + numberOfItem + ' on the stack, found ' + stack.length);
+    throw new RuntimeError('Assertion error: expected ' + numberOfItem + ' on the stack, found ' + stack.length);
   }
 }
 

@@ -99,6 +99,7 @@ function createHostfunc(
 ): Hostfunc {
 
   return function hostfunc(...args) {
+
     const exportinstAddr = exportinst.value.addr;
 
     /**
