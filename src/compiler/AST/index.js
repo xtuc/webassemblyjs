@@ -72,6 +72,9 @@ export function objectInstruction(
 
 export function instruction(id: string, args: Array<Number | string> = []): Instruction {
   assert(typeof args === 'object' && typeof args.length !== 'undefined');
+  assert(id !== 'block');
+  assert(id !== 'if');
+  assert(id !== 'loop');
 
   return {
     type: 'Instr',
@@ -97,9 +100,10 @@ export function loopInstruction(
 }
 
 export function blockInstruction(
-  label: ?Identifier,
+  label: Identifier,
   instr: Array<Instruction>,
 ): BlockInstruction {
+  assert(typeof label !== 'undefined');
   assert(typeof instr === 'object' && typeof instr.length !== 'undefined');
 
   return {

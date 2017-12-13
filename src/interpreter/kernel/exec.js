@@ -45,12 +45,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     frame.values.push(res);
   }
 
-  function pop1(type: Valtype): any {
+  function pop1(type: ?Valtype): any {
     assertNItemsOnStack(frame.values, 1);
 
     const v = frame.values.pop();
 
-    if (v.type !== type) {
+    if (typeof type === 'string' && v.type !== type) {
       throw new RuntimeError(
         'Internal failure: expected value of type ' + type
         + ' on top of the stack, give type: ' + v.type
@@ -85,6 +85,14 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
+
+    console.log(
+      'trace exec',
+      'depth:' + depth,
+      'pc:' + pc,
+      'instruction:' + instruction.type,
+      'v:' + instruction.id,
+    );
 
     switch (instruction.type) {
 
@@ -201,7 +209,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
       const call = instruction;
 
+      // WAST
       if (call.index.type === 'Identifier') {
+
         const element = frame.labels[call.index.name];
 
         if (typeof element === 'undefined') {
@@ -222,6 +232,49 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
             pushResult(res);
           }
         }
+      }
+
+      // WASM
+      if (call.index.type === 'NumberLiteral') {
+
+        const index = call.index.value;
+
+        assert(typeof frame.originatingModule !== 'undefined');
+
+        // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
+        const funcaddr = frame.originatingModule.funcaddrs[index];
+
+        if (typeof funcaddr === 'undefined') {
+
+          throw new RuntimeError(
+            `Cannot call function at local address ${index}: not found`
+          );
+        }
+
+        // 3. Let a be the function address F.module.funcaddrs[x]
+
+        const subroutine = frame.allocator.get(funcaddr);
+
+        if (typeof subroutine !== 'object') {
+
+          throw new RuntimeError(
+            `Cannot call function at address ${funcaddr}: not a function`
+          );
+        }
+
+        // 4. Invoke the function instance at address a
+
+        const childStackFrame = createChildStackFrame(frame, subroutine.code);
+        const res = executeStackFrame(childStackFrame, depth + 1);
+
+        if (isTrapped(res)) {
+          return res;
+        }
+
+        if (typeof res !== 'undefined') {
+          pushResult(res);
+        }
+
       }
 
       break;
@@ -376,7 +429,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const index = instruction.args[0];
       const init = instruction.args[1];
 
-      if (init.type === 'Instr') {
+      if (typeof init !== 'undefined' && init.type === 'Instr') {
+        // WAST
+
         const childStackFrame = createChildStackFrame(frame, [init]);
         childStackFrame.trace = frame.trace;
 
@@ -387,6 +442,14 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         }
 
         setLocal(index, res);
+      } else {
+        // WASM
+
+        // 4. Pop the value val from the stack
+        const val = pop1();
+
+        // 5. Replace F.locals[x] with the value val
+        setLocal(index, val);
       }
 
       break;

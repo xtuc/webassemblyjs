@@ -4,6 +4,7 @@ export function createStackFrame(
   code: Array<Instruction>,
   locals: Array<StackLocal>,
   originatingModule: ModuleInstance,
+  allocator: Allocator,
 ): StackFrame {
 
   return {
@@ -33,6 +34,11 @@ export function createStackFrame(
      * When we need to lookup a function by addr for example.
      */
     originatingModule,
+
+    /**
+     * For shared memory operations
+     */
+    allocator,
   };
 }
 
@@ -44,9 +50,10 @@ export function createChildStackFrame(
     locals,
     originatingModule,
     labels,
+    allocator,
   } = parent;
 
-  const frame = createStackFrame(code, locals, originatingModule);
+  const frame = createStackFrame(code, locals, originatingModule, allocator);
   frame.labels = labels;
 
   return frame;

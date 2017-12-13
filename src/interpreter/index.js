@@ -141,9 +141,20 @@ function createHostfunc(
       };
     });
 
-    const stackFrame = createStackFrame(funcinst.code, argsWithType, funcinst.originatingModule);
+    const stackFrame = createStackFrame(
+      funcinst.code,
+      argsWithType,
+      funcinst.module,
+      allocator,
+    );
 
-    stackFrame.trace = (depth, pc, i) => console.log('trace exec', 'depth:' + depth, 'pc:' + pc, i);
+    // stackFrame.trace = (depth, pc, i) => console.log(
+    //   'trace exec',
+    //   'depth:' + depth,
+    //   'pc:' + pc,
+    //   'instruction:' + i.type,
+    //   'v:' + i.id,
+    // );
 
     const res = executeStackFrame(stackFrame);
 

@@ -5,11 +5,13 @@ const moduleVersion = [0x01, 0x00, 0x00, 0x00];
 
 function createSymbolObject(
   name/*: string */,
-  object/*: string */
+  object/*: string */,
+  numberOfArgs/*: number*/ = 0,
 )/*: Symbol*/ {
   return {
     name,
     object,
+    numberOfArgs,
   };
 }
 
@@ -86,9 +88,9 @@ const symbolsByByte = {
   0x00: createSymbol('unreachable'),
   0x01: createSymbol('nop'),
 
-  0x02: createSymbol('block', 1),
-  0x03: createSymbol('loop', 1),
-  0x04: createSymbol('if', 1),
+  0x02: createSymbol('block'),
+  0x03: createSymbol('loop'),
+  0x04: createSymbol('if'),
 
   0x05: createSymbol('else'),
   0x06: illegalop,

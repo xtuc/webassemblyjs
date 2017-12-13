@@ -28,6 +28,14 @@ const {
 const ieee754 = require('./ieee754');
 const {utf8ArrayToStr} = require('./utf8');
 
+let inc = 0;
+
+function getUniqueName(prefix: string = 'temp'): string {
+  inc++;
+
+  return prefix + '_' + inc;
+}
+
 function toHex(n: number): string {
   return '0x' + Number(n).toString('16');
 }
@@ -472,6 +480,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   function parseInstructionBlock(code: Array<any>) {
 
     while (true) {
+      let instructionAlreadyCreated = false;
 
       const instructionByte = readByte();
       eatBytes(1);
@@ -493,11 +502,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       const args = [];
 
-      if (
-        instruction.name === 'block'
-        || instruction.name === 'loop'
-        || instruction.name === 'if'
-      ) {
+      if (instruction.name === 'loop') {
 
         const blocktypeByte = readByte();
         eatBytes(1);
@@ -510,9 +515,78 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           throw new Error('Unexpected blocktype: ' + toHex(blocktypeByte));
         }
 
-        const childCode = [];
+        const instr = [];
 
-        parseInstructionBlock(childCode);
+        parseInstructionBlock(instr);
+
+        const loopNode = t.loopInstruction(null, blocktype, instr);
+
+        code.push(loopNode);
+        instructionAlreadyCreated = true;
+
+      } else if (instruction.name === 'if') {
+
+        const blocktypeByte = readByte();
+        eatBytes(1);
+
+        const blocktype = blockTypes[blocktypeByte];
+
+        dump([blocktypeByte], 'blocktype');
+
+        if (typeof blocktype === 'undefined') {
+          throw new Error('Unexpected blocktype: ' + toHex(blocktypeByte));
+        }
+
+        const consequentInstr = [];
+        parseInstructionBlock(consequentInstr);
+
+        // FIXME(sven): handle the second block via the byte in between
+        const alternate = [];
+
+        // FIXME(sven): where's that stored?
+        const test = null;
+
+        const ifNode = t.ifInstruction(test, blocktype, consequentInstr, alternate);
+
+        code.push(ifNode);
+        instructionAlreadyCreated = true;
+
+      } else if (instruction.name === 'block') {
+
+        const blocktypeByte = readByte();
+        eatBytes(1);
+
+        const blocktype = blockTypes[blocktypeByte];
+
+        dump([blocktypeByte], 'blocktype');
+
+        if (typeof blocktype === 'undefined') {
+          throw new Error('Unexpected blocktype: ' + toHex(blocktypeByte));
+        }
+
+        const instr = [];
+        parseInstructionBlock(instr);
+
+        const label = getUniqueName();
+
+        // FIXME(sven): result type is ignored?
+        const blockNode = t.blockInstruction(label, instr);
+
+        code.push(blockNode);
+        instructionAlreadyCreated = true;
+
+      } else if (instruction.name === 'call') {
+
+        const indexu32 = readU32();
+        const index = indexu32.value;
+        eatBytes(indexu32.nextIndex);
+
+        dump([index], 'index');
+
+        const callNode = t.callInstruction(t.numberLiteral(index));
+
+        code.push(callNode);
+        instructionAlreadyCreated = true;
 
       } else if (instruction.name === 'br_table') {
 
@@ -569,6 +643,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           eatBytes(valueu32.nextIndex);
 
           dump([value], 'value');
+
+          args.push(value);
         }
 
         if (instruction.object === 'i64') {
@@ -577,6 +653,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           eatBytes(valueu64.nextIndex);
 
           dump([value], 'value');
+
+          args.push(value);
         }
 
         if (instruction.object === 'f32') {
@@ -585,6 +663,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           eatBytes(valuef32.nextIndex);
 
           dump([value], 'value');
+
+          args.push(value);
         }
 
 
@@ -594,6 +674,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           eatBytes(valuef64.nextIndex);
 
           dump([value], 'value');
+
+          args.push(value);
         }
 
       } else {
@@ -609,10 +691,22 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       }
 
-      code.push({
-        instruction,
-        args,
-      });
+
+      if (instructionAlreadyCreated === false) {
+
+        if (typeof instruction.object === 'string') {
+
+          code.push(t.objectInstruction(
+            instruction.name,
+            instruction.object,
+            args
+          ));
+
+        } else {
+
+          code.push(t.instruction(instruction.name, args));
+        }
+      }
 
     }
   }
@@ -1033,21 +1127,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     }));
 
     const code = state.elementsInCodeSection[funcIndex];
-
-    const body = code.code.map((instr) => {
-
-      if (typeof instr.instruction.object === 'string') {
-
-        return t.objectInstruction(
-          instr.instruction.name,
-          instr.instruction.object,
-          instr.args
-        );
-      } else {
-
-        return t.instruction(instr.instruction.name, instr.args);
-      }
-    });
+    const body = code.code;
 
     moduleFields.push(
       t.func(func.id.name, params, func.signature.result[0], body)
@@ -1064,6 +1144,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       )
     );
   });
+
+  dumpSep('end of program');
 
   const module = t.module(null, moduleFields);
   return t.program([module]);

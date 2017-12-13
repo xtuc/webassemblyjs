@@ -66,6 +66,7 @@ type StackFrame = {
   code: Array<Instruction>;
 
   originatingModule: ModuleInstance;
+  allocator: Allocator;
 
   trace?: (number, number, Instruction) => void;
 };
