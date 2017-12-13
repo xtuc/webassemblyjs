@@ -9,6 +9,18 @@ This is meant to be a polyfill entirely written in JavaScript and with no depend
 - [add WebAssembly Text Format](https://webassembly.js.org/examples/add-watf.html)
 - [add WebAssembly Binary Format](https://webassembly.js.org/examples/add-wasm.html)
 
+## Usage
+
+### CDN
+
+You can import `https://bundle.run/webassembly-interpreter` and the `webassemblyInterpreter` object will be accessible.
+
+### npm
+
+```sh
+npm install webassembly-interpreter
+```
+
 ## Commands
 
 - `wasmdump FILENAME`: decodes a WASM binary and dumps its content

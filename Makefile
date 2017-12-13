@@ -2,6 +2,7 @@ MOCHA = ./node_modules/.bin/mocha --reporter=tap
 BABEL = ./node_modules/.bin/babel
 FLOW = ./node_modules/.bin/flow
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1
+MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 
 .PHONY: test build
 
@@ -23,5 +24,8 @@ publish: build
 repl: build
 	node ./lib/repl
 
-serve-examples:
-	$(HTTP_SERVER) docs/examples
+generate-doc:
+	$(MARKDOWN_TO_HTML) README.md
+
+serve-docs:
+	$(HTTP_SERVER) docs

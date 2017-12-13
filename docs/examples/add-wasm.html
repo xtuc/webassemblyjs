@@ -4,19 +4,28 @@
     <meta charset="UTF-8">
     <title>Add wasm</title>
 
-    <style>
-      pre {
-        border: 1px solid lightgray;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="https://www.xtuc.fr/style.css">
+    <link rel="stylesheet" type="text/css" href="https://www.xtuc.fr/editor.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/prism.min.js" integrity="sha256-haEv2ilTk2sXcJaGbkTtErRCHy/qGt3g+bGbgPf5OTY=" crossorigin="anonymous"></script>
     <script src="https://bundle.run/webassembly-interpreter@0.0.12"></script>
   </head>
-  <body>
+  <body class="container">
 
-    JS:
+    <div class="section line">
+      <h1>WebAssembly binary format - demo</h1>
+    </div>
 
-    <pre id="exec">
+    <p>JS:</p>
+
+    <div class="window">
+      <div class="window-header">
+        <div class="action-buttons"></div>
+        <span class="language">JavaScript</span>
+      </div>
+      <div class="window-body" style="height: 345px;">
+        <pre class="code-output">
+          <code class="language-js" id="exec">
 request = new XMLHttpRequest();
 request.open('GET', 'add.wasm');
 request.responseType = 'arraybuffer';
@@ -30,14 +39,29 @@ request.onload = function() {
     .then((module) => {
 
       var res = module.exports.add(1, 1);
-      document.getElementById("res").innerHTML = JSON.stringify(res, null, 2);
+      document.getElementById("res").innerHTML = res;
     });
 };
-    </pre>
+          </code>
+        </pre>
+      </div>
+    </div>
 
-    Result:
+    <h2>Result</h2>
 
-    <pre id="res"></pre>
+    <div class="window">
+      <div class="window-header">
+        <div class="action-buttons"></div>
+        <span class="language"></span>
+      </div>
+      <div class="window-body" style="height: 35px;">
+        <pre class="code-output">
+          <code id="res">
+            ...
+          </code>
+        </pre>
+      </div>
+    </div>
 
     <script>
       eval(document.getElementById("exec").innerText);

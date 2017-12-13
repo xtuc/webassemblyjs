@@ -4,19 +4,32 @@
     <meta charset="UTF-8">
     <title>Add watf</title>
 
-    <style>
-      pre {
-        border: 1px solid lightgray;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="https://www.xtuc.fr/style.css">
+    <link rel="stylesheet" type="text/css" href="https://www.xtuc.fr/editor.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/prism.min.js" integrity="sha256-haEv2ilTk2sXcJaGbkTtErRCHy/qGt3g+bGbgPf5OTY=" crossorigin="anonymous"></script>
     <script src="https://bundle.run/webassembly-interpreter@0.0.12"></script>
   </head>
-  <body>
+  <body class="container">
 
-    Input:
+    <div class="section line">
+      <h1>WebAssembly text format - demo</h1>
+    </div>
 
-    <pre id="input">
+    <p>
+      <code>instantiateFromSource</code> is not part of WebAssembly's API, it's only meant for testing purpose.
+    </p>
+
+    <h2>Input</h2>
+
+    <div class="window">
+      <div class="window-header">
+        <div class="action-buttons"></div>
+        <span class="language">WATF</span>
+      </div>
+      <div class="window-body" style="height: 174px;">
+        <pre class="code-output">
+          <code class="language-js" id="input">
 (module
  (func $add (param i32) (param i32) (result i32)
   get_local 0
@@ -24,21 +37,46 @@
   i32.add)
  (export "add" (func $add))
 )
-    </pre>
+          </code>
+        </pre>
+      </div>
+    </div>
 
-    JS:
+    <h2>Client</h2>
 
-    <pre id="exec">
+    <div class="window">
+      <div class="window-header">
+        <div class="action-buttons"></div>
+        <span class="language">JavaScript</span>
+      </div>
+      <div class="window-body" style="height: 145px;">
+        <pre class="code-output">
+          <code class="language-js" id="exec">
 var code = document.getElementById("input").innerText;
 var module = webassemblyInterpreter.instantiateFromSource(code);
 
 var res = module.exports.add(1, 1);
-document.getElementById("res").innerHTML = JSON.stringify(res, null, 2);
-    </pre>
+document.getElementById("res").innerHTML = res;
+          </code>
+        </pre>
+      </div>
+    </div>
 
-    Result:
+    <h2>Result</h2>
 
-    <pre id="res"></pre>
+    <div class="window">
+      <div class="window-header">
+        <div class="action-buttons"></div>
+        <span class="language"></span>
+      </div>
+      <div class="window-body" style="height: 35px;">
+        <pre class="code-output">
+          <code id="res">
+            ...
+          </code>
+        </pre>
+      </div>
+    </div>
 
     <script>
       eval(document.getElementById("exec").innerText);
