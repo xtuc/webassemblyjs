@@ -11,7 +11,9 @@ This is meant to be a polyfill entirely written in JavaScript and with no depend
 
 ## Commands
 
-- `wasmdump FILENAME`: decodes a wasm binary and dumps its content
+- `wasmdump FILENAME`: decodes a WASM binary and dumps its content
+- `wasmast FILENAME`: prints the AST of the WASM binary.
+- `wasmrun FILENAME [ENTRYPOINT]`: runs the WASM binary (uses the start section by default as entrypoint).
 
 ## Components
 

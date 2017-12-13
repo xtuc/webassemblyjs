@@ -40,6 +40,8 @@
     "mocha": "^4.0.1"
   },
   "bin": {
-    "wasmdump": "./lib/bin/wasmdump.js"
+    "wasmdump": "./lib/bin/wasmdump.js",
+    "wasmast": "./lib/bin/wasmast.js",
+    "wasmrun": "./lib/bin/wasmrun.js"
   }
 }

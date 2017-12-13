@@ -5,6 +5,9 @@ HTTP_SERVER = ./node_modules/.bin/http-server -d-1
 
 .PHONY: test build
 
+make-executables:
+	chmod +x ./lib/bin/*
+
 build:
 	$(BABEL) --out-dir lib/ src/
 
