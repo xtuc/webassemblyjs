@@ -79,6 +79,10 @@ Our runtime instance values.
 
 -  get_local of identifier is not supported as in the binary format
 
+## Source
+
+The sources are available on GitHub: [xtuc/js-webassembly-interpreter](https://github.com/xtuc/js-webassembly-interpreter).
+
 ## Licence
 
 [GNU General Public License, version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
