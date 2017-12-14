@@ -86,10 +86,15 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
    * we are adding incrementally new features
    */
   const state: State = {
-    elementsInTypeSection: [],
     elementsInFuncSection: [],
     elementsInExportSection: [],
     elementsInCodeSection: [],
+
+    /**
+     * Decoded types from:
+     * - Type section
+     */
+    typesInModule: [],
 
     /**
      * Decoded functions from:
@@ -262,7 +267,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         const params: Array<Valtype> = parseVec((b) => valtypes[b]);
         const result: Array<Valtype> = parseVec((b) => valtypes[b]);
 
-        state.elementsInTypeSection.push({
+        state.typesInModule.push({
           params,
           result,
         });
@@ -317,12 +322,30 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       if (descrType === 'func') {
 
         const indexU32 = readU32();
-        const index = indexU32.value;
+        const typeindex = indexU32.value;
         eatBytes(indexU32.nextIndex);
 
-        dump([index], 'index');
+        dump([typeindex], 'type index');
 
-        importDescr = t.funcImportDescr(t.numberLiteral(index));
+        importDescr = t.funcImportDescr(t.numberLiteral(typeindex));
+
+        const signature = state.typesInModule[typeindex];
+
+        if (typeof signature === 'undefined') {
+          throw new CompileError('function signature not found in type section');
+        }
+
+        const id = t.identifier(name.value);
+
+        /**
+         * FIXME(sven): imported function from the importObject should be treated
+         * as local function in the module, but if we add them here we are going
+         * to lookup for its code (code section) which doesn't existis
+         */
+        // state.functionsInModule.push({
+        //   id,
+        //   signature,
+        // });
 
       } else if (descrType === 'global') {
 
@@ -351,16 +374,16 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     for (let i = 0; i < numberOfFunctions; i++) {
 
       const indexU32 = readU32();
-      const index = indexU32.value;
+      const typeindex = indexU32.value;
       eatBytes(indexU32.nextIndex);
 
-      const signature = state.elementsInTypeSection[index];
+      const signature = state.typesInModule[typeindex];
 
       if (typeof signature === 'undefined') {
-        throw new CompileError('Internal error: function signature not found');
+        throw new CompileError('function signature not found');
       }
 
-      const id = t.identifier('func_' + index);
+      const id = t.identifier('func_' + typeindex);
 
       state.functionsInModule.push({
         id,
@@ -417,6 +440,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         id = func.id;
         signature = func.signature;
+      } else {
+        throw new CompileError('Unsupported export type: ' + toHex(typeIndex));
       }
 
       state.elementsInExportSection.push({

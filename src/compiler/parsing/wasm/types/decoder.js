@@ -26,21 +26,20 @@ type DecodedSymbol = {
 /**
  * Data structures used in decoder's state
  */
+type DecodedModuleType = {
+  params: Array<Valtype>;
+  result: Array<Valtype>;
+}
 
 type DecodedModuleFunc = {
   id: Identifier;
-  signature: ElementsInTypeSection;
-};
-
-type DecodedElementInTypeSection = {
-  params: Array<Valtype>;
-  result: Array<Valtype>;
+  signature: DecodedModuleType;
 };
 
 type DecodedElementInExportSection = {
   name: string;
   type: ExportDescr;
-  signature: ?ElementsInTypeSection;
+  signature: ?DecodedModuleType;
   id: ?Identifier;
   index: number;
 };
@@ -56,7 +55,7 @@ type DecodedElementInCodeSection = {
 };
 
 type State = {
-  elementsInTypeSection: Array<DecodedElementInTypeSection>;
+  typesInModule: Array<DecodedModuleType>;
   functionsInModule: Array<DecodedModuleFunc>;
   elementsInExportSection: Array<DecodedElementInExportSection>;
   elementsInCodeSection: Array<DecodedElementInCodeSection>,
