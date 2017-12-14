@@ -343,15 +343,11 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         const id = t.identifier(name.value);
 
-        /**
-         * FIXME(sven): imported function from the importObject should be treated
-         * as local function in the module, but if we add them here we are going
-         * to lookup for its code (code section) which doesn't existis
-         */
-        // state.functionsInModule.push({
-        //   id,
-        //   signature,
-        // });
+        state.functionsInModule.push({
+          id,
+          signature,
+          isExternal: true,
+        });
 
       } else if (descrType === 'global') {
 
@@ -394,6 +390,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       state.functionsInModule.push({
         id,
         signature,
+        isExternal: false,
       });
     }
   }
@@ -1182,15 +1179,23 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   /**
    * Transform the state into AST nodes
    */
-  state.functionsInModule.forEach((func: DecodedModuleFunc, funcIndex) => {
+  let funcIndex = 0;
+  state.functionsInModule.forEach((func: DecodedModuleFunc) => {
 
     const params = func.signature.params.map((valtype: Valtype) => ({
       valtype,
       id: undefined,
     }));
 
-    const code = state.elementsInCodeSection[funcIndex];
-    const body = code.code;
+    let body = [];
+
+    // External functions doesn't provide any code, can skip it here
+    if (func.isExternal === false) {
+      const code = state.elementsInCodeSection[funcIndex];
+      body = code.code;
+
+      funcIndex++;
+    }
 
     moduleFields.push(
       t.func(func.id.name, params, func.signature.result[0], body)

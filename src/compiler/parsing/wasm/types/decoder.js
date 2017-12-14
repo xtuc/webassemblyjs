@@ -34,6 +34,7 @@ type DecodedModuleType = {
 type DecodedModuleFunc = {
   id: Identifier;
   signature: DecodedModuleType;
+  isExternal: boolean,
 };
 
 type DecodedElementInExportSection = {
