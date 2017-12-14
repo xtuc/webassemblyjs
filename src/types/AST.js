@@ -144,6 +144,7 @@ type Table = {
 type Memory = {
   type: 'Memory';
   limits: Limit;
+  id: ?Identifier;
 }
 
 type ByteArray = {

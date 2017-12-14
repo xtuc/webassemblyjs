@@ -54,9 +54,13 @@ type DecodedElementInCodeSection = {
   locals: Array<Valtype>;
 };
 
+type DecodedModuleMemory = Memory;
+
 type State = {
   typesInModule: Array<DecodedModuleType>;
   functionsInModule: Array<DecodedModuleFunc>;
+  memoriesInModule: Array<DecodedModuleMemory>;
+
   elementsInExportSection: Array<DecodedElementInExportSection>;
   elementsInCodeSection: Array<DecodedElementInCodeSection>,
 };

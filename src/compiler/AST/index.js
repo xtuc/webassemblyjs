@@ -221,11 +221,12 @@ export function limits(min: number, max?: number): Limit {
   };
 }
 
-export function memory(limits: Limit): Memory {
+export function memory(limits: Limit, id: ?Identifier): Memory {
 
   return {
     type: 'Memory',
     limits,
+    id,
   };
 }
 

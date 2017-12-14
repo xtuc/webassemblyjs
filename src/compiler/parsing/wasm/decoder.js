@@ -91,6 +91,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     elementsInCodeSection: [],
 
     /**
+     * Decode memory from:
+     * - Memory section
+     */
+    memoriesInModule: [],
+
+    /**
      * Decoded types from:
      * - Type section
      */
@@ -434,12 +440,23 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         if (typeof func === 'undefined') {
           throw new CompileError(
-            `entry not found at index ${index}  in function section`
+            `entry not found at index ${index} in function section`
           );
         }
 
         id = func.id;
         signature = func.signature;
+      } else if (exportTypes[typeIndex] === 'Mem') {
+        const memNode = state.memoriesInModule[index];
+
+        if (typeof memNode === 'undefined') {
+          throw new CompileError(
+            `entry not found at index ${index} in memory section`
+          );
+        }
+
+        id = memNode.id;
+        signature = null;
       } else {
         throw new CompileError('Unsupported export type: ' + toHex(typeIndex));
       }
@@ -950,9 +967,13 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         dump([min], 'min');
       }
 
-      memories.push(
-        t.memory(t.limits(min, max))
+      const memoryNode = t.memory(
+        t.limits(min, max),
+        t.numberLiteral(i),
       );
+
+      state.memoriesInModule.push(memoryNode);
+      memories.push(memoryNode);
     }
 
     return memories;
