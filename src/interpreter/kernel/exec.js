@@ -247,7 +247,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         if (typeof funcaddr === 'undefined') {
 
           throw new RuntimeError(
-            `Cannot call function at local address ${index}: not found`
+            `No function were found in module at address ${index}`
           );
         }
 
@@ -269,7 +269,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         const args = popArrayOfValTypes(argTypes);
 
-        if (subroutine.external === false) {
+        if (subroutine.isExternal === false) {
 
           const childStackFrame = createChildStackFrame(frame, subroutine.code);
           childStackFrame.values = args.map((arg) => arg.value);

@@ -57,6 +57,7 @@ export function func(
     params,
     result,
     body,
+    isExternal: false,
   };
 }
 

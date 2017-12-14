@@ -44,6 +44,12 @@ function createInstance(
   traverse(n, {
 
     Func({node}: NodePath<Func>) {
+
+      // Only instantiate/allocate our own functions
+      if (node.isExternal === true) {
+        return;
+      }
+
       const funcinstance = func.createInstance(node, moduleInstance);
 
       const addr = allocator.malloc(1 /* size of the funcinstance struct */);

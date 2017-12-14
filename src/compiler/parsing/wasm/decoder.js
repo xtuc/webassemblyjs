@@ -277,6 +277,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           params,
           result,
         });
+      } else {
+        throw new Error('Unsupported type: ' + toHex(type));
       }
     }
 
@@ -1205,9 +1207,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       funcIndex++;
     }
 
-    moduleFields.push(
-      t.func(func.id.name, params, result, body)
-    );
+    const funcNode = t.func(func.id.name, params, result, body);
+    funcNode.isExternal = func.isExternal;
+
+    moduleFields.push(funcNode);
   });
 
   state.elementsInExportSection.forEach((moduleExport: DecodedElementInExportSection) => {
