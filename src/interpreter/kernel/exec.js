@@ -518,7 +518,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const val = pop1();
 
       // 8. Replace glob.value with the value val.
-      globalinst.value = val;
+      globalinst.value = val.value;
 
       frame.allocator.set(globaladdr, globalinst);
 
@@ -547,9 +547,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       // 7. Pop the value val from the stack.
-      pushResult(
-        globalinst.value
-      );
+      pushResult(globalinst);
 
       break;
     }

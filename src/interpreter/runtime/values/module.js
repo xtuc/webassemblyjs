@@ -70,7 +70,7 @@ function createInstance(
 
       if (node.descr.type === 'FuncImportDescr') {
 
-        if (typeof instantiatedFuncs === 'undefined') {
+        if (typeof instantiatedFuncAddr === 'undefined') {
           throw new Error(
             'Cannot import function ' + node.name
             + ' was not declared or instantiated'
