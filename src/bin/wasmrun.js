@@ -2,7 +2,7 @@
 // @flow
 
 const {instantiate} = require('../index');
-const {readFileSync} = require('fs');
+const fs = require('fs');
 
 function debug(msg: string) {
   console.error(msg);
@@ -24,7 +24,7 @@ if (typeof filename === 'undefined') {
 
 debug('Compiling...');
 
-const buff = toArrayBuffer(readFileSync(filename, null));
+const buff = toArrayBuffer(fs.readFileSync(filename, null));
 
 const importObject = {
 
@@ -48,14 +48,10 @@ instantiate(buff, importObject)
 
       debug('Executing...');
 
-      startfn();
+      startfn(...process.argv.slice(4));
     }
 
   })
   .catch((err) => {
     throw err;
   });
-
-process.on('unhandledRejection', (reason, p) => {
-  throw reason;
-});
