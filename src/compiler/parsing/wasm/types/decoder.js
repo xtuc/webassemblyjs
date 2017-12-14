@@ -39,8 +39,8 @@ type ElementInTypeSection = {
 type ElementInExportSection = {
   name: string;
   type: ExportDescr;
-  signature: ElementsInTypeSection;
-  id: Identifier;
+  signature: ?ElementsInTypeSection;
+  id: ?Identifier;
   index: number;
 };
 

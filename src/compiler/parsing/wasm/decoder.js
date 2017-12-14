@@ -1,6 +1,7 @@
 // @flow
 
 const t = require('../../AST');
+const {CompileError} = require('../../../errors');
 
 const {
   importTypes,
@@ -183,7 +184,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const header = readBytes(4);
 
     if (byteArrayEq(magicModuleHeader, header) === false) {
-      throw new Error('magic header not detected');
+      throw new CompileError('magic header not detected');
     }
 
     dump(header, 'wasm magic: header');
@@ -195,7 +196,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const version = readBytes(4);
 
     if (byteArrayEq(moduleVersion, version) === false) {
-      throw new Error('unknown wasm version: ' + version.join(' '));
+      throw new CompileError('unknown wasm version: ' + version.join(' '));
     }
 
     dump(version, 'wasm version');
@@ -227,7 +228,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       dump([byte], value);
 
       if (typeof value === 'undefined') {
-        throw new Error('Internal failure: parseVec could not cast the value');
+        throw new CompileError('Internal failure: parseVec could not cast the value');
       }
 
       elements.push(value);
@@ -301,7 +302,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       dump([descrTypeByte], 'import type');
 
       if (typeof descrType === 'undefined') {
-        throw new Error('Unknown import description type: ' + toHex(descrTypeByte));
+        throw new CompileError('Unknown import description type: ' + toHex(descrTypeByte));
       }
 
       let importDescr;
@@ -321,7 +322,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         importDescr = parseGlobalType();
 
       } else {
-        throw new Error('Unsupported import of type: ' + descrType);
+        throw new CompileError('Unsupported import of type: ' + descrType);
       }
 
       imports.push(
@@ -349,7 +350,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       const signature = state.elementsInTypeSection[index];
 
       if (typeof signature === 'undefined') {
-        throw new Error('Internal error: function signature not found');
+        throw new CompileError('Internal error: function signature not found');
       }
 
       const id = t.identifier('func_' + index);
@@ -394,19 +395,28 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       const index = indexu32.value;
       eatBytes(indexu32.nextIndex);
 
-      dump([index], 'export func index');
+      dump([index], 'export index');
 
-      const func = state.elementsInFuncSection[index];
+      let id, signature;
 
-      if (typeof func === 'undefined') {
-        throw new Error('Internal error: entry not found in function section');
+      if (exportTypes[typeIndex] === 'Func') {
+        const func = state.elementsInFuncSection[index];
+
+        if (typeof func === 'undefined') {
+          throw new CompileError(
+            `entry not found at index ${index}  in function section`
+          );
+        }
+
+        id = func.id;
+        signature = func.signature;
       }
 
       state.elementsInExportSection.push({
         name: name.value,
         type: exportTypes[typeIndex],
-        signature: func.signature,
-        id: func.id,
+        signature,
+        id,
         index,
       });
 
@@ -463,7 +473,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         dump([valtypeByte], type);
 
         if (typeof type === 'undefined') {
-          throw new Error('Unexpected valtype: ' + toHex(valtypeByte));
+          throw new CompileError('Unexpected valtype: ' + toHex(valtypeByte));
         }
       }
 
@@ -490,7 +500,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       dump([instructionByte], instruction.name);
 
       if (typeof instruction === 'undefined') {
-        throw new Error('Unexpected instruction: ' + toHex(instructionByte));
+        throw new CompileError('Unexpected instruction: ' + toHex(instructionByte));
       }
 
       /**
@@ -512,7 +522,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         dump([blocktypeByte], 'blocktype');
 
         if (typeof blocktype === 'undefined') {
-          throw new Error('Unexpected blocktype: ' + toHex(blocktypeByte));
+          throw new CompileError('Unexpected blocktype: ' + toHex(blocktypeByte));
         }
 
         const instr = [];
@@ -534,7 +544,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         dump([blocktypeByte], 'blocktype');
 
         if (typeof blocktype === 'undefined') {
-          throw new Error('Unexpected blocktype: ' + toHex(blocktypeByte));
+          throw new CompileError('Unexpected blocktype: ' + toHex(blocktypeByte));
         }
 
         const consequentInstr = [];
@@ -561,7 +571,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         dump([blocktypeByte], 'blocktype');
 
         if (typeof blocktype === 'undefined') {
-          throw new Error('Unexpected blocktype: ' + toHex(blocktypeByte));
+          throw new CompileError('Unexpected blocktype: ' + toHex(blocktypeByte));
         }
 
         const instr = [];
@@ -730,7 +740,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       const elementType = tableTypes[elementTypeByte];
 
       if (typeof elementType === 'undefined') {
-        throw new Error('Unknown element type in table: ' + toHex(elementType));
+        throw new CompileError('Unknown element type in table: ' + toHex(elementType));
       }
 
       const limitType = readByte();
@@ -780,7 +790,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     dump([valtypeByte], 'valtype type');
 
     if (typeof type === 'undefined') {
-      throw new Error('Unknown valtype: ' + toHex(valtypeByte));
+      throw new CompileError('Unknown valtype: ' + toHex(valtypeByte));
     }
 
     const globalTypeByte = readByte();
@@ -789,7 +799,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     dump([globalTypeByte], 'global type');
 
     if (typeof globalType === 'undefined') {
-      throw new Error('Unknown global type: ' + toHex(globalTypeByte));
+      throw new CompileError('Unknown global type: ' + toHex(globalTypeByte));
     }
 
     return t.globalType(type, globalType);
@@ -928,7 +938,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const func = state.elementsInFuncSection[startFuncIndex];
 
     if (typeof func === 'undefined') {
-      throw new Error('Unknown start function');
+      throw new CompileError('Unknown start function');
     }
   }
 
@@ -1095,7 +1105,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     }
 
     default: {
-      throw new Error('Unexpected section: ' + JSON.stringify(sectionId));
+      throw new CompileError('Unexpected section: ' + JSON.stringify(sectionId));
     }
 
     }
@@ -1136,13 +1146,21 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
   state.elementsInExportSection.forEach((moduleExport: ElementInExportSection) => {
 
-    moduleFields.push(
-      t.moduleExport(
-        moduleExport.name,
-        moduleExport.type,
-        moduleExport.id.name,
-      )
-    );
+    /**
+     * If the export has no id, we won't be able to call it from the outside
+     * so we can omit it
+     */
+    if (typeof moduleExport.id === 'object') {
+
+      moduleFields.push(
+        t.moduleExport(
+          moduleExport.name,
+          moduleExport.type,
+          moduleExport.id.name,
+        )
+      );
+    }
+
   });
 
   dumpSep('end of program');
