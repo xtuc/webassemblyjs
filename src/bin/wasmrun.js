@@ -48,7 +48,8 @@ instantiate(buff, importObject)
 
       debug('Executing...');
 
-      startfn(...process.argv.slice(4));
+      const exitCode = startfn(...process.argv.slice(4));
+      console.log('exited with code', exitCode);
     }
 
   })
