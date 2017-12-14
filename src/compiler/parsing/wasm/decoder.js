@@ -90,6 +90,13 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     elementsInFuncSection: [],
     elementsInExportSection: [],
     elementsInCodeSection: [],
+
+    /**
+     * Decoded functions from:
+     * - Function section
+     * - Import section
+     */
+    functionsInModule: [],
   };
 
   function eatBytes(n: number) {
@@ -355,7 +362,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       const id = t.identifier('func_' + index);
 
-      state.elementsInFuncSection.push({
+      state.functionsInModule.push({
         id,
         signature,
       });
@@ -400,7 +407,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       let id, signature;
 
       if (exportTypes[typeIndex] === 'Func') {
-        const func = state.elementsInFuncSection[index];
+        const func = state.functionsInModule[index];
 
         if (typeof func === 'undefined') {
           throw new CompileError(
@@ -935,7 +942,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
     dump([startFuncIndex], 'index');
 
-    const func = state.elementsInFuncSection[startFuncIndex];
+    const func = state.functionsInModule[startFuncIndex];
 
     if (typeof func === 'undefined') {
       throw new CompileError('Unknown start function');
@@ -1129,7 +1136,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   /**
    * Transform the state into AST nodes
    */
-  state.elementsInFuncSection.forEach((func: ElementInFuncSection, funcIndex) => {
+  state.functionsInModule.forEach((func: ModuleFunc, funcIndex) => {
 
     const params = func.signature.params.map((valtype: Valtype) => ({
       valtype,

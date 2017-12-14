@@ -26,7 +26,7 @@ type Symbol = {
  * Data structures used in decoder's state
  */
 
-type ElementInFuncSection = {
+type ModuleFunc = {
   id: Identifier;
   signature: ElementsInTypeSection;
 };
@@ -56,7 +56,7 @@ type ElementInCodeSection = {
 
 type State = {
   elementsInTypeSection: Array<ElementInTypeSection>;
-  elementsInFuncSection: Array<ElementInFuncSection>;
+  functionsInModule: Array<ModuleFunc>;
   elementsInExportSection: Array<ElementInExportSection>;
   elementsInCodeSection: Array<ElementInCodeSection>,
 };
