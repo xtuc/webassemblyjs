@@ -383,13 +383,15 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       const typeindex = indexU32.value;
       eatBytes(indexU32.nextIndex);
 
+      dump([typeindex], 'type index');
+
       const signature = state.typesInModule[typeindex];
 
       if (typeof signature === 'undefined') {
         throw new CompileError('function signature not found');
       }
 
-      const id = t.identifier('func_' + typeindex);
+      const id = t.identifier(getUniqueName('func'));
 
       state.functionsInModule.push({
         id,
