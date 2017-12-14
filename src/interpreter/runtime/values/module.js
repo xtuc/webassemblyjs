@@ -4,7 +4,11 @@ const {traverse} = require('../../../compiler/AST/traverse');
 const func = require('./func');
 const global = require('./global');
 
-function createInstance(allocator: Allocator, n: Module): ModuleInstance {
+function createInstance(
+  allocator: Allocator,
+  n: Module,
+  externalFunctions: any = {},
+): ModuleInstance {
 
   // Keep a ref to the module instance
   const moduleInstance = {
@@ -23,6 +27,16 @@ function createInstance(allocator: Allocator, n: Module): ModuleInstance {
    * the export wrapper
    */
   const instantiatedFuncs = {};
+
+  Object.keys(externalFunctions).forEach((funckey) => {
+    const jsfunc = externalFunctions[funckey];
+    const funcinstance = func.createExternalInstance(jsfunc);
+
+    const addr = allocator.malloc(1 /* size of the funcinstance struct */);
+    allocator.set(addr, funcinstance);
+
+    instantiatedFuncs[funckey] = addr;
+  });
 
   /**
    * Instantiate the function in the module
@@ -49,6 +63,38 @@ function createInstance(allocator: Allocator, n: Module): ModuleInstance {
       allocator.set(addr, globalinstance);
 
       moduleInstance.globaladdrs.push(addr);
+    },
+
+    ModuleImport({node}: NodePath<ModuleImport>) {
+      const instantiatedFuncAddr = instantiatedFuncs[node.name];
+
+      if (node.descr.type === 'FuncImportDescr') {
+
+        if (typeof instantiatedFuncs === 'undefined') {
+          throw new Error(
+            'Cannot import function ' + node.name
+            + ' was not declared or instantiated'
+          );
+        }
+
+        /**
+         * Add missing type informations:
+         * - params
+         * - results
+         */
+        const func = allocator.get(instantiatedFuncAddr);
+        func.type = [
+          node.descr.params,
+          node.descr.results,
+        ];
+
+        allocator.set(func, instantiatedFuncAddr);
+
+        moduleInstance.funcaddrs.push(instantiatedFuncAddr);
+
+      } else {
+        throw new Error('Unsupported import of type: ' + node.descr.type);
+      }
     }
 
   });

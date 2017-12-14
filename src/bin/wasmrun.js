@@ -26,7 +26,17 @@ debug('Compiling...');
 
 const buff = toArrayBuffer(readFileSync(filename, null));
 
-instantiate(buff)
+const importObject = {
+
+  imports: {
+    printf: function(...args) {
+      console.log(...args);
+    }
+  }
+
+};
+
+instantiate(buff, importObject)
   .then((module) => {
 
     if (typeof entrypoint !== 'undefined') {

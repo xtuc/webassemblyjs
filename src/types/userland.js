@@ -30,6 +30,7 @@ type TableDescriptor = {
 };
 
 type ImportObject = {
+  imports?: any;
   js?: JSImportObject;
 };
 

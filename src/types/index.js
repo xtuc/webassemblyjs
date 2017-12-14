@@ -33,13 +33,15 @@ type ExportInstance = {
 
 type FuncInstance = {
   type: Functype;
-  module: ModuleInstance; // its originating module
+  module: ?ModuleInstance; // its originating module
 
   // TODO(sven): according to the spec the code property is a string
   // see https://webassembly.github.io/spec/exec/runtime.html#function-instances
   // but in the context of an interpreter it make no sense to me.
   // I'll store the instructions from the function body here.
-  code: Array<Instruction>;
+  code: Array<Instruction> | Function;
+
+  isExternal: boolean;
 };
 
 type ModuleInstance = {

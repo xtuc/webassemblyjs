@@ -45,6 +45,14 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     frame.values.push(res);
   }
 
+  function popArrayOfValTypes(types: Array<Valtype>): any {
+    assertNItemsOnStack(frame.values, types.length);
+
+    return types.map((type) => {
+      return pop1(type);
+    });
+  }
+
   function pop1(type: ?Valtype): any {
     assertNItemsOnStack(frame.values, 1);
 
@@ -256,15 +264,28 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         // 4. Invoke the function instance at address a
 
-        const childStackFrame = createChildStackFrame(frame, subroutine.code);
-        const res = executeStackFrame(childStackFrame, depth + 1);
+        // FIXME(sven): assert that res has type of resultType
+        const [argTypes, resultType] = subroutine.type;
 
-        if (isTrapped(res)) {
-          return res;
-        }
+        const args = popArrayOfValTypes(argTypes);
 
-        if (typeof res !== 'undefined') {
-          pushResult(res);
+        if (subroutine.external === false) {
+
+          const childStackFrame = createChildStackFrame(frame, subroutine.code);
+          childStackFrame.values = args.map((arg) => arg.value);
+
+          const res = executeStackFrame(childStackFrame, depth + 1);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          if (typeof res !== 'undefined') {
+            pushResult(res);
+          }
+
+        } else {
+          subroutine.code(args.map((arg) => arg.value));
         }
 
       }

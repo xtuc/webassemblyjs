@@ -21,6 +21,12 @@ export function program(body: Array<Node>): Program {
 }
 
 export function module(id: ?string, fields: ModuleFields): Module {
+  if (id != null) {
+    assert(typeof id === 'string');
+  }
+
+  assert(typeof fields === 'object' && typeof fields.length !== 'undefined');
+
   return {
     type: 'Module',
     id,
@@ -195,11 +201,19 @@ export function globalImportDescr(
   };
 }
 
-export function funcImportDescr(value: NumberLiteral): FuncImportDescr {
+export function funcImportDescr(
+  value: NumberLiteral,
+  params: Array<FuncParam> = [],
+  results: Array<Valtype> = [],
+): FuncImportDescr {
+  assert(typeof params === 'object' && typeof params.length !== 'undefined');
+  assert(typeof results === 'object' && typeof results.length !== 'undefined');
 
   return {
     type: 'FuncImportDescr',
     value,
+    params,
+    results,
   };
 }
 

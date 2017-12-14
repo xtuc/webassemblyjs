@@ -22,7 +22,7 @@ describe('module create interface', () => {
   describe('module exports', () => {
 
     it('should handle no export', () => {
-      const node = t.module();
+      const node = t.module(undefined, []);
       const instance = modulevalue.createInstance(allocator, node);
 
       assert.typeOf(instance.exports, 'array');
@@ -54,7 +54,7 @@ describe('module create interface', () => {
 
     it('return an instance', () => {
       const node = t.func('test', [], null, []);
-      const fromModule = t.module();
+      const fromModule = t.module(undefined, []);
 
       const instance = funcvalue.createInstance(node, fromModule);
 
@@ -66,6 +66,8 @@ describe('module create interface', () => {
       assert.typeOf(instance.code, 'array');
 
       assert.typeOf(instance.module, 'object');
+
+      assert.isFalse(instance.isExternal);
     });
 
     it('return an instance with arg and result types', () => {
@@ -77,12 +79,22 @@ describe('module create interface', () => {
       const result = 'i32';
 
       const node = t.func('test', args, result, []);
-      const fromModule = t.module();
+      const fromModule = t.module(undefined, []);
 
       const instance = funcvalue.createInstance(node, fromModule);
 
       assert.deepEqual(instance.type[0], ['i32', 'i32']);
       assert.deepEqual(instance.type[1], ['i32']);
+    });
+
+    it('return an instance for external function', () => {
+      const func = () => {};
+      const instance = funcvalue.createExternalInstance(func);
+
+      assert.typeOf(instance, 'object');
+      assert.isTrue(instance.isExternal);
+
+      assert.equal(instance.code, func);
     });
   });
 
@@ -259,4 +271,37 @@ describe('module create interface', () => {
     });
 
   });
+
+  it('module imports (external functions)', () => {
+    const externalFunctions = {
+      test() {}
+    };
+
+    const node = t.module(
+      'module',
+      [t.moduleImport(
+        'env',
+        'test',
+        t.funcImportDescr(
+          t.numberLiteral(0),
+          ['i32', 'i32'],
+          []
+        )
+      )]
+    );
+
+    const instance = modulevalue.createInstance(allocator, node, externalFunctions);
+
+    assert.lengthOf(instance.funcaddrs, 1);
+
+    const func = allocator.get(instance.funcaddrs[0]);
+
+    assert.typeOf(func, 'object');
+    assert.equal(func.code, externalFunctions.test);
+
+    assert.typeOf(func.type, 'array');
+    assert.deepEqual(func.type[0], ['i32', 'i32']);
+    assert.deepEqual(func.type[1], []);
+  });
+
 });

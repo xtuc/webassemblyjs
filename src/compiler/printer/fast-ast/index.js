@@ -12,6 +12,7 @@ function generateUniqueId() {
 
 export function print(ast: Node) {
   const out = {
+    imports: [],
     exports: {},
     functions: {},
     globals: [],
@@ -38,7 +39,11 @@ export function print(ast: Node) {
 
     Global({node}: NodePath<Global>) {
       out.globals.push(node.globalType);
-    }
+    },
+
+    ModuleImport({node}: NodePath<ModuleImport>) {
+      out.imports.push(node);
+    },
 
   });
 

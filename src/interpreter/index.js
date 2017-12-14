@@ -19,6 +19,11 @@ export class Instance {
   _moduleInstance: ModuleInstance;
   _table: ?TableInstance;
 
+  /**
+   * Map id to external callable functions
+   */
+  _externalFunctions: any;
+
   constructor(module: Module, importObject: ImportObject) {
 
     if (module instanceof Module === false) {
@@ -41,12 +46,17 @@ export class Instance {
      *
      * - Table if provided
      * - Memory if provided
+     * - Imported functions if provided
      */
     if (typeof importObject.js === 'object') {
 
       if (typeof importObject.js.tbl === 'object') {
         this._table = importObject.js.tbl;
       }
+    }
+
+    if (typeof importObject.imports === 'object') {
+      this._externalFunctions = importObject.imports;
     }
 
     const ast = module._ast;
@@ -56,7 +66,11 @@ export class Instance {
       throw new Error('Module not found');
     }
 
-    const moduleInstance = modulevalue.createInstance(this._allocator, moduleAst);
+    const moduleInstance = modulevalue.createInstance(
+      this._allocator,
+      moduleAst,
+      this._externalFunctions,
+    );
 
     moduleInstance.exports.forEach((exportinst) => {
 
@@ -108,7 +122,7 @@ function createHostfunc(
     const hasModuleInstantiatedFunc = moduleinst.funcaddrs.indexOf(exportinstAddr);
 
     if (hasModuleInstantiatedFunc === -1) {
-      throw new Error(
+      throw new RuntimeError(
         `Function at addr ${exportinstAddr.index} has not been initialized in the module.` +
         'Probably an internal failure'
       );
@@ -126,8 +140,9 @@ function createHostfunc(
     const funcinstArgs = funcinst.type[0];
 
     if (args.length !== funcinstArgs.length) {
-      throw new Error(
-        'Function called with ' + args.length + ' arguments but '
+
+      throw new RuntimeError(
+        `Function ${exportinstAddr.index} called with ${args.length} arguments but `
         + funcinst.type[0].length + ' expected'
       );
     }

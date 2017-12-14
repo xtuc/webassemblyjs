@@ -18,9 +18,22 @@ function createInstance(n: Func, fromModule: ModuleInstance): FuncInstance {
     type,
     code,
     module: fromModule,
+    isExternal: false,
+  };
+}
+
+function createExternalInstance(func: Function): FuncInstance {
+  const type = [[], []];
+
+  return {
+    type,
+    code: func,
+    module: null,
+    isExternal: true,
   };
 }
 
 module.exports = {
   createInstance,
+  createExternalInstance,
 };

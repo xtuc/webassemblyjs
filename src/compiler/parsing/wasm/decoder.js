@@ -333,13 +333,17 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         dump([typeindex], 'type index');
 
-        importDescr = t.funcImportDescr(t.numberLiteral(typeindex));
-
         const signature = state.typesInModule[typeindex];
 
         if (typeof signature === 'undefined') {
           throw new CompileError('function signature not found in type section');
         }
+
+        importDescr = t.funcImportDescr(
+          t.numberLiteral(typeindex),
+          signature.params,
+          signature.result,
+        );
 
         const id = t.identifier(name.value);
 
@@ -1187,6 +1191,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       id: undefined,
     }));
 
+    const result = func.signature.result[0];
+
     let body = [];
 
     // External functions doesn't provide any code, can skip it here
@@ -1198,7 +1204,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     }
 
     moduleFields.push(
-      t.func(func.id.name, params, func.signature.result[0], body)
+      t.func(func.id.name, params, result, body)
     );
   });
 
