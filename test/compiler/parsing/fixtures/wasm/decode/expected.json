@@ -7,7 +7,7 @@
       "fields": [
         {
           "type": "Func",
-          "id": "func_0",
+          "id": "func_2",
           "params": [
             {
               "valtype": "i32"
@@ -42,7 +42,7 @@
         },
         {
           "type": "Func",
-          "id": "func_0",
+          "id": "func_3",
           "params": [
             {
               "valtype": "i32"
@@ -80,7 +80,7 @@
           "name": "addTwo",
           "descr": {
             "type": "Func",
-            "id": "func_0"
+            "id": "func_2"
           }
         },
         {
@@ -88,7 +88,7 @@
           "name": "test",
           "descr": {
             "type": "Func",
-            "id": "func_0"
+            "id": "func_3"
           }
         }
       ]
