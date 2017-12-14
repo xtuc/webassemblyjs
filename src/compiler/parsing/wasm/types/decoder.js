@@ -2,21 +2,22 @@
 
 type Byte = number;
 
-type U32 = {
+interface Type {
   value: number;
   nextIndex: number;
 }
 
-type U64 = U32;
-type F32 = U32;
-type F64 = U32;
+type DecodedU32 = VariableLengthValue;
+type DecodedU64 = VariableLengthValue;
+type DecodedF32 = VariableLengthValue;
+type DecodedF64 = VariableLengthValue;
 
-type UTF8String = {
+type DecodedUTF8String = {
   value: string;
   nextIndex: number;
 };
 
-type Symbol = {
+type DecodedSymbol = {
   name: string;
   object?: Valtype;
   numberOfArgs: number;
@@ -26,17 +27,17 @@ type Symbol = {
  * Data structures used in decoder's state
  */
 
-type ModuleFunc = {
+type DecodedModuleFunc = {
   id: Identifier;
   signature: ElementsInTypeSection;
 };
 
-type ElementInTypeSection = {
+type DecodedElementInTypeSection = {
   params: Array<Valtype>;
   result: Array<Valtype>;
 };
 
-type ElementInExportSection = {
+type DecodedElementInExportSection = {
   name: string;
   type: ExportDescr;
   signature: ?ElementsInTypeSection;
@@ -44,19 +45,19 @@ type ElementInExportSection = {
   index: number;
 };
 
-type InstructionInCodeSection = {
-  instruction: Symbol;
+type DecodedInstructionInCodeSection = {
+  instruction: DecodedSymbol;
   args: Array<any>;
 };
 
-type ElementInCodeSection = {
-  code: Array<InstructionInCodeSection>;
+type DecodedElementInCodeSection = {
+  code: Array<DecodedInstructionInCodeSection>;
   locals: Array<Valtype>;
 };
 
 type State = {
-  elementsInTypeSection: Array<ElementInTypeSection>;
-  functionsInModule: Array<ModuleFunc>;
-  elementsInExportSection: Array<ElementInExportSection>;
-  elementsInCodeSection: Array<ElementInCodeSection>,
+  elementsInTypeSection: Array<DecodedElementInTypeSection>;
+  functionsInModule: Array<DecodedModuleFunc>;
+  elementsInExportSection: Array<DecodedElementInExportSection>;
+  elementsInCodeSection: Array<DecodedElementInCodeSection>,
 };

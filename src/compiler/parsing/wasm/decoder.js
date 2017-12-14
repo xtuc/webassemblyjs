@@ -113,7 +113,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     return arr;
   }
 
-  function readF64(): F64 {
+  function readF64(): DecodedF64 {
     const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F64);
     const buffer = Buffer.from(bytes);
 
@@ -131,7 +131,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     };
   }
 
-  function readF32(): F32 {
+  function readF32(): DecodedF32 {
     const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F32);
     const buffer = Buffer.from(bytes);
 
@@ -149,7 +149,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     };
   }
 
-  function readUTF8String(): UTF8String {
+  function readUTF8String(): DecodedUTF8String {
     const lenu32 = readU32();
     const len = lenu32.value;
     eatBytes(lenu32.nextIndex);
@@ -169,14 +169,14 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
    * The length will be handled by the leb librairy, we pass the max number of
    * byte.
    */
-  function readU32(): U32 {
+  function readU32(): DecodedU32 {
     const bytes = readBytes(MAX_NUMBER_OF_BYTE_U32);
     const buffer = Buffer.from(bytes);
 
     return decodeUInt32(buffer);
   }
 
-  function readU64(): U64 {
+  function readU64(): DecodedU64 {
     const bytes = readBytes(MAX_NUMBER_OF_BYTE_U64);
     const buffer = Buffer.from(bytes);
 
@@ -1136,7 +1136,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   /**
    * Transform the state into AST nodes
    */
-  state.functionsInModule.forEach((func: ModuleFunc, funcIndex) => {
+  state.functionsInModule.forEach((func: DecodedModuleFunc, funcIndex) => {
 
     const params = func.signature.params.map((valtype: Valtype) => ({
       valtype,
@@ -1151,7 +1151,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     );
   });
 
-  state.elementsInExportSection.forEach((moduleExport: ElementInExportSection) => {
+  state.elementsInExportSection.forEach((moduleExport: DecodedElementInExportSection) => {
 
     /**
      * If the export has no id, we won't be able to call it from the outside
