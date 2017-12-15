@@ -202,6 +202,16 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    case 'drop': {
+      // https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop
+
+      assertNItemsOnStack(frame.values, 1);
+
+      pop1();
+
+      break;
+    }
+
     case 'call': {
       // According to the spec call doesn't support an Identifier as argument
       // but the Script syntax supports it.
