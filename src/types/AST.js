@@ -58,7 +58,7 @@ interface Func {
   params: Array<FuncParam>;
   result: ?Valtype;
   body: Array<Instruction>;
-  isExternal: boolean;
+  isExternal?: boolean;
 }
 
 type ObjectInstruction = {

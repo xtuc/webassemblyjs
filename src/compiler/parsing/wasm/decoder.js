@@ -1208,7 +1208,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     }
 
     const funcNode = t.func(func.id.name, params, result, body);
-    funcNode.isExternal = func.isExternal;
+
+    if (func.isExternal === true) {
+      funcNode.isExternal = func.isExternal;
+    }
 
     moduleFields.push(funcNode);
   });
