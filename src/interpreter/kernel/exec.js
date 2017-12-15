@@ -483,7 +483,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const index = instruction.args[0];
       const init = instruction.args[1];
 
-      if (init.type === 'Instr') {
+      if (typeof init !== 'undefined' && init.type === 'Instr') {
+        // WAST
+
         const childStackFrame = createChildStackFrame(frame, [init]);
         childStackFrame.trace = frame.trace;
 
@@ -498,6 +500,25 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         pushResult(
           res
         );
+      } else {
+        // WASM
+
+        // 1. Assert: due to validation, a value is on the top of the stack.
+        // 2. Pop the value val from the stack.
+        const val = pop1();
+
+        // 3. Push the value valval to the stack.
+        pushResult(val);
+
+        // 4. Push the value valval to the stack.
+        pushResult(val);
+
+        // 5. Execute the instruction (set_local x).
+        // 5. 4. Pop the value val from the stack
+        const val2 = pop1();
+
+        // 5. 5. Replace F.locals[x] with the value val
+        setLocal(index, val2);
       }
 
       break;
