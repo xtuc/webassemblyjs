@@ -24,6 +24,22 @@ function assert(cond) {
   }
 }
 
+function castIntoStackLocalOfType(type: string, v: any): StackLocal {
+
+  const castFn = {
+    i32: i32.createValue,
+    i64: i64.createValue,
+    f32: f32.createValue,
+    f64: f64.createValue,
+  };
+
+  if (typeof castFn[type] === 'undefined') {
+    throw new RuntimeError('Cannot cast: unsupported type ' + type);
+  }
+
+  return castFn[type](v);
+}
+
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   let pc = 0;
 
@@ -128,45 +144,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         throw new RuntimeError('const requires one argument, none given.');
       }
 
-      switch (instruction.object) {
-
-      case 'i32': {
-        pushResult(
-          i32.createValue(n)
-        );
-
-        break;
-      }
-
-      case 'i64': {
-        pushResult(
-          i64.createValue(n)
-        );
-
-        break;
-      }
-
-
-      case 'f32': {
-        pushResult(
-          f32.createValue(n)
-        );
-
-        break;
-      }
-
-      case 'f64': {
-        pushResult(
-          f64.createValue(n)
-        );
-
-        break;
-      }
-
-      default:
-        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-
-      }
+      pushResult(
+        castIntoStackLocalOfType(instruction.object, n)
+      );
 
       break;
     }
@@ -295,7 +275,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           }
 
         } else {
-          subroutine.code(args.map((arg) => arg.value));
+          const res = subroutine.code(args.map((arg) => arg.value));
+
+          pushResult(
+            castIntoStackLocalOfType(resultType, res)
+          );
         }
 
       }
