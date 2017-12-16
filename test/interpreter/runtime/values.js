@@ -274,7 +274,9 @@ describe('module create interface', () => {
 
   it('module imports (external functions)', () => {
     const externalFunctions = {
-      test() {}
+      env: {
+        test() {}
+      }
     };
 
     const node = t.module(
@@ -297,7 +299,7 @@ describe('module create interface', () => {
     const func = allocator.get(instance.funcaddrs[0]);
 
     assert.typeOf(func, 'object');
-    assert.equal(func.code, externalFunctions.test);
+    assert.equal(func.code, externalFunctions.env.test);
 
     assert.typeOf(func.type, 'array');
     assert.deepEqual(func.type[0], ['i32', 'i32']);

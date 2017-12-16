@@ -17,7 +17,7 @@ export class Instance {
 
   _allocator: Allocator;
   _moduleInstance: ModuleInstance;
-  _table: ?TableInstance;
+  // _table: ?TableInstance; FIXME(sven): fix table import
 
   /**
    * Map id to external callable functions
@@ -42,21 +42,10 @@ export class Instance {
     this._allocator = createAllocator(DEFAULT_MEMORY);
 
     /**
-     * Use importObject:
-     *
-     * - Table if provided
-     * - Memory if provided
-     * - Imported functions if provided
+     * importObject.
      */
-    if (typeof importObject.js === 'object') {
-
-      if (typeof importObject.js.tbl === 'object') {
-        this._table = importObject.js.tbl;
-      }
-    }
-
-    if (typeof importObject.imports === 'object') {
-      this._externalFunctions = importObject.imports;
+    if (typeof importObject === 'object') {
+      this._externalFunctions = importObject;
     }
 
     const ast = module._ast;
@@ -80,12 +69,13 @@ export class Instance {
         this._allocator,
       );
 
-      if (this._table != undefined) {
+      // FIXME(sven): fix table import
+      // if (this._table != undefined) {
 
-        this._table.push(
-          this.exports[exportinst.name]
-        );
-      }
+      //   this._table.push(
+      //     this.exports[exportinst.name]
+      //   );
+      // }
 
     });
 

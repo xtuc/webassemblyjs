@@ -1,0 +1,40 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "ModuleImport",
+          "module": "module",
+          "name": "name",
+          "descr": {
+            "type": "FuncImportDescr",
+            "value": {
+              "type": "Identifier",
+              "name": "name"
+            },
+            "params": [],
+            "results": [
+              "i32"
+            ]
+          }
+        },
+        {
+          "type": "Func",
+          "id": "main",
+          "params": [],
+          "result": null,
+          "body": [
+            {
+              "type": "Instr",
+              "id": "noop",
+              "args": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

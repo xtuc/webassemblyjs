@@ -29,13 +29,18 @@ function createInstance(
   const instantiatedFuncs = {};
 
   Object.keys(externalFunctions).forEach((funckey) => {
-    const jsfunc = externalFunctions[funckey];
-    const funcinstance = func.createExternalInstance(jsfunc);
 
-    const addr = allocator.malloc(1 /* size of the funcinstance struct */);
-    allocator.set(addr, funcinstance);
+    Object.keys(externalFunctions[funckey]).forEach((funckey2) => {
 
-    instantiatedFuncs[funckey] = addr;
+      const jsfunc = externalFunctions[funckey][funckey2];
+      const funcinstance = func.createExternalInstance(jsfunc);
+
+      const addr = allocator.malloc(1 /* size of the funcinstance struct */);
+      allocator.set(addr, funcinstance);
+
+      instantiatedFuncs[`${funckey}_${funckey2}`] = addr;
+
+    });
   });
 
   /**
@@ -72,7 +77,7 @@ function createInstance(
     },
 
     ModuleImport({node}: NodePath<ModuleImport>) {
-      const instantiatedFuncAddr = instantiatedFuncs[node.name];
+      const instantiatedFuncAddr = instantiatedFuncs[`${node.module}_${node.name}`];
 
       if (node.descr.type === 'FuncImportDescr') {
 
