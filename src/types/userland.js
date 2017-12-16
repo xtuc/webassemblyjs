@@ -29,11 +29,4 @@ type TableDescriptor = {
   maximum?: number;
 };
 
-type ImportObject = {
-  imports?: any;
-  js?: JSImportObject;
-};
-
-type JSImportObject = {
-  tbl?: TableInstance;
-};
+type ImportObject = any;

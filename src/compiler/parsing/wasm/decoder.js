@@ -205,7 +205,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       throw new CompileError('magic header not detected');
     }
 
-    dump(header, 'wasm magic: header');
+    dump(header, 'wasm magic header');
 
     eatBytes(4);
   }
