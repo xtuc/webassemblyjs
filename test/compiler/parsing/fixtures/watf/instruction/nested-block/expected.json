@@ -31,6 +31,21 @@
                   "args": [
                     150
                   ]
+                },
+                {
+                  "type": "BlockInstruction",
+                  "id": "block",
+                  "label": "temp_12",
+                  "instr": [
+                    {
+                      "type": "Instr",
+                      "id": "const",
+                      "object": "i32",
+                      "args": [
+                        150
+                      ]
+                    }
+                  ]
                 }
               ]
             }
