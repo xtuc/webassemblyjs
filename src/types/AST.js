@@ -124,7 +124,7 @@ type Limit = {
 
 type FuncImportDescr = {
   type: 'FuncImportDescr';
-  value: NumberLiteral;
+  value: NumberLiteral | Identifier;
   params: Array<FuncParam>;
   results: Array<Valtype>;
 }

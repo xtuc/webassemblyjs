@@ -51,6 +51,56 @@ function parse(tokensList: Array<Object>): Program {
       eatToken(); // Closing paren
     }
 
+    function parseImport(): ModuleImport {
+
+      if (token.type !== tokens.string) {
+        throw new Error('Expected a string, ' + token.type + ' given.');
+      }
+
+      const moduleName = token.value;
+      eatToken();
+
+      if (token.type !== tokens.string) {
+        throw new Error('Expected a string, ' + token.type + ' given.');
+      }
+
+      const funcName = token.value;
+      eatToken();
+
+      if (token.type !== tokens.openParen) {
+        throw new Error('Expected a open paren, ' + token.type + ' given.');
+      }
+
+      eatToken(); // open paren
+
+      let descr;
+
+      while (
+        (token.type !== tokens.closeParen)
+      ) {
+
+        if (isKeyword(token, keywords.func)) {
+          eatToken();
+
+          const fn = parseFunc();
+
+          if (typeof fn.id === 'undefined') {
+            throw new Error('Imported function must have a name');
+          }
+
+          descr = t.funcImportDescr(
+            t.identifier(fn.id),
+            fn.params,
+            fn.result ? [fn.result] : [],
+          );
+        }
+
+        eatToken();
+      }
+
+      return t.moduleImport(moduleName, funcName, descr);
+    }
+
     function parseBlock(): BlockInstruction {
       let label = getUniqueName();
       const instr = [];
@@ -532,6 +582,11 @@ function parse(tokensList: Array<Object>): Program {
       if (isKeyword(token, keywords.module)) {
         eatToken();
         return parseModule();
+      }
+
+      if (isKeyword(token, keywords.import)) {
+        eatToken();
+        return parseImport();
       }
     }
 

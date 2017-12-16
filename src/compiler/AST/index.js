@@ -202,7 +202,7 @@ export function globalImportDescr(
 }
 
 export function funcImportDescr(
-  value: NumberLiteral,
+  value: NumberLiteral | Identifier,
   params: Array<FuncParam> = [],
   results: Array<Valtype> = [],
 ): FuncImportDescr {
