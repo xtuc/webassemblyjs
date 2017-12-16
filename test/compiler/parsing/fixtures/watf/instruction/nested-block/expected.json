@@ -1,0 +1,42 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "id": null,
+          "params": [],
+          "result": null,
+          "body": [
+            {
+              "type": "BlockInstruction",
+              "id": "block",
+              "label": "temp_11",
+              "instr": [
+                {
+                  "type": "CallInstruction",
+                  "id": "call",
+                  "index": {
+                    "type": "Identifier",
+                    "name": "dummy"
+                  }
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    150
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

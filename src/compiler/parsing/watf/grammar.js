@@ -116,7 +116,7 @@ function parse(tokensList: Array<Object>): Program {
        * Parses a line into a instruction
        */
       if (token.type === tokens.openParen) {
-        eatToken();
+        eatToken(); // open paren
 
         parseListOfInstructions(instr);
       }
@@ -342,14 +342,14 @@ function parse(tokensList: Array<Object>): Program {
         }
 
         /**
-         * Argument is a new instruction
-         *
-         * Currently only one allowed
+         * Maybe some nested instructions
          */
         if (token.type === tokens.openParen) {
           eatToken(); // open paren
 
-          parseInstructionLine(token.loc.line, args);
+          while (token.type !== tokens.closeParen) {
+            parseInstructionLine(token.loc.line, args);
+          }
 
           eatToken(); // close paren
         }
@@ -375,7 +375,6 @@ function parse(tokensList: Array<Object>): Program {
 
         return;
       } else if (isKeyword(token, keywords.block)) {
-
         eatToken(); // keyword
 
         acc.push(
@@ -395,6 +394,24 @@ function parse(tokensList: Array<Object>): Program {
         } else if (token.type === tokens.number) {
           index = t.numberLiteral(token.value);
           eatToken();
+        }
+
+        // Nested instruction
+        if (token.type === tokens.openParen) {
+          eatToken();
+
+          const callBody = [];
+
+          while (
+            token.type !== tokens.closeParen
+          ) {
+            parseInstructionLine(token.loc.line, callBody);
+          }
+
+          eatToken(); // close paren
+
+          // Ignore call body for now since it's just in the WAST format and
+          // not in the WASM production format.
         }
 
         if (typeof index === 'undefined') {

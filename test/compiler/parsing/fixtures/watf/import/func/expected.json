@@ -1,0 +1,31 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "ModuleImport",
+          "module": "module",
+          "name": "name",
+          "descr": {
+            "type": "FuncImportDescr",
+            "value": {
+              "type": "Identifier",
+              "name": "name"
+            },
+            "params": [
+              {
+                "valtype": "i32"
+              }
+            ],
+            "results": [
+              "i32"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
