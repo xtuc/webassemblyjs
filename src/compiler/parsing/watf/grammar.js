@@ -75,28 +75,25 @@ function parse(tokensList: Array<Object>): Program {
 
       let descr;
 
-      while (
-        (token.type !== tokens.closeParen)
-      ) {
+      if (isKeyword(token, keywords.func)) {
+        eatToken(); // keyword
 
-        if (isKeyword(token, keywords.func)) {
-          eatToken();
+        const fn = parseFunc();
 
-          const fn = parseFunc();
-
-          if (typeof fn.id === 'undefined') {
-            throw new Error('Imported function must have a name');
-          }
-
-          descr = t.funcImportDescr(
-            t.identifier(fn.id),
-            fn.params,
-            fn.result ? [fn.result] : [],
-          );
+        if (typeof fn.id === 'undefined') {
+          throw new Error('Imported function must have a name');
         }
 
-        eatToken();
+        descr = t.funcImportDescr(
+          t.identifier(fn.id),
+          fn.params,
+          fn.result ? [fn.result] : [],
+        );
+      } else {
+        throw new Error('Unsupported import type: ' + token.type);
       }
+
+      eatToken(); // closing paren
 
       return t.moduleImport(moduleName, funcName, descr);
     }
