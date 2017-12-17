@@ -1,5 +1,7 @@
+let called = false;
+
 function fn() {
-  console.log("called");
+  called = true;
 }
 
 const importObject = {
@@ -11,5 +13,7 @@ const importObject = {
 it('should import the function', () => {
   const m = WebAssembly.instantiateFromSource(watfmodule, importObject);
 
-  console.log(m);
+  m.exports.main();
+
+  assert.isTrue(called);
 });
