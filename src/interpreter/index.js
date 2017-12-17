@@ -8,7 +8,9 @@ const {isTrapped} = require('./kernel/signals');
 const {RuntimeError} = require('../errors');
 const {Module} = require('../compiler/compile/module');
 const {Memory} = require('./runtime/values/memory');
+const {Table} = require('./runtime/values/table');
 const {createAllocator} = require('./kernel/memory');
+const importObjectUtils = require('./import-object');
 
 const DEFAULT_MEMORY = new Memory({initial: 1, maximum: 1024});
 
@@ -34,29 +36,37 @@ export class Instance {
       );
     }
 
+    this._externalFunctions = {};
     this.exports = {};
 
     /**
-     * Create Module's memory allocator
+     * Create Module's default memory allocator
      */
     this._allocator = createAllocator(DEFAULT_MEMORY);
 
     /**
-     * Use importObject:
-     *
-     * - Table if provided
-     * - Memory if provided
-     * - Imported functions if provided
+     * importObject.
      */
-    if (typeof importObject.js === 'object') {
+    if (typeof importObject === 'object') {
 
-      if (typeof importObject.js.tbl === 'object') {
-        this._table = importObject.js.tbl;
-      }
-    }
+      importObjectUtils.walk(importObject, (key, key2, value) => {
+        if (typeof this._externalFunctions[key] !== 'object') {
+          this._externalFunctions[key] = {};
+        }
 
-    if (typeof importObject.imports === 'object') {
-      this._externalFunctions = importObject.imports;
+        if (value instanceof Memory) {
+          this._allocator = createAllocator(value);
+        }
+
+        if (value instanceof Table) {
+          this._table = value;
+        }
+
+        if (typeof value === 'function') {
+          this._externalFunctions[key][key2] = value;
+        }
+
+      });
     }
 
     const ast = module._ast;
