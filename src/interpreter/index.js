@@ -8,7 +8,9 @@ const {isTrapped} = require('./kernel/signals');
 const {RuntimeError} = require('../errors');
 const {Module} = require('../compiler/compile/module');
 const {Memory} = require('./runtime/values/memory');
+const {Table} = require('./runtime/values/table');
 const {createAllocator} = require('./kernel/memory');
+const importObjectUtils = require('./import-object');
 
 const DEFAULT_MEMORY = new Memory({initial: 1, maximum: 1024});
 
@@ -17,7 +19,7 @@ export class Instance {
 
   _allocator: Allocator;
   _moduleInstance: ModuleInstance;
-  // _table: ?TableInstance; FIXME(sven): fix table import
+  _table: ?TableInstance;
 
   /**
    * Map id to external callable functions
@@ -34,10 +36,11 @@ export class Instance {
       );
     }
 
+    this._externalFunctions = {};
     this.exports = {};
 
     /**
-     * Create Module's memory allocator
+     * Create Module's default memory allocator
      */
     this._allocator = createAllocator(DEFAULT_MEMORY);
 
@@ -45,7 +48,25 @@ export class Instance {
      * importObject.
      */
     if (typeof importObject === 'object') {
-      this._externalFunctions = importObject;
+
+      importObjectUtils.walk(importObject, (key, key2, value) => {
+        if (typeof this._externalFunctions[key] !== 'object') {
+          this._externalFunctions[key] = {};
+        }
+
+        if (value instanceof Memory) {
+          this._allocator = createAllocator(value);
+        }
+
+        if (value instanceof Table) {
+          this._table = value;
+        }
+
+        if (typeof value === 'function') {
+          this._externalFunctions[key][key2] = value;
+        }
+
+      });
     }
 
     const ast = module._ast;
@@ -69,13 +90,12 @@ export class Instance {
         this._allocator,
       );
 
-      // FIXME(sven): fix table import
-      // if (this._table != undefined) {
+      if (this._table != undefined) {
 
-      //   this._table.push(
-      //     this.exports[exportinst.name]
-      //   );
-      // }
+        this._table.push(
+          this.exports[exportinst.name]
+        );
+      }
 
     });
 

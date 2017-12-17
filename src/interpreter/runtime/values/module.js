@@ -1,5 +1,6 @@
 // @flow
 
+const importObjectUtils = require('../../import-object');
 const {traverse} = require('../../../compiler/AST/traverse');
 const func = require('./func');
 const global = require('./global');
@@ -28,19 +29,13 @@ function createInstance(
    */
   const instantiatedFuncs = {};
 
-  Object.keys(externalFunctions).forEach((funckey) => {
+  importObjectUtils.walk(externalFunctions, (key, key2, jsfunc) => {
+    const funcinstance = func.createExternalInstance(jsfunc);
 
-    Object.keys(externalFunctions[funckey]).forEach((funckey2) => {
+    const addr = allocator.malloc(1 /* size of the funcinstance struct */);
+    allocator.set(addr, funcinstance);
 
-      const jsfunc = externalFunctions[funckey][funckey2];
-      const funcinstance = func.createExternalInstance(jsfunc);
-
-      const addr = allocator.malloc(1 /* size of the funcinstance struct */);
-      allocator.set(addr, funcinstance);
-
-      instantiatedFuncs[`${funckey}_${funckey2}`] = addr;
-
-    });
+    instantiatedFuncs[`${key}_${key2}`] = addr;
   });
 
   /**
