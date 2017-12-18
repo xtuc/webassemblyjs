@@ -34,6 +34,7 @@ describe('interpreter', () => {
           console: global.console,
           assert: chai.assert,
           it,
+          xit,
         };
 
         vm.runInNewContext(exec, sandbox);
@@ -59,6 +60,7 @@ describe('interpreter', () => {
           console: global.console,
           assert: chai.assert,
           it,
+          xit,
         };
 
         vm.runInNewContext(exec, sandbox);
