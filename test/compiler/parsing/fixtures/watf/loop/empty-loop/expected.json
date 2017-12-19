@@ -6,9 +6,17 @@
       "id": null,
       "fields": [
         {
-          "type": "LoopInstruction",
-          "id": "loop",
-          "instr": []
+          "type": "Func",
+          "id": null,
+          "params": [],
+          "result": null,
+          "body": [
+            {
+              "type": "LoopInstruction",
+              "id": "loop",
+              "instr": []
+            }
+          ]
         }
       ]
     }

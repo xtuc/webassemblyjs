@@ -1,5 +1,5 @@
 (module
- (func $funcfoo (
+  (func $funcfoo (
     (i64.add)
     (i32.add)
   ))

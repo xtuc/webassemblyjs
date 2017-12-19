@@ -1,7 +1,7 @@
 (module
   (func (
-   (call $name (
-    (i32.const 16)
-   ))
+    (call $name (
+      (i32.const 16)
+    ))
   ))
 )

@@ -40,7 +40,9 @@ describe('compiler', () => {
         try {
           vm.runInNewContext(exec, sandbox, {filename: suite});
         } catch (e) {
-          it ('should run script', () => chai.assert.fail(e));
+          it ('should run script', () => {
+            throw e;
+          });
         }
       });
     });

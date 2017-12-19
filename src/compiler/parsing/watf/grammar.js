@@ -28,6 +28,8 @@ function parse(tokensList: Array<Object>): Program {
     let token = tokensList[current];
 
     function eatToken() {
+      console.log('eat token of type', token.type);
+
       token = tokensList[++current];
     }
 
@@ -151,7 +153,7 @@ function parse(tokensList: Array<Object>): Program {
         throw new Error('Expected a string, ' + token.type + ' given.');
       }
 
-      const funcName = token.value;
+      let funcName = token.value;
       eatToken();
 
       if (token.type !== tokens.openParen) {
@@ -166,14 +168,19 @@ function parse(tokensList: Array<Object>): Program {
         eatToken(); // keyword
 
         const fnParams = [];
-        let fnResult, fnName;
+        let fnResult;
+
+        if (token.type === tokens.identifier) {
+          funcName = token.value;
+          eatToken();
+        }
 
         while (
           (token.type === tokens.openParen)
         ) {
           eatTokenOfType(tokens.openParen);
 
-          const {params, result, signatureName} = parseMaybeSignature();
+          const {params, result} = parseMaybeSignature();
 
           if (typeof params !== 'undefined') {
             fnParams.push(...params);
@@ -183,17 +190,15 @@ function parse(tokensList: Array<Object>): Program {
             fnResult = result;
           }
 
-          if (typeof signatureName !== 'undefined') {
-            fnName = signatureName;
-          }
+          eatTokenOfType(tokens.closeParen);
         }
 
-        if (typeof fnName === 'undefined') {
+        if (typeof funcName === 'undefined') {
           throw new Error('Imported function must have a name');
         }
 
         descr = t.funcImportDescr(
-          t.identifier(fnName),
+          t.identifier(funcName),
           fnParams,
           fnResult ? [fnResult] : [],
         );
@@ -201,7 +206,7 @@ function parse(tokensList: Array<Object>): Program {
         throw new Error('Unsupported import type: ' + token.type);
       }
 
-      eatToken(); // closing paren
+      eatTokenOfType(tokens.closeParen);
 
       return t.moduleImport(moduleName, funcName, descr);
     }
@@ -422,6 +427,8 @@ function parse(tokensList: Array<Object>): Program {
          * A simple instruction
          */
         if (token.type === tokens.name || token.type === tokens.valtype) {
+          console.log('instruction name or valtype');
+
           let name = token.value;
           let object;
 
@@ -457,6 +464,7 @@ function parse(tokensList: Array<Object>): Program {
           if (token.type === tokens.identifier || token.type === tokens.number) {
             args.push(token.value);
 
+            console.log('arg');
             eatToken();
           }
 
@@ -560,6 +568,8 @@ function parse(tokensList: Array<Object>): Program {
 
       const res = doParse();
 
+      console.log('finished do parse');
+
       eatTokenOfType(tokens.closeParen);
 
       return res;
@@ -577,15 +587,6 @@ function parse(tokensList: Array<Object>): Program {
         eatToken();
       }
 
-      function parseMaybeInstruction() {
-        // Empty block of instructions
-        if (token.type === tokens.closeParen) {
-          return;
-        }
-
-        return parseInstructionLine(token.loc.line, fnBody);
-      }
-
       /**
        * Parses signature
        *
@@ -595,6 +596,19 @@ function parse(tokensList: Array<Object>): Program {
         (token.type === tokens.openParen)
       ) {
         eatTokenOfType(tokens.openParen);
+
+        // Check if it's the body
+        if (token.type === tokens.openParen) {
+          break;
+        }
+
+        // Empty body
+        if (token.type === tokens.closeParen) {
+          eatToken();
+          eatToken();
+
+          return t.func(fnName, fnParams, fnResult, fnBody);
+        }
 
         const {params, result, signatureName} = parseMaybeSignature();
 
@@ -610,14 +624,13 @@ function parse(tokensList: Array<Object>): Program {
           fnName = signatureName;
         }
 
-        parseMaybeInstruction();
-
         eatTokenOfType(tokens.closeParen);
       }
 
-      eatTokenOfType(tokens.closeParen);
+      parseListOfInstructions(fnBody);
 
-      console.log('after function token', token);
+      eatTokenOfType(tokens.closeParen);
+      eatTokenOfType(tokens.closeParen);
 
       return t.func(fnName, fnParams, fnResult, fnBody);
     }

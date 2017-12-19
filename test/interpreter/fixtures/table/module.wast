@@ -1,3 +1,5 @@
 (module
-  (func (export "a") (trap))
+  (func (export "a") (
+    (trap)
+  ))
 )
