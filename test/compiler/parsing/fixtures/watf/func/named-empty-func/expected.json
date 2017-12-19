@@ -2,32 +2,38 @@
   "type": "Program",
   "body": [
     {
-      "type": "Func",
-      "id": "test",
-      "params": [],
-      "result": null,
-      "body": []
-    },
-    {
-      "type": "Func",
-      "id": "TEST",
-      "params": [],
-      "result": null,
-      "body": []
-    },
-    {
-      "type": "Func",
-      "id": "!",
-      "params": [],
-      "result": null,
-      "body": []
-    },
-    {
-      "type": "Func",
-      "id": "$",
-      "params": [],
-      "result": null,
-      "body": []
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "id": "test",
+          "params": [],
+          "result": null,
+          "body": []
+        },
+        {
+          "type": "Func",
+          "id": "TEST",
+          "params": [],
+          "result": null,
+          "body": []
+        },
+        {
+          "type": "Func",
+          "id": "!",
+          "params": [],
+          "result": null,
+          "body": []
+        },
+        {
+          "type": "Func",
+          "id": "$",
+          "params": [],
+          "result": null,
+          "body": []
+        }
+      ]
     }
   ]
 }

@@ -37,7 +37,11 @@ describe('interpreter', () => {
           xit,
         };
 
-        vm.runInNewContext(exec, sandbox);
+        try {
+          vm.runInNewContext(exec, sandbox, {filename: suite});
+        } catch (e) {
+          it ('should run script', () => chai.assert.fail(e));
+        }
       });
     });
 
@@ -63,7 +67,11 @@ describe('interpreter', () => {
           xit,
         };
 
-        vm.runInNewContext(exec, sandbox);
+        try {
+          vm.runInNewContext(exec, sandbox, {filename: suite});
+        } catch (e) {
+          it ('should run script', () => chai.assert.fail(e));
+        }
       });
     });
 

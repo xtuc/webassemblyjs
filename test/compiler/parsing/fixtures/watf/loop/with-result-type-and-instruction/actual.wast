@@ -1,3 +1,7 @@
 (module
-  (loop i32 (nop))
+  (func (
+    (loop i32 (
+      (nop)
+    ))
+  ))
 )

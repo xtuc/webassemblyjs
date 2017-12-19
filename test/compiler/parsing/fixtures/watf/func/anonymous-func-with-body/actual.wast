@@ -1,2 +1,3 @@
-(func
-    i32.add)
+(func (
+  (i32.add)
+))

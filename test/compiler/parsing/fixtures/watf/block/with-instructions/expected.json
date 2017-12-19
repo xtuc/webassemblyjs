@@ -18,24 +18,12 @@
               "instr": [
                 {
                   "type": "Instr",
-                  "id": "noop",
-                  "args": []
-                }
-              ]
-            },
-            {
-              "type": "BlockInstruction",
-              "id": "block",
-              "label": "temp_6",
-              "instr": [
-                {
-                  "type": "Instr",
-                  "id": "noop",
+                  "id": "nop",
                   "args": []
                 },
                 {
                   "type": "Instr",
-                  "id": "noop",
+                  "id": "nop",
                   "args": []
                 }
               ]

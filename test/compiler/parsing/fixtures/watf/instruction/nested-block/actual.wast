@@ -1,5 +1,5 @@
 (module
-  (func
+  (func (
    (block (
      (call $dummy)
      (i32.const 150)
@@ -7,5 +7,5 @@
        (i32.const 150)
      ))
    ))
-  )
+  ))
 )

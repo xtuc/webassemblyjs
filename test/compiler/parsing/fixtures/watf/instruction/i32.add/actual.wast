@@ -1,5 +1,5 @@
 (module
-  (func
+  (func (
     (i32.add)
-  )
+  ))
 )

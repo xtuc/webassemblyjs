@@ -1,4 +1,6 @@
-(func $test)
-(func $TEST)
-(func $!)
-(func $$)
+(module
+  (func $test ())
+  (func $TEST ())
+  (func $! ())
+  (func $$ ())
+)
