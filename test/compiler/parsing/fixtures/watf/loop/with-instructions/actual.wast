@@ -1,6 +1,8 @@
 (module
-  (loop (
-    (nop)
-    (nop)
+  (func (
+    (loop (
+      (nop)
+      (nop)
+    ))
   ))
 )

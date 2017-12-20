@@ -222,6 +222,7 @@ function parse(tokensList: Array<Object>): Program {
       }
 
       eatTokenOfType(tokens.closeParen);
+      eatTokenOfType(tokens.closeParen);
 
       return t.moduleImport(moduleName, funcName, descr);
     }
@@ -408,12 +409,21 @@ function parse(tokensList: Array<Object>): Program {
             type = 'Func';
 
             eatToken();
-            id = parseFunc().id;
+
+            if (token.type === tokens.identifier) {
+              id = token.value;
+              eatToken();
+            } else {
+              throw new Error('Exported function must have a name');
+            }
+
           }
 
           eatToken();
         }
       }
+
+      eatTokenOfType(tokens.closeParen);
 
       return t.moduleExport(name, type, id);
     }
@@ -505,11 +515,7 @@ function parse(tokensList: Array<Object>): Program {
            * Maybe some nested instructions
            */
           if (token.type === tokens.openParen) {
-
-            while (token.type !== tokens.closeParen) {
-              parseInstructionLine(token.loc.line, args);
-            }
-
+            parseListOfInstructions(args);
           }
 
           if (typeof object === 'undefined') {
