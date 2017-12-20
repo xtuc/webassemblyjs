@@ -142,7 +142,7 @@ export function callInstruction(
 }
 
 export function ifInstruction(
-  test: Instruction,
+  test: Index,
   result: ?Valtype,
   consequent: Array<Instruction>,
   alternate: Array<Instruction>,

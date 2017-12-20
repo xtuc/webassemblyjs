@@ -1,15 +1,9 @@
 (module
   (func (
 
-    (if () (
-      (get_local 0)
-    ))
-
-    (then (
+    (if $label then (
       (nop)
-    ))
-
-    (else (
+    ) else (
       (nop)
     ))
 

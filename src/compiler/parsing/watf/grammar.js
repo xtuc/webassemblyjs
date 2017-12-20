@@ -28,8 +28,6 @@ function parse(tokensList: Array<Object>): Program {
     let token = tokensList[current];
 
     function eatToken() {
-      console.log('eat token of type', token.type);
-
       token = tokensList[++current];
     }
 
@@ -241,71 +239,92 @@ function parse(tokensList: Array<Object>): Program {
       return t.blockInstruction(label, instr);
     }
 
+    /**
+     * Parses a if instruction
+     *
+     * Case 1:
+     * label (result) then (
+     *   instruction
+     * )
+     *
+     * Case 2:
+     * label then (
+     *  instruction
+     * )
+     *
+     * Case 4:
+     * label then (
+     *   instruction
+     * ) else (
+     *   instruction
+     * )
+     */
     function parseIf(): IfInstruction {
-      const consequent = [];
-      const alternate = [];
-
       let result;
 
       /**
-       * Test instruction
+       * label
        */
-      if (token.type !== tokens.openParen) {
-        throw new Error('Invalid if construction: missing test or signature');
+      if (
+        token.type !== tokens.number
+        && token.type !== tokens.identifier
+      ) {
+        throw new Error('Invaluid condition construction: missing label');
       }
 
-      eatToken(); // Opening paren
-
-      const acc = [];
-
-      /**
-       * Parse result type if provided
-       */
-      if (isKeyword(token, keywords.result)) {
-        eatToken();
-
-        result = token.value;
-
-        eatToken(); // Valtype
-        eatToken(); // Closing paren
-
-        eatToken(); // Opening paren
-      }
-
-      parseInstructionLine(token.loc.line, acc);
-
-      const test = acc.pop();
-
-      eatToken(); // Closing paren
-
-      eatToken(); // Opening paren
+      const label = token.value;
+      eatToken();
 
       /**
-       * then
+       * Parse result type
        */
-      if (!isKeyword(token, keywords.then)) {
-        throw new Error('Invalid if construction: missing then');
-      }
-
-      eatToken(); // then keyword
-
-      parseListOfInstructions(consequent);
-
-      /**
-       * parse else if found
-       */
-
       if (token.type === tokens.openParen) {
         eatToken();
 
-        if (isKeyword(token, keywords.else)) {
+        if (isKeyword(token, keywords.result) === true) {
           eatToken();
 
-          parseListOfInstructions(alternate);
+          result = token.value;
+
+          eatTokenOfType(tokens.valtype);
         }
+
+        eatTokenOfType(tokens.closeParen);
       }
 
-      return t.ifInstruction(test, result, consequent, alternate);
+      /**
+       * Then block of instruction
+       */
+      const consequent = [];
+
+      if (isKeyword(token, keywords.then) === false) {
+        throw new Error('Invalid condition construction: missing then');
+      }
+
+      eatToken(); // keyword
+
+      eatTokenOfType(tokens.openParen);
+
+      parseListOfInstructions(consequent);
+
+      eatTokenOfType(tokens.closeParen);
+
+      /**
+       * Else block of instruction
+       */
+      const alternate = [];
+
+      if (isKeyword(token, keywords.else) === true) {
+        eatToken();
+
+        eatTokenOfType(tokens.openParen);
+
+        parseListOfInstructions(alternate);
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      return t.ifInstruction(label, result, consequent, alternate);
     }
 
     function parseLoop(): LoopInstruction {

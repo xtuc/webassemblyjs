@@ -103,7 +103,7 @@ type IfInstruction = {
   ...Instruction;
 
   type: 'IfInstruction';
-  test: Instruction;
+  test: Index;
   result: ?Valtype;
   consequent: Array<Instruction>;
   alternate: Array<Instruction>;
