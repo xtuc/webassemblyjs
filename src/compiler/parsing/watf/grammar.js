@@ -478,15 +478,33 @@ function parse(tokensList: Array<Object>): Program {
           if (token.type === tokens.valtype) {
             valtype = token.value;
 
+            fnParams.push({
+              id,
+              valtype,
+            });
+
             eatToken();
+
+            /**
+             * Shorthand notation for multiple anonymous parameters
+             * @see https://webassembly.github.io/spec/core/text/types.html#function-types
+             * @see https://github.com/xtuc/js-webassembly-interpreter/issues/6
+             */
+            if (id === undefined) {
+              while ( token.type === tokens.valtype ) {
+                valtype = token.value;
+                fnParams.push({
+                  valtype,
+                });
+
+                eatToken();
+              }
+            }
+
           } else {
             throw new Error('Function param has no valtype');
           }
 
-          fnParams.push({
-            id,
-            valtype,
-          });
         } else
 
         /**
