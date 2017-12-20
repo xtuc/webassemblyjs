@@ -64,27 +64,26 @@ function parse(tokensList: Array<Object>): Program {
 
         if (token.type === tokens.valtype) {
           valtype = token.value;
+          eatToken();
 
           params.push({
             id,
             valtype,
           });
 
-          eatToken();
-
           /**
-             * Shorthand notation for multiple anonymous parameters
-             * @see https://webassembly.github.io/spec/core/text/types.html#function-types
-             * @see https://github.com/xtuc/js-webassembly-interpreter/issues/6
-             */
+           * Shorthand notation for multiple anonymous parameters
+           * @see https://webassembly.github.io/spec/core/text/types.html#function-types
+           * @see https://github.com/xtuc/js-webassembly-interpreter/issues/6
+           */
           if (id === undefined) {
             while ( token.type === tokens.valtype ) {
               valtype = token.value;
+              eatToken();
+
               params.push({
                 valtype,
               });
-
-              eatToken();
             }
           }
 
@@ -105,6 +104,7 @@ function parse(tokensList: Array<Object>): Program {
         }
 
         const name = token.value;
+        eatToken();
 
         /**
          * Func export shorthand, we trait it as a syntaxic sugar.
@@ -121,8 +121,7 @@ function parse(tokensList: Array<Object>): Program {
           id,
         });
 
-        eatToken(); // Closing paren
-      }
+      } else
 
       /**
        * Else the result result
@@ -138,8 +137,8 @@ function parse(tokensList: Array<Object>): Program {
           }
 
           result = token.value;
-
           eatToken();
+
         } else {
           throw new Error('Function result has no valtype');
         }
@@ -464,8 +463,6 @@ function parse(tokensList: Array<Object>): Program {
          * A simple instruction
          */
         if (token.type === tokens.name || token.type === tokens.valtype) {
-          console.log('instruction name or valtype');
-
           let name = token.value;
           let object;
 
@@ -501,7 +498,6 @@ function parse(tokensList: Array<Object>): Program {
           if (token.type === tokens.identifier || token.type === tokens.number) {
             args.push(token.value);
 
-            console.log('arg');
             eatToken();
           }
 
@@ -605,8 +601,6 @@ function parse(tokensList: Array<Object>): Program {
 
       const res = doParse();
 
-      console.log('finished do parse');
-
       eatTokenOfType(tokens.closeParen);
 
       return res;
@@ -641,15 +635,8 @@ function parse(tokensList: Array<Object>): Program {
 
         // Empty body
         if (token.type === tokens.closeParen) {
-          eatToken();
-
-        } else
-
-        /**
-         * Else an export
-         */
-        if (isKeyword(token, keywords.export)) {
-          eatToken();
+          eatTokenOfType(tokens.closeParen);
+          eatTokenOfType(tokens.closeParen);
 
           return t.func(fnName, fnParams, fnResult, fnBody);
         }
