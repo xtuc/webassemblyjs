@@ -33,8 +33,8 @@ function parse(tokensList: Array<Object>): Program {
 
     function eatTokenOfType(type: string) {
       if (token.type !== type) {
-    console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
-    console.log('rest', tokensList.slice(current).map((x) => x.value).join(' '));
+        console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
+        console.log('rest', tokensList.slice(current).map((x) => x.value).join(' '));
         throw new Error(
           'Assertion error: expected token of type ' + type
           + ', given ' + token.type
@@ -65,15 +65,33 @@ function parse(tokensList: Array<Object>): Program {
         if (token.type === tokens.valtype) {
           valtype = token.value;
 
+          params.push({
+            id,
+            valtype,
+          });
+
           eatToken();
+
+          /**
+             * Shorthand notation for multiple anonymous parameters
+             * @see https://webassembly.github.io/spec/core/text/types.html#function-types
+             * @see https://github.com/xtuc/js-webassembly-interpreter/issues/6
+             */
+          if (id === undefined) {
+            while ( token.type === tokens.valtype ) {
+              valtype = token.value;
+              params.push({
+                valtype,
+              });
+
+              eatToken();
+            }
+          }
+
         } else {
           throw new Error('Function param has no valtype');
         }
 
-        params.push({
-          id,
-          valtype,
-        });
       } else
 
       /**
@@ -576,8 +594,8 @@ function parse(tokensList: Array<Object>): Program {
           return;
 
         } else {
-    console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
-    console.log('reset', tokensList.slice(current).map((x) => x.value).join(' '));
+          console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
+          console.log('reset', tokensList.slice(current).map((x) => x.value).join(' '));
           throw new Error('Unexpected instruction in function body: ' + token.type);
         }
 
@@ -624,44 +642,6 @@ function parse(tokensList: Array<Object>): Program {
         // Empty body
         if (token.type === tokens.closeParen) {
           eatToken();
-
-          let id;
-          let valtype;
-
-          if (token.type === tokens.identifier) {
-            id = token.value;
-            eatToken();
-          }
-
-          if (token.type === tokens.valtype) {
-            valtype = token.value;
-
-            fnParams.push({
-              id,
-              valtype,
-            });
-
-            eatToken();
-
-            /**
-             * Shorthand notation for multiple anonymous parameters
-             * @see https://webassembly.github.io/spec/core/text/types.html#function-types
-             * @see https://github.com/xtuc/js-webassembly-interpreter/issues/6
-             */
-            if (id === undefined) {
-              while ( token.type === tokens.valtype ) {
-                valtype = token.value;
-                fnParams.push({
-                  valtype,
-                });
-
-                eatToken();
-              }
-            }
-
-          } else {
-            throw new Error('Function param has no valtype');
-          }
 
         } else
 
