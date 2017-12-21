@@ -261,6 +261,209 @@ describe('kernel exec - numeric instructions', () => {
       resEqual: 5.0,
     },
 
+    {
+      name: 'f32.min',
+
+      args: [
+        {value: 5.0, type: 'f32'},
+        {value: 1000.7, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f32'),
+      ],
+
+      resEqual: 5.0,
+    },
+
+    {
+      name: 'f32.min',
+
+      args: [
+        {value: +0, type: 'f32'},
+        {value: -0, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f32'),
+      ],
+
+      resEqual: -0,
+    },
+
+    {
+      name: 'f32.min',
+
+      args: [
+        {value: Infinity, type: 'f32'},
+        {value: -Infinity, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f32'),
+      ],
+
+      resEqual: -Infinity,
+    },
+
+    {
+      name: 'f32.min',
+
+      args: [
+        {value: Infinity, type: 'f32'},
+        {value: 1234, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f32'),
+      ],
+
+      resEqual: 1234,
+    },
+
+    {
+      name: 'f32.min',
+
+      args: [
+        {value: NaN, type: 'f32'},
+        {value: 1234, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f32'),
+      ],
+
+      resEqual: NaN,
+    },
+
+    {
+      name: 'f32.min',
+
+      args: [
+        {value: 0.0000000000000000000000001, type: 'f32'},
+        {value: 0.00000000000000000000000001, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f32'),
+      ],
+
+      resEqual: 0.00000000000000000000000001,
+    },
+
+    {
+      name: 'f32.max',
+
+      args: [
+        {value: 5.0, type: 'f32'},
+        {value: 1000.7, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f32'),
+      ],
+
+      resEqual: 1000.7,
+    },
+
+    {
+      name: 'f32.max',
+
+      args: [
+        {value: +0, type: 'f32'},
+        {value: -0, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f32'),
+      ],
+
+      resEqual: +0,
+    },
+
+    {
+      name: 'f32.max',
+
+      args: [
+        {value: Infinity, type: 'f32'},
+        {value: -Infinity, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f32'),
+      ],
+
+      resEqual: Infinity,
+    },
+
+    {
+      name: 'f32.max',
+
+      args: [
+        {value: Infinity, type: 'f32'},
+        {value: 1234, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f32'),
+      ],
+
+      resEqual: Infinity,
+    },
+
+    {
+      name: 'f32.max',
+
+      args: [
+        {value: NaN, type: 'f32'},
+        {value: 1234, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f32'),
+      ],
+
+      resEqual: NaN,
+    },
+
+    {
+      name: 'f32.max',
+
+      args: [
+        {value: 0.0000000000000000000000001, type: 'f32'},
+        {value: 0.00000000000000000000000001, type: 'f32'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f32'),
+      ],
+
+      resEqual: 0.0000000000000000000000001,
+    },
 
     /**
      * Float 64 bits
@@ -333,6 +536,211 @@ describe('kernel exec - numeric instructions', () => {
 
       resEqual: 5.0,
     },
+
+    {
+      name: 'f64.min',
+
+      args: [
+        {value: 5.0, type: 'f64'},
+        {value: 1000.7, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f64'),
+      ],
+
+      resEqual: 5.0,
+    },
+
+    {
+      name: 'f64.min',
+
+      args: [
+        {value: +0, type: 'f64'},
+        {value: -0, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f64'),
+      ],
+
+      resEqual: -0,
+    },
+
+    {
+      name: 'f64.min',
+
+      args: [
+        {value: Infinity, type: 'f64'},
+        {value: -Infinity, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f64'),
+      ],
+
+      resEqual: -Infinity,
+    },
+
+    {
+      name: 'f64.min',
+
+      args: [
+        {value: Infinity, type: 'f64'},
+        {value: 1234, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f64'),
+      ],
+
+      resEqual: 1234,
+    },
+
+    {
+      name: 'f64.min',
+
+      args: [
+        {value: NaN, type: 'f64'},
+        {value: 1234, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f64'),
+      ],
+
+      resEqual: NaN,
+    },
+
+    {
+      name: 'f64.min',
+
+      args: [
+        {value: 0.0000000000000000000000001, type: 'f64'},
+        {value: 0.00000000000000000000000001, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('min', 'f64'),
+      ],
+
+      resEqual: 0.00000000000000000000000001,
+    },
+
+    {
+      name: 'f64.max',
+
+      args: [
+        {value: 5.0, type: 'f64'},
+        {value: 1000.7, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f64'),
+      ],
+
+      resEqual: 1000.7,
+    },
+
+    {
+      name: 'f64.max',
+
+      args: [
+        {value: +0, type: 'f64'},
+        {value: -0, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f64'),
+      ],
+
+      resEqual: +0,
+    },
+
+    {
+      name: 'f64.max',
+
+      args: [
+        {value: Infinity, type: 'f64'},
+        {value: -Infinity, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f64'),
+      ],
+
+      resEqual: Infinity,
+    },
+
+    {
+      name: 'f64.max',
+
+      args: [
+        {value: Infinity, type: 'f64'},
+        {value: 1234, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f64'),
+      ],
+
+      resEqual: Infinity,
+    },
+
+    {
+      name: 'f64.max',
+
+      args: [
+        {value: NaN, type: 'f64'},
+        {value: 1234, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f64'),
+      ],
+
+      resEqual: NaN,
+    },
+
+    {
+      name: 'f64.max',
+
+      args: [
+        {value: 0.0000000000000000000000001, type: 'f64'},
+        {value: 0.00000000000000000000000001, type: 'f64'},
+      ],
+
+      code: [
+        t.instruction('get_local', [0]),
+        t.instruction('get_local', [1]),
+        t.objectInstruction('max', 'f64'),
+      ],
+
+      resEqual: 0.0000000000000000000000001,
+    },
+
   ];
 
   operations.forEach((op) => {
@@ -343,7 +751,13 @@ describe('kernel exec - numeric instructions', () => {
         const stackFrame = createStackFrame(op.code, op.args);
         const res = executeStackFrame(stackFrame).value;
 
-        assert.equal(res, op.resEqual);
+        // NaN results cannot be checked with assert.equal
+        if (isNaN(res)) {
+          assert.isTrue(isNaN(res));
+        } else {
+          assert.equal(res, op.resEqual);
+        }
+
       });
 
       it('should assert validations - 1 missing arg', () => {

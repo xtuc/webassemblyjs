@@ -1,6 +1,6 @@
 // @flow
 
-type Sign = '+' | '-' | '/' | '*' | '&' | '|' | '^' | '~';
+type Sign = '+' | '-' | '/' | '*' | '&' | '|' | '^' | '~' | 'min' | 'max';
 
 const i32 = require('../../runtime/values/i32');
 const i64 = require('../../runtime/values/i64');
@@ -44,6 +44,12 @@ function binop(
   // https://webassembly.github.io/spec/exec/numerics.html#op-ixor
   case '^':
     return createValue(c1.value ^ c2.value);
+
+  case 'min':
+    return createValue(Math.min(c1.value, c2.value));
+
+  case 'max':
+    return createValue(Math.max(c1.value, c2.value));
   }
 
   throw new Error('Unsupported binop: ' + sign);
