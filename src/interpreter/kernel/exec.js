@@ -57,6 +57,10 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     frame.locals[index] = value;
   }
 
+  function br(label: number) {
+
+  }
+
   function pushResult(res: StackLocal) {
     frame.values.push(res);
   }
@@ -109,6 +113,14 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
+
+    console.log(
+      'trace exec',
+      'depth:' + depth,
+      'pc:' + pc,
+      'instruction:' + instruction.type,
+      'v:' + instruction.id,
+    );
 
     switch (instruction.type) {
 
@@ -780,6 +792,30 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
       default:
         throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+
+      }
+
+      break;
+    }
+
+    case 'br_table': {
+      const {labels, label} = instruction;
+
+      // 1. Assert: due to validation, a value of value type i32 is on the top of the stack.
+      // 2. Pop the value i32.const i from the stack.
+      const value = pop1('i32');
+
+      if (value < labels.length) {
+
+        // 3. If i is smaller than the length of l∗, then:
+        // 3.2. Execute the instruction (br li).
+        br(labels[value]);
+
+      } else {
+
+        // 4. Else
+        // 4.1. Execute the instruction (br li).
+        br(labels[label]);
 
       }
 

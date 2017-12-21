@@ -278,3 +278,16 @@ export function byteArray(values: Array<Byte>): ByteArray {
     values,
   };
 }
+
+export function brTableInstruction(
+  labels: Array<Index>,
+  label: Index,
+): BrTableInstruction {
+
+  return {
+    type: 'BrTableInstruction',
+    id: 'br_table',
+    labels,
+    label
+  };
+}
