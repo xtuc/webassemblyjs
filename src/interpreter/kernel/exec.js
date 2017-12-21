@@ -617,7 +617,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError(
+          'Unsupported operation ' + instruction.id + ' on ' + instruction.object
+        );
 
       }
 
@@ -669,7 +671,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError(
+          'Unsupported operation ' + instruction.id + ' on ' + instruction.object
+        );
 
       }
 
@@ -721,7 +725,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError(
+          'Unsupported operation ' + instruction.id + ' on ' + instruction.object
+        );
 
       }
 
@@ -779,7 +785,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError(
+          'Unsupported operation ' + instruction.id + ' on ' + instruction.object
+        );
 
       }
 
@@ -811,7 +819,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError(
+          'Unsupported operation ' + instruction.id + ' on ' + instruction.object
+        );
       }
 
       break;
@@ -842,7 +852,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       default:
-        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+        throw new RuntimeError(
+          'Unsupported operation ' + instruction.id + ' on ' + instruction.object
+        );
       }
 
       break;
@@ -864,7 +876,10 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
 function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {
   if (stack.length < numberOfItem) {
-    throw new RuntimeError('Assertion error: expected ' + numberOfItem + ' on the stack, found ' + stack.length);
+    throw new RuntimeError(
+      'Assertion error: expected ' + numberOfItem
+      + ' on the stack, found ' + stack.length
+    );
   }
 }
 
