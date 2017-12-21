@@ -786,6 +786,67 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    case 'min': {
+
+      switch (instruction.object) {
+
+      case 'f32': {
+        const [c1, c2] = pop2('f32', 'f32');
+
+        pushResult(
+          binopf32(c2, c1, 'min')
+        );
+
+        break;
+      }
+
+      case 'f64': {
+        const [c1, c2] = pop2('f64', 'f64');
+
+        pushResult(
+          binopf64(c2, c1, 'min')
+        );
+
+        break;
+      }
+
+      default:
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      }
+
+      break;
+    }
+
+    case 'max': {
+
+      switch (instruction.object) {
+
+      case 'f32': {
+        const [c1, c2] = pop2('f32', 'f32');
+
+        pushResult(
+          binopf32(c2, c1, 'max')
+        );
+
+        break;
+      }
+
+      case 'f64': {
+        const [c1, c2] = pop2('f64', 'f64');
+
+        pushResult(
+          binopf64(c2, c1, 'max')
+        );
+
+        break;
+      }
+
+      default:
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      }
+
+      break;
+    }
     }
 
     if (typeof frame.trace === 'function') {

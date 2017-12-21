@@ -1,0 +1,25 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "id": null,
+          "params": [],
+          "result": null,
+          "body": [
+            {
+              "type": "Instr",
+              "id": "min",
+              "object": "f32",
+              "args": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
