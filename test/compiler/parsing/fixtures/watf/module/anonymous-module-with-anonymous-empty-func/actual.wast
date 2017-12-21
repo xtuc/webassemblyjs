@@ -1,1 +1,1 @@
-(module (func))
+(module (func ()))

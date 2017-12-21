@@ -7,7 +7,7 @@
       "fields": [
         {
           "type": "Func",
-          "id": "temp_8",
+          "id": "temp_7",
           "params": [],
           "result": "i32",
           "body": [
@@ -26,12 +26,12 @@
           "name": "type-i32",
           "descr": {
             "type": "Func",
-            "id": "temp_8"
+            "id": "temp_7"
           }
         },
         {
           "type": "Func",
-          "id": "temp_9",
+          "id": "temp_8",
           "params": [],
           "result": null,
           "body": []
@@ -41,28 +41,7 @@
           "name": "an",
           "descr": {
             "type": "Func",
-            "id": "temp_9"
-          }
-        },
-        {
-          "type": "Func",
-          "id": "temp_10",
-          "params": [],
-          "result": null,
-          "body": [
-            {
-              "type": "Instr",
-              "id": "nop",
-              "args": []
-            }
-          ]
-        },
-        {
-          "type": "ModuleExport",
-          "name": "an",
-          "descr": {
-            "type": "Func",
-            "id": "temp_10"
+            "id": "temp_8"
           }
         }
       ]

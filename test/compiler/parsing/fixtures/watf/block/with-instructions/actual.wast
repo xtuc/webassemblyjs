@@ -1,10 +1,8 @@
 (module
-  (func
-    (block (noop))
-
-    (block
-      (noop)
-      (noop)
-    )
-  )
+  (func (
+    (block (
+      (nop)
+      (nop)
+    ))
+  ))
 )

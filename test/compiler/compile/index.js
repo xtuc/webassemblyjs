@@ -34,9 +34,16 @@ describe('compiler', () => {
           console: global.console,
           assert: chai.assert,
           it,
+          xit,
         };
 
-        vm.runInNewContext(exec, sandbox);
+        try {
+          vm.runInNewContext(exec, sandbox, {filename: suite});
+        } catch (e) {
+          it ('should run script', () => {
+            throw e;
+          });
+        }
       });
     });
 

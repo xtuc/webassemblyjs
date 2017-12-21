@@ -6,14 +6,22 @@
       "id": null,
       "fields": [
         {
-          "type": "LoopInstruction",
-          "id": "loop",
-          "resulttype": "i32",
-          "instr": [
+          "type": "Func",
+          "id": null,
+          "params": [],
+          "result": null,
+          "body": [
             {
-              "type": "Instr",
-              "id": "nop",
-              "args": []
+              "type": "LoopInstruction",
+              "id": "loop",
+              "resulttype": "i32",
+              "instr": [
+                {
+                  "type": "Instr",
+                  "id": "nop",
+                  "args": []
+                }
+              ]
             }
           ]
         }

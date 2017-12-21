@@ -31,24 +31,128 @@ function parse(tokensList: Array<Object>): Program {
       token = tokensList[++current];
     }
 
-    function parseListOfInstructions(acc: Array<Instruction>) {
-      if (token.type === tokens.openParen) {
-        eatToken();
+    function eatTokenOfType(type: string) {
+      if (token.type !== type) {
+        console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
+        console.log('rest', tokensList.slice(current).map((x) => x.value).join(' '));
+        throw new Error(
+          'Assertion error: expected token of type ' + type
+          + ', given ' + token.type
+        );
       }
 
-      while (
-        (token.type !== tokens.closeParen)
-      ) {
-        if (token.type === tokens.openParen) {
+      eatToken();
+    }
+
+    function parseMaybeSignature() {
+      const params = [];
+      let signatureName, result;
+
+      /**
+       * Function params
+       */
+      if (isKeyword(token, keywords.param)) {
+        eatToken();
+
+        let id;
+        let valtype;
+
+        if (token.type === tokens.identifier) {
+          id = token.value;
           eatToken();
         }
 
-        parseInstructionLine(token.loc.line, acc);
+        if (token.type === tokens.valtype) {
+          valtype = token.value;
+          eatToken();
 
+          params.push({
+            id,
+            valtype,
+          });
+
+          /**
+           * Shorthand notation for multiple anonymous parameters
+           * @see https://webassembly.github.io/spec/core/text/types.html#function-types
+           * @see https://github.com/xtuc/js-webassembly-interpreter/issues/6
+           */
+          if (id === undefined) {
+            while ( token.type === tokens.valtype ) {
+              valtype = token.value;
+              eatToken();
+
+              params.push({
+                valtype,
+              });
+            }
+          }
+
+        } else {
+          throw new Error('Function param has no valtype');
+        }
+
+      } else
+
+      /**
+       * Else an export
+       */
+      if (isKeyword(token, keywords.export)) {
         eatToken();
+
+        if (token.type !== tokens.string) {
+          throw new Error('Function export expected a string, ' + token.type + ' given');
+        }
+
+        const name = token.value;
+        eatToken();
+
+        /**
+         * Func export shorthand, we trait it as a syntaxic sugar.
+         * A export ModuleField will be added later.
+         *
+         * We give the anonymous function a generated name and export it.
+         */
+        const id = getUniqueName();
+
+        signatureName = id;
+
+        state.registredExportedFuncs.push({
+          name,
+          id,
+        });
+
+      } else
+
+      /**
+       * Else the result result
+       */
+      if (isKeyword(token, keywords.result)) {
+        eatToken();
+
+        if (token.type === tokens.valtype) {
+
+          // Already declared the result, but not supported yet by WebAssembly
+          if (typeof result !== 'undefined') {
+            throw new Error('Multiple return types are not supported yet');
+          }
+
+          result = token.value;
+          eatToken();
+
+        } else {
+          throw new Error('Function result has no valtype');
+        }
       }
 
-      eatToken(); // Closing paren
+      return {params, result, signatureName};
+    }
+
+    function parseListOfInstructions(acc: Array<Instruction>) {
+      while (
+        (token.type !== tokens.closeParen)
+      ) {
+        parseInstructionLine(token.loc.line, acc);
+      }
     }
 
     function parseImport(): ModuleImport {
@@ -64,7 +168,7 @@ function parse(tokensList: Array<Object>): Program {
         throw new Error('Expected a string, ' + token.type + ' given.');
       }
 
-      const funcName = token.value;
+      let funcName = token.value;
       eatToken();
 
       if (token.type !== tokens.openParen) {
@@ -78,22 +182,47 @@ function parse(tokensList: Array<Object>): Program {
       if (isKeyword(token, keywords.func)) {
         eatToken(); // keyword
 
-        const fn = parseFunc();
+        const fnParams = [];
+        let fnResult;
 
-        if (typeof fn.id === 'undefined') {
+        if (token.type === tokens.identifier) {
+          funcName = token.value;
+          eatToken();
+        }
+
+        while (
+          (token.type === tokens.openParen)
+        ) {
+          eatTokenOfType(tokens.openParen);
+
+          const {params, result} = parseMaybeSignature();
+
+          if (typeof params !== 'undefined') {
+            fnParams.push(...params);
+          }
+
+          if (typeof result !== 'undefined') {
+            fnResult = result;
+          }
+
+          eatTokenOfType(tokens.closeParen);
+        }
+
+        if (typeof funcName === 'undefined') {
           throw new Error('Imported function must have a name');
         }
 
         descr = t.funcImportDescr(
-          t.identifier(fn.id),
-          fn.params,
-          fn.result ? [fn.result] : [],
+          t.identifier(funcName),
+          fnParams,
+          fnResult ? [fnResult] : [],
         );
       } else {
         throw new Error('Unsupported import type: ' + token.type);
       }
 
-      eatToken(); // closing paren
+      eatTokenOfType(tokens.closeParen);
+      eatTokenOfType(tokens.closeParen);
 
       return t.moduleImport(moduleName, funcName, descr);
     }
@@ -112,80 +241,108 @@ function parse(tokensList: Array<Object>): Program {
        *
        * Parses a line into a instruction
        */
-      if (token.type === tokens.openParen) {
-        eatToken(); // open paren
+      eatTokenOfType(tokens.openParen);
 
-        parseListOfInstructions(instr);
+      // Empty block
+      if (token.type === tokens.closeParen) {
+        eatToken();
+
+        return t.blockInstruction(label, instr);
       }
+
+      parseListOfInstructions(instr);
+
+      eatTokenOfType(tokens.closeParen);
 
       return t.blockInstruction(label, instr);
     }
 
+    /**
+     * Parses a if instruction
+     *
+     * Case 1:
+     * label (result) then (
+     *   instruction
+     * )
+     *
+     * Case 2:
+     * label then (
+     *  instruction
+     * )
+     *
+     * Case 4:
+     * label then (
+     *   instruction
+     * ) else (
+     *   instruction
+     * )
+     */
     function parseIf(): IfInstruction {
-      const consequent = [];
-      const alternate = [];
-
       let result;
 
       /**
-       * Test instruction
+       * label
        */
-      if (token.type !== tokens.openParen) {
-        throw new Error('Invalid if construction: missing test or signature');
+      if (
+        token.type !== tokens.number
+        && token.type !== tokens.identifier
+      ) {
+        throw new Error('Invaluid condition construction: missing label');
       }
 
-      eatToken(); // Opening paren
-
-      const acc = [];
-
-      /**
-       * Parse result type if provided
-       */
-      if (isKeyword(token, keywords.result)) {
-        eatToken();
-
-        result = token.value;
-
-        eatToken(); // Valtype
-        eatToken(); // Closing paren
-
-        eatToken(); // Opening paren
-      }
-
-      parseInstructionLine(token.loc.line, acc);
-
-      const test = acc.pop();
-
-      eatToken(); // Closing paren
-
-      eatToken(); // Opening paren
+      const label = token.value;
+      eatToken();
 
       /**
-       * then
+       * Parse result type
        */
-      if (!isKeyword(token, keywords.then)) {
-        throw new Error('Invalid if construction: missing then');
-      }
-
-      eatToken(); // then keyword
-
-      parseListOfInstructions(consequent);
-
-      /**
-       * parse else if found
-       */
-
       if (token.type === tokens.openParen) {
         eatToken();
 
-        if (isKeyword(token, keywords.else)) {
+        if (isKeyword(token, keywords.result) === true) {
           eatToken();
 
-          parseListOfInstructions(alternate);
+          result = token.value;
+
+          eatTokenOfType(tokens.valtype);
         }
+
+        eatTokenOfType(tokens.closeParen);
       }
 
-      return t.ifInstruction(test, result, consequent, alternate);
+      /**
+       * Then block of instruction
+       */
+      const consequent = [];
+
+      if (isKeyword(token, keywords.then) === false) {
+        throw new Error('Invalid condition construction: missing then');
+      }
+
+      eatToken(); // keyword
+
+      eatTokenOfType(tokens.openParen);
+
+      parseListOfInstructions(consequent);
+
+      eatTokenOfType(tokens.closeParen);
+
+      /**
+       * Else block of instruction
+       */
+      const alternate = [];
+
+      if (isKeyword(token, keywords.else) === true) {
+        eatToken();
+
+        eatTokenOfType(tokens.openParen);
+
+        parseListOfInstructions(alternate);
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      return t.ifInstruction(label, result, consequent, alternate);
     }
 
     function parseLoop(): LoopInstruction {
@@ -203,23 +360,28 @@ function parse(tokensList: Array<Object>): Program {
         eatToken();
       }
 
+
       /**
        * Loop instructions
        *
        * Parses a line into a instruction
        */
-      if (token.type === tokens.openParen) {
+      eatTokenOfType(tokens.openParen);
+
+      // Empty block
+      if (token.type === tokens.closeParen) {
         eatToken();
 
-        while (
-          (token.type !== tokens.closeParen)
-        ) {
-          parseInstructionLine(token.loc.line, instr);
-          eatToken();
-        }
+        return t.loopInstruction(label, result, instr);
       }
 
-      eatToken();
+      while (
+        (token.type !== tokens.closeParen)
+      ) {
+        parseInstructionLine(token.loc.line, instr);
+      }
+
+      eatTokenOfType(tokens.closeParen);
 
       return t.loopInstruction(label, result, instr);
     }
@@ -247,12 +409,21 @@ function parse(tokensList: Array<Object>): Program {
             type = 'Func';
 
             eatToken();
-            id = parseFunc().id;
+
+            if (token.type === tokens.identifier) {
+              id = token.value;
+              eatToken();
+            } else {
+              throw new Error('Exported function must have a name');
+            }
+
           }
 
           eatToken();
         }
       }
+
+      eatTokenOfType(tokens.closeParen);
 
       return t.moduleExport(name, type, id);
     }
@@ -285,7 +456,7 @@ function parse(tokensList: Array<Object>): Program {
         token = tokensList[current];
       }
 
-      eatToken();
+      eatTokenOfType(tokens.closeParen);
 
       return t.module(name, moduleFields);
     }
@@ -296,147 +467,148 @@ function parse(tokensList: Array<Object>): Program {
     function parseInstructionLine(line: number, acc: Array<any>) {
       const args = [];
 
-      /**
-       * A simple instruction
-       */
-      if (token.type === tokens.name || token.type === tokens.valtype) {
-        let name = token.value;
-        let object;
+      function doParse() {
 
-        eatToken();
+        /**
+         * A simple instruction
+         */
+        if (token.type === tokens.name || token.type === tokens.valtype) {
+          let name = token.value;
+          let object;
 
-        if (token.type === tokens.dot) {
-          object = name;
           eatToken();
 
-          if (token.type !== tokens.name) {
-            throw new TypeError('Unknown token: ' + token.type + ', name expected');
+          if (token.type === tokens.dot) {
+            object = name;
+            eatToken();
+
+            if (token.type !== tokens.name) {
+              throw new TypeError('Unknown token: ' + token.type + ', name expected');
+            }
+
+            name = token.value;
+            eatToken();
           }
 
-          name = token.value;
-          eatToken();
-        }
+          if (token.loc.line !== line || token.type === tokens.closeParen) {
+            if (typeof object === 'undefined') {
+              acc.push(t.instruction(name, []));
+            } else {
+              acc.push(t.objectInstruction(name, object, []));
+            }
 
-        if (token.loc.line !== line || token.type === tokens.closeParen) {
+            return;
+          }
+
+          /**
+           * Handle arguments
+           *
+           * Currently only one argument is allowed
+           */
+          if (token.type === tokens.identifier || token.type === tokens.number) {
+            args.push(token.value);
+
+            eatToken();
+          }
+
+          /**
+           * Maybe some nested instructions
+           */
+          if (token.type === tokens.openParen) {
+            parseListOfInstructions(args);
+          }
+
           if (typeof object === 'undefined') {
-            acc.push(t.instruction(name, []));
+            acc.push(t.instruction(name, args));
           } else {
-            acc.push(t.objectInstruction(name, object, []));
+            acc.push(t.objectInstruction(name, object, args));
           }
 
           return;
-        }
+        } else
 
         /**
-         * Handle arguments
-         *
-         * Currently only one argument is allowed
+         * Else a instruction with a keyword (loop or block)
          */
-        if (token.type === tokens.identifier || token.type === tokens.number) {
-          args.push(token.value);
+        if (isKeyword(token, keywords.loop)) {
+          eatToken(); // keyword
 
-          eatToken();
-        }
+          acc.push(
+            parseLoop()
+          );
 
-        /**
-         * Maybe some nested instructions
-         */
-        if (token.type === tokens.openParen) {
-          eatToken(); // open paren
+          return;
+        } else if (isKeyword(token, keywords.block)) {
+          eatToken(); // keyword
 
-          while (token.type !== tokens.closeParen) {
-            parseInstructionLine(token.loc.line, args);
+          acc.push(
+            parseBlock()
+          );
+
+          return;
+
+        } else if (isKeyword(token, keywords.call)) {
+          eatToken(); // keyword
+
+          let index;
+
+          if (token.type === tokens.identifier) {
+            index = t.identifier(token.value);
+            eatToken();
+          } else if (token.type === tokens.number) {
+            index = t.numberLiteral(token.value);
+            eatToken();
           }
 
-          eatToken(); // close paren
-        }
+          // Nested instruction
+          if (token.type === tokens.openParen) {
+            eatTokenOfType(tokens.openParen);
 
-        if (typeof object === 'undefined') {
-          acc.push(t.instruction(name, args));
+            const callBody = [];
+
+            parseListOfInstructions(callBody);
+
+            // Ignore call body for now since it's just in the WAST format and
+            // not in the WASM production format.
+
+            eatTokenOfType(tokens.closeParen);
+          }
+
+          if (typeof index === 'undefined') {
+            throw new Error('Missing argument in call instruciton');
+          }
+
+          acc.push(
+            t.callInstruction(index)
+          );
+
+          return;
+
+        } else if (isKeyword(token, keywords.if)) {
+
+          eatToken(); // Keyword
+
+          acc.push(
+            parseIf()
+          );
+
+          return;
+
         } else {
-          acc.push(t.objectInstruction(name, object, args));
+          console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
+          console.log('reset', tokensList.slice(current).map((x) => x.value).join(' '));
+          throw new Error('Unexpected instruction in function body: ' + token.type);
         }
 
-        return;
-      } else
-
-      /**
-       * Else a instruction with a keyword (loop or block)
-       */
-      if (isKeyword(token, keywords.loop)) {
-        eatToken(); // keyword
-
-        acc.push(
-          parseLoop()
-        );
-
-        return;
-      } else if (isKeyword(token, keywords.block)) {
-        eatToken(); // keyword
-
-        acc.push(
-          parseBlock()
-        );
-
-        return;
-
-      } else if (isKeyword(token, keywords.call)) {
-        eatToken(); // keyword
-
-        let index;
-
-        if (token.type === tokens.identifier) {
-          index = t.identifier(token.value);
-          eatToken();
-        } else if (token.type === tokens.number) {
-          index = t.numberLiteral(token.value);
-          eatToken();
-        }
-
-        // Nested instruction
-        if (token.type === tokens.openParen) {
-          eatToken();
-
-          const callBody = [];
-
-          while (
-            token.type !== tokens.closeParen
-          ) {
-            parseInstructionLine(token.loc.line, callBody);
-          }
-
-          eatToken(); // close paren
-
-          // Ignore call body for now since it's just in the WAST format and
-          // not in the WASM production format.
-        }
-
-        if (typeof index === 'undefined') {
-          throw new Error('Missing argument in call instruciton');
-        }
-
-        acc.push(
-          t.callInstruction(index)
-        );
-
-        return;
-
-      } else if (isKeyword(token, keywords.if)) {
-
-        eatToken(); // Keyword
-
-        acc.push(
-          parseIf()
-        );
-
-        return;
-
-      } else {
-        throw new Error('Unexpected instruction in function body: ' + token.type);
       }
 
-      // $FlowIgnore
-      throw new Error('Unexpected trailing tokens for instructions: ' + token.type);
+      eatTokenOfType(tokens.openParen);
+
+      const res = doParse();
+
+      eatTokenOfType(tokens.closeParen);
+
+      return res;
     }
 
     function parseFunc(): Func {
@@ -451,115 +623,6 @@ function parse(tokensList: Array<Object>): Program {
         eatToken();
       }
 
-      function parseMaybeInstruction() {
-        if (token.type === tokens.closeParen) {
-          return;
-        }
-
-        return parseInstructionLine(token.loc.line, fnBody);
-      }
-
-      function parseMaybeSignature() {
-
-        /**
-         * Function params
-         */
-        if (isKeyword(token, keywords.param)) {
-          eatToken();
-
-          let id;
-          let valtype;
-
-          if (token.type === tokens.identifier) {
-            id = token.value;
-            eatToken();
-          }
-
-          if (token.type === tokens.valtype) {
-            valtype = token.value;
-
-            fnParams.push({
-              id,
-              valtype,
-            });
-
-            eatToken();
-
-            /**
-             * Shorthand notation for multiple anonymous parameters
-             * @see https://webassembly.github.io/spec/core/text/types.html#function-types
-             * @see https://github.com/xtuc/js-webassembly-interpreter/issues/6
-             */
-            if (id === undefined) {
-              while ( token.type === tokens.valtype ) {
-                valtype = token.value;
-                fnParams.push({
-                  valtype,
-                });
-
-                eatToken();
-              }
-            }
-
-          } else {
-            throw new Error('Function param has no valtype');
-          }
-
-        } else
-
-        /**
-         * Else an export
-         */
-        if (isKeyword(token, keywords.export)) {
-          eatToken();
-
-          if (token.type !== tokens.string) {
-            throw new Error('Function export expected a string, ' + token.type + ' given');
-          }
-
-          const name = token.value;
-
-          /**
-           * Func export shorthand, we trait it as a syntaxic sugar.
-           * A export ModuleField will be added later.
-           *
-           * We give the anonymous function a generated name and export it.
-           */
-          const id = getUniqueName();
-
-          fnName = id;
-
-          state.registredExportedFuncs.push({
-            name,
-            id,
-          });
-
-          eatToken(); // Closing paren
-        }
-
-        /**
-         * Else the result result
-         */
-        if (isKeyword(token, keywords.result)) {
-          eatToken();
-
-          if (token.type === tokens.valtype) {
-
-            // Already declared the result, but not supported yet by WebAssembly
-            if (fnResult !== null) {
-              throw new Error('Multiple return types are not supported yet');
-            }
-
-            fnResult = token.value;
-
-            eatToken();
-          } else {
-            throw new Error('Function result has no valtype');
-          }
-        }
-
-      }
-
       /**
        * Parses signature
        *
@@ -568,26 +631,42 @@ function parse(tokensList: Array<Object>): Program {
       while (
         (token.type === tokens.openParen)
       ) {
-        eatToken(); // open paren
+        eatTokenOfType(tokens.openParen);
 
-        parseMaybeSignature();
-        parseMaybeInstruction();
+        // Check if it's the body
+        if (token.type === tokens.openParen) {
+          break;
+        }
 
-        eatToken(); // close parens
+        // Empty body
+        if (token.type === tokens.closeParen) {
+          eatTokenOfType(tokens.closeParen);
+          eatTokenOfType(tokens.closeParen);
+
+          return t.func(fnName, fnParams, fnResult, fnBody);
+        }
+
+        const {params, result, signatureName} = parseMaybeSignature();
+
+        if (typeof params !== 'undefined') {
+          fnParams.push(...params);
+        }
+
+        if (typeof result !== 'undefined') {
+          fnResult = result;
+        }
+
+        if (typeof signatureName !== 'undefined') {
+          fnName = signatureName;
+        }
+
+        eatTokenOfType(tokens.closeParen);
       }
 
-      /**
-       * Function body
-       *
-       * One instruction per line, parse the current one
-       */
-      while (
-        token.type !== tokens.closeParen
-      ) {
-        parseInstructionLine(token.loc.line, fnBody);
-      }
+      parseListOfInstructions(fnBody);
 
-      eatToken();
+      eatTokenOfType(tokens.closeParen);
+      eatTokenOfType(tokens.closeParen);
 
       return t.func(fnName, fnParams, fnResult, fnBody);
     }
@@ -622,6 +701,8 @@ function parse(tokensList: Array<Object>): Program {
       }
     }
 
+    console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
+    console.log('reset', tokensList.slice(current).map((x) => x.value).join(' '));
     throw new TypeError('Unknown token: ' + token.type);
   }
 

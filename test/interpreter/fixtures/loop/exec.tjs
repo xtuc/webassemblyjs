@@ -1,0 +1,20 @@
+let nbcalled = 0;
+
+function fn() {
+  nbcalled++;
+}
+
+const importObject = {
+  module: {
+    fn
+  }
+};
+
+xit('should call the function multiple times', () => {
+  const m = WebAssembly.instantiateFromSource(watfmodule, importObject);
+
+  m.exports.main();
+
+  console.log(nbcalled);
+  assert.notEqual(nbcalled, 0);
+});

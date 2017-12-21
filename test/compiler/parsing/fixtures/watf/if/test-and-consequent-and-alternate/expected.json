@@ -14,13 +14,7 @@
             {
               "type": "IfInstruction",
               "id": "if",
-              "test": {
-                "type": "Instr",
-                "id": "get_local",
-                "args": [
-                  0
-                ]
-              },
+              "test": "label",
               "consequent": [
                 {
                   "type": "Instr",
