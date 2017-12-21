@@ -753,7 +753,7 @@ describe('kernel exec - numeric instructions', () => {
 
         // NaN results cannot be checked with assert.equal
         if (isNaN(res)) {
-          assert.equal(isNaN(res), true);
+          assert.isTrue(isNaN(res));
         } else {
           assert.equal(res, op.resEqual);
         }
