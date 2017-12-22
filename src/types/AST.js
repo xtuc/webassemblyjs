@@ -70,7 +70,7 @@ type ObjectInstruction = {
 interface Instruction {
   type: 'Instr';
   id: string;
-  args: Array<Number | string>;
+  args: Array<NumberLiteral | Identifier>;
 }
 
 interface ModuleExport {

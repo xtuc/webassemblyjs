@@ -105,7 +105,7 @@ describe('kernel exec - control instruction', () => {
     it('should remove the label when existing the block', () => {
       const code = [
         t.blockInstruction('label', [
-          t.objectInstruction('const', 'i32', [10]),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ]),
       ];
 
@@ -121,9 +121,9 @@ describe('kernel exec - control instruction', () => {
     it('should NOT execute consequent when test is zero', () => {
       const code = [
         t.ifInstruction([
-          t.objectInstruction('const', 'i32', [0]),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(0)]),
         ], [
-          t.objectInstruction('const', 'i32', [10]),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ], []),
       ];
 
@@ -136,9 +136,9 @@ describe('kernel exec - control instruction', () => {
     it('should NOT execute consequent but alternate when test is zero', () => {
       const code = [
         t.ifInstruction([
-          t.objectInstruction('const', 'i32', [0]),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(0)]),
         ], null, [
-          t.objectInstruction('const', 'i32', [10]),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ]),
       ];
 
@@ -151,9 +151,9 @@ describe('kernel exec - control instruction', () => {
     it('should execute consequent when test is non-zero', () => {
       const code = [
         t.ifInstruction([
-          t.objectInstruction('const', 'i32', [1]),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
         ], null, [
-          t.objectInstruction('const', 'i32', [10]),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ]),
       ];
 
@@ -172,7 +172,7 @@ describe('kernel exec - control instruction', () => {
 
       const code = [
         t.func(label, /* params */ [], /* result */ null, [
-          t.objectInstruction('const', 'i32', [10]),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ]),
         t.callInstruction(t.identifier(label)),
       ];

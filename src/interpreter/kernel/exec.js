@@ -43,7 +43,7 @@ function castIntoStackLocalOfType(type: string, v: any): StackLocal {
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   let pc = 0;
 
-  function getLocal(index: number) {
+  function getLocalByIndex(index: number) {
     const local = frame.locals[index];
 
     if (typeof local === 'undefined') {
@@ -53,7 +53,10 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     frame.values.push(local);
   }
 
-  function setLocal(index: number, value: StackLocal) {
+  function setLocalByIndex(index: number, value: StackLocal) {
+    assert(typeof index === 'number');
+
+    console.log('setLocalByIndex', index, value);
     frame.locals[index] = value;
   }
 
@@ -144,8 +147,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         throw new RuntimeError('const requires one argument, none given.');
       }
 
+      if (n.type !== 'NumberLiteral') {
+        throw new RuntimeError('const: unsupported value of type: ' + n.type);
+      }
+
       pushResult(
-        castIntoStackLocalOfType(instruction.object, n)
+        castIntoStackLocalOfType(instruction.object, n.value)
       );
 
       break;
@@ -426,7 +433,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         throw new RuntimeError('get_local requires one argument, none given.');
       }
 
-      getLocal(index);
+      if (index.type === 'NumberLiteral') {
+        console.log(index);
+        getLocalByIndex(index.value);
+      } else {
+        throw new RuntimeError('get_local: unsupported index of type: ' + index.type);
+      }
 
       break;
     }
@@ -448,15 +460,17 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           return res;
         }
 
-        setLocal(index, res);
-      } else {
+        setLocalByIndex(index.value, res);
+      } else if (index.type === 'NumberLiteral') {
         // WASM
 
         // 4. Pop the value val from the stack
         const val = pop1();
 
         // 5. Replace F.locals[x] with the value val
-        setLocal(index, val);
+        setLocalByIndex(index.value, val);
+      } else {
+        throw new RuntimeError('set_local: unsupported index of type: ' + index.type);
       }
 
       break;
@@ -479,12 +493,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           return res;
         }
 
-        setLocal(index, res);
+        setLocalByIndex(index.value, res);
 
         pushResult(
           res
         );
-      } else {
+      } else if (index.type === 'NumberLiteral')  {
         // WASM
 
         // 1. Assert: due to validation, a value is on the top of the stack.
@@ -502,7 +516,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const val2 = pop1();
 
         // 5. 5. Replace F.locals[x] with the value val
-        setLocal(index, val2);
+        setLocalByIndex(index.value, val2);
+      } else {
+        throw new RuntimeError('tee_local: unsupported index of type: ' + index.type);
       }
 
       break;

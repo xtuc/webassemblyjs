@@ -255,7 +255,7 @@ describe('module create interface', () => {
       const initNode = t.objectInstruction(
         'const',
         'i32',
-        [10]
+        [t.numberLiteral(10)]
       );
 
       const node = t.global(
