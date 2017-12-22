@@ -192,6 +192,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    case 'loop': {
+      // https://webassembly.github.io/spec/core/exec/instructions.html#exec-loop
+
+      break;
+    }
+
     case 'call': {
       // According to the spec call doesn't support an Identifier as argument
       // but the Script syntax supports it.
