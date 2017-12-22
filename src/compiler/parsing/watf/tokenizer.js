@@ -58,6 +58,7 @@ const keywords = {
   call: 'call',
   import: 'import',
   br_table: 'br_table',
+  br_if: 'br_if',
 };
 
 const CloseParenToken = createToken(tokens.closeParen);

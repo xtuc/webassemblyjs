@@ -289,6 +289,17 @@ export function brTableInstruction(
     type: 'BrTableInstruction',
     id: 'br_table',
     labels,
-    label
+    label,
+  };
+}
+
+export function brIfInstruction(
+  label: Index,
+): BrIfInstruction {
+
+  return {
+    type: 'BrIfInstruction',
+    id: 'br_if',
+    label,
   };
 }
