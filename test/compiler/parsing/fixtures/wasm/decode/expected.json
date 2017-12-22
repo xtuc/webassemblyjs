@@ -22,14 +22,20 @@
               "type": "Instr",
               "id": "get_local",
               "args": [
-                0
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
               ]
             },
             {
               "type": "Instr",
               "id": "get_local",
               "args": [
-                1
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
               ]
             },
             {
@@ -57,14 +63,20 @@
               "type": "Instr",
               "id": "get_local",
               "args": [
-                0
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
               ]
             },
             {
               "type": "Instr",
               "id": "get_local",
               "args": [
-                1
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
               ]
             },
             {

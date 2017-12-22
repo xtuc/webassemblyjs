@@ -708,7 +708,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
           dump([value], 'value');
 
-          args.push(value);
+          args.push(
+            t.numberLiteral(value)
+          );
         }
 
         if (instruction.object === 'i64') {
@@ -718,7 +720,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
           dump([value], 'value');
 
-          args.push(value);
+          args.push(
+            t.numberLiteral(value)
+          );
         }
 
         if (instruction.object === 'f32') {
@@ -728,7 +732,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
           dump([value], 'value');
 
-          args.push(value);
+          args.push(
+            t.numberLiteral(value)
+          );
         }
 
 
@@ -739,7 +745,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
           dump([value], 'value');
 
-          args.push(value);
+          args.push(
+            t.numberLiteral(value)
+          );
         }
 
       } else {
@@ -750,7 +758,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
           dump([u32.value], 'argument ' + i);
 
-          args.push(u32.value);
+          args.push(
+            t.numberLiteral(u32.value)
+          );
         }
 
       }

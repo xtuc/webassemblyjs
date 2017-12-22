@@ -33,8 +33,6 @@ function parse(tokensList: Array<Object>): Program {
 
     function eatTokenOfType(type: string) {
       if (token.type !== type) {
-        console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
-        console.log('rest', tokensList.slice(current).map((x) => x.value).join(' '));
         throw new Error(
           'Assertion error: expected token of type ' + type
           + ', given ' + token.type
@@ -540,8 +538,18 @@ function parse(tokensList: Array<Object>): Program {
            *
            * Currently only one argument is allowed
            */
-          if (token.type === tokens.identifier || token.type === tokens.number) {
-            args.push(token.value);
+          if (token.type === tokens.identifier) {
+            args.push(
+              t.identifier(token.value)
+            );
+
+            eatToken();
+          }
+
+          if (token.type === tokens.number) {
+            args.push(
+              t.numberLiteral(token.value)
+            );
 
             eatToken();
           }
@@ -646,8 +654,6 @@ function parse(tokensList: Array<Object>): Program {
           return;
 
         } else {
-          console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
-          console.log('reset', tokensList.slice(current).map((x) => x.value).join(' '));
           throw new Error('Unexpected instruction in function body: ' + token.type);
         }
 
@@ -762,8 +768,6 @@ function parse(tokensList: Array<Object>): Program {
       }
     }
 
-    console.log('progress', tokensList.slice(0, current).map((x) => x.value).join(' '));
-    console.log('reset', tokensList.slice(current).map((x) => x.value).join(' '));
     throw new TypeError('Unknown token: ' + token.type);
   }
 

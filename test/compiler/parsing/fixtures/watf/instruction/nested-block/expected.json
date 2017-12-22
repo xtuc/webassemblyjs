@@ -29,7 +29,10 @@
                   "id": "const",
                   "object": "i32",
                   "args": [
-                    150
+                    {
+                      "type": "NumberLiteral",
+                      "value": 150
+                    }
                   ]
                 },
                 {
@@ -42,7 +45,10 @@
                       "id": "const",
                       "object": "i32",
                       "args": [
-                        150
+                        {
+                          "type": "NumberLiteral",
+                          "value": 150
+                        }
                       ]
                     }
                   ]

@@ -133,6 +133,7 @@ export function numberLiteral(
 export function callInstruction(
   index: Index,
 ): CallInstruction {
+  assert(typeof index.type === 'string');
 
   return {
     type: 'CallInstruction',
@@ -147,6 +148,7 @@ export function ifInstruction(
   consequent: Array<Instruction>,
   alternate: Array<Instruction>,
 ): IfInstruction {
+  // assert(typeof test.type === 'string');
 
   return {
     type: 'IfInstruction',

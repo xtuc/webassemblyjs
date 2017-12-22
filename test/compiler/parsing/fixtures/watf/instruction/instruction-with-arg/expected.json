@@ -15,13 +15,19 @@
               "type": "Instr",
               "id": "set_local",
               "args": [
-                0,
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                },
                 {
                   "type": "Instr",
                   "id": "const",
                   "object": "i32",
                   "args": [
-                    1
+                    {
+                      "type": "NumberLiteral",
+                      "value": 1
+                    }
                   ]
                 }
               ]
