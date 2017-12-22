@@ -56,7 +56,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   function setLocalByIndex(index: number, value: StackLocal) {
     assert(typeof index === 'number');
 
-    console.log('setLocalByIndex', index, value);
     frame.locals[index] = value;
   }
 
@@ -192,15 +191,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     case 'drop': {
       // https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop
 
+      // 1. Assert: due to validation, a value is on the top of the stack.
       assertNItemsOnStack(frame.values, 1);
 
+      // 2. Pop the value valval from the stack.
       pop1();
-
-      break;
-    }
-
-    case 'loop': {
-      // https://webassembly.github.io/spec/core/exec/instructions.html#exec-loop
 
       break;
     }
@@ -440,7 +435,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       if (index.type === 'NumberLiteral') {
-        console.log(index);
         getLocalByIndex(index.value);
       } else {
         throw new RuntimeError('get_local: unsupported index of type: ' + index.type);
