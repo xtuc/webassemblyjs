@@ -16,7 +16,7 @@ describe('kernel exec - memory instructions', () => {
       args: [],
 
       code: [
-        t.objectInstruction('const', 'i64', [10]),
+        t.objectInstruction('const', 'i64', [t.numberLiteral(10)]),
       ],
 
       resEqual: 10,
@@ -28,7 +28,7 @@ describe('kernel exec - memory instructions', () => {
       args: [],
 
       code: [
-        t.objectInstruction('const', 'i32', [10]),
+        t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
       ],
 
       resEqual: 10,
@@ -40,7 +40,7 @@ describe('kernel exec - memory instructions', () => {
       args: [],
 
       code: [
-        t.objectInstruction('const', 'f32', [10.0]),
+        t.objectInstruction('const', 'f32', [t.numberLiteral(10.0)]),
       ],
 
       resEqual: 10.0,
@@ -52,7 +52,7 @@ describe('kernel exec - memory instructions', () => {
       args: [],
 
       code: [
-        t.objectInstruction('const', 'f64', [10.0]),
+        t.objectInstruction('const', 'f64', [t.numberLiteral(10.0)]),
       ],
 
       resEqual: 10.0,
@@ -64,10 +64,10 @@ describe('kernel exec - memory instructions', () => {
       args: [],
 
       code: [
-        t.instruction('set_local', [0,
-          t.objectInstruction('const', 'i32', [10]),
+        t.instruction('set_local', [t.numberLiteral(0),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ]),
-        t.instruction('get_local', [0]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
       ],
 
       resEqual: 10,
@@ -79,8 +79,8 @@ describe('kernel exec - memory instructions', () => {
       args: [],
 
       code: [
-        t.instruction('tee_local', [0,
-          t.objectInstruction('const', 'i32', [2]),
+        t.instruction('tee_local', [t.numberLiteral(0),
+          t.objectInstruction('const', 'i32', [t.numberLiteral(2)]),
         ]),
       ],
 

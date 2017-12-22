@@ -15,14 +15,20 @@
               "type": "Instr",
               "id": "get_local",
               "args": [
-                "a"
+                {
+                  "type": "Identifier",
+                  "name": "a"
+                }
               ]
             },
             {
               "type": "Instr",
               "id": "get_local",
               "args": [
-                0
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
               ]
             },
             {

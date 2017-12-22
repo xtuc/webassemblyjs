@@ -503,8 +503,18 @@ function parse(tokensList: Array<Object>): Program {
            *
            * Currently only one argument is allowed
            */
-          if (token.type === tokens.identifier || token.type === tokens.number) {
-            args.push(token.value);
+          if (token.type === tokens.identifier) {
+            args.push(
+              t.identifier(token.value)
+            );
+
+            eatToken();
+          }
+
+          if (token.type === tokens.number) {
+            args.push(
+              t.numberLiteral(token.value)
+            );
 
             eatToken();
           }

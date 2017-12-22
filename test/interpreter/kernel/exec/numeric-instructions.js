@@ -23,8 +23,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('add', 'i32'),
       ],
 
@@ -40,8 +40,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('sub', 'i32'),
       ],
 
@@ -57,8 +57,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('mul', 'i32'),
       ],
 
@@ -74,8 +74,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('div_s', 'i32'),
       ],
 
@@ -91,8 +91,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('div_u', 'i32'),
       ],
 
@@ -113,8 +113,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('add', 'i64'),
       ],
 
@@ -130,8 +130,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('sub', 'i64'),
       ],
 
@@ -147,8 +147,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('mul', 'i64'),
       ],
 
@@ -164,8 +164,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('div_s', 'i64'),
       ],
 
@@ -181,8 +181,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('div_u', 'i64'),
       ],
 
@@ -202,8 +202,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('add', 'f32'),
       ],
 
@@ -219,8 +219,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('sub', 'f32'),
       ],
 
@@ -236,8 +236,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('mul', 'f32'),
       ],
 
@@ -253,8 +253,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('div', 'f32'),
       ],
 
@@ -270,8 +270,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f32'),
       ],
 
@@ -287,8 +287,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f32'),
       ],
 
@@ -304,8 +304,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f32'),
       ],
 
@@ -321,8 +321,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f32'),
       ],
 
@@ -338,8 +338,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f32'),
       ],
 
@@ -355,8 +355,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f32'),
       ],
 
@@ -372,8 +372,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f32'),
       ],
 
@@ -389,8 +389,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f32'),
       ],
 
@@ -406,8 +406,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f32'),
       ],
 
@@ -423,8 +423,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f32'),
       ],
 
@@ -440,8 +440,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f32'),
       ],
 
@@ -457,8 +457,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f32'),
       ],
 
@@ -478,8 +478,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('add', 'f64'),
       ],
 
@@ -495,8 +495,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('sub', 'f64'),
       ],
 
@@ -512,8 +512,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('mul', 'f64'),
       ],
 
@@ -529,8 +529,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('div', 'f64'),
       ],
 
@@ -546,8 +546,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f64'),
       ],
 
@@ -563,8 +563,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f64'),
       ],
 
@@ -580,8 +580,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f64'),
       ],
 
@@ -597,8 +597,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f64'),
       ],
 
@@ -614,8 +614,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f64'),
       ],
 
@@ -631,8 +631,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('min', 'f64'),
       ],
 
@@ -648,8 +648,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f64'),
       ],
 
@@ -665,8 +665,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f64'),
       ],
 
@@ -682,8 +682,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f64'),
       ],
 
@@ -699,8 +699,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f64'),
       ],
 
@@ -716,8 +716,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f64'),
       ],
 
@@ -733,8 +733,8 @@ describe('kernel exec - numeric instructions', () => {
       ],
 
       code: [
-        t.instruction('get_local', [0]),
-        t.instruction('get_local', [1]),
+        t.instruction('get_local', [t.numberLiteral(0)]),
+        t.instruction('get_local', [t.numberLiteral(1)]),
         t.objectInstruction('max', 'f64'),
       ],
 

@@ -16,8 +16,8 @@ describe('kernel exec - parametric instructions', () => {
       args: [],
 
       code: [
-        t.objectInstruction('const', 'i32', [1]),
-        t.objectInstruction('const', 'i32', [2]),
+        t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
+        t.objectInstruction('const', 'i32', [t.numberLiteral(2)]),
         t.instruction('drop', []),
       ],
 
