@@ -8,7 +8,7 @@ const {createTrap} = require('../signals');
  * https://webassembly.github.io/spec/exec/runtime.html#administrative-instructions
  */
 
-export const handleAdministrativeInstructions = {
+export const administrativeInstructions = {
 
   unreachable(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-unreachable

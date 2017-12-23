@@ -15,7 +15,7 @@ const {
  *
  * https://webassembly.github.io/spec/exec/instructions.html#numeric-instructions
  */
-export const handleNumericInstructions = {
+export const numericInstructions = {
 
   const(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-const

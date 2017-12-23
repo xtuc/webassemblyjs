@@ -8,10 +8,10 @@ const {createChildStackFrame} = require('../stackframe');
 const {isTrapped} = require('../signals');
 const {RuntimeError} = require('../../../errors');
 
-const {handleControlInstructions} = require('./control-instructions');
-const {handleAdministrativeInstructions} = require('./administrative-instructions');
-const {handleMemoryInstructions} = require('./memory-instructions');
-const {handleNumericInstructions} = require('./numeric-instructions');
+const {controlInstructions} = require('./control-instructions');
+const {administrativeInstructions} = require('./administrative-instructions');
+const {memoryInstructions} = require('./memory-instructions');
+const {numericInstructions} = require('./numeric-instructions');
 
 // TODO(sven): can remove asserts call at compile to gain perf in prod
 function assert(cond) {
@@ -35,6 +35,24 @@ function castIntoStackLocalOfType(type: string, v: any): StackLocal {
   }
 
   return castFn[type](v);
+}
+
+function createInstructionsEvaluator(frame: StackFrame, frameutils: Object, visitor: Object) {
+
+  return function evaluate(instruction: Instruction) {
+    let res;
+
+    const fn = visitor[instruction.id];
+
+    if (typeof fn !== 'undefined') {
+      res = fn.bind(visitor)(instruction, frame, frameutils);
+    }
+
+    if (isTrapped(res)) {
+      return res;
+    }
+
+  };
 }
 
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
@@ -106,6 +124,31 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     return [c1, c2];
   }
 
+  const frameutils = {
+    assertNItemsOnStack,
+    pop1,
+    pop2,
+    isTrapped,
+    assert,
+    depth,
+    castIntoStackLocalOfType,
+    popArrayOfValTypes,
+    pushResult,
+    setLocalByIndex,
+    isZero,
+    getLocalByIndex,
+
+    createChildStackFrame,
+    executeStackFrame,
+  };
+
+  const evaluateInstruction = createInstructionsEvaluator(frame, frameutils, Object.assign({},
+    numericInstructions,
+    controlInstructions,
+    memoryInstructions,
+    administrativeInstructions
+  ));
+
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
 
@@ -132,50 +175,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
     }
 
-    const frameutils = {
-      assertNItemsOnStack,
-      pop1,
-      pop2,
-      isTrapped,
-      assert,
-      depth,
-      castIntoStackLocalOfType,
-      popArrayOfValTypes,
-      pushResult,
-      setLocalByIndex,
-      isZero,
-      getLocalByIndex,
-
-      createChildStackFrame,
-      executeStackFrame,
-    };
-
-    function createInstructionEvaluator(visitor: Object) {
-
-      return function evaluate(instruction: Instruction) {
-        let res;
-
-        const fn = visitor[instruction.id];
-
-        if (typeof fn !== 'undefined') {
-          res = fn.bind(visitor)(instruction, frame, frameutils);
-        }
-
-        if (isTrapped(res)) {
-          return res;
-        }
-
-      };
-    }
-
-    const evaluate = createInstructionEvaluator(Object.assign({},
-      handleNumericInstructions,
-      handleControlInstructions,
-      handleMemoryInstructions,
-      handleAdministrativeInstructions
-    ));
-
-    const res = evaluate(instruction);
+    const res = evaluateInstruction(instruction);
 
     if (isTrapped(res)) {
       return res;

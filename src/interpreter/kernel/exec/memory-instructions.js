@@ -8,7 +8,7 @@ const {RuntimeError} = require('../../../errors');
  * https://webassembly.github.io/spec/exec/instructions.html#memory-instructions
  */
 
-export const handleMemoryInstructions = {
+export const memoryInstructions = {
 
   get_local(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-get-local
