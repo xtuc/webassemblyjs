@@ -1,6 +1,6 @@
 // @flow
 
-type Sign = '+' | '-' | '/' | '*' | '&' | '|' | '^' | '~' | 'min' | 'max';
+type Sign = '+' | '-' | '/' | '*' | '&' | '|' | '^' | '~' | 'min' | 'max' | 'copysign';
 
 const i32 = require('../../runtime/values/i32');
 const i64 = require('../../runtime/values/i64');
@@ -50,6 +50,9 @@ function binop(
 
   case 'max':
     return createValue(Math.max(c1.value, c2.value));
+
+  case 'copysign':
+    return createValue((Math.sign(c1.value) === Math.sign(c2.value)) ? c1.value : -c1.value);
   }
 
   throw new Error('Unsupported binop: ' + sign);
