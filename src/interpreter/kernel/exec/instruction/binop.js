@@ -2,10 +2,10 @@
 
 type Sign = '+' | '-' | '/' | '*' | '&' | '|' | '^' | '~' | 'min' | 'max' | 'copysign';
 
-const i32 = require('../../runtime/values/i32');
-const i64 = require('../../runtime/values/i64');
-const f32 = require('../../runtime/values/f32');
-const f64 = require('../../runtime/values/f64');
+const i32 = require('../../../runtime/values/i32');
+const i64 = require('../../../runtime/values/i64');
+const f32 = require('../../../runtime/values/f32');
+const f64 = require('../../../runtime/values/f64');
 
 // https://webassembly.github.io/spec/exec/instructions.html#exec-binop
 function binop(
