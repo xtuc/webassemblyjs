@@ -11,10 +11,12 @@ const i32 = require('../../runtime/values/i32');
 const i64 = require('../../runtime/values/i64');
 const f32 = require('../../runtime/values/f32');
 const f64 = require('../../runtime/values/f64');
-const {handleControlInstructions} = require('./control-instructions');
 const {createChildStackFrame} = require('../stackframe');
-const {createTrap, isTrapped} = require('../signals');
+const {isTrapped} = require('../signals');
 const {RuntimeError} = require('../../../errors');
+
+const {handleControlInstructions} = require('./control-instructions');
+const {handleAdministrativeInstructions} = require('./administrative-instructions');
 
 // TODO(sven): can remove asserts call at compile to gain perf in prod
 function assert(cond) {
@@ -159,6 +161,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       return res;
     }
 
+    res = handleAdministrativeInstructions(instruction, frame, frameutils);
+
+    if (isTrapped(res)) {
+      return res;
+    }
+
     switch (instruction.id) {
 
     case 'const': {
@@ -179,25 +187,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       );
 
       break;
-    }
-
-    /**
-     * Control Instructions
-     *
-     * https://webassembly.github.io/spec/exec/instructions.html#control-instructions
-     */
-
-    /**
-     * Administrative Instructions
-     *
-     * https://webassembly.github.io/spec/exec/runtime.html#administrative-instructions
-     */
-    case 'unreachable':
-    // https://webassembly.github.io/spec/exec/instructions.html#exec-unreachable
-    case 'trap': {
-      // signalling abrupt termination
-      // https://webassembly.github.io/spec/exec/runtime.html#syntax-trap
-      return createTrap();
     }
 
     /**

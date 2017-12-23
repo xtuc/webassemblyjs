@@ -13,7 +13,7 @@ export function handleControlInstructions(
   instruction: Object,
   frame: StackFrame,
   frameutils: Object,
-) {
+): any {
 
   switch (instruction.id) {
 
