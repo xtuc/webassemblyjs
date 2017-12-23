@@ -150,7 +150,35 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       executeStackFrame,
     };
 
+    function createInstructionEvaluator(visitor: Object) {
+
+      return function evaluate(instruction: Instruction) {
+        let res;
+
+        const fn = visitor[instruction.id];
+
+        if (typeof fn !== 'undefined') {
+          res = fn.bind(visitor)(instruction, frame, frameutils);
+        }
+
+        if (isTrapped(res)) {
+          return res;
+        }
+
+      };
+    }
+
+    const evaluate = createInstructionEvaluator(Object.assign({},
+      handleNumericInstructions
+    ));
+
     let res;
+
+    res = evaluate(instruction);
+
+    if (isTrapped(res)) {
+      return res;
+    }
 
     res = handleControlInstructions(instruction, frame, frameutils);
 
@@ -165,12 +193,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     }
 
     res = handleMemoryInstructions(instruction, frame, frameutils);
-
-    if (isTrapped(res)) {
-      return res;
-    }
-
-    res = handleNumericInstructions(instruction, frame, frameutils);
 
     if (isTrapped(res)) {
       return res;

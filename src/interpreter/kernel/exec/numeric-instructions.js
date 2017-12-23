@@ -15,16 +15,9 @@ const {
  *
  * https://webassembly.github.io/spec/exec/instructions.html#numeric-instructions
  */
+export const handleNumericInstructions = {
 
-export function handleNumericInstructions(
-  instruction: Object,
-  frame: StackFrame,
-  frameutils: Object,
-): any {
-
-  switch (instruction.id) {
-
-  case 'const': {
+  const(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-const
 
     const n = instruction.args[0];
@@ -40,11 +33,9 @@ export function handleNumericInstructions(
     frameutils.pushResult(
       frameutils.castIntoStackLocalOfType(instruction.object, n.value)
     );
+  },
 
-    break;
-  }
-
-  case 'add': {
+  add(instruction: Instruction, frame: StackFrame, frameutils: Object) {
 
     switch (instruction.object) {
 
@@ -93,10 +84,9 @@ export function handleNumericInstructions(
 
     }
 
-    break;
-  }
+  },
 
-  case 'mul': {
+  mul(instruction: Instruction, frame: StackFrame, frameutils: Object) {
 
     switch (instruction.object) {
 
@@ -145,10 +135,9 @@ export function handleNumericInstructions(
 
     }
 
-    break;
-  }
+  },
 
-  case 'sub': {
+  sub(instruction: Instruction, frame: StackFrame, frameutils: Object) {
 
     switch (instruction.object) {
 
@@ -197,16 +186,21 @@ export function handleNumericInstructions(
 
     }
 
-    break;
-  }
+  },
+
+  div_s(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+    this.div(instruction, frame, frameutils);
+  },
+
+  div_u(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+    this.div(instruction, frame, frameutils);
+  },
 
   /**
-     * There is two seperated operation for both signed and unsigned integer,
-     * but since the host environment will handle that, we don't have too :)
-     */
-  case 'div_s':
-  case 'div_u':
-  case 'div': {
+   * There is two seperated operation for both signed and unsigned integer,
+   * but since the host environment will handle that, we don't have too :)
+   */
+  div(instruction: Instruction, frame: StackFrame, frameutils: Object) {
 
     switch (instruction.object) {
 
@@ -255,10 +249,9 @@ export function handleNumericInstructions(
 
     }
 
-    break;
-  }
+  },
 
-  case 'min': {
+  min(instruction: Instruction, frame: StackFrame, frameutils: Object) {
 
     switch (instruction.object) {
 
@@ -286,10 +279,9 @@ export function handleNumericInstructions(
       throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
     }
 
-    break;
-  }
+  },
 
-  case 'max': {
+  max(instruction: Instruction, frame: StackFrame, frameutils: Object) {
 
     switch (instruction.object) {
 
@@ -317,10 +309,9 @@ export function handleNumericInstructions(
       throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
     }
 
-    break;
-  }
+  },
 
-  case 'copysign': {
+  copysign(instruction: Instruction, frame: StackFrame, frameutils: Object) {
 
     switch (instruction.object) {
 
@@ -348,8 +339,6 @@ export function handleNumericInstructions(
       throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
     }
 
-    break;
   }
 
-  }
-}
+};
