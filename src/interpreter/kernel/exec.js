@@ -56,7 +56,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   function setLocalByIndex(index: number, value: StackLocal) {
     assert(typeof index === 'number');
 
-    console.log('setLocalByIndex', index, value);
     frame.locals[index] = value;
   }
 
@@ -434,7 +433,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       if (index.type === 'NumberLiteral') {
-        console.log(index);
         getLocalByIndex(index.value);
       } else {
         throw new RuntimeError('get_local: unsupported index of type: ' + index.type);
