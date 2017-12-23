@@ -24,6 +24,26 @@ export function handleNumericInstructions(
 
   switch (instruction.id) {
 
+  case 'const': {
+    // https://webassembly.github.io/spec/exec/instructions.html#exec-const
+
+    const n = instruction.args[0];
+
+    if (typeof n === 'undefined') {
+      throw new RuntimeError('const requires one argument, none given.');
+    }
+
+    if (n.type !== 'NumberLiteral') {
+      throw new RuntimeError('const: unsupported value of type: ' + n.type);
+    }
+
+    frameutils.pushResult(
+      frameutils.castIntoStackLocalOfType(instruction.object, n.value)
+    );
+
+    break;
+  }
+
   case 'add': {
 
     switch (instruction.object) {
