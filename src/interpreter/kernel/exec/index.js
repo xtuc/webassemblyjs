@@ -171,18 +171,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     const evaluate = createInstructionEvaluator(Object.assign({},
       handleNumericInstructions,
       handleControlInstructions,
-      handleMemoryInstructions
+      handleMemoryInstructions,
+      handleAdministrativeInstructions
     ));
 
-    let res;
-
-    res = evaluate(instruction);
-
-    if (isTrapped(res)) {
-      return res;
-    }
-
-    res = handleAdministrativeInstructions(instruction, frame, frameutils);
+    const res = evaluate(instruction);
 
     if (isTrapped(res)) {
       return res;
