@@ -7,14 +7,14 @@ const {
   binopf32,
   binopf64,
 } = require('./instruction/binop');
-const i32 = require('../runtime/values/i32');
-const i64 = require('../runtime/values/i64');
-const f32 = require('../runtime/values/f32');
-const f64 = require('../runtime/values/f64');
-const label = require('../runtime/values/label');
-const {createChildStackFrame} = require('./stackframe');
-const {createTrap, isTrapped} = require('./signals');
-const {RuntimeError} = require('../../errors');
+const i32 = require('../../runtime/values/i32');
+const i64 = require('../../runtime/values/i64');
+const f32 = require('../../runtime/values/f32');
+const f64 = require('../../runtime/values/f64');
+const {handleControlInstructions} = require('./control-instructions');
+const {createChildStackFrame} = require('../stackframe');
+const {createTrap, isTrapped} = require('../signals');
+const {RuntimeError} = require('../../../errors');
 
 // TODO(sven): can remove asserts call at compile to gain perf in prod
 function assert(cond) {
@@ -135,6 +135,30 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
     }
 
+    const frameutils = {
+      assertNItemsOnStack,
+      pop1,
+      pop2,
+      isTrapped,
+      assert,
+      depth,
+      castIntoStackLocalOfType,
+      popArrayOfValTypes,
+      pushResult,
+      isZero,
+
+      createChildStackFrame,
+      executeStackFrame,
+    };
+
+    let res;
+
+    res = handleControlInstructions(instruction, frame, frameutils);
+
+    if (isTrapped(res)) {
+      return res;
+    }
+
     switch (instruction.id) {
 
     case 'const': {
@@ -162,249 +186,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
      *
      * https://webassembly.github.io/spec/exec/instructions.html#control-instructions
      */
-    case 'nop': {
-      // Do nothing
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-nop
-      break;
-    }
-
-    case 'loop': {
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-loop
-      const loop = instruction;
-
-      assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
-
-      if (loop.instr.length > 0) {
-        const childStackFrame = createChildStackFrame(frame, loop.instr);
-        childStackFrame.trace = frame.trace;
-
-        const res = executeStackFrame(childStackFrame, depth + 1);
-
-        if (isTrapped(res)) {
-          return res;
-        }
-      }
-
-      break;
-    }
-
-    case 'drop': {
-      // https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop
-
-      assertNItemsOnStack(frame.values, 1);
-
-      pop1();
-
-      break;
-    }
-
-    case 'call': {
-      // According to the spec call doesn't support an Identifier as argument
-      // but the Script syntax supports it.
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-call
-
-      const call = instruction;
-
-      // WAST
-      if (call.index.type === 'Identifier') {
-
-        const element = frame.labels[call.index.name];
-
-        if (typeof element === 'undefined') {
-          throw new RuntimeError('Cannot call ' + call.index.name + ': label not found on the call stack');
-        }
-
-        if (element.type === 'Func') {
-
-          const childStackFrame = createChildStackFrame(frame, element.body);
-
-          const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (isTrapped(res)) {
-            return res;
-          }
-
-          if (typeof res !== 'undefined') {
-            pushResult(res);
-          }
-        }
-      }
-
-      // WASM
-      if (call.index.type === 'NumberLiteral') {
-
-        const index = call.index.value;
-
-        assert(typeof frame.originatingModule !== 'undefined');
-
-        // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
-        const funcaddr = frame.originatingModule.funcaddrs[index];
-
-        if (typeof funcaddr === 'undefined') {
-
-          throw new RuntimeError(
-            `No function were found in module at address ${index}`
-          );
-        }
-
-        // 3. Let a be the function address F.module.funcaddrs[x]
-
-        const subroutine = frame.allocator.get(funcaddr);
-
-        if (typeof subroutine !== 'object') {
-
-          throw new RuntimeError(
-            `Cannot call function at address ${funcaddr}: not a function`
-          );
-        }
-
-        // 4. Invoke the function instance at address a
-
-        // FIXME(sven): assert that res has type of resultType
-        const [argTypes, resultType] = subroutine.type;
-
-        const args = popArrayOfValTypes(argTypes);
-
-        if (subroutine.isExternal === false) {
-
-          const childStackFrame = createChildStackFrame(frame, subroutine.code);
-          childStackFrame.values = args.map((arg) => arg.value);
-
-          const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (isTrapped(res)) {
-            return res;
-          }
-
-          if (typeof res !== 'undefined') {
-            pushResult(res);
-          }
-
-        } else {
-          const res = subroutine.code(args.map((arg) => arg.value));
-
-          pushResult(
-            castIntoStackLocalOfType(resultType, res)
-          );
-        }
-
-      }
-
-      break;
-    }
-
-    case 'block': {
-      const block = instruction;
-
-      /**
-       * Used to keep track of the number of values added on top of the stack
-       * because we need to remove the label after the execution of this block.
-       */
-      let numberOfValuesAddedOnTopOfTheStack = 0;
-
-      /**
-       * When entering block push the label onto the stack
-       */
-      if (typeof block.label === 'string') {
-
-        pushResult(
-          label.createValue(block.label)
-        );
-      }
-
-      assert(typeof block.instr === 'object' && typeof block.instr.length !== 'undefined');
-
-      if (block.instr.length > 0) {
-        const childStackFrame = createChildStackFrame(frame, block.instr);
-        childStackFrame.trace = frame.trace;
-
-        const res = executeStackFrame(childStackFrame, depth + 1);
-
-        if (isTrapped(res)) {
-          return res;
-        }
-
-        if (typeof res !== 'undefined') {
-          pushResult(res);
-          numberOfValuesAddedOnTopOfTheStack++;
-        }
-      }
-
-      /**
-       * Wen exiting the block
-       *
-       * > Let m be the number of values on the top of the stack
-       *
-       * The Stack (values) are seperated by StackFrames and we are running on
-       * one single thread, there's no need to check if values were added.
-       *
-       * We tracked it in numberOfValuesAddedOnTopOfTheStack anyway.
-       */
-      const topOfTheStack = frame.values.slice(frame.values.length - numberOfValuesAddedOnTopOfTheStack);
-
-      frame.values.splice(frame.values.length - numberOfValuesAddedOnTopOfTheStack);
-
-      pop1('label');
-
-      frame.values = [...frame.values, ...topOfTheStack];
-
-      break;
-    }
-
-    case 'if': {
-
-      /**
-       * Execute test
-       */
-      const childStackFrame = createChildStackFrame(frame, instruction.test);
-      childStackFrame.trace = frame.trace;
-
-      const res = executeStackFrame(childStackFrame, depth + 1);
-
-      if (isTrapped(res)) {
-        return res;
-      }
-
-      if (!isZero(res)) {
-
-        /**
-         * Execute consequent
-         */
-        const childStackFrame = createChildStackFrame(frame, instruction.consequent);
-        childStackFrame.trace = frame.trace;
-
-        const res = executeStackFrame(childStackFrame, depth + 1);
-
-        if (isTrapped(res)) {
-          return res;
-        }
-
-        if (typeof res !== 'undefined') {
-          pushResult(res);
-        }
-
-      } else if (typeof instruction.alternate !== 'undefined' && instruction.alternate.length > 0) {
-
-        /**
-         * Execute alternate
-         */
-        const childStackFrame = createChildStackFrame(frame, instruction.alternate);
-        childStackFrame.trace = frame.trace;
-
-        const res = executeStackFrame(childStackFrame, depth + 1);
-
-        if (isTrapped(res)) {
-          return res;
-        }
-
-        if (typeof res !== 'undefined') {
-          pushResult(res);
-        }
-
-      }
-
-      break;
-    }
 
     /**
      * Administrative Instructions
