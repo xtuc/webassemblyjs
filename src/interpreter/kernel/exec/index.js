@@ -55,6 +55,26 @@ function createInstructionsEvaluator(frame: StackFrame, frameutils: Object, visi
   };
 }
 
+function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {
+  if (stack.length < numberOfItem) {
+    throw new RuntimeError('Assertion error: expected ' + numberOfItem + ' on the stack, found ' + stack.length);
+  }
+}
+
+function valueEq(l: StackLocal, r: StackLocal): boolean {
+  return l.value == r.value && l.type == r.type;
+}
+
+function isZero(v: StackLocal): boolean {
+  if (typeof v === 'undefined') {
+    return false;
+  }
+
+  const zero = i32.createValue(0);
+
+  return valueEq(v, zero);
+}
+
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   let pc = 0;
 
@@ -192,24 +212,4 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
   if (frame.values.length > 0) {
     return frame.values.pop();
   }
-}
-
-function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {
-  if (stack.length < numberOfItem) {
-    throw new RuntimeError('Assertion error: expected ' + numberOfItem + ' on the stack, found ' + stack.length);
-  }
-}
-
-function valueEq(l: StackLocal, r: StackLocal): boolean {
-  return l.value == r.value && l.type == r.type;
-}
-
-function isZero(v: StackLocal): boolean {
-  if (typeof v === 'undefined') {
-    return false;
-  }
-
-  const zero = i32.createValue(0);
-
-  return valueEq(v, zero);
 }
