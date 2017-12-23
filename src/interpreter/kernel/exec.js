@@ -3,10 +3,15 @@
 const {
   binopi32,
   binopi64,
-
   binopf32,
   binopf64,
 } = require('./instruction/binop');
+const {
+  unopi32,
+  unopi64,
+  unopf32,
+  unopf64,
+} = require('./instruction/unop');
 const i32 = require('../runtime/values/i32');
 const i64 = require('../runtime/values/i64');
 const f32 = require('../runtime/values/f32');
@@ -883,6 +888,27 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         pushResult(
           binopf64(c2, c1, 'copysign')
+        );
+
+        break;
+      }
+
+      default:
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      }
+
+      break;
+    }
+
+    case 'abs': {
+
+      switch (instruction.object) {
+
+      case 'f32': {
+        const c = pop1('f32');
+
+        pushResult(
+          unopf32(c, 'abs')
         );
 
         break;
