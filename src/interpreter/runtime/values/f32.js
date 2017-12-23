@@ -6,6 +6,6 @@ export function createValue(value: number): StackLocal {
 
   return {
     type,
-    value: parseFloat(value),
+    value: value === 0 ? value : parseFloat(value),
   };
 }
