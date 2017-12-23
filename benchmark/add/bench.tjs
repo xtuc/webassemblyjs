@@ -1,12 +1,14 @@
 WebAssembly
   .instantiate(wasmmodule)
   .then((m) => {
-    var t0 = performance.now();
+    showHeader();
+
+    var t0 = now();
 
     for (let i = 0; i < NBINTERATION; i++) {
       m.exports.add(1, 1);
     }
 
-    var t1 = performance.now();
+    var t1 = now();
     console.log("took", t1 - t0);
   });

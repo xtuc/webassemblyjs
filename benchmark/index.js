@@ -2,7 +2,7 @@ const {readFileSync} = require('fs');
 const glob = require('glob');
 const path = require('path');
 const vm = require('vm');
-const {performance} = require('perf_hooks');
+const now = require('performance-now');
 
 if (typeof WebAssembly === 'undefined') {
   throw new Error('WebAssembly not supported');
@@ -19,6 +19,12 @@ function toArrayBuffer(buf) {
   );
 }
 
+function createShowHeader(mode) {
+  return function() {
+    console.log('Testing', mode);
+  }
+}
+
 benchmarks.forEach((file) => {
   const module = toArrayBuffer(readFileSync(file, null));
 
@@ -27,29 +33,26 @@ benchmarks.forEach((file) => {
 
   const NBINTERATION = 10000;
 
-  console.log('native', file);
+  const sandbox = {
+    wasmmodule: module,
+    console: global.console,
+    now,
+    NBINTERATION,
+  };
 
   // Run native
-  let sandbox = {
+  const nativeSandbox = Object.assign({}, sandbox, {
     WebAssembly: global.WebAssembly,
-    wasmmodule: module,
-    console: global.console,
-    performance,
-    NBINTERATION,
-  };
+    showHeader: createShowHeader('native'),
+  });
 
-  vm.runInNewContext(exec, sandbox, {filename: file});
-
-  console.log('interpreted', file);
+  vm.runInNewContext(exec, nativeSandbox, {filename: file});
 
   // Run interpreted
-  sandbox = {
+  const interpretedSandbox = Object.assign({}, sandbox, {
+    showHeader: createShowHeader('interpreted'),
     WebAssembly: interpreter,
-    wasmmodule: module,
-    console: global.console,
-    performance,
-    NBINTERATION,
-  };
+  });
 
-  vm.runInNewContext(exec, sandbox, {filename: file});
+  vm.runInNewContext(exec, interpretedSandbox, {filename: file});
 });
