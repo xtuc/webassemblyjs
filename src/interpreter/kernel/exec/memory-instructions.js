@@ -8,15 +8,9 @@ const {RuntimeError} = require('../../../errors');
  * https://webassembly.github.io/spec/exec/instructions.html#memory-instructions
  */
 
-export function handleMemoryInstructions(
-  instruction: Object,
-  frame: StackFrame,
-  frameutils: Object,
-): any {
+export const handleMemoryInstructions = {
 
-  switch (instruction.id) {
-
-  case 'get_local': {
+  get_local(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-get-local
     const index = instruction.args[0];
 
@@ -30,10 +24,9 @@ export function handleMemoryInstructions(
       throw new RuntimeError('get_local: unsupported index of type: ' + index.type);
     }
 
-    break;
-  }
+  },
 
-  case 'set_local': {
+  set_local(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-set-local
     const index = instruction.args[0];
     const init = instruction.args[1];
@@ -62,11 +55,9 @@ export function handleMemoryInstructions(
     } else {
       throw new RuntimeError('set_local: unsupported index of type: ' + index.type);
     }
+  },
 
-    break;
-  }
-
-  case 'tee_local': {
+  tee_local(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-tee-local
     const index = instruction.args[0];
     const init = instruction.args[1];
@@ -110,11 +101,9 @@ export function handleMemoryInstructions(
     } else {
       throw new RuntimeError('tee_local: unsupported index of type: ' + index.type);
     }
+  },
 
-    break;
-  }
-
-  case 'set_global': {
+  set_global(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-set-global
     const index = instruction.args[0];
 
@@ -142,11 +131,9 @@ export function handleMemoryInstructions(
     globalinst.value = val.value;
 
     frame.allocator.set(globaladdr, globalinst);
+  },
 
-    break;
-  }
-
-  case 'get_global': {
+  get_global(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-get-global
     const index = instruction.args[0];
 
@@ -169,10 +156,6 @@ export function handleMemoryInstructions(
 
     // 7. Pop the value val from the stack.
     frameutils.pushResult(globalinst);
+  },
 
-    break;
-  }
-
-  }
-
-}
+};
