@@ -9,21 +9,14 @@ const {RuntimeError} = require('../../../errors');
  * https://webassembly.github.io/spec/exec/instructions.html#control-instructions
  */
 
-export function handleControlInstructions(
-  instruction: Object,
-  frame: StackFrame,
-  frameutils: Object,
-): any {
+export const handleControlInstructions = {
 
-  switch (instruction.id) {
-
-  case 'nop': {
+  nop(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // Do nothing
     // https://webassembly.github.io/spec/exec/instructions.html#exec-nop
-    break;
-  }
+  },
 
-  case 'loop': {
+  loop(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-loop
     const loop = instruction;
 
@@ -40,20 +33,18 @@ export function handleControlInstructions(
       }
     }
 
-    break;
-  }
+  },
 
-  case 'drop': {
+  drop(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop
 
     frameutils.assertNItemsOnStack(frame.values, 1);
 
     frameutils.pop1();
 
-    break;
-  }
+  },
 
-  case 'call': {
+  call(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     // According to the spec call doesn't support an Identifier as argument
     // but the Script syntax supports it.
     // https://webassembly.github.io/spec/exec/instructions.html#exec-call
@@ -145,21 +136,20 @@ export function handleControlInstructions(
 
     }
 
-    break;
-  }
+  },
 
-  case 'block': {
+  block(instruction: Instruction, frame: StackFrame, frameutils: Object) {
     const block = instruction;
 
     /**
-       * Used to keep track of the number of values added on top of the stack
-       * because we need to remove the label after the execution of this block.
-       */
+     * Used to keep track of the number of values added on top of the stack
+     * because we need to remove the label after the execution of this block.
+     */
     let numberOfValuesAddedOnTopOfTheStack = 0;
 
     /**
-       * When entering block push the label onto the stack
-       */
+     * When entering block push the label onto the stack
+     */
     if (typeof block.label === 'string') {
 
       frameutils.pushResult(
@@ -186,15 +176,15 @@ export function handleControlInstructions(
     }
 
     /**
-       * Wen exiting the block
-       *
-       * > Let m be the number of values on the top of the stack
-       *
-       * The Stack (values) are seperated by StackFrames and we are running on
-       * one single thread, there's no need to check if values were added.
-       *
-       * We tracked it in numberOfValuesAddedOnTopOfTheStack anyway.
-       */
+     * Wen exiting the block
+     *
+     * > Let m be the number of values on the top of the stack
+     *
+     * The Stack (values) are seperated by StackFrames and we are running on
+     * one single thread, there's no need to check if values were added.
+     *
+     * We tracked it in numberOfValuesAddedOnTopOfTheStack anyway.
+     */
     const topOfTheStack = frame.values.slice(frame.values.length - numberOfValuesAddedOnTopOfTheStack);
 
     frame.values.splice(frame.values.length - numberOfValuesAddedOnTopOfTheStack);
@@ -202,15 +192,13 @@ export function handleControlInstructions(
     frameutils.pop1('label');
 
     frame.values = [...frame.values, ...topOfTheStack];
+  },
 
-    break;
-  }
-
-  case 'if': {
+  if(instruction: Instruction, frame: StackFrame, frameutils: Object) {
 
     /**
-       * Execute test
-       */
+     * Execute test
+     */
     const childStackFrame = frameutils.createChildStackFrame(frame, instruction.test);
     childStackFrame.trace = frame.trace;
 
@@ -223,8 +211,8 @@ export function handleControlInstructions(
     if (!frameutils.isZero(res)) {
 
       /**
-         * Execute consequent
-         */
+       * Execute consequent
+       */
       const childStackFrame = frameutils.createChildStackFrame(frame, instruction.consequent);
       childStackFrame.trace = frame.trace;
 
@@ -241,8 +229,8 @@ export function handleControlInstructions(
     } else if (typeof instruction.alternate !== 'undefined' && instruction.alternate.length > 0) {
 
       /**
-         * Execute alternate
-         */
+       * Execute alternate
+       */
       const childStackFrame = frameutils.createChildStackFrame(frame, instruction.alternate);
       childStackFrame.trace = frame.trace;
 
@@ -257,9 +245,6 @@ export function handleControlInstructions(
       }
 
     }
-
-    break;
   }
 
-  }
-}
+};
