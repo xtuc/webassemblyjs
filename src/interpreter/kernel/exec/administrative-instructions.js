@@ -2,6 +2,12 @@
 
 const {createTrap} = require('../signals');
 
+/**
+ * Administrative Instructions
+ *
+ * https://webassembly.github.io/spec/exec/runtime.html#administrative-instructions
+ */
+
 export function handleAdministrativeInstructions(
   instruction: Object,
   frame: StackFrame,
@@ -10,11 +16,6 @@ export function handleAdministrativeInstructions(
 
   switch (instruction.id) {
 
-  /**
-     * Administrative Instructions
-     *
-     * https://webassembly.github.io/spec/exec/runtime.html#administrative-instructions
-     */
   case 'unreachable':
     // https://webassembly.github.io/spec/exec/instructions.html#exec-unreachable
   case 'trap': {
