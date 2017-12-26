@@ -11,37 +11,37 @@ const {RuntimeError} = require('../../../errors');
 
 export const controlInstructions = {
 
-  nop(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  nop(instruction: Instruction, frame: StackFrame) {
     // Do nothing
     // https://webassembly.github.io/spec/exec/instructions.html#exec-nop
   },
 
-  loop(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  loop(instruction: Instruction, frame: StackFrame) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-loop
     const loop = instruction;
 
-    frameutils.assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
+    this.assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
 
     if (loop.instr.length > 0) {
       const res = this.createAndExecuteChildStackFrame(frame, loop.instr);
 
-      if (frameutils.isTrapped(res)) {
+      if (this.isTrapped(res)) {
         return res;
       }
     }
 
   },
 
-  drop(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  drop(instruction: Instruction, frame: StackFrame) {
     // https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop
 
-    frameutils.assertNItemsOnStack(frame.values, 1);
+    this.assertNItemsOnStack(frame.values, 1);
 
-    frameutils.pop1();
+    this.pop1();
 
   },
 
-  call(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  call(instruction: Instruction, frame: StackFrame) {
     // According to the spec call doesn't support an Identifier as argument
     // but the Script syntax supports it.
     // https://webassembly.github.io/spec/exec/instructions.html#exec-call
@@ -60,12 +60,12 @@ export const controlInstructions = {
       if (element.type === 'Func') {
         const res = this.createAndExecuteChildStackFrame(frame, element.body);
 
-        if (frameutils.isTrapped(res)) {
+        if (this.isTrapped(res)) {
           return res;
         }
 
         if (typeof res !== 'undefined') {
-          frameutils.pushResult(res);
+          this.pushResult(res);
         }
       }
     }
@@ -75,7 +75,7 @@ export const controlInstructions = {
 
       const index = call.index.value;
 
-      frameutils.assert(typeof frame.originatingModule !== 'undefined');
+      this.assert(typeof frame.originatingModule !== 'undefined');
 
       // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
       const funcaddr = frame.originatingModule.funcaddrs[index];
@@ -103,24 +103,24 @@ export const controlInstructions = {
       // FIXME(sven): assert that res has type of resultType
       const [argTypes, resultType] = subroutine.type;
 
-      const args = frameutils.popArrayOfValTypes(argTypes);
+      const args = this.popArrayOfValTypes(argTypes);
 
       if (subroutine.isExternal === false) {
         const res = this.createAndExecuteChildStackFrame(frame, subroutine.code);
 
-        if (frameutils.isTrapped(res)) {
+        if (this.isTrapped(res)) {
           return res;
         }
 
         if (typeof res !== 'undefined') {
-          frameutils.pushResult(res);
+          this.pushResult(res);
         }
 
       } else {
         const res = subroutine.code(args.map((arg) => arg.value));
 
-        frameutils.pushResult(
-          frameutils.castIntoStackLocalOfType(resultType, res)
+        this.pushResult(
+          this.castIntoStackLocalOfType(resultType, res)
         );
       }
 
@@ -128,7 +128,7 @@ export const controlInstructions = {
 
   },
 
-  block(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  block(instruction: Instruction, frame: StackFrame) {
     const block = instruction;
 
     /**
@@ -142,22 +142,22 @@ export const controlInstructions = {
      */
     if (typeof block.label === 'string') {
 
-      frameutils.pushResult(
+      this.pushResult(
         label.createValue(block.label)
       );
     }
 
-    frameutils.assert(typeof block.instr === 'object' && typeof block.instr.length !== 'undefined');
+    this.assert(typeof block.instr === 'object' && typeof block.instr.length !== 'undefined');
 
     if (block.instr.length > 0) {
       const res = this.createAndExecuteChildStackFrame(frame, block.instr);
 
-      if (frameutils.isTrapped(res)) {
+      if (this.isTrapped(res)) {
         return res;
       }
 
       if (typeof res !== 'undefined') {
-        frameutils.pushResult(res);
+        this.pushResult(res);
         numberOfValuesAddedOnTopOfTheStack++;
       }
     }
@@ -176,35 +176,35 @@ export const controlInstructions = {
 
     frame.values.splice(frame.values.length - numberOfValuesAddedOnTopOfTheStack);
 
-    frameutils.pop1('label');
+    this.pop1('label');
 
     frame.values = [...frame.values, ...topOfTheStack];
   },
 
-  if(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  if(instruction: Instruction, frame: StackFrame) {
 
     /**
      * Execute test
      */
     const res = this.createAndExecuteChildStackFrame(frame, instruction.test);
 
-    if (frameutils.isTrapped(res)) {
+    if (this.isTrapped(res)) {
       return res;
     }
 
-    if (!frameutils.isZero(res)) {
+    if (!this.isZero(res)) {
 
       /**
        * Execute consequent
        */
       const res = this.createAndExecuteChildStackFrame(frame, instruction.consequent);
 
-      if (frameutils.isTrapped(res)) {
+      if (this.isTrapped(res)) {
         return res;
       }
 
       if (typeof res !== 'undefined') {
-        frameutils.pushResult(res);
+        this.pushResult(res);
       }
 
     } else if (typeof instruction.alternate !== 'undefined' && instruction.alternate.length > 0) {
@@ -214,12 +214,12 @@ export const controlInstructions = {
        */
       const res = this.createAndExecuteChildStackFrame(frame, instruction.alternate);
 
-      if (frameutils.isTrapped(res)) {
+      if (this.isTrapped(res)) {
         return res;
       }
 
       if (typeof res !== 'undefined') {
-        frameutils.pushResult(res);
+        this.pushResult(res);
       }
 
     }

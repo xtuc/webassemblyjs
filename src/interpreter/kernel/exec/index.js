@@ -47,7 +47,7 @@ function createInstructionsEvaluator(frame: StackFrame, frameutils: Object, visi
     if (typeof fn !== 'undefined') {
       const context = Object.assign({}, visitor, frameutils);
 
-      res = fn.bind(context)(instruction, frame, frameutils);
+      res = fn.bind(context)(instruction, frame);
     }
 
     if (isTrapped(res)) {
