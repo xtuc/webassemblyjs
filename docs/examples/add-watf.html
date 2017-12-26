@@ -27,14 +27,15 @@
         <div class="action-buttons"></div>
         <span class="language">WATF</span>
       </div>
-      <div class="window-body" style="height: 174px;">
+      <div class="window-body" style="height: 186px;">
         <pre class="code-output">
           <code class="language-js" id="input">
 (module
- (func $add (param i32) (param i32) (result i32)
-  get_local 0
-  get_local 1
-  i32.add)
+ (func $add (param i32) (param i32) (result i32) (
+  (get_local 0)
+  (get_local 1)
+  (i32.add)
+ ))
  (export "add" (func $add))
 )
           </code>
@@ -55,7 +56,7 @@
 var code = document.getElementById("input").innerText;
 var module = webassemblyInterpreter.instantiateFromSource(code);
 
-var res = module.instance.exports.add(1, 1);
+var res = module.exports.add(1, 1);
 document.getElementById("res").innerHTML = res;
           </code>
         </pre>
