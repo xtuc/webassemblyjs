@@ -1,3 +1,4 @@
+NODE_OPTS =
 NODE = node
 MOCHA = ./node_modules/.bin/mocha --reporter=tap
 BABEL = ./node_modules/.bin/babel
@@ -26,7 +27,7 @@ publish: build
 	npm publish
 
 repl: build
-	$(NODE) ./lib/repl
+	$(NODE) $(NODE_OPTS) ./lib/repl
 
 generate-doc:
 	$(MARKDOWN_TO_HTML) README.md
@@ -35,4 +36,4 @@ serve-docs:
 	$(HTTP_SERVER) docs
 
 bench:
-	$(NODE) ./benchmark
+	$(NODE) $(NODE_OPTS) ./benchmark
