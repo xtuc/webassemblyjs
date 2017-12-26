@@ -24,7 +24,7 @@ function formatNumber(i) {
   let unit = 'ms';
 
   if (i < 1) {
-    i *= 10 ** 6;
+    i *= Math.pow(10, 6);
     unit = 'ns';
   }
 
@@ -74,7 +74,7 @@ benchmarks.forEach((file) => {
   const execFile = path.join(path.dirname(file), 'bench.tjs');
   const exec = readFileSync(execFile, 'utf8');
 
-  const NBINTERATION = 10 ** 6;
+  const NBINTERATION = Math.pow(10, 6);
 
   const sandbox = {
     wasmmodule: module,
