@@ -45,7 +45,9 @@ function createInstructionsEvaluator(frame: StackFrame, frameutils: Object, visi
     const fn = visitor[instruction.id];
 
     if (typeof fn !== 'undefined') {
-      res = fn.bind(visitor)(instruction, frame, frameutils);
+      const context = Object.assign({}, visitor, frameutils);
+
+      res = fn.bind(context)(instruction, frame, frameutils);
     }
 
     if (isTrapped(res)) {
@@ -158,8 +160,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     isZero,
     getLocalByIndex,
 
-    createChildStackFrame,
-    executeStackFrame,
+    createAndExecuteChildStackFrame(frame, instructions) {
+      const childStackFrame = createChildStackFrame(frame, instructions);
+      childStackFrame.trace = frame.trace;
+
+      return executeStackFrame(childStackFrame, this.depth + 1);
+    },
   };
 
   const evaluateInstruction = createInstructionsEvaluator(frame, frameutils, Object.assign({},

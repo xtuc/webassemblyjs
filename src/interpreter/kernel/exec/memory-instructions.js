@@ -34,10 +34,7 @@ export const memoryInstructions = {
     if (typeof init !== 'undefined' && init.type === 'Instr') {
       // WAST
 
-      const childStackFrame = frameutils.createChildStackFrame(frame, [init]);
-      childStackFrame.trace = frame.trace;
-
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
+      const res = this.createAndExecuteChildStackFrame(frame, [init]);
 
       if (frameutils.isTrapped(res)) {
         return res;
@@ -65,10 +62,7 @@ export const memoryInstructions = {
     if (typeof init !== 'undefined' && init.type === 'Instr') {
       // WAST
 
-      const childStackFrame = frameutils.createChildStackFrame(frame, [init]);
-      childStackFrame.trace = frame.trace;
-
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
+      const res = this.createAndExecuteChildStackFrame(frame, [init]);
 
       if (frameutils.isTrapped(res)) {
         return res;

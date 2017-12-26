@@ -23,10 +23,7 @@ export const controlInstructions = {
     frameutils.assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
 
     if (loop.instr.length > 0) {
-      const childStackFrame = frameutils.createChildStackFrame(frame, loop.instr);
-      childStackFrame.trace = frame.trace;
-
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
+      const res = this.createAndExecuteChildStackFrame(frame, loop.instr);
 
       if (frameutils.isTrapped(res)) {
         return res;
@@ -61,10 +58,7 @@ export const controlInstructions = {
       }
 
       if (element.type === 'Func') {
-
-        const childStackFrame = frameutils.createChildStackFrame(frame, element.body);
-
-        const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
+        const res = this.createAndExecuteChildStackFrame(frame, element.body);
 
         if (frameutils.isTrapped(res)) {
           return res;
@@ -112,11 +106,7 @@ export const controlInstructions = {
       const args = frameutils.popArrayOfValTypes(argTypes);
 
       if (subroutine.isExternal === false) {
-
-        const childStackFrame = frameutils.createChildStackFrame(frame, subroutine.code);
-        childStackFrame.values = args.map((arg) => arg.value);
-
-        const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
+        const res = this.createAndExecuteChildStackFrame(frame, subroutine.code);
 
         if (frameutils.isTrapped(res)) {
           return res;
@@ -160,10 +150,7 @@ export const controlInstructions = {
     frameutils.assert(typeof block.instr === 'object' && typeof block.instr.length !== 'undefined');
 
     if (block.instr.length > 0) {
-      const childStackFrame = frameutils.createChildStackFrame(frame, block.instr);
-      childStackFrame.trace = frame.trace;
-
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
+      const res = this.createAndExecuteChildStackFrame(frame, block.instr);
 
       if (frameutils.isTrapped(res)) {
         return res;
@@ -199,10 +186,7 @@ export const controlInstructions = {
     /**
      * Execute test
      */
-    const childStackFrame = frameutils.createChildStackFrame(frame, instruction.test);
-    childStackFrame.trace = frame.trace;
-
-    const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
+    const res = this.createAndExecuteChildStackFrame(frame, instruction.test);
 
     if (frameutils.isTrapped(res)) {
       return res;
@@ -213,10 +197,7 @@ export const controlInstructions = {
       /**
        * Execute consequent
        */
-      const childStackFrame = frameutils.createChildStackFrame(frame, instruction.consequent);
-      childStackFrame.trace = frame.trace;
-
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
+      const res = this.createAndExecuteChildStackFrame(frame, instruction.consequent);
 
       if (frameutils.isTrapped(res)) {
         return res;
@@ -231,10 +212,7 @@ export const controlInstructions = {
       /**
        * Execute alternate
        */
-      const childStackFrame = frameutils.createChildStackFrame(frame, instruction.alternate);
-      childStackFrame.trace = frame.trace;
-
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
+      const res = this.createAndExecuteChildStackFrame(frame, instruction.alternate);
 
       if (frameutils.isTrapped(res)) {
         return res;
