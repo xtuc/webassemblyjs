@@ -16,9 +16,8 @@ export const controlInstructions = {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-nop
   },
 
-  loop(instruction: Instruction, frame: StackFrame) {
+  loop(loop: LoopInstruction, frame: StackFrame) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-loop
-    const loop = instruction;
 
     this.assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
 
@@ -41,12 +40,10 @@ export const controlInstructions = {
 
   },
 
-  call(instruction: Instruction, frame: StackFrame) {
+  call(call: CallInstruction, frame: StackFrame) {
     // According to the spec call doesn't support an Identifier as argument
     // but the Script syntax supports it.
     // https://webassembly.github.io/spec/exec/instructions.html#exec-call
-
-    const call = instruction;
 
     // WAST
     if (call.index.type === 'Identifier') {
@@ -128,8 +125,7 @@ export const controlInstructions = {
 
   },
 
-  block(instruction: Instruction, frame: StackFrame) {
-    const block = instruction;
+  block(block: BlockInstruction, frame: StackFrame) {
 
     /**
      * Used to keep track of the number of values added on top of the stack
@@ -181,7 +177,7 @@ export const controlInstructions = {
     frame.values = [...frame.values, ...topOfTheStack];
   },
 
-  if(instruction: Instruction, frame: StackFrame) {
+  if(instruction: IfInstruction, frame: StackFrame) {
 
     /**
      * Execute test

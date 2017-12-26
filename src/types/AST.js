@@ -61,16 +61,40 @@ interface Func {
   isExternal?: boolean;
 }
 
-type ObjectInstruction = {
-  ...Instruction;
-
-  object: Valtype;
-}
-
 interface Instruction {
   type: 'Instr';
   id: string;
   args: Array<NumberLiteral | Identifier>;
+}
+
+type ObjectInstruction = Instruction & {
+  object: Valtype;
+}
+
+type LoopInstruction = Instruction & {
+  type: 'LoopInstruction';
+  label: ?Identifier;
+  resulttype: ?Valtype;
+  instr: Array<Instruction>;
+}
+
+type BlockInstruction = Instruction & {
+  type: 'BlockInstruction';
+  label: ?Identifier;
+  instr: Array<Instruction>;
+}
+
+type IfInstruction = Instruction & {
+  type: 'IfInstruction';
+  test: Index;
+  result: ?Valtype;
+  consequent: Array<Instruction>;
+  alternate: Array<Instruction>;
+}
+
+type CallInstruction = Instruction & {
+  type: 'CallInstruction';
+  index: Index;
 }
 
 interface ModuleExport {
@@ -80,40 +104,6 @@ interface ModuleExport {
     type: ExportDescr;
     id: string;
   };
-}
-
-type LoopInstruction = {
-  ...Instruction;
-
-  type: 'LoopInstruction';
-  label: ?Identifier;
-  resulttype: ?Valtype;
-  instr: Array<Instruction>;
-}
-
-type BlockInstruction = {
-  ...Instruction;
-
-  type: 'BlockInstruction';
-  label: ?Identifier;
-  instr: Array<Instruction>;
-}
-
-type IfInstruction = {
-  ...Instruction;
-
-  type: 'IfInstruction';
-  test: Index;
-  result: ?Valtype;
-  consequent: Array<Instruction>;
-  alternate: Array<Instruction>;
-}
-
-type CallInstruction = {
-  ...Instruction;
-
-  type: 'CallInstruction';
-  index: Index;
 }
 
 type Limit = {
