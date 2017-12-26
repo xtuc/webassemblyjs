@@ -11,7 +11,7 @@ const {RuntimeError} = require('../../../errors');
 
 export const controlInstructions = {
 
-  nop(instruction: Instruction, frame: StackFrame) {
+  nop() {
     // Do nothing
     // https://webassembly.github.io/spec/exec/instructions.html#exec-nop
   },

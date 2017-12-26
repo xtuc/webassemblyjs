@@ -10,7 +10,7 @@ const {RuntimeError} = require('../../../errors');
 
 export const memoryInstructions = {
 
-  get_local(instruction: Instruction, frame: StackFrame) {
+  get_local(instruction: Instruction) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-get-local
     const index = instruction.args[0];
 

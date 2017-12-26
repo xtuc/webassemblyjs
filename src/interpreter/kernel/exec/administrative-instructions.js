@@ -16,10 +16,10 @@ export const administrativeInstructions = {
     return this.trap(instruction, frame, this);
   },
 
-  trap(instruction: Instruction, frame: StackFrame) {
+  trap() {
     // signalling abrupt termination
     // https://webassembly.github.io/spec/exec/runtime.html#syntax-trap
     return createTrap();
   }
 
-}
+};

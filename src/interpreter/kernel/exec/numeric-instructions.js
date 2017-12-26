@@ -17,7 +17,7 @@ const {
  */
 export const numericInstructions = {
 
-  const(instruction: Instruction, frame: StackFrame) {
+  const(instruction: Instruction) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-const
 
     const n = instruction.args[0];
@@ -35,7 +35,7 @@ export const numericInstructions = {
     );
   },
 
-  add(instruction: Instruction, frame: StackFrame) {
+  add(instruction: Instruction) {
 
     switch (instruction.object) {
 
@@ -86,7 +86,7 @@ export const numericInstructions = {
 
   },
 
-  mul(instruction: Instruction, frame: StackFrame) {
+  mul(instruction: Instruction) {
 
     switch (instruction.object) {
 
@@ -137,7 +137,7 @@ export const numericInstructions = {
 
   },
 
-  sub(instruction: Instruction, frame: StackFrame) {
+  sub(instruction: Instruction) {
 
     switch (instruction.object) {
 
@@ -200,7 +200,7 @@ export const numericInstructions = {
    * There is two seperated operation for both signed and unsigned integer,
    * but since the host environment will handle that, we don't have too :)
    */
-  div(instruction: Instruction, frame: StackFrame) {
+  div(instruction: Instruction) {
 
     switch (instruction.object) {
 
@@ -251,7 +251,7 @@ export const numericInstructions = {
 
   },
 
-  min(instruction: Instruction, frame: StackFrame) {
+  min(instruction: Instruction) {
 
     switch (instruction.object) {
 
@@ -281,7 +281,7 @@ export const numericInstructions = {
 
   },
 
-  max(instruction: Instruction, frame: StackFrame) {
+  max(instruction: Instruction) {
 
     switch (instruction.object) {
 
@@ -311,7 +311,7 @@ export const numericInstructions = {
 
   },
 
-  copysign(instruction: Instruction, frame: StackFrame) {
+  copysign(instruction: Instruction) {
 
     switch (instruction.object) {
 
