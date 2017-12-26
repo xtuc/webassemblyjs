@@ -55,7 +55,7 @@
 var code = document.getElementById("input").innerText;
 var module = webassemblyInterpreter.instantiateFromSource(code);
 
-var res = module.exports.add(1, 1);
+var res = module.instance.exports.add(1, 1);
 document.getElementById("res").innerHTML = res;
           </code>
         </pre>

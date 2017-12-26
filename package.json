@@ -38,7 +38,8 @@
     "http-server": "^0.10.0",
     "jest-diff": "^21.2.1",
     "markdown-to-html": "0.0.13",
-    "mocha": "^4.0.1"
+    "mocha": "^4.0.1",
+    "performance-now": "^2.1.0"
   },
   "bin": {
     "wasmdump": "./lib/bin/wasmdump.js",
