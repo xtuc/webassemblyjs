@@ -165,6 +165,18 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
       return executeStackFrame(childStackFrame, depth + 1);
     },
+
+    throwUnsupportedOperationOnObjectInstruction(id: string, object: string) {
+      throw new RuntimeError(`Unsupported operation ${id} on ${object}`);
+    },
+
+    throwUnexpectedDataOnPointer(type: string, addr: Addr) {
+      throw new RuntimeError(`Unexpected data of type ${type} at * ${addr.index}`);
+    },
+
+    throwInvalidPointer(type: string, addr: Addr) {
+      throw new RuntimeError(`Data of type ${type} not found at * ${addr.index}`);
+    }
   };
 
   const evaluateInstruction = createInstructionsEvaluator(frame, frameutils, Object.assign({},

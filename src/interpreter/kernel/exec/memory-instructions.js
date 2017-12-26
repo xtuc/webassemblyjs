@@ -105,17 +105,14 @@ export const memoryInstructions = {
     const globaladdr = frame.originatingModule.globaladdrs[index];
 
     if (typeof globaladdr === 'undefined') {
-      throw new RuntimeError(`Global address ${index} not found`);
+      this.throwInvalidPointer('global', index);
     }
 
     // 4. Assert: due to validation, S.globals[a] exists.
     const globalinst = frame.allocator.get(globaladdr);
 
     if (typeof globalinst !== 'object') {
-
-      throw new RuntimeError(
-        `Unexpected data for global at ${globaladdr.index}`
-      );
+      this.throwUnexpectedDataOnPointer('global', globaladdr);
     }
 
     // 7. Pop the value val from the stack.
@@ -135,17 +132,14 @@ export const memoryInstructions = {
     const globaladdr = frame.originatingModule.globaladdrs[index];
 
     if (typeof globaladdr === 'undefined') {
-      throw new RuntimeError(`Global address ${index} not found`);
+      this.throwInvalidPointer('global', index);
     }
 
     // 4. Assert: due to validation, S.globals[a] exists.
     const globalinst = frame.allocator.get(globaladdr);
 
     if (typeof globalinst !== 'object') {
-
-      throw new RuntimeError(
-        `Unexpected data for global at ${globaladdr.index}`
-      );
+      this.throwUnexpectedDataOnPointer('global', globaladdr);
     }
 
     // 7. Pop the value val from the stack.

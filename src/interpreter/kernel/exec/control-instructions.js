@@ -78,10 +78,7 @@ export const controlInstructions = {
       const funcaddr = frame.originatingModule.funcaddrs[index];
 
       if (typeof funcaddr === 'undefined') {
-
-        throw new RuntimeError(
-          `No function were found in module at address ${index}`
-        );
+        this.throwInvalidPointer('function', index);
       }
 
       // 3. Let a be the function address F.module.funcaddrs[x]
@@ -89,10 +86,7 @@ export const controlInstructions = {
       const subroutine = frame.allocator.get(funcaddr);
 
       if (typeof subroutine !== 'object') {
-
-        throw new RuntimeError(
-          `Cannot call function at address ${funcaddr.index}: not a function`
-        );
+        this.throwUnexpectedDataOnPointer('function', funcaddr);
       }
 
       // 4. Invoke the function instance at address a

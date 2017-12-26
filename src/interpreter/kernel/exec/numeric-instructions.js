@@ -80,8 +80,7 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
@@ -131,8 +130,7 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
@@ -182,8 +180,7 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
@@ -245,8 +242,7 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
@@ -276,7 +272,7 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
@@ -306,7 +302,7 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
@@ -336,7 +332,7 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   }
