@@ -152,7 +152,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     pop2,
     isTrapped,
     assert,
-    depth,
     castIntoStackLocalOfType,
     popArrayOfValTypes,
     pushResult,
@@ -164,7 +163,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       const childStackFrame = createChildStackFrame(frame, instructions);
       childStackFrame.trace = frame.trace;
 
-      return executeStackFrame(childStackFrame, this.depth + 1);
+      return executeStackFrame(childStackFrame, depth + 1);
     },
   };
 
