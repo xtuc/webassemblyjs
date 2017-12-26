@@ -3,10 +3,12 @@ WebAssembly
   .then((m) => {
     showHeader();
 
+    const exports = m.instance.exports;
+
     var t0 = now();
 
     for (let i = 0; i < NBINTERATION; i++) {
-      m.exports.add(1, 1);
+      exports.add(1, 1);
     }
 
     var t1 = now();

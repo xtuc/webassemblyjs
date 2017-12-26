@@ -5,7 +5,8 @@ const vm = require('vm');
 const now = require('performance-now');
 
 if (typeof WebAssembly === 'undefined') {
-  throw new Error('WebAssembly not supported');
+  console.log('WebAssembly not supported, skiping.');
+  process.exit(0);
 }
 
 const interpreter = require('../lib');
@@ -22,7 +23,7 @@ function toArrayBuffer(buf) {
 function createShowHeader(mode) {
   return function() {
     console.log('Testing', mode);
-  }
+  };
 }
 
 benchmarks.forEach((file) => {
