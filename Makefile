@@ -17,7 +17,7 @@ clean:
 build: clean
 	$(BABEL) --out-dir lib/ src/
 
-test: build bench
+test: build
 	$(MOCHA) --recursive
 
 lint:
