@@ -45,7 +45,9 @@ function createInstructionsEvaluator(frame: StackFrame, frameutils: Object, visi
     const fn = visitor[instruction.id];
 
     if (typeof fn !== 'undefined') {
-      res = fn.bind(visitor)(instruction, frame, frameutils);
+      const context = Object.assign({}, visitor, frameutils);
+
+      res = fn.bind(context)(instruction, frame);
     }
 
     if (isTrapped(res)) {
@@ -150,7 +152,6 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     pop2,
     isTrapped,
     assert,
-    depth,
     castIntoStackLocalOfType,
     popArrayOfValTypes,
     pushResult,
@@ -158,8 +159,24 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     isZero,
     getLocalByIndex,
 
-    createChildStackFrame,
-    executeStackFrame,
+    createAndExecuteChildStackFrame(frame, instructions) {
+      const childStackFrame = createChildStackFrame(frame, instructions);
+      childStackFrame.trace = frame.trace;
+
+      return executeStackFrame(childStackFrame, depth + 1);
+    },
+
+    throwUnsupportedOperationOnObjectInstruction(id: string, object: string) {
+      throw new RuntimeError(`Unsupported operation ${id} on ${object}`);
+    },
+
+    throwUnexpectedDataOnPointer(type: string, addr: Addr) {
+      throw new RuntimeError(`Unexpected data of type ${type} at * ${addr.index}`);
+    },
+
+    throwInvalidPointer(type: string, addr: Addr) {
+      throw new RuntimeError(`Data of type ${type} not found at * ${addr.index}`);
+    }
   };
 
   const evaluateInstruction = createInstructionsEvaluator(frame, frameutils, Object.assign({},

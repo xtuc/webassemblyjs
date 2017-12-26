@@ -11,45 +11,39 @@ const {RuntimeError} = require('../../../errors');
 
 export const controlInstructions = {
 
-  nop(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  nop() {
     // Do nothing
     // https://webassembly.github.io/spec/exec/instructions.html#exec-nop
   },
 
-  loop(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  loop(loop: LoopInstruction, frame: StackFrame) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-loop
-    const loop = instruction;
 
-    frameutils.assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
+    this.assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
 
     if (loop.instr.length > 0) {
-      const childStackFrame = frameutils.createChildStackFrame(frame, loop.instr);
-      childStackFrame.trace = frame.trace;
+      const res = this.createAndExecuteChildStackFrame(frame, loop.instr);
 
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
-
-      if (frameutils.isTrapped(res)) {
+      if (this.isTrapped(res)) {
         return res;
       }
     }
 
   },
 
-  drop(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  drop(instruction: Instruction, frame: StackFrame) {
     // https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop
 
-    frameutils.assertNItemsOnStack(frame.values, 1);
+    this.assertNItemsOnStack(frame.values, 1);
 
-    frameutils.pop1();
+    this.pop1();
 
   },
 
-  call(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  call(call: CallInstruction, frame: StackFrame) {
     // According to the spec call doesn't support an Identifier as argument
     // but the Script syntax supports it.
     // https://webassembly.github.io/spec/exec/instructions.html#exec-call
-
-    const call = instruction;
 
     // WAST
     if (call.index.type === 'Identifier') {
@@ -61,17 +55,14 @@ export const controlInstructions = {
       }
 
       if (element.type === 'Func') {
+        const res = this.createAndExecuteChildStackFrame(frame, element.body);
 
-        const childStackFrame = frameutils.createChildStackFrame(frame, element.body);
-
-        const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
-
-        if (frameutils.isTrapped(res)) {
+        if (this.isTrapped(res)) {
           return res;
         }
 
         if (typeof res !== 'undefined') {
-          frameutils.pushResult(res);
+          this.pushResult(res);
         }
       }
     }
@@ -81,16 +72,13 @@ export const controlInstructions = {
 
       const index = call.index.value;
 
-      frameutils.assert(typeof frame.originatingModule !== 'undefined');
+      this.assert(typeof frame.originatingModule !== 'undefined');
 
       // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
       const funcaddr = frame.originatingModule.funcaddrs[index];
 
       if (typeof funcaddr === 'undefined') {
-
-        throw new RuntimeError(
-          `No function were found in module at address ${index}`
-        );
+        this.throwInvalidPointer('function', index);
       }
 
       // 3. Let a be the function address F.module.funcaddrs[x]
@@ -98,10 +86,7 @@ export const controlInstructions = {
       const subroutine = frame.allocator.get(funcaddr);
 
       if (typeof subroutine !== 'object') {
-
-        throw new RuntimeError(
-          `Cannot call function at address ${funcaddr.index}: not a function`
-        );
+        this.throwUnexpectedDataOnPointer('function', funcaddr);
       }
 
       // 4. Invoke the function instance at address a
@@ -109,28 +94,24 @@ export const controlInstructions = {
       // FIXME(sven): assert that res has type of resultType
       const [argTypes, resultType] = subroutine.type;
 
-      const args = frameutils.popArrayOfValTypes(argTypes);
+      const args = this.popArrayOfValTypes(argTypes);
 
       if (subroutine.isExternal === false) {
+        const res = this.createAndExecuteChildStackFrame(frame, subroutine.code);
 
-        const childStackFrame = frameutils.createChildStackFrame(frame, subroutine.code);
-        childStackFrame.values = args.map((arg) => arg.value);
-
-        const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
-
-        if (frameutils.isTrapped(res)) {
+        if (this.isTrapped(res)) {
           return res;
         }
 
         if (typeof res !== 'undefined') {
-          frameutils.pushResult(res);
+          this.pushResult(res);
         }
 
       } else {
         const res = subroutine.code(args.map((arg) => arg.value));
 
-        frameutils.pushResult(
-          frameutils.castIntoStackLocalOfType(resultType, res)
+        this.pushResult(
+          this.castIntoStackLocalOfType(resultType, res)
         );
       }
 
@@ -138,8 +119,7 @@ export const controlInstructions = {
 
   },
 
-  block(instruction: Instruction, frame: StackFrame, frameutils: Object) {
-    const block = instruction;
+  block(block: BlockInstruction, frame: StackFrame) {
 
     /**
      * Used to keep track of the number of values added on top of the stack
@@ -152,25 +132,22 @@ export const controlInstructions = {
      */
     if (typeof block.label === 'string') {
 
-      frameutils.pushResult(
+      this.pushResult(
         label.createValue(block.label)
       );
     }
 
-    frameutils.assert(typeof block.instr === 'object' && typeof block.instr.length !== 'undefined');
+    this.assert(typeof block.instr === 'object' && typeof block.instr.length !== 'undefined');
 
     if (block.instr.length > 0) {
-      const childStackFrame = frameutils.createChildStackFrame(frame, block.instr);
-      childStackFrame.trace = frame.trace;
+      const res = this.createAndExecuteChildStackFrame(frame, block.instr);
 
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
-
-      if (frameutils.isTrapped(res)) {
+      if (this.isTrapped(res)) {
         return res;
       }
 
       if (typeof res !== 'undefined') {
-        frameutils.pushResult(res);
+        this.pushResult(res);
         numberOfValuesAddedOnTopOfTheStack++;
       }
     }
@@ -189,41 +166,35 @@ export const controlInstructions = {
 
     frame.values.splice(frame.values.length - numberOfValuesAddedOnTopOfTheStack);
 
-    frameutils.pop1('label');
+    this.pop1('label');
 
     frame.values = [...frame.values, ...topOfTheStack];
   },
 
-  if(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  if(instruction: IfInstruction, frame: StackFrame) {
 
     /**
      * Execute test
      */
-    const childStackFrame = frameutils.createChildStackFrame(frame, instruction.test);
-    childStackFrame.trace = frame.trace;
+    const res = this.createAndExecuteChildStackFrame(frame, instruction.test);
 
-    const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
-
-    if (frameutils.isTrapped(res)) {
+    if (this.isTrapped(res)) {
       return res;
     }
 
-    if (!frameutils.isZero(res)) {
+    if (!this.isZero(res)) {
 
       /**
        * Execute consequent
        */
-      const childStackFrame = frameutils.createChildStackFrame(frame, instruction.consequent);
-      childStackFrame.trace = frame.trace;
+      const res = this.createAndExecuteChildStackFrame(frame, instruction.consequent);
 
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
-
-      if (frameutils.isTrapped(res)) {
+      if (this.isTrapped(res)) {
         return res;
       }
 
       if (typeof res !== 'undefined') {
-        frameutils.pushResult(res);
+        this.pushResult(res);
       }
 
     } else if (typeof instruction.alternate !== 'undefined' && instruction.alternate.length > 0) {
@@ -231,17 +202,14 @@ export const controlInstructions = {
       /**
        * Execute alternate
        */
-      const childStackFrame = frameutils.createChildStackFrame(frame, instruction.alternate);
-      childStackFrame.trace = frame.trace;
+      const res = this.createAndExecuteChildStackFrame(frame, instruction.alternate);
 
-      const res = frameutils.executeStackFrame(childStackFrame, frameutils.depth + 1);
-
-      if (frameutils.isTrapped(res)) {
+      if (this.isTrapped(res)) {
         return res;
       }
 
       if (typeof res !== 'undefined') {
-        frameutils.pushResult(res);
+        this.pushResult(res);
       }
 
     }

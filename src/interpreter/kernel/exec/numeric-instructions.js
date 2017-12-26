@@ -17,7 +17,7 @@ const {
  */
 export const numericInstructions = {
 
-  const(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  const(instruction: ObjectInstruction) {
     // https://webassembly.github.io/spec/exec/instructions.html#exec-const
 
     const n = instruction.args[0];
@@ -30,19 +30,19 @@ export const numericInstructions = {
       throw new RuntimeError('const: unsupported value of type: ' + n.type);
     }
 
-    frameutils.pushResult(
-      frameutils.castIntoStackLocalOfType(instruction.object, n.value)
+    this.pushResult(
+      this.castIntoStackLocalOfType(instruction.object, n.value)
     );
   },
 
-  add(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  add(instruction: ObjectInstruction) {
 
     switch (instruction.object) {
 
     case 'i32': {
-      const [c1, c2] = frameutils.pop2('i32', 'i32');
+      const [c1, c2] = this.pop2('i32', 'i32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopi32(c2, c1, '+')
       );
 
@@ -50,9 +50,9 @@ export const numericInstructions = {
     }
 
     case 'i64': {
-      const [c1, c2] = frameutils.pop2('i64', 'i64');
+      const [c1, c2] = this.pop2('i64', 'i64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopi64(c2, c1, '+')
       );
 
@@ -60,9 +60,9 @@ export const numericInstructions = {
     }
 
     case 'f32': {
-      const [c1, c2] = frameutils.pop2('f32', 'f32');
+      const [c1, c2] = this.pop2('f32', 'f32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf32(c2, c1, '+')
       );
 
@@ -70,9 +70,9 @@ export const numericInstructions = {
     }
 
     case 'f64': {
-      const [c1, c2] = frameutils.pop2('f64', 'f64');
+      const [c1, c2] = this.pop2('f64', 'f64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf64(c2, c1, '+')
       );
 
@@ -80,20 +80,19 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
 
-  mul(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  mul(instruction: ObjectInstruction) {
 
     switch (instruction.object) {
 
     case 'i32': {
-      const [c1, c2] = frameutils.pop2('i32', 'i32');
+      const [c1, c2] = this.pop2('i32', 'i32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopi32(c2, c1, '*')
       );
 
@@ -101,9 +100,9 @@ export const numericInstructions = {
     }
 
     case 'i64': {
-      const [c1, c2] = frameutils.pop2('i64', 'i64');
+      const [c1, c2] = this.pop2('i64', 'i64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopi64(c2, c1, '*')
       );
 
@@ -111,9 +110,9 @@ export const numericInstructions = {
     }
 
     case 'f32': {
-      const [c1, c2] = frameutils.pop2('f32', 'f32');
+      const [c1, c2] = this.pop2('f32', 'f32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf32(c2, c1, '*')
       );
 
@@ -121,9 +120,9 @@ export const numericInstructions = {
     }
 
     case 'f64': {
-      const [c1, c2] = frameutils.pop2('f64', 'f64');
+      const [c1, c2] = this.pop2('f64', 'f64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf64(c2, c1, '*')
       );
 
@@ -131,20 +130,19 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
 
-  sub(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  sub(instruction: ObjectInstruction) {
 
     switch (instruction.object) {
 
     case 'i32': {
-      const [c1, c2] = frameutils.pop2('i32', 'i32');
+      const [c1, c2] = this.pop2('i32', 'i32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopi32(c2, c1, '-')
       );
 
@@ -152,9 +150,9 @@ export const numericInstructions = {
     }
 
     case 'i64': {
-      const [c1, c2] = frameutils.pop2('i64', 'i64');
+      const [c1, c2] = this.pop2('i64', 'i64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopi64(c2, c1, '-')
       );
 
@@ -162,9 +160,9 @@ export const numericInstructions = {
     }
 
     case 'f32': {
-      const [c1, c2] = frameutils.pop2('f32', 'f32');
+      const [c1, c2] = this.pop2('f32', 'f32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf32(c2, c1, '-')
       );
 
@@ -172,9 +170,9 @@ export const numericInstructions = {
     }
 
     case 'f64': {
-      const [c1, c2] = frameutils.pop2('f64', 'f64');
+      const [c1, c2] = this.pop2('f64', 'f64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf64(c2, c1, '-')
       );
 
@@ -182,32 +180,31 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
 
-  div_s(instruction: Instruction, frame: StackFrame, frameutils: Object) {
-    this.div(instruction, frame, frameutils);
+  div_s(instruction: Instruction, frame: StackFrame) {
+    this.div(instruction, frame);
   },
 
-  div_u(instruction: Instruction, frame: StackFrame, frameutils: Object) {
-    this.div(instruction, frame, frameutils);
+  div_u(instruction: Instruction, frame: StackFrame) {
+    this.div(instruction, frame);
   },
 
   /**
    * There is two seperated operation for both signed and unsigned integer,
    * but since the host environment will handle that, we don't have too :)
    */
-  div(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  div(instruction: ObjectInstruction) {
 
     switch (instruction.object) {
 
     case 'i32': {
-      const [c1, c2] = frameutils.pop2('i32', 'i32');
+      const [c1, c2] = this.pop2('i32', 'i32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopi32(c2, c1, '/')
       );
 
@@ -215,9 +212,9 @@ export const numericInstructions = {
     }
 
     case 'i64': {
-      const [c1, c2] = frameutils.pop2('i64', 'i64');
+      const [c1, c2] = this.pop2('i64', 'i64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopi64(c2, c1, '/')
       );
 
@@ -225,9 +222,9 @@ export const numericInstructions = {
     }
 
     case 'f32': {
-      const [c1, c2] = frameutils.pop2('f32', 'f32');
+      const [c1, c2] = this.pop2('f32', 'f32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf32(c2, c1, '/')
       );
 
@@ -235,9 +232,9 @@ export const numericInstructions = {
     }
 
     case 'f64': {
-      const [c1, c2] = frameutils.pop2('f64', 'f64');
+      const [c1, c2] = this.pop2('f64', 'f64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf64(c2, c1, '/')
       );
 
@@ -245,20 +242,19 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
 
-  min(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  min(instruction: ObjectInstruction) {
 
     switch (instruction.object) {
 
     case 'f32': {
-      const [c1, c2] = frameutils.pop2('f32', 'f32');
+      const [c1, c2] = this.pop2('f32', 'f32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf32(c2, c1, 'min')
       );
 
@@ -266,9 +262,9 @@ export const numericInstructions = {
     }
 
     case 'f64': {
-      const [c1, c2] = frameutils.pop2('f64', 'f64');
+      const [c1, c2] = this.pop2('f64', 'f64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf64(c2, c1, 'min')
       );
 
@@ -276,19 +272,19 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
 
-  max(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  max(instruction: ObjectInstruction) {
 
     switch (instruction.object) {
 
     case 'f32': {
-      const [c1, c2] = frameutils.pop2('f32', 'f32');
+      const [c1, c2] = this.pop2('f32', 'f32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf32(c2, c1, 'max')
       );
 
@@ -296,9 +292,9 @@ export const numericInstructions = {
     }
 
     case 'f64': {
-      const [c1, c2] = frameutils.pop2('f64', 'f64');
+      const [c1, c2] = this.pop2('f64', 'f64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf64(c2, c1, 'max')
       );
 
@@ -306,19 +302,19 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   },
 
-  copysign(instruction: Instruction, frame: StackFrame, frameutils: Object) {
+  copysign(instruction: ObjectInstruction) {
 
     switch (instruction.object) {
 
     case 'f32': {
-      const [c1, c2] = frameutils.pop2('f32', 'f32');
+      const [c1, c2] = this.pop2('f32', 'f32');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf32(c2, c1, 'copysign')
       );
 
@@ -326,9 +322,9 @@ export const numericInstructions = {
     }
 
     case 'f64': {
-      const [c1, c2] = frameutils.pop2('f64', 'f64');
+      const [c1, c2] = this.pop2('f64', 'f64');
 
-      frameutils.pushResult(
+      this.pushResult(
         binopf64(c2, c1, 'copysign')
       );
 
@@ -336,7 +332,7 @@ export const numericInstructions = {
     }
 
     default:
-      throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      this.throwUnsupportedOperationOnObjectInstruction(instruction.id, instruction.object);
     }
 
   }
