@@ -8,9 +8,15 @@ WebAssembly
     var t0 = now();
 
     for (let i = 0; i < NBINTERATION; i++) {
-      exports.add(1, 1);
+      const l = Math.random() * 10 | 0;
+      const r = Math.random() * 10 | 0;
+
+      exports.add(l, r);
     }
 
     var t1 = now();
-    console.log("took", t1 - t0);
+    output("total " + formatNumber(t1 - t0));
+    output("mean " + formatNumber((t1 - t0) / NBINTERATION));
+
+    ok();
   });
