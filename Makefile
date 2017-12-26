@@ -11,10 +11,7 @@ MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 make-executables:
 	chmod +x ./lib/bin/*
 
-clean:
-	rm -rf lib/
-
-build: clean
+build:
 	$(BABEL) --out-dir lib/ src/
 
 test: build bench
