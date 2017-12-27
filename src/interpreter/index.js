@@ -26,7 +26,7 @@ export class Instance {
    */
   _externalFunctions: any;
 
-  constructor(module: Module, importObject: ImportObject) {
+  constructor(module: CompiledModule, importObject: ImportObject) {
 
     if (module instanceof Module === false) {
 
