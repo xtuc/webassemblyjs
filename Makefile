@@ -1,3 +1,5 @@
+NODE_OPTS =
+NODE = node
 MOCHA = ./node_modules/.bin/mocha --reporter=tap
 BABEL = ./node_modules/.bin/babel
 FLOW = ./node_modules/.bin/flow
@@ -9,7 +11,10 @@ MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 make-executables:
 	chmod +x ./lib/bin/*
 
-build:
+clean:
+	rm -rf ./lib
+
+build: clean
 	$(BABEL) --out-dir lib/ src/
 
 test: build
@@ -22,10 +27,13 @@ publish: build
 	npm publish
 
 repl: build
-	node ./lib/repl
+	$(NODE) $(NODE_OPTS) ./lib/repl
 
 generate-doc:
 	$(MARKDOWN_TO_HTML) README.md
 
 serve-docs:
 	$(HTTP_SERVER) docs
+
+bench:
+	$(NODE) $(NODE_OPTS) ./benchmark

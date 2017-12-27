@@ -7,6 +7,12 @@ const {
   binopf32,
   binopf64,
 } = require('./instruction/binop');
+const {
+  unopi32,
+  unopi64,
+  unopf32,
+  unopf64,
+} = require('./instruction/unop');
 const i32 = require('../runtime/values/i32');
 const i64 = require('../runtime/values/i64');
 const f32 = require('../runtime/values/f32');
@@ -899,6 +905,58 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         throw new RuntimeError(
           'Unsupported operation ' + instruction.id + ' on ' + instruction.object
         );
+      }
+
+      break;
+    }
+
+    case 'copysign': {
+
+      switch (instruction.object) {
+
+      case 'f32': {
+        const [c1, c2] = pop2('f32', 'f32');
+
+        pushResult(
+          binopf32(c2, c1, 'copysign')
+        );
+
+        break;
+      }
+
+      case 'f64': {
+        const [c1, c2] = pop2('f64', 'f64');
+
+        pushResult(
+          binopf64(c2, c1, 'copysign')
+        );
+
+        break;
+      }
+
+      default:
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      }
+
+      break;
+    }
+
+    case 'abs': {
+
+      switch (instruction.object) {
+
+      case 'f32': {
+        const c = pop1('f32');
+
+        pushResult(
+          unopf32(c, 'abs')
+        );
+
+        break;
+      }
+
+      default:
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
       }
 
       break;

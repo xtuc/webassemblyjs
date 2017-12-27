@@ -30,3 +30,8 @@ type TableDescriptor = {
 };
 
 type ImportObject = any;
+
+type InstansitatedInstanceAndModule = {
+  instance: Instance;
+  module: CompiledModule;
+};

@@ -26,7 +26,7 @@ export class Instance {
    */
   _externalFunctions: any;
 
-  constructor(module: Module, importObject: ImportObject) {
+  constructor(module: CompiledModule, importObject: ImportObject) {
 
     if (module instanceof Module === false) {
 
@@ -144,11 +144,26 @@ function createHostfunc(
       throw new Error(`Function was not found at addr ${exportinstAddr.index}`);
     }
 
+    const funcinstArgs = funcinst.type[0];
+    const funcinstResults = funcinst.type[1];
+
+    /**
+     * If the signature contains an i64 (as argument or result), the host
+     * function immediately throws a TypeError when called.
+     */
+    const funcinstArgsHasi64 = funcinstArgs.indexOf('i64') !== -1;
+    const funcinstResultsHasi64 = funcinstResults.indexOf('i64') !== -1;
+
+    if (funcinstArgsHasi64 === true || funcinstResultsHasi64 === true) {
+      throw new TypeError(
+        'Can not call this function from JavaScript: '
+        + 'i64 in signature.'
+      );
+    }
+
     /**
      * Check number of argument passed vs the function arity
      */
-    const funcinstArgs = funcinst.type[0];
-
     if (args.length !== funcinstArgs.length) {
 
       throw new RuntimeError(

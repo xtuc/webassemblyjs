@@ -10,7 +10,7 @@ const {Table} = require('./interpreter/runtime/values/table');
 
 const WebAssembly = {
 
-  instantiate(buff: ArrayBuffer, importObject: ImportObject = {}): Promise<Instance> {
+  instantiate(buff: ArrayBuffer, importObject: ImportObject = {}): Promise<InstansitatedInstanceAndModule> {
 
     return new Promise((resolve, reject) => {
 
@@ -27,9 +27,10 @@ const WebAssembly = {
       const ast = parseBinary(buff);
       const module = createCompiledModule(ast);
 
-      resolve(
-        new Instance(module, importObject)
-      );
+      resolve({
+        instance: new Instance(module, importObject),
+        module,
+      });
 
     });
   },

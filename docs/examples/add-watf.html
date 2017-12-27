@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="https://www.xtuc.fr/editor.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/prism.min.js" integrity="sha256-haEv2ilTk2sXcJaGbkTtErRCHy/qGt3g+bGbgPf5OTY=" crossorigin="anonymous"></script>
-    <script src="https://bundle.run/webassembly-interpreter@0.0.12"></script>
+    <script src="https://bundle.run/webassembly-interpreter@0.0.13"></script>
   </head>
   <body class="container">
 
@@ -27,14 +27,15 @@
         <div class="action-buttons"></div>
         <span class="language">WATF</span>
       </div>
-      <div class="window-body" style="height: 174px;">
+      <div class="window-body" style="height: 186px;">
         <pre class="code-output">
           <code class="language-js" id="input">
 (module
- (func $add (param i32) (param i32) (result i32)
-  get_local 0
-  get_local 1
-  i32.add)
+ (func $add (param i32) (param i32) (result i32) (
+  (get_local 0)
+  (get_local 1)
+  (i32.add)
+ ))
  (export "add" (func $add))
 )
           </code>

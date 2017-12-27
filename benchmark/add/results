@@ -1,0 +1,8 @@
+
+Testing interpreted
+total 812.3631920000 ms
+mean 812.3631920000 ns
+
+Testing native
+total 447.1810000000 ms
+mean 447.1810000000 ns
