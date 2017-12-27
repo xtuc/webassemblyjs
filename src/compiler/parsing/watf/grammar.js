@@ -343,6 +343,41 @@ function parse(tokensList: Array<Object>): Program {
       return t.ifInstruction(label, result, consequent, alternate);
     }
 
+    function parseBrIf(): BrIfInstruction {
+
+      if (token.type != tokens.identifier) {
+        throw new Error('Unexpected token in br_if of type: ' + token.type);
+      }
+
+      const label = t.identifier(token.value);
+      eatToken();
+
+      return t.brIfInstruction(label);
+    }
+
+    function parseBrTable(): BrTableInstruction {
+      const labels = [];
+
+      while (
+        (token.type === tokens.identifier)
+      ) {
+        const value = token.value;
+        eatToken();
+
+        labels.push(
+          t.identifier(value)
+        );
+      }
+
+      const label = labels.pop();
+      const tableLabels = labels;
+
+      return t.brTableInstruction(
+        tableLabels,
+        label,
+      );
+    }
+
     function parseLoop(): LoopInstruction {
       let label;
       let result;
@@ -546,6 +581,22 @@ function parse(tokensList: Array<Object>): Program {
           );
 
           return;
+        } else if (isKeyword(token, keywords.br_table)) {
+          eatToken();
+
+          acc.push(
+            parseBrTable()
+          );
+
+          return;
+        } else if (isKeyword(token, keywords.br_if)) {
+          eatToken();
+
+          acc.push(
+            parseBrIf()
+          );
+
+          return;
         } else if (isKeyword(token, keywords.block)) {
           eatToken(); // keyword
 
@@ -689,6 +740,16 @@ function parse(tokensList: Array<Object>): Program {
       if (isKeyword(token, keywords.loop)) {
         eatToken();
         return parseLoop();
+      }
+
+      if (isKeyword(token, keywords.br_table)) {
+        eatToken();
+        return parseBrTable();
+      }
+
+      if (isKeyword(token, keywords.br_if)) {
+        eatToken();
+        return parseBrIf();
       }
 
       if (isKeyword(token, keywords.func)) {

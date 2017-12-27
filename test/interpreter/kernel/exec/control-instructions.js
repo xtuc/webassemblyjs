@@ -25,38 +25,42 @@ describe('kernel exec - control instruction', () => {
     assert.equal(code.length, pc + 1);
   });
 
-  it('should execute the body of loop in a child stack frame', () => {
-    let maxDepth = 0;
+  describe('loop', () => {
 
-    const loopCode = [
-      t.instruction('nop'),
-      t.instruction('nop'),
-    ];
+    it('should execute the body of loop in a child stack frame', () => {
+      let maxDepth = 0;
 
-    const loop = [
-      t.loopInstruction(undefined, undefined, loopCode),
-    ];
+      const loopCode = [
+        t.instruction('nop'),
+        t.instruction('nop'),
+      ];
 
-    const stackFrame = createStackFrame(loop, []);
-    stackFrame.trace = (depth, pc) => {
+      const loop = [
+        t.loopInstruction(undefined, undefined, loopCode),
+      ];
 
-      if (depth === 0) {
-        assert.equal(pc, 0);
-      }
+      const stackFrame = createStackFrame(loop, []);
+      stackFrame.trace = (depth, pc) => {
 
-      if (depth === 1) {
-        assert.isAtLeast(pc, 0);
-        assert.isBelow(pc, 2);
-      }
+        if (depth === 0) {
+          assert.equal(pc, 0);
+        }
 
-      if (maxDepth < depth) {
-        maxDepth = depth;
-      }
-    };
+        if (depth === 1) {
+          assert.isAtLeast(pc, 0);
+          assert.isBelow(pc, 2);
+        }
 
-    executeStackFrame(stackFrame);
+        if (maxDepth < depth) {
+          maxDepth = depth;
+        }
+      };
 
-    assert.equal(maxDepth, 1);
+      executeStackFrame(stackFrame);
+
+      assert.equal(maxDepth, 1);
+    });
+
   });
 
   describe('block', () => {

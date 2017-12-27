@@ -173,3 +173,14 @@ type GlobalType = {
   valtype: Valtype;
   mutability: Mutability;
 }
+
+type BrTableInstruction = {
+  type: 'BrTableInstruction';
+  labels: Array<Index>;
+  label: Index;
+}
+
+type BrIfInstruction = {
+  type: 'BrIfInstruction';
+  label: Index;
+}

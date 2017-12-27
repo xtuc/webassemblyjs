@@ -54,7 +54,7 @@ const tableTypes = {
 };
 
 const blockTypes = Object.assign({}, valtypes, {
-  0x40: 'empty',
+  0x40: null,
 });
 
 const globalTypes = {

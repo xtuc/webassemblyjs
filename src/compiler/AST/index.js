@@ -280,3 +280,28 @@ export function byteArray(values: Array<Byte>): ByteArray {
     values,
   };
 }
+
+export function brTableInstruction(
+  labels: Array<Index>,
+  label: Index,
+): BrTableInstruction {
+  assert(typeof labels === 'object' && typeof labels.length !== 'undefined');
+
+  return {
+    type: 'BrTableInstruction',
+    id: 'br_table',
+    labels,
+    label,
+  };
+}
+
+export function brIfInstruction(
+  label: Index,
+): BrIfInstruction {
+
+  return {
+    type: 'BrIfInstruction',
+    id: 'br_if',
+    label,
+  };
+}
