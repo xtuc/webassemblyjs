@@ -1,5 +1,5 @@
 (module
   (func (
-    (f32.const 33)
+    (f32.const -98989898)
   ))
 )

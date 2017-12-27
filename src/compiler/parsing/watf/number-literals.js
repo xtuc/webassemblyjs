@@ -13,7 +13,7 @@ export function parse32I( sourceString: string ): number {
   if (isHexLiteral(sourceString)) {
     value = ~~parseInt(sourceString, 16);
   } else if (isDecimalExponentLiteral(sourceString)) {
-
+    throw new Error( 'This number literal format is yet to be implemented.' );
   } else {
     value = parseInt(sourceString, 10);
   }
@@ -22,7 +22,6 @@ export function parse32I( sourceString: string ): number {
 }
 
 export function parse64I( sourceString: string ): number {
-
   return parseInt(sourceString);
 }
 
