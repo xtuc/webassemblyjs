@@ -241,18 +241,25 @@ function parse(tokensList: Array<Object>): Program {
        */
       eatTokenOfType(tokens.openParen);
 
+      const {result} = parseMaybeSignature();
+
+      if (typeof result === 'string') {
+        eatTokenOfType(tokens.closeParen);
+        eatTokenOfType(tokens.openParen);
+      }
+
       // Empty block
       if (token.type === tokens.closeParen) {
         eatToken();
 
-        return t.blockInstruction(label, instr);
+        return t.blockInstruction(label, instr, result);
       }
 
       parseListOfInstructions(instr);
 
       eatTokenOfType(tokens.closeParen);
 
-      return t.blockInstruction(label, instr);
+      return t.blockInstruction(label, instr, result);
     }
 
     /**
@@ -380,7 +387,6 @@ function parse(tokensList: Array<Object>): Program {
 
     function parseLoop(): LoopInstruction {
       let label;
-      let result;
       const instr = [];
 
       if (token.type === tokens.identifier) {
@@ -388,18 +394,19 @@ function parse(tokensList: Array<Object>): Program {
         eatToken();
       }
 
-      if (token.type === tokens.valtype) {
-        result = token.value;
-        eatToken();
-      }
-
-
       /**
        * Loop instructions
        *
        * Parses a line into a instruction
        */
       eatTokenOfType(tokens.openParen);
+
+      const {result} = parseMaybeSignature();
+
+      if (typeof result === 'string') {
+        eatTokenOfType(tokens.closeParen);
+        eatTokenOfType(tokens.openParen);
+      }
 
       // Empty block
       if (token.type === tokens.closeParen) {
