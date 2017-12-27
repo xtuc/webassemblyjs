@@ -19,7 +19,10 @@
             {
               "type": "LoopInstruction",
               "id": "loop",
-              "label": "1",
+              "label": {
+                "type": "Identifier",
+                "name": "1"
+              },
               "instr": []
             }
           ]

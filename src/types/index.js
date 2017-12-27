@@ -64,7 +64,7 @@ type StackFrame = {
 
   globals: Array<any>;
   locals: Array<StackLocal>;
-  labels: Object;
+  labels: Array<Label>;
   code: Array<Instruction>;
 
   originatingModule: ModuleInstance;
@@ -76,6 +76,12 @@ type StackFrame = {
 type StackLocal = {
   type: Valtype;
   value: any;
+};
+
+type Label = {
+  arity: number;
+  value: any;
+  id: ?Identifier;
 };
 
 type Signal = number;

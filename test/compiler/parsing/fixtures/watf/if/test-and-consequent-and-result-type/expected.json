@@ -14,7 +14,10 @@
             {
               "type": "IfInstruction",
               "id": "if",
-              "test": "label",
+              "testLabel": {
+                "type": "Identifier",
+                "name": "label"
+              },
               "result": "i32",
               "consequent": [
                 {

@@ -14,7 +14,10 @@
             {
               "type": "BlockInstruction",
               "id": "block",
-              "label": "temp_4",
+              "label": {
+                "type": "Identifier",
+                "name": "temp_4"
+              },
               "instr": []
             }
           ]

@@ -1,7 +1,7 @@
 (module
  (import "module" "fn" (func $fn (result i32)))
  (func $main (
-  (loop i32 (
+  (loop (result i32) (
     (nop)
     (nop)
     (nop)

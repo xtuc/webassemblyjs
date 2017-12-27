@@ -14,7 +14,10 @@
             {
               "type": "BlockInstruction",
               "id": "block",
-              "label": "test",
+              "label": {
+                "type": "Identifier",
+                "name": "test"
+              },
               "instr": []
             }
           ]

@@ -7,7 +7,10 @@
       "fields": [
         {
           "type": "Func",
-          "id": "temp_9",
+          "id": {
+            "type": "Identifier",
+            "name": "temp_9"
+          },
           "params": [],
           "result": "i32",
           "body": [
@@ -31,7 +34,10 @@
         },
         {
           "type": "Func",
-          "id": "temp_10",
+          "id": {
+            "type": "Identifier",
+            "name": "temp_10"
+          },
           "params": [],
           "result": null,
           "body": []

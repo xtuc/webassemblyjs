@@ -57,8 +57,10 @@ function createInstance(
 
       moduleInstance.funcaddrs.push(addr);
 
-      if (typeof node.id === 'string') {
-        instantiatedFuncs[node.id] = addr;
+      if (typeof node.id === 'object') {
+        if (node.id.type === 'Identifier') {
+          instantiatedFuncs[node.id.name] = addr;
+        }
       }
     },
 

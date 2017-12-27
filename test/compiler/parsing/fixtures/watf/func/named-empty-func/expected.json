@@ -7,28 +7,40 @@
       "fields": [
         {
           "type": "Func",
-          "id": "test",
+          "id": {
+            "type": "Identifier",
+            "name": "test"
+          },
           "params": [],
           "result": null,
           "body": []
         },
         {
           "type": "Func",
-          "id": "TEST",
+          "id": {
+            "type": "Identifier",
+            "name": "TEST"
+          },
           "params": [],
           "result": null,
           "body": []
         },
         {
           "type": "Func",
-          "id": "!",
+          "id": {
+            "type": "Identifier",
+            "name": "!"
+          },
           "params": [],
           "result": null,
           "body": []
         },
         {
           "type": "Func",
-          "id": "$",
+          "id": {
+            "type": "Identifier",
+            "name": "$"
+          },
           "params": [],
           "result": null,
           "body": []

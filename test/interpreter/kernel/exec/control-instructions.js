@@ -67,7 +67,7 @@ describe('kernel exec - control instruction', () => {
 
     it('should enter and execute an empty block', () => {
       const code = [
-        t.blockInstruction('label', []),
+        t.blockInstruction(t.identifier('label'), []),
       ];
 
       const stackFrame = createStackFrame(code, []);
@@ -79,7 +79,7 @@ describe('kernel exec - control instruction', () => {
       let instructionExecuted = 0;
 
       const code = [
-        t.blockInstruction('label', [
+        t.blockInstruction(t.identifier('label'), [
           t.instruction('nop'),
           t.instruction('nop'),
           t.instruction('nop'),
@@ -108,7 +108,7 @@ describe('kernel exec - control instruction', () => {
 
     it('should remove the label when existing the block', () => {
       const code = [
-        t.blockInstruction('label', [
+        t.blockInstruction(t.identifier('label'), [
           t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ]),
       ];
@@ -124,12 +124,12 @@ describe('kernel exec - control instruction', () => {
 
     it('should break if non-zero', () => {
       const code = [
-        t.blockInstruction('label', [
+        t.func(t.identifier('label'), [], [], [
           t.objectInstruction('const', 'i32', [t.numberLiteral(2)]),
         ]),
 
         t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
-        t.brIfInstruction('label'),
+        t.brIfInstruction(t.identifier('label')),
 
         t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
       ];
@@ -143,12 +143,12 @@ describe('kernel exec - control instruction', () => {
 
     it('should not break if zero', () => {
       const code = [
-        t.blockInstruction('label', [
+        t.func(t.identifier('label'), [], [], [
           t.objectInstruction('const', 'i32', [t.numberLiteral(20)]),
         ]),
 
         t.objectInstruction('const', 'i32', [t.numberLiteral(0)]),
-        t.brIfInstruction('label'),
+        t.brIfInstruction(t.identifier('label')),
 
         t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
       ];
@@ -166,9 +166,11 @@ describe('kernel exec - control instruction', () => {
 
     it('should NOT execute consequent when test is zero', () => {
       const code = [
-        t.ifInstruction([
+        t.func(t.identifier('test'), [], [], [
           t.objectInstruction('const', 'i32', [t.numberLiteral(0)]),
-        ], [
+        ]),
+
+        t.ifInstruction(t.identifier('test'), [
           t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ], []),
       ];
@@ -181,9 +183,11 @@ describe('kernel exec - control instruction', () => {
 
     it('should NOT execute consequent but alternate when test is zero', () => {
       const code = [
-        t.ifInstruction([
+        t.func(t.identifier('test'), [], [], [
           t.objectInstruction('const', 'i32', [t.numberLiteral(0)]),
-        ], null, [
+        ]),
+
+        t.ifInstruction(t.identifier('test'), null, [
           t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ]),
       ];
@@ -196,9 +200,11 @@ describe('kernel exec - control instruction', () => {
 
     it('should execute consequent when test is non-zero', () => {
       const code = [
-        t.ifInstruction([
+        t.func(t.identifier('test'), [], [], [
           t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
-        ], null, [
+        ]),
+
+        t.ifInstruction(t.identifier('test'), null, [
           t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ]),
       ];
@@ -217,7 +223,7 @@ describe('kernel exec - control instruction', () => {
       const label = 'foo';
 
       const code = [
-        t.func(label, /* params */ [], /* result */ null, [
+        t.func(t.identifier(label), /* params */ [], /* result */ null, [
           t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
         ]),
         t.callInstruction(t.identifier(label)),

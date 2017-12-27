@@ -226,11 +226,11 @@ function parse(tokensList: Array<Object>): Program {
     }
 
     function parseBlock(): BlockInstruction {
-      let label = getUniqueName();
+      let label = t.identifier(getUniqueName());
       const instr = [];
 
       if (token.type === tokens.identifier) {
-        label = token.value;
+        label = t.identifier(token.value);
         eatToken();
       }
 
@@ -295,7 +295,7 @@ function parse(tokensList: Array<Object>): Program {
         throw new Error('Invaluid condition construction: missing label');
       }
 
-      const label = token.value;
+      const label = t.identifier(token.value);
       eatToken();
 
       /**
@@ -390,7 +390,7 @@ function parse(tokensList: Array<Object>): Program {
       const instr = [];
 
       if (token.type === tokens.identifier) {
-        label = token.value;
+        label = t.identifier(token.value);
         eatToken();
       }
 
@@ -683,7 +683,7 @@ function parse(tokensList: Array<Object>): Program {
       const fnParams = [];
 
       if (token.type === tokens.identifier) {
-        fnName = token.value;
+        fnName = t.identifier(token.value);
         eatToken();
       }
 
@@ -721,7 +721,7 @@ function parse(tokensList: Array<Object>): Program {
         }
 
         if (typeof signatureName !== 'undefined') {
-          fnName = signatureName;
+          fnName = t.identifier(signatureName);
         }
 
         eatTokenOfType(tokens.closeParen);
