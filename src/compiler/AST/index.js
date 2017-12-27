@@ -53,11 +53,15 @@ export function moduleExport(name: string, type: ExportDescr, id: string): Modul
 }
 
 export function func(
-  id: ?string,
+  id: ?Index,
   params: Array<FuncParam>,
   result: ?Valtype,
   body: Array<Instruction>,
 ): Func {
+  assert(typeof params === 'object' && typeof params.length !== 'undefined');
+  assert(typeof body === 'object' && typeof body.length !== 'undefined');
+  assert(typeof id !== 'string');
+
   return {
     type: 'Func',
     id,
@@ -118,6 +122,7 @@ export function blockInstruction(
   result: ?Valtype,
 ): BlockInstruction {
   assert(typeof label !== 'undefined');
+  assert(typeof label.type === 'string');
   assert(typeof instr === 'object' && typeof instr.length !== 'undefined');
 
   return {
@@ -179,17 +184,17 @@ export function callInstruction(
 }
 
 export function ifInstruction(
-  test: Index,
+  testLabel: Index,
   result: ?Valtype,
   consequent: Array<Instruction>,
   alternate: Array<Instruction>,
 ): IfInstruction {
-  // assert(typeof test.type === 'string');
+  assert(typeof testLabel.type === 'string');
 
   return {
     type: 'IfInstruction',
     id: 'if',
-    test,
+    testLabel,
     result,
     consequent,
     alternate,
@@ -321,6 +326,7 @@ export function brTableInstruction(
   labels: Array<Index>,
   label: Index,
 ): BrTableInstruction {
+  assert(typeof label.type === 'string');
   assert(typeof labels === 'object' && typeof labels.length !== 'undefined');
 
   return {
@@ -334,6 +340,7 @@ export function brTableInstruction(
 export function brIfInstruction(
   label: Index,
 ): BrIfInstruction {
+  assert(typeof label.type === 'string');
 
   return {
     type: 'BrIfInstruction',

@@ -610,7 +610,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         // FIXME(sven): where's that stored?
         const test = null;
 
-        const ifNode = t.ifInstruction(test, blocktype, consequentInstr, alternate);
+        const ifNode = t.ifInstruction(
+          t.numberLiteral(test),
+          blocktype,
+          consequentInstr,
+          alternate
+        );
 
         code.push(ifNode);
         instructionAlreadyCreated = true;
@@ -1217,7 +1222,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       funcIndex++;
     }
 
-    const funcNode = t.func(func.id.name, params, result, body);
+    const funcNode = t.func(func.id, params, result, body);
 
     if (func.isExternal === true) {
       funcNode.isExternal = func.isExternal;

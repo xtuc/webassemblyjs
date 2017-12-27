@@ -115,6 +115,31 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     return [c1, c2];
   }
 
+  function getLabel(label: Index): any {
+    let code;
+
+    if (label.type === 'NumberLiteral') {
+      // WASM
+      code = frame.labels.find((l) => l.value.value === label.value);
+    } else if (label.type === 'Identifier') {
+      // WATF
+      code = frame.labels.find((l) => l.id.name === label.name);
+    }
+
+    if (typeof code !== 'undefined') {
+      return code.value;
+    }
+  }
+
+  function br(label: Index) {
+    const code = getLabel(label);
+
+    if (typeof code === 'undefined') {
+      throw new RuntimeError(`Label ${label.value || label.name} doesn't exist`);
+    }
+
+  }
+
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
 
@@ -132,8 +157,16 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       /**
        * Register the function into the stack frame labels
        */
-      if (typeof func.id === 'string') {
-        frame.labels[func.id] = func;
+      if (typeof func.id === 'object') {
+
+        if (func.id.type === 'Identifier') {
+
+          frame.labels.push({
+            value: func,
+            arity: func.params.length,
+            id: func.id,
+          });
+        }
       }
 
       break;
@@ -216,7 +249,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       // WAST
       if (call.index.type === 'Identifier') {
 
-        const element = frame.labels[call.index.name];
+        const element = getLabel(call.index);
 
         if (typeof element === 'undefined') {
           throw new RuntimeError('Cannot call ' + call.index.name + ': label not found on the call stack');
@@ -313,10 +346,10 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       /**
        * When entering block push the label onto the stack
        */
-      if (typeof block.label === 'string') {
+      if (block.label.type === 'Identifier') {
 
         pushResult(
-          label.createValue(block.label)
+          label.createValue(block.label.name)
         );
       }
 
@@ -359,12 +392,39 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    case 'br_if': {
+      const {label} = instruction;
+
+      // 1. Assert: due to validation, a value of type i32 is on the top of the stack.
+      // 2. Pop the value ci32.const c from the stack.
+      const c = pop1('i32');
+
+      if (!isZero(c)) {
+
+        // 3. If c is non-zero, then
+        // 3. a. Execute the instruction (br l).
+        br(label);
+
+      } else {
+        // 4. Else:
+        // 4. a. Do nothing.
+      }
+
+      break;
+    }
+
     case 'if': {
 
       /**
        * Execute test
        */
-      const childStackFrame = createChildStackFrame(frame, instruction.test);
+      const code = getLabel(instruction.testLabel);
+
+      if (typeof code === 'undefined') {
+        throw new RuntimeError('IfInstruction: Label doesn\'t exist');
+      }
+
+      const childStackFrame = createChildStackFrame(frame, code.body);
       childStackFrame.trace = frame.trace;
 
       const res = executeStackFrame(childStackFrame, depth + 1);

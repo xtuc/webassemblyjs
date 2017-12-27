@@ -14,14 +14,20 @@
             {
               "type": "BlockInstruction",
               "id": "block",
-              "label": "test",
+              "label": {
+                "type": "Identifier",
+                "name": "test"
+              },
               "instr": [],
               "result": "i32"
             },
             {
               "type": "BlockInstruction",
               "id": "block",
-              "label": "temp_8",
+              "label": {
+                "type": "Identifier",
+                "name": "temp_8"
+              },
               "instr": [],
               "result": "i32"
             }

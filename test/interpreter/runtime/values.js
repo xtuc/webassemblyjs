@@ -33,7 +33,7 @@ describe('module create interface', () => {
       const exportName = 'foo';
 
       const node = t.module(null, [
-        t.func(exportName, [], null, []),
+        t.func(t.identifier(exportName), [], null, []),
         t.moduleExport(exportName, 'Func', exportName)
       ]);
 
@@ -53,7 +53,7 @@ describe('module create interface', () => {
   describe('function instance', () => {
 
     it('return an instance', () => {
-      const node = t.func('test', [], null, []);
+      const node = t.func(t.identifier('test'), [], null, []);
       const fromModule = t.module(undefined, []);
 
       const instance = funcvalue.createInstance(node, fromModule);
@@ -78,7 +78,7 @@ describe('module create interface', () => {
 
       const result = 'i32';
 
-      const node = t.func('test', args, result, []);
+      const node = t.func(t.identifier('test'), args, result, []);
       const fromModule = t.module(undefined, []);
 
       const instance = funcvalue.createInstance(node, fromModule);

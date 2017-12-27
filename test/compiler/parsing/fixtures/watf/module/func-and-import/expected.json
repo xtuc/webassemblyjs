@@ -23,7 +23,10 @@
         },
         {
           "type": "Func",
-          "id": "main",
+          "id": {
+            "type": "Identifier",
+            "name": "main"
+          },
           "params": [],
           "result": null,
           "body": [

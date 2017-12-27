@@ -12,20 +12,12 @@
           "result": null,
           "body": [
             {
-              "type": "LoopInstruction",
-              "id": "loop",
+              "type": "BrIfInstruction",
+              "id": "br_if",
               "label": {
                 "type": "Identifier",
-                "name": "1"
-              },
-              "resulttype": "i32",
-              "instr": [
-                {
-                  "type": "Instr",
-                  "id": "nop",
-                  "args": []
-                }
-              ]
+                "name": "label"
+              }
             }
           ]
         }

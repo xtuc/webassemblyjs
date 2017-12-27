@@ -19,7 +19,7 @@ export function createStackFrame(
      *
      * https://webassembly.github.io/spec/core/exec/runtime.html#labels
      */
-    labels: {},
+    labels: [],
 
     /**
      * Local applicatif Stack for the current stackframe.

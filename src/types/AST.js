@@ -66,7 +66,7 @@ type FuncParam = {
 
 interface Func {
   type: 'Func';
-  id: ?string;
+  id: ?Index;
   params: Array<FuncParam>;
   result: ?Valtype;
   body: Array<Instruction>;
@@ -102,7 +102,7 @@ type BlockInstruction = Instruction & {
 
 type IfInstruction = Instruction & {
   type: 'IfInstruction';
-  test: Index;
+  testLabel: Index;
   result: ?Valtype;
   consequent: Array<Instruction>;
   alternate: Array<Instruction>;

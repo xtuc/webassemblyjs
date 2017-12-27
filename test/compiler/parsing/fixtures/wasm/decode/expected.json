@@ -7,7 +7,10 @@
       "fields": [
         {
           "type": "Func",
-          "id": "func_2",
+          "id": {
+            "type": "Identifier",
+            "name": "func_2"
+          },
           "params": [
             {
               "valtype": "i32"
@@ -48,7 +51,10 @@
         },
         {
           "type": "Func",
-          "id": "func_3",
+          "id": {
+            "type": "Identifier",
+            "name": "func_3"
+          },
           "params": [
             {
               "valtype": "i32"
