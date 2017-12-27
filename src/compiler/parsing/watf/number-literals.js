@@ -1,11 +1,11 @@
 // @flow
 
 export function parse32F( sourceString: string ): number {
-  return parseInt(sourceString);
+  return parseFloat(sourceString);
 }
 
 export function parse64F( sourceString: string ): number {
-  return parseInt(sourceString);
+  return parseFloat(sourceString);
 }
 
 export function parse32I( sourceString: string ): number {
