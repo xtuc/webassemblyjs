@@ -121,8 +121,8 @@ function tokenize(input: string) {
       continue;
     }
 
-    const NUMBERS = /[0-9]/;
-    const HEX_NUMBERS = /[0-9|A-F|a-f]/;
+    const NUMBERS = /[0-9|_]/;
+    const HEX_NUMBERS = /[0-9|A-F|a-f|_]/;
     if (NUMBERS.test(char) || char === '-' && NUMBERS.test(input[current + 1]) ) {
       let value = '';
       if (char === '-') {
@@ -138,7 +138,9 @@ function tokenize(input: string) {
       }
 
       while (numberLiterals.test(char)) {
-        value += char;
+        if (char !== '_') {
+          value += char;
+        }
         char = input[++current];
       }
 
