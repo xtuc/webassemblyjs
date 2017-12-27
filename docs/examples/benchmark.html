@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>wasm benchmark</title>
+
+    <link rel="stylesheet" type="text/css" href="https://www.xtuc.fr/style.css">
+    <link rel="stylesheet" type="text/css" href="https://www.xtuc.fr/editor.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.3/prism.min.js" integrity="sha256-haEv2ilTk2sXcJaGbkTtErRCHy/qGt3g+bGbgPf5OTY=" crossorigin="anonymous"></script>
+    <script src="https://bundle.run/webassembly-interpreter@0.0.14"></script>
+  </head>
+  <body class="container">
+
+    <div class="section line">
+      <h1>WebAssembly binary format - benchmark</h1>
+    </div>
+
+    <script>
+function formatNumber(i) {
+  let unit = 'ms';
+
+  if (i < 1) {
+    i *= Math.pow(10, 6);
+    unit = 'ns';
+  }
+
+  return `${i.toFixed(10)} ${unit}`;
+}
+
+const NBINTERATION = Math.pow(10, 6);
+
+request = new XMLHttpRequest();
+request.open('GET', 'add.wasm');
+request.responseType = 'arraybuffer';
+request.send();
+
+request.onload = function() {
+  var bytes = request.response;
+
+  webassemblyInterpreter
+    .instantiate(bytes)
+    .then((m) => {
+
+      const exports = m.instance.exports;
+
+      var t0 = performance.now();
+
+      for (let i = 0; i < NBINTERATION; i++) {
+        const l = Math.random() * 10 | 0;
+        const r = Math.random() * 10 | 0;
+
+        exports.add(l, r);
+      }
+
+      var t1 = performance.now();
+      console.log("total " + formatNumber(t1 - t0));
+      console.log("mean " + formatNumber((t1 - t0) / NBINTERATION));
+    });
+
+  if (typeof WebAssembly === 'undefined') {
+    throw new Error('WebAssembly not supported, skiping.');
+  }
+
+  WebAssembly
+    .instantiate(bytes)
+    .then((m) => {
+
+      const exports = m.instance.exports;
+
+      var t0 = performance.now();
+
+      for (let i = 0; i < NBINTERATION; i++) {
+        const l = Math.random() * 10 | 0;
+        const r = Math.random() * 10 | 0;
+
+        exports.add(l, r);
+      }
+
+      var t1 = performance.now();
+      console.log("total " + formatNumber(t1 - t0));
+      console.log("mean " + formatNumber((t1 - t0) / NBINTERATION));
+    });
+};
+    </script>
+  </body>
+</html>
