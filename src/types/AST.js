@@ -9,6 +9,10 @@ type NodePath<T> = {
   node: T;
 };
 
+/**
+ * AST types
+ */
+
 interface Position {
   line: number;
   column: number;
@@ -24,6 +28,15 @@ interface Node {
   loc?: SourceLocation;
 }
 
+interface Program {
+  type: 'Program';
+  body: Array<Node>;
+}
+
+/**
+ * Concrete values
+ */
+
 interface NumberLiteral {
   type: 'NumberLiteral';
   value: number;
@@ -34,17 +47,16 @@ interface Identifier {
   name: string;
 }
 
+/**
+ * Module structure
+ */
+
 type ModuleFields = Array<Node>;
 
 interface Module {
   type: 'Module';
   id: ?string;
   fields: ModuleFields;
-}
-
-interface Program {
-  type: 'Program';
-  body: Array<Node>;
 }
 
 type FuncParam = {
@@ -61,16 +73,55 @@ interface Func {
   isExternal?: boolean;
 }
 
-type ObjectInstruction = {
-  ...Instruction;
-
-  object: Valtype;
-}
-
+/**
+ * Instructions
+ */
 interface Instruction {
   type: 'Instr';
   id: string;
   args: Array<NumberLiteral | Identifier>;
+}
+
+type ObjectInstruction = Instruction & {
+  object: Valtype;
+}
+
+type LoopInstruction = Instruction & {
+  type: 'LoopInstruction';
+  label: ?Identifier;
+  resulttype: ?Valtype;
+  instr: Array<Instruction>;
+}
+
+type BlockInstruction = Instruction & {
+  type: 'BlockInstruction';
+  label: ?Identifier;
+  instr: Array<Instruction>;
+  result: ?Valtype;
+}
+
+type IfInstruction = Instruction & {
+  type: 'IfInstruction';
+  test: Index;
+  result: ?Valtype;
+  consequent: Array<Instruction>;
+  alternate: Array<Instruction>;
+}
+
+type CallInstruction = Instruction & {
+  type: 'CallInstruction';
+  index: Index;
+}
+
+type BrTableInstruction = Instruction & {
+  type: 'BrTableInstruction';
+  labels: Array<Index>;
+  label: Index;
+}
+
+type BrIfInstruction = Instruction & {
+  type: 'BrIfInstruction';
+  label: Index;
 }
 
 interface ModuleExport {
@@ -80,41 +131,6 @@ interface ModuleExport {
     type: ExportDescr;
     id: string;
   };
-}
-
-type LoopInstruction = {
-  ...Instruction;
-
-  type: 'LoopInstruction';
-  label: ?Identifier;
-  resulttype: ?Valtype;
-  instr: Array<Instruction>;
-}
-
-type BlockInstruction = {
-  ...Instruction;
-
-  type: 'BlockInstruction';
-  label: ?Identifier;
-  instr: Array<Instruction>;
-  result: ?Valtype;
-}
-
-type IfInstruction = {
-  ...Instruction;
-
-  type: 'IfInstruction';
-  test: Index;
-  result: ?Valtype;
-  consequent: Array<Instruction>;
-  alternate: Array<Instruction>;
-}
-
-type CallInstruction = {
-  ...Instruction;
-
-  type: 'CallInstruction';
-  index: Index;
 }
 
 type Limit = {
@@ -173,15 +189,4 @@ type GlobalType = {
   type: 'GlobalType';
   valtype: Valtype;
   mutability: Mutability;
-}
-
-type BrTableInstruction = {
-  type: 'BrTableInstruction';
-  labels: Array<Index>;
-  label: Index;
-}
-
-type BrIfInstruction = {
-  type: 'BrIfInstruction';
-  label: Index;
 }
