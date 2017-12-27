@@ -548,7 +548,7 @@ function parse(tokensList: Array<Object>): Program {
 
           if (token.type === tokens.number) {
             args.push(
-              t.numberLiteral(token.value)
+              t.numberLiteral(token.value, object)
             );
 
             eatToken();
