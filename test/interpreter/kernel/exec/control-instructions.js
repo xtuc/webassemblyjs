@@ -120,6 +120,48 @@ describe('kernel exec - control instruction', () => {
     });
   });
 
+  describe('br_if', () => {
+
+    it('should break if non-zero', () => {
+      const code = [
+        t.blockInstruction('label', [
+          t.objectInstruction('const', 'i32', [t.numberLiteral(2)]),
+        ]),
+
+        t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
+        t.brIfInstruction('label'),
+
+        t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
+      ];
+
+      const stackFrame = createStackFrame(code, []);
+      const res = executeStackFrame(stackFrame);
+
+      assert.notEqual(res.value, 10);
+      assert.equal(res.value, 2);
+    });
+
+    it('should not break if zero', () => {
+      const code = [
+        t.blockInstruction('label', [
+          t.objectInstruction('const', 'i32', [t.numberLiteral(20)]),
+        ]),
+
+        t.objectInstruction('const', 'i32', [t.numberLiteral(0)]),
+        t.brIfInstruction('label'),
+
+        t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
+      ];
+
+      const stackFrame = createStackFrame(code, []);
+      const res = executeStackFrame(stackFrame);
+
+      assert.notEqual(res.value, 20);
+      assert.equal(res.value, 1);
+    });
+
+  });
+
   describe('if', () => {
 
     it('should NOT execute consequent when test is zero', () => {

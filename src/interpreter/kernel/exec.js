@@ -115,6 +115,15 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     return [c1, c2];
   }
 
+  function br(label: string) {
+    const code = frame.labels[label];
+
+    if (typeof code === 'undefined') {
+      throw new RuntimeError(`Label ${label} doesn't exist`);
+    }
+
+  }
+
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
 
@@ -357,6 +366,25 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       frame.values = [...frame.values, ...topOfTheStack];
 
       break;
+    }
+
+    case 'br_if': {
+      const {label} = instruction;
+
+      // 1. Assert: due to validation, a value of type i32 is on the top of the stack.
+      // 2. Pop the value ci32.const c from the stack.
+      const c = pop1('i32');
+
+      if (c !== 0) {
+
+        // 3. If c is non-zero, then
+        // 3. a. Execute the instruction (br l).
+        br(label);
+
+      } else {
+        // 4. Else:
+        // 4. a. Do nothing.
+      }
     }
 
     case 'if': {
