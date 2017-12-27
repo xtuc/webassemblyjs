@@ -97,6 +97,7 @@ type BlockInstruction = {
   type: 'BlockInstruction';
   label: ?Identifier;
   instr: Array<Instruction>;
+  result: ?Valtype;
 }
 
 type IfInstruction = {

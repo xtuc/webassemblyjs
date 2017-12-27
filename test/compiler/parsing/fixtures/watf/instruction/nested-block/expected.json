@@ -14,7 +14,7 @@
             {
               "type": "BlockInstruction",
               "id": "block",
-              "label": "temp_9",
+              "label": "temp_11",
               "instr": [
                 {
                   "type": "CallInstruction",
@@ -38,7 +38,7 @@
                 {
                   "type": "BlockInstruction",
                   "id": "block",
-                  "label": "temp_10",
+                  "label": "temp_12",
                   "instr": [
                     {
                       "type": "Instr",
