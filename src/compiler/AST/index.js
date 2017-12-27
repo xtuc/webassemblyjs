@@ -1,5 +1,12 @@
 // @flow
 
+const {
+  parse32F,
+  parse64F,
+  parse32I,
+  parse64I
+} = require('../parsing/watf/number-literals');
+
 function assert(cond: boolean) {
   if (!cond) {
     throw new Error('assertion error');
@@ -121,8 +128,35 @@ export function blockInstruction(
 }
 
 export function numberLiteral(
-  value: number,
+  rawValue: number | string,
+  type: Valtype = 'f64'
 ): NumberLiteral {
+
+  let value;
+
+  if (typeof rawValue === 'number') {
+    value = rawValue;
+  } else {
+    switch (type) {
+    case 'i32': {
+      value = parse32I(rawValue);
+      break;
+    }
+    case 'i64': {
+      value = parse64I(rawValue);
+      break;
+    }
+    case 'f32': {
+      value = parse32F(rawValue);
+      break;
+    }
+    // f64
+    default: {
+      value = parse64F(rawValue);
+      break;
+    }
+    }
+  }
 
   return {
     type: 'NumberLiteral',

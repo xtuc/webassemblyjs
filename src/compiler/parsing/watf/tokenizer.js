@@ -122,15 +122,25 @@ function tokenize(input: string) {
     }
 
     const NUMBERS = /[0-9]/;
-    if (NUMBERS.test(char)) {
+    const HEX_NUMBERS = /[0-9|A-F|a-f]/;
+    if (NUMBERS.test(char) || char === '-' && NUMBERS.test(input[current + 1]) ) {
       let value = '';
-
-      while (NUMBERS.test(char)) {
+      if (char === '-') {
         value += char;
         char = input[++current];
       }
+      let numberLiterals = NUMBERS;
 
-      value = parseInt(value);
+      if (char === '0' && input[current + 1].toUpperCase() === 'X') {
+        value += '0x';
+        numberLiterals = HEX_NUMBERS;
+        char = input[current += 2];
+      }
+
+      while (numberLiterals.test(char)) {
+        value += char;
+        char = input[++current];
+      }
 
       tokens.push(NumberToken(value, line));
 
