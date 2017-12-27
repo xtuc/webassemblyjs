@@ -17,14 +17,14 @@ export function createStackFrame(
      * Labels are named block of code.
      * We maintain a map to access the block for a given identifier.
      *
-     * https://webassembly.github.io/spec/exec/runtime.html#labels
+     * https://webassembly.github.io/spec/core/exec/runtime.html#labels
      */
     labels: {},
 
     /**
      * Local applicatif Stack for the current stackframe.
      *
-     * https://webassembly.github.io/spec/exec/runtime.html#stack
+     * https://webassembly.github.io/spec/core/exec/runtime.html#stack
      */
     values: [],
 
