@@ -1,6 +1,6 @@
 (module
   (func (
-    (loop $1 i32 (
+    (loop $1 (result i32) (
       (nop)
     ))
   ))
