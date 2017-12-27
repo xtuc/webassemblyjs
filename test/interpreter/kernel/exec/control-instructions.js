@@ -25,7 +25,7 @@ describe('kernel exec - control instruction', () => {
     assert.equal(code.length, pc + 1);
   });
 
-  describe.skip('loop', () => {
+  describe('loop', () => {
 
     it('should execute the body of loop in a child stack frame', () => {
       let maxDepth = 0;
@@ -120,7 +120,7 @@ describe('kernel exec - control instruction', () => {
     });
   });
 
-  describe.skip('br_if', () => {
+  describe('br_if', () => {
 
     it('should break if non-zero', () => {
       const code = [
