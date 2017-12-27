@@ -115,6 +115,7 @@ export function loopInstruction(
 export function blockInstruction(
   label: Identifier,
   instr: Array<Instruction>,
+  result: ?Valtype,
 ): BlockInstruction {
   assert(typeof label !== 'undefined');
   assert(typeof instr === 'object' && typeof instr.length !== 'undefined');
@@ -124,6 +125,7 @@ export function blockInstruction(
     id: 'block',
     label,
     instr,
+    result,
   };
 }
 
