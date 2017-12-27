@@ -10,7 +10,7 @@ const importObject = {
   }
 };
 
-it('should call the function multiple times', () => {
+xit('should call the function multiple times', () => {
   const m = WebAssembly.instantiateFromSource(watfmodule, importObject);
 
   m.exports.main();
