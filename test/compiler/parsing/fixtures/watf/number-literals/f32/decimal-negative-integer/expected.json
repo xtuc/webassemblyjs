@@ -1,0 +1,30 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "id": null,
+          "params": [],
+          "result": null,
+          "body": [
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "f32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 33
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
