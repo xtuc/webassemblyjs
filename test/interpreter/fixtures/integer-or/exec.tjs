@@ -6,3 +6,17 @@ it('should produce correct result', () => {
   assert.typeOf(res, 'number');
   assert.equal(res, 1);
 });
+
+it('should work on full 32 bit range', () => {
+  const res = m.exports.or(0x7FFFFFFF, 0x80000000);
+
+  assert.typeOf(res, 'number');
+  assert.equal(res, -1); // 0xFFFFFFF
+});
+
+it('should work on full 32 bit range with hex result', () => {
+  const res = m.exports.or(0xf0f0ffff, 0xfffff0f0);
+
+  assert.typeOf(res, 'number');
+  assert.equal(res, -1); // 0xFFFFFFFF
+});
