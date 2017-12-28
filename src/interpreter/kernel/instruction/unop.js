@@ -17,6 +17,9 @@ function unop(
   switch (sign) {
   case 'abs':
     return createValue(Math.abs(c.value));
+
+  case 'neg':
+    return createValue(-c.value);
   }
 
   throw new Error('Unsupported unop: ' + sign);
