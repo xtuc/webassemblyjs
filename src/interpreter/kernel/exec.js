@@ -994,6 +994,37 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
+    case 'neg': {
+
+      switch (instruction.object) {
+
+      case 'f32': {
+        const c = pop1('f32');
+
+        pushResult(
+          unopf32(c, 'neg')
+        );
+
+        break;
+      }
+
+      case 'f64': {
+        const c = pop1('f64');
+
+        pushResult(
+          unopf64(c, 'neg')
+        );
+
+        break;
+      }
+
+      default:
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      }
+
+      break;
+    }
+
 	/**
 	 * Bitwise operators
 	 */
