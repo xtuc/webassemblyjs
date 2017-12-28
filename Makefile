@@ -14,8 +14,17 @@ make-executables:
 clean:
 	rm -rf ./lib
 
+clean-all: clean
+	rm -rf ./node_modules
+
+bootstrap: clean-all
+	npm install
+
 build: clean
 	$(BABEL) --out-dir lib/ src/
+
+watch:
+	$(BABEL) --out-dir lib/ src/ --watch
 
 test: build
 	$(MOCHA) --recursive

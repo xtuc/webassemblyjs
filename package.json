@@ -12,7 +12,7 @@
   ],
   "description": "WebAssembly interpreter",
   "main": "lib/index.js",
-  "license": "GNU GPLv2",
+  "license": "GPL-2.0",
   "scripts": {
     "test": "make test",
     "build": "make build"
