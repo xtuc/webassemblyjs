@@ -993,6 +993,24 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
       break;
     }
+
+	/**
+	 * Bitwise operators
+	 */
+	case 'or': {
+	  switch (instruction.object) {
+
+	  case 'i32': {
+	  	const [c1, c2] = pop2('i32', 'i32');
+
+		pushResult(
+			binopi32(c1, c2, '|')
+		);
+
+		break;
+	  }
+	  }
+	}
     }
 
     if (typeof frame.trace === 'function') {
