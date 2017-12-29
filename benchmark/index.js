@@ -77,7 +77,7 @@ benchmarks.forEach((file) => {
   const wasmbin = toArrayBuffer(readFileSync(file, null));
   const bench = require('../' + path.join(path.dirname(file), 'bench.js'));
 
-  const NBINTERATION = Math.pow(10, 6);
+  const NBINTERATION = Math.pow(10, 7);
 
   const sandbox = {
     wasmbin,

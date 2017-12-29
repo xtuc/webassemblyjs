@@ -1,10 +1,10 @@
 
 Testing interpreted
 sandbox
-total 393.4736360000 ms
-mean 393.4736360000 ns
+total 3451.0541350000 ms
+mean 345.1054135000 ns
 
 Testing native
 sandbox
-total 24.7366290000 ms
-mean 24.7366290000 ns
+total 214.5847250000 ms
+mean 21.4584725000 ns
