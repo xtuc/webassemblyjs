@@ -27,7 +27,6 @@ function test({
 
       const t1 = performance.now();
 
-      output('sandbox');
       output('total ' + formatNumber(t1 - t0));
       output('mean ' + formatNumber((t1 - t0) / NBINTERATION));
     });

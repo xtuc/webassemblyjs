@@ -1,13 +1,11 @@
 
 Testing interpreted
-sandbox
-total 3465.9872720000 ms
-mean 346.5987272000 ns
+total 3461.9092200000 ms
+mean 346.1909220000 ns
 
 Testing native
-sandbox
-total 215.0203530000 ms
-mean 21.5020353000 ns
+total 226.3703510000 ms
+mean 22.6370351000 ns
 
 Interations: 10000000
 Date: 2017-12-29
