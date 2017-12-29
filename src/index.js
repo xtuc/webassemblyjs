@@ -7,7 +7,7 @@ const {RuntimeError, CompileError, LinkError} = require('./errors');
 const {createCompiledModule, Module} = require('./compiler/compile/module');
 const {Memory} = require('./interpreter/runtime/values/memory');
 const {Table} = require('./interpreter/runtime/values/table');
-const {checkEndianness} = require('./assert-endianness');
+const {checkEndianness} = require('./check-endianness');
 
 const WebAssembly = {
 
