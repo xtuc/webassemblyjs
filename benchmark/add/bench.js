@@ -6,6 +6,7 @@ function test({
   NBINTERATION,
   formatNumber,
   output,
+  random,
 }) {
 
   return WebAssembly
@@ -18,8 +19,8 @@ function test({
       const t0 = performance.now();
 
       for (let i = 0; i < NBINTERATION; i++) {
-        const l = Math.random() * 10 | 0;
-        const r = Math.random() * 10 | 0;
+        const l = random();
+        const r = random();
 
         exports.add(l, r);
       }

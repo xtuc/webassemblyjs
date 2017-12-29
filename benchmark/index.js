@@ -19,6 +19,24 @@ function toArrayBuffer(buf) {
   );
 }
 
+function createRNG(nbr) {
+  const numbers = [1,2,3,4,4,5,6,7,8,9];
+  const entropy = [];
+
+  for (let i = 0; i < nbr; i++) {
+    const v = numbers[Math.floor(Math.random() * numbers.length)];
+    entropy.push(v);
+  }
+
+  return function get() {
+    if (entropy.length === 0) {
+      throw new Error('Entropy exhausted');
+    }
+
+    return entropy.pop();
+  };
+}
+
 function formatNumber(i) {
   let unit = 'ms';
 
@@ -73,12 +91,14 @@ benchmarks.forEach((file) => {
   const nativeSandbox = Object.assign({}, sandbox, {
     WebAssembly: global.WebAssembly,
     showHeader: createShowHeader('native'),
+    random: createRNG(NBINTERATION * 2),
   });
 
   // Run interpreted
   const interpretedSandbox = Object.assign({}, sandbox, {
     showHeader: createShowHeader('interpreted'),
     WebAssembly: interpreter,
+    random: createRNG(NBINTERATION * 2),
   });
 
   Promise.all([
