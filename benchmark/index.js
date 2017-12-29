@@ -1,7 +1,6 @@
 const {readFileSync, writeFileSync} = require('fs');
 const glob = require('glob');
 const path = require('path');
-const vm = require('vm');
 const now = require('performance-now');
 
 const interpreter = require('../lib');
@@ -40,7 +39,6 @@ function writeResult(dir, result) {
 
 benchmarks.forEach((file) => {
   let outputBuffer = '';
-  let nbOk = 0;
 
   function createShowHeader(mode) {
     return function() {
@@ -58,31 +56,17 @@ benchmarks.forEach((file) => {
     outputBuffer = '';
   }
 
-  function ok() {
-    nbOk++;
-
-    if (nbOk === 2) {
-      // Write results
-      writeResult(path.dirname(file), outputBuffer);
-
-      clearOuputBuffer();
-    }
-  }
-
-  const module = toArrayBuffer(readFileSync(file, null));
-
-  const execFile = path.join(path.dirname(file), 'bench.tjs');
-  const exec = readFileSync(execFile, 'utf8');
+  const wasmbin = toArrayBuffer(readFileSync(file, null));
+  const bench = require('../' + path.join(path.dirname(file), 'bench.js'));
 
   const NBINTERATION = Math.pow(10, 6);
 
   const sandbox = {
-    wasmmodule: module,
+    wasmbin,
     output,
-    now,
+    performance: {now},
     NBINTERATION,
     formatNumber,
-    ok,
   };
 
   // Run native
@@ -91,13 +75,21 @@ benchmarks.forEach((file) => {
     showHeader: createShowHeader('native'),
   });
 
-  vm.runInNewContext(exec, nativeSandbox, {filename: file});
-
   // Run interpreted
   const interpretedSandbox = Object.assign({}, sandbox, {
     showHeader: createShowHeader('interpreted'),
     WebAssembly: interpreter,
   });
 
-  vm.runInNewContext(exec, interpretedSandbox, {filename: file});
+  Promise.all([
+    bench.test(nativeSandbox),
+    bench.test(interpretedSandbox),
+  ])
+    .then(() => {
+
+      // Write results
+      writeResult(path.dirname(file), outputBuffer);
+
+      clearOuputBuffer();
+    });
 });
