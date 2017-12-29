@@ -4,6 +4,7 @@ const path = require('path');
 const now = require('performance-now');
 
 const interpreter = require('../lib');
+const interpreterpkg = require('../package.json');
 
 if (typeof WebAssembly === 'undefined') {
   console.log('WebAssembly not supported, skiping.');
@@ -110,6 +111,7 @@ benchmarks.forEach((file) => {
       output('Interations: ' + NBINTERATION);
       output('Date: ' + (new Date).toLocaleDateString());
       output('V8 version: ' + process.versions.v8);
+      output('Interpreter version: ' + interpreterpkg.version);
 
       // Write results
       writeResult(path.dirname(file), outputBuffer);
