@@ -1,10 +1,14 @@
 
 Testing interpreted
 sandbox
-total 3451.0541350000 ms
-mean 345.1054135000 ns
+total 3465.9872720000 ms
+mean 346.5987272000 ns
 
 Testing native
 sandbox
-total 214.5847250000 ms
-mean 21.4584725000 ns
+total 215.0203530000 ms
+mean 21.5020353000 ns
+
+Interations: 10000000
+Date: 2017-12-29
+V8 version: 6.2.414.46-node.15

@@ -106,6 +106,10 @@ benchmarks.forEach((file) => {
     bench.test(interpretedSandbox),
   ])
     .then(() => {
+      output('');
+      output('Interations: ' + NBINTERATION);
+      output('Date: ' + (new Date).toLocaleDateString());
+      output('V8 version: ' + process.versions.v8);
 
       // Write results
       writeResult(path.dirname(file), outputBuffer);
