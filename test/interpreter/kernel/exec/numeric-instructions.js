@@ -751,7 +751,7 @@ describe('kernel exec - numeric instructions', () => {
         const stackFrame = createStackFrame(op.code, op.args);
         const res = executeStackFrame(stackFrame).value;
 
-		assert.deepEqual(res, op.resEqual);
+        assert.deepEqual(res, op.resEqual);
 
       });
 
