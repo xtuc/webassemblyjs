@@ -751,12 +751,7 @@ describe('kernel exec - numeric instructions', () => {
         const stackFrame = createStackFrame(op.code, op.args);
         const res = executeStackFrame(stackFrame).value;
 
-        // NaN results cannot be checked with assert.equal
-        if (isNaN(res)) {
-          assert.isTrue(isNaN(res));
-        } else {
-          assert.equal(res, op.resEqual);
-        }
+        assert.deepEqual(res, op.resEqual);
 
       });
 
