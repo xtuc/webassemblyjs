@@ -1039,23 +1039,23 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
-	/**
-	 * Bitwise operators
-	 */
-	case 'or': {
-	  switch (instruction.object) {
+    /**
+     * Bitwise operators
+     */
+    case 'or': {
+      switch (instruction.object) {
 
-	  case 'i32': {
-	  	const [c1, c2] = pop2('i32', 'i32');
+      case 'i32': {
+        const [c1, c2] = pop2('i32', 'i32');
 
-		pushResult(
-			binopi32(c1, c2, '|')
-		);
+        pushResult(
+          binopi32(c1, c2, '|')
+        );
 
-		break;
-	  }
-	  }
-	}
+        break;
+      }
+      }
+    }
     }
 
     if (typeof frame.trace === 'function') {
