@@ -21,6 +21,7 @@ const label = require('../runtime/values/label');
 const {createChildStackFrame} = require('./stackframe');
 const {createTrap, isTrapped} = require('./signals');
 const {RuntimeError} = require('../../errors');
+const t = require('../../compiler/AST');
 
 // TODO(sven): can remove asserts call at compile to gain perf in prod
 function assert(cond) {
@@ -138,7 +139,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       throw new RuntimeError(`Label ${label.value || label.name} doesn't exist`);
     }
 
-    const childStackFrame = createChildStackFrame(frame, code.body);
+    // FIXME(sven): find a more generic way to handle label and its code
+    // Currently func body and block instr*.
+    const childStackFrame = createChildStackFrame(frame, code.body || code.instr);
     childStackFrame.trace = frame.trace;
 
     const res = executeStackFrame(childStackFrame, depth + 1);
@@ -214,10 +217,17 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     }
 
     case 'loop': {
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-loop
+      // https://webassembly.github.io/spec/core/exec/instructions.html#exec-loop
       const loop = instruction;
 
       assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
+
+      // 2. Enter the block instr∗ with label
+      frame.labels.push({
+        value: loop,
+        arity: 0,
+        id: t.identifier('loop' + pc), // random
+      });
 
       if (loop.instr.length > 0) {
         const childStackFrame = createChildStackFrame(frame, loop.instr);
@@ -227,6 +237,10 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         if (isTrapped(res)) {
           return res;
+        }
+
+        if (typeof res !== 'undefined') {
+          pushResult(res);
         }
       }
 

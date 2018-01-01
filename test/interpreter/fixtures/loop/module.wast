@@ -1,12 +1,11 @@
 (module
- (import "module" "fn" (func $fn (result i32)))
- (func $main (
+ (func (export "singular") (result i32) (
+  (loop (
+    (nop)
+  ))
+
   (loop (result i32) (
-    (nop)
-    (nop)
-    (nop)
     (i32.const 7)
   ))
  ))
- (export "main" (func $main))
 )
