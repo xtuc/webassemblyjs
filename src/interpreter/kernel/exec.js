@@ -138,6 +138,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       throw new RuntimeError(`Label ${label.value || label.name} doesn't exist`);
     }
 
+    const childStackFrame = createChildStackFrame(frame, code.body);
+    childStackFrame.trace = frame.trace;
+
+    const res = executeStackFrame(childStackFrame, depth + 1);
+
+    return res;
   }
 
   while (pc < frame.code.length) {
@@ -403,7 +409,15 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         // 3. If c is non-zero, then
         // 3. a. Execute the instruction (br l).
-        br(label);
+        const res = br(label);
+
+        if (isTrapped(res)) {
+          return res;
+        }
+
+        if (typeof res !== 'undefined') {
+          pushResult(res);
+        }
 
       } else {
         // 4. Else:

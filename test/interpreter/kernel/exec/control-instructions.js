@@ -130,14 +130,12 @@ describe('kernel exec - control instruction', () => {
 
         t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
         t.brIfInstruction(t.identifier('label')),
-
-        t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
       ];
 
       const stackFrame = createStackFrame(code, []);
       const res = executeStackFrame(stackFrame);
 
-      assert.notEqual(res.value, 10);
+      assert.typeOf(res, 'object');
       assert.equal(res.value, 2);
     });
 
