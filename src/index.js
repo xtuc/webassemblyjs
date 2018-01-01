@@ -7,12 +7,19 @@ const {RuntimeError, CompileError, LinkError} = require('./errors');
 const {createCompiledModule, Module} = require('./compiler/compile/module');
 const {Memory} = require('./interpreter/runtime/values/memory');
 const {Table} = require('./interpreter/runtime/values/table');
+const {checkEndianness} = require('./check-endianness');
 
 const WebAssembly = {
 
   instantiate(buff: ArrayBuffer, importObject: ImportObject = {}): Promise<InstansitatedInstanceAndModule> {
 
     return new Promise((resolve, reject) => {
+
+      if (checkEndianness() === false) {
+        return reject(
+          new RuntimeError('expected the system to be little-endian')
+        );
+      }
 
       if (
         buff instanceof ArrayBuffer === false

@@ -993,6 +993,55 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
       break;
     }
+
+    case 'neg': {
+
+      switch (instruction.object) {
+
+      case 'f32': {
+        const c = pop1('f32');
+
+        pushResult(
+          unopf32(c, 'neg')
+        );
+
+        break;
+      }
+
+      case 'f64': {
+        const c = pop1('f64');
+
+        pushResult(
+          unopf64(c, 'neg')
+        );
+
+        break;
+      }
+
+      default:
+        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
+      }
+
+      break;
+    }
+
+	/**
+	 * Bitwise operators
+	 */
+	case 'or': {
+	  switch (instruction.object) {
+
+	  case 'i32': {
+	  	const [c1, c2] = pop2('i32', 'i32');
+
+		pushResult(
+			binopi32(c1, c2, '|')
+		);
+
+		break;
+	  }
+	  }
+	}
     }
 
     if (typeof frame.trace === 'function') {
