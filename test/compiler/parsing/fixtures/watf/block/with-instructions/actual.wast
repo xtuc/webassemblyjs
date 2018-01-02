@@ -1,8 +1,4 @@
-(module
-  (func (
-    (block (
-      (nop)
-      (nop)
-    ))
-  ))
-)
+(block (
+  (nop)
+  (nop)
+))
