@@ -785,8 +785,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
         return parseImport();
       }
+
+      if (isKeyword(token, keywords.block)) {
+        eatToken();
+        const node = parseBlock();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
     }
 
+    showCodeFrame(source, token.loc);
     throw new TypeError('Unknown token: ' + token.type);
   }
 
