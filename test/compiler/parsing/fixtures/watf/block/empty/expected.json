@@ -8,7 +8,8 @@
         "type": "Identifier",
         "name": "temp_4"
       },
-      "instr": []
+      "instr": [],
+      "result": null
     }
   ]
 }

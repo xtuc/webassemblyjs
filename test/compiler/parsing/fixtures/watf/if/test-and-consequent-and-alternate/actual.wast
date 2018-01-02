@@ -1,4 +1,4 @@
-(func (
+(func
 
   (if $label then (
     (nop)
@@ -6,4 +6,4 @@
     (nop)
   ))
 
-))
+)

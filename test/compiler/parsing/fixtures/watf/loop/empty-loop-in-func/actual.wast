@@ -1,4 +1,4 @@
-(func (
+(func
  (loop ())
  (loop $1 ())
-))
+)

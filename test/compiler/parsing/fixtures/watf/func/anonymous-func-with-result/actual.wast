@@ -1,1 +1,1 @@
-(func (result i32) ())
+(func (result i32))
