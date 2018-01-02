@@ -244,8 +244,19 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return t.moduleImport(moduleName, funcName, descr);
     }
 
+    /**
+     * Parses a block instruction
+     *
+     * WAST:
+     *
+     * expr: ( block <name>? <block_sig> <instr>* )
+     * instr: block <name>? <block_sig> <instr>* end <name>?
+     * block_sig : ( result <type>* )*
+     *
+     */
     function parseBlock(): BlockInstruction {
       let label = t.identifier(getUniqueName('block'));
+      let blockResult;
       const instr = [];
 
       if (token.type === tokens.identifier) {
@@ -253,37 +264,37 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
-      // Empty block
-      if (token.type === tokens.closeParen) {
-        return t.blockInstruction(label, instr, null);
-      }
-
-      /**
-       * Block instructions
-       *
-       * Parses a line into a instruction
-       */
-      eatTokenOfType(tokens.openParen);
-
-      const {result} = parseMaybeSignature();
-
-      if (typeof result === 'string') {
-        eatTokenOfType(tokens.closeParen);
-        eatTokenOfType(tokens.openParen);
-      }
-
-      // Empty block
-      if (token.type === tokens.closeParen) {
+      while (token.type === tokens.openParen) {
         eatToken();
 
-        return t.blockInstruction(label, instr, result);
+        if (lookaheadAndCheck(keywords.result) === true) {
+          eatToken();
+
+          blockResult = token.value;
+          eatToken();
+
+        } else
+
+        // Instruction
+        if (
+          lookaheadAndCheck(tokens.name) === true
+          || lookaheadAndCheck(tokens.valtype) === true
+          || token.type === 'keyword' // is any keyword
+        ) {
+          instr.push(
+            parseFuncInstr()
+          );
+        }
+
+        else {
+          showCodeFrame(source, token.loc);
+          throw new Error('Unexpected token in block body of type: ' + token.type);
+        }
+
+        eatTokenOfType(tokens.closeParen);
       }
 
-      parseListOfInstructions(instr);
-
-      eatTokenOfType(tokens.closeParen);
-
-      return t.blockInstruction(label, instr, result);
+      return t.blockInstruction(label, instr, blockResult);
     }
 
     /**
@@ -448,6 +459,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         if (
           lookaheadAndCheck(tokens.name) === true
           || lookaheadAndCheck(tokens.valtype) === true
+          || token.type === 'keyword' // is any keyword
         ) {
           instr.push(
             parseFuncInstr()
