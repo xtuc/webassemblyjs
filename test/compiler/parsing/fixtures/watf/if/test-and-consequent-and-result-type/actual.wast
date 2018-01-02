@@ -1,7 +1,9 @@
 (func
 
-  (if $label (result i32) then (
-    (nop)
-  ))
+ (if $label (result i32)
+  (then
+   (nop)
+  )
+ )
 
 )

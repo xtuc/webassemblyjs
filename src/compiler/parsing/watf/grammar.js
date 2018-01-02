@@ -300,89 +300,110 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses a if instruction
      *
-     * Case 1:
-     * label (result) then (
-     *   instruction
-     * )
+     * WAST:
      *
-     * Case 2:
-     * label then (
-     *  instruction
-     * )
+     * expr:
+     * ( if <name>? <block_sig> ( then <instr>* ) ( else <instr>* )? )
+     * ( if <name>? <block_sig> <expr>+ ( then <instr>* ) ( else <instr>* )? )
      *
-     * Case 4:
-     * label then (
-     *   instruction
-     * ) else (
-     *   instruction
-     * )
+     * instr:
+     * if <name>? <block_sig> <instr>* end <name>?
+     * if <name>? <block_sig> <instr>* else <name>? <instr>* end <name>?
+     *
+     * block_sig : ( result <type>* )*
+     *
      */
     function parseIf(): IfInstruction {
-      let result;
+      let blockResult;
+      let label = t.identifier(getUniqueName('if'));
 
-      /**
-       * label
-       */
-      if (
-        token.type !== tokens.number
-        && token.type !== tokens.identifier
-      ) {
-        throw new Error('Invaluid condition construction: missing label');
+      const consequent = [];
+      const alternate = [];
+
+      if (token.type === tokens.identifier) {
+        label = t.identifier(token.value);
+        eatToken();
       }
 
-      const label = t.identifier(token.value);
-      eatToken();
+      eatTokenOfType(tokens.openParen);
 
-      /**
-       * Parse result type
-       */
-      if (token.type === tokens.openParen) {
+      if (isKeyword(token, keywords.result) === true) {
         eatToken();
 
-        if (isKeyword(token, keywords.result) === true) {
+        blockResult = token.value;
+        eatTokenOfType(tokens.valtype);
+
+        eatTokenOfType(tokens.closeParen);
+
+        eatTokenOfType(tokens.openParen);
+      }
+
+      if (isKeyword(token, keywords.then) === true) {
+        eatToken();
+
+        while (token.type === tokens.openParen) {
           eatToken();
 
-          result = token.value;
+          // Instruction
+          if (
+            lookaheadAndCheck(tokens.name) === true
+            || lookaheadAndCheck(tokens.valtype) === true
+            || token.type === 'keyword' // is any keyword
+          ) {
+            consequent.push(
+              parseFuncInstr()
+            );
+          }
 
-          eatTokenOfType(tokens.valtype);
+          else {
+            showCodeFrame(source, token.loc);
+            throw new Error('Unexpected token in consequent body of type: ' + token.type);
+          }
+
+          eatTokenOfType(tokens.closeParen);
         }
 
         eatTokenOfType(tokens.closeParen);
       }
 
-      /**
-       * Then block of instruction
-       */
-      const consequent = [];
-
-      if (isKeyword(token, keywords.then) === false) {
-        throw new Error('Invalid condition construction: missing then');
-      }
-
-      eatToken(); // keyword
-
-      eatTokenOfType(tokens.openParen);
-
-      parseListOfInstructions(consequent);
-
-      eatTokenOfType(tokens.closeParen);
-
-      /**
-       * Else block of instruction
-       */
-      const alternate = [];
-
-      if (isKeyword(token, keywords.else) === true) {
+      if (token.type === tokens.openParen) {
         eatToken();
 
-        eatTokenOfType(tokens.openParen);
+        if (isKeyword(token, keywords.else)) {
+          eatToken();
 
-        parseListOfInstructions(alternate);
+          while (token.type === tokens.openParen) {
+            eatToken();
+
+            // Instruction
+            if (
+              lookaheadAndCheck(tokens.name) === true
+              || lookaheadAndCheck(tokens.valtype) === true
+              || token.type === 'keyword' // is any keyword
+            ) {
+              alternate.push(
+                parseFuncInstr()
+              );
+            }
+
+            else {
+              showCodeFrame(source, token.loc);
+              throw new Error('Unexpected token in alternate body of type: ' + token.type);
+            }
+
+            eatTokenOfType(tokens.closeParen);
+          }
+
+        }
 
         eatTokenOfType(tokens.closeParen);
       }
 
-      return t.ifInstruction(label, result, consequent, alternate);
+      if (token.type === tokens.openParen) {
+        throw 'f';
+      }
+
+      return t.ifInstruction(label, blockResult, consequent, alternate);
     }
 
     function parseBrIf(): BrIfInstruction {
@@ -743,6 +764,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         return parseIf();
       } else {
+        showCodeFrame(source, token.loc);
         throw new Error('Unexpected instruction in function body: ' + token.type);
       }
 
