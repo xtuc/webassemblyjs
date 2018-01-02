@@ -77,8 +77,11 @@ const StringToken = createToken(tokens.string);
 
 function tokenize(input: string) {
   let current = 0;
-  let column = 0;
+
+  // Used by SourceLocation
+  let column = 1;
   let line = 1;
+
   const tokens = [];
 
   function eatToken() {
@@ -127,6 +130,9 @@ function tokenize(input: string) {
         char = input[++current];
       }
 
+      // Shift by the length of the string
+      column += value.length;
+
       tokens.push(IdentifierToken(value, line, column));
 
       continue;
@@ -155,6 +161,9 @@ function tokenize(input: string) {
         char = input[++current];
       }
 
+      // Shift by the length of the string
+      column += value.length;
+
       tokens.push(NumberToken(value, line, column));
 
       continue;
@@ -174,6 +183,9 @@ function tokenize(input: string) {
         throw new Error('Unterminated string constant');
       }
 
+      // Shift by the length of the string
+      column += value.length;
+
       eatToken();
 
       tokens.push(StringToken(value, line, column));
@@ -188,6 +200,9 @@ function tokenize(input: string) {
         value += char;
         char = input[++current];
       }
+
+      // Shift by the length of the string
+      column += value.length;
 
       /*
        * Handle MemberAccess
