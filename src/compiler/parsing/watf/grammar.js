@@ -151,9 +151,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
     function parseListOfInstructions(acc: Array<Instruction>) {
       while (
-        (token.type !== tokens.closeParen)
+        (token.type === tokens.openParen)
       ) {
-        parseInstructionLine(token.loc.line, acc);
+        eatToken();
+
+        acc.push(
+          parseFuncInstr()
+        );
       }
     }
 
@@ -698,6 +702,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
          */
         if (token.type === tokens.openParen) {
           parseListOfInstructions(args);
+
+          eatTokenOfType(tokens.closeParen);
         }
 
         if (typeof object === 'undefined') {
@@ -747,6 +753,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           // Ignore call body for now since it's just in the WAST format and
           // not in the WASM production format.
+          eatTokenOfType(tokens.closeParen);
         }
 
         if (typeof index === 'undefined') {
@@ -764,177 +771,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error('Unexpected instruction in function body: ' + token.type);
       }
 
-    }
-
-    function parseInstructionLine(line: number, acc: Array<any>) {
-      const args = [];
-
-      function doParse() {
-
-        /**
-         * A simple instruction
-         */
-        if (token.type === tokens.name || token.type === tokens.valtype) {
-          let name = token.value;
-          let object;
-
-          eatToken();
-
-          if (token.type === tokens.dot) {
-            object = name;
-            eatToken();
-
-            if (token.type !== tokens.name) {
-              throw new TypeError('Unknown token: ' + token.type + ', name expected');
-            }
-
-            name = token.value;
-            eatToken();
-          }
-
-          if (token.loc.line !== line || token.type === tokens.closeParen) {
-            if (typeof object === 'undefined') {
-              acc.push(t.instruction(name, []));
-            } else {
-              acc.push(t.objectInstruction(name, object, []));
-            }
-
-            return;
-          }
-
-          /**
-           * Handle arguments
-           *
-           * Currently only one argument is allowed
-           */
-          if (token.type === tokens.identifier) {
-            args.push(
-              t.identifier(token.value)
-            );
-
-            eatToken();
-          }
-
-          if (token.type === tokens.number) {
-            args.push(
-              t.numberLiteral(token.value, object)
-            );
-
-            eatToken();
-          }
-
-          /**
-           * Maybe some nested instructions
-           */
-          if (token.type === tokens.openParen) {
-            parseListOfInstructions(args);
-          }
-
-          if (typeof object === 'undefined') {
-            acc.push(t.instruction(name, args));
-          } else {
-            acc.push(t.objectInstruction(name, object, args));
-          }
-
-          return;
-        } else
-
-        /**
-         * Else a instruction with a keyword (loop or block)
-         */
-        if (isKeyword(token, keywords.loop)) {
-          eatToken(); // keyword
-
-          acc.push(
-            parseLoop()
-          );
-
-          return;
-        } else if (isKeyword(token, keywords.br_table)) {
-          eatToken();
-
-          acc.push(
-            parseBrTable()
-          );
-
-          return;
-        } else if (isKeyword(token, keywords.br_if)) {
-          eatToken();
-
-          acc.push(
-            parseBrIf()
-          );
-
-          return;
-        } else if (isKeyword(token, keywords.block)) {
-          eatToken(); // keyword
-
-          acc.push(
-            parseBlock()
-          );
-
-          return;
-
-        } else if (isKeyword(token, keywords.call)) {
-          eatToken(); // keyword
-
-          let index;
-
-          if (token.type === tokens.identifier) {
-            index = t.identifier(token.value);
-            eatToken();
-          } else if (token.type === tokens.number) {
-            index = t.numberLiteral(token.value);
-            eatToken();
-          }
-
-          // Nested instruction
-          if (token.type === tokens.openParen) {
-            eatTokenOfType(tokens.openParen);
-
-            const callBody = [];
-
-            parseListOfInstructions(callBody);
-
-            // Ignore call body for now since it's just in the WAST format and
-            // not in the WASM production format.
-
-            eatTokenOfType(tokens.closeParen);
-          }
-
-          if (typeof index === 'undefined') {
-            throw new Error('Missing argument in call instruciton');
-          }
-
-          acc.push(
-            t.callInstruction(index)
-          );
-
-          return;
-
-        } else if (isKeyword(token, keywords.if)) {
-
-          eatToken(); // Keyword
-
-          acc.push(
-            parseIf()
-          );
-
-          return;
-
-        } else {
-          throw new Error('Unexpected instruction in function body: ' + token.type);
-        }
-
-      }
-
-      eatTokenOfType(tokens.openParen);
-
-      const res = doParse();
-
-      eatTokenOfType(tokens.closeParen);
-
-      return res;
     }
 
     /*
