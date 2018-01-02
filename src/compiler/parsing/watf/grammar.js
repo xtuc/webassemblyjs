@@ -411,13 +411,30 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     function parseBrIf(): BrIfInstruction {
+      let label;
 
-      if (token.type != tokens.identifier) {
+      if (token.type === tokens.identifier) {
+        label = t.identifier(token.value);
+        eatToken();
+      } else if (token.type === tokens.number) {
+        label = t.numberLiteral(token.value);
+        eatToken();
+      } else {
         throw new Error('Unexpected token in br_if of type: ' + token.type);
       }
 
-      const label = t.identifier(token.value);
-      eatToken();
+      // nested
+      if (token.type === tokens.openParen) {
+        const children = [];
+
+        parseListOfInstructions(children);
+
+        // Ignore children for now since it's just in the WAST format and
+        // not in the WASM production format.
+        children;
+
+        eatTokenOfType(tokens.closeParen);
+      }
 
       return t.brIfInstruction(label);
     }

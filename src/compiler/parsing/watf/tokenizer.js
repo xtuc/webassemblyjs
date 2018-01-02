@@ -1,6 +1,6 @@
 // @flow
 
-const LETTERS = /[a-z0-9_]/i;
+const LETTERS = /[a-z0-9_\/]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ['i32', 'i64', 'f32', 'f64'];
 
@@ -223,6 +223,9 @@ function tokenize(input: string) {
           char = input[++current];
         }
 
+        // Shift by the length of the string
+        column += value.length;
+
         tokens.push(DotToken('.', line, column));
         tokens.push(NameToken(value, line, column));
 
@@ -236,6 +239,9 @@ function tokenize(input: string) {
       if (typeof keywords[value] === 'string') {
         tokens.push(KeywordToken(value, line, column));
 
+        // Shift by the length of the string
+        column += value.length;
+
         continue;
       }
 
@@ -245,6 +251,9 @@ function tokenize(input: string) {
       if (valtypes.indexOf(value) !== -1) {
         tokens.push(ValtypeToken(value, line, column));
 
+        // Shift by the length of the string
+        column += value.length;
+
         continue;
       }
 
@@ -252,6 +261,9 @@ function tokenize(input: string) {
        * Handle literals
        */
       tokens.push(NameToken(value, line, column));
+
+      // Shift by the length of the string
+      column += value.length;
 
       continue;
     }
