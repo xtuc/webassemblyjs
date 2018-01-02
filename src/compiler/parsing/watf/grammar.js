@@ -45,6 +45,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
     function eatTokenOfType(type: string) {
       if (token.type !== type) {
+        showCodeFrame(source, token.loc);
+
         throw new Error(
           'Assertion error: expected token of type ' + type
           + ', given ' + token.type
