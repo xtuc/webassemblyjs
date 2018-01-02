@@ -24,6 +24,7 @@
   "author": "Sven Sauleau",
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.34",
+    "@babel/code-frame": "^7.0.0-beta.36",
     "@babel/core": "^7.0.0-beta.34",
     "@babel/preset-env": "^7.0.0-beta.34",
     "@babel/preset-flow": "^7.0.0-beta.34",

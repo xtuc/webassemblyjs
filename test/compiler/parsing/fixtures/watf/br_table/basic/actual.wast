@@ -1,5 +1,1 @@
-(module
-  (func (
-    (br_table $a $b $z)
-  ))
-)
+(br_table $a $b $z)

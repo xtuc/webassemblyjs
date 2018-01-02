@@ -2,36 +2,30 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
+      "type": "Func",
       "id": null,
-      "fields": [
+      "params": [],
+      "result": null,
+      "body": [
         {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
+          "type": "IfInstruction",
+          "id": "if",
+          "testLabel": {
+            "type": "Identifier",
+            "name": "label"
+          },
+          "consequent": [
             {
-              "type": "IfInstruction",
-              "id": "if",
-              "testLabel": {
-                "type": "Identifier",
-                "name": "label"
-              },
-              "consequent": [
-                {
-                  "type": "Instr",
-                  "id": "nop",
-                  "args": []
-                }
-              ],
-              "alternate": [
-                {
-                  "type": "Instr",
-                  "id": "nop",
-                  "args": []
-                }
-              ]
+              "type": "Instr",
+              "id": "nop",
+              "args": []
+            }
+          ],
+          "alternate": [
+            {
+              "type": "Instr",
+              "id": "nop",
+              "args": []
             }
           ]
         }

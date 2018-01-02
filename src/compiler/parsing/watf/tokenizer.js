@@ -17,18 +17,22 @@ function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
 }
 
-function Token(type, value, line) {
+function Token(type, value, line, column) {
   return {
     type,
     value,
-    loc: {
-      line,
+    loc:{
+      start: {
+        line,
+        column,
+      }
     }
   };
 }
 
 function createToken(type: string) {
-  return (v: string | number, line: number) => Token(type, v, line);
+  return (v: string | number, line: number, col: number) =>
+    Token(type, v, line, col);
 }
 
 const tokens = {
@@ -73,38 +77,43 @@ const StringToken = createToken(tokens.string);
 
 function tokenize(input: string) {
   let current = 0;
+  let column = 0;
   let line = 1;
   const tokens = [];
+
+  function eatToken() {
+    column++;
+    current++;
+  }
 
   while (current < input.length) {
     let char = input[current];
 
     if (char === '(') {
-      tokens.push(OpenParenToken(char, line));
+      tokens.push(OpenParenToken(char, line, column));
 
-      // Then we increment `current`
-      current++;
+      eatToken();
 
-      // And we `continue` onto the next cycle of the loop.
       continue;
     }
 
     if (char === ')') {
-      tokens.push(CloseParenToken(char, line));
+      tokens.push(CloseParenToken(char, line, column));
 
-      current++;
+      eatToken();
       continue;
     }
 
     if (isNewLine(char)) {
       line++;
-      current++;
+      eatToken();
+      column = 0;
       continue;
     }
 
     const WHITESPACE = /\s/;
     if (WHITESPACE.test(char)) {
-      current++;
+      eatToken();
       continue;
     }
 
@@ -118,7 +127,7 @@ function tokenize(input: string) {
         char = input[++current];
       }
 
-      tokens.push(IdentifierToken(value, line));
+      tokens.push(IdentifierToken(value, line, column));
 
       continue;
     }
@@ -146,7 +155,7 @@ function tokenize(input: string) {
         char = input[++current];
       }
 
-      tokens.push(NumberToken(value, line));
+      tokens.push(NumberToken(value, line, column));
 
       continue;
     }
@@ -165,9 +174,9 @@ function tokenize(input: string) {
         throw new Error('Unterminated string constant');
       }
 
-      current++;
+      eatToken();
 
-      tokens.push(StringToken(value, line));
+      tokens.push(StringToken(value, line, column));
 
       continue;
     }
@@ -186,9 +195,9 @@ function tokenize(input: string) {
       if (char === '.') {
 
         if (valtypes.indexOf(value) !== -1) {
-          tokens.push(ValtypeToken(value, line));
+          tokens.push(ValtypeToken(value, line, column));
         } else {
-          tokens.push(NameToken(value, line));
+          tokens.push(NameToken(value, line, column));
         }
 
         value = '';
@@ -199,8 +208,8 @@ function tokenize(input: string) {
           char = input[++current];
         }
 
-        tokens.push(DotToken('.', line));
-        tokens.push(NameToken(value, line));
+        tokens.push(DotToken('.', line, column));
+        tokens.push(NameToken(value, line, column));
 
         continue;
       }
@@ -210,7 +219,7 @@ function tokenize(input: string) {
        */
       // $FlowIgnore
       if (typeof keywords[value] === 'string') {
-        tokens.push(KeywordToken(value, line));
+        tokens.push(KeywordToken(value, line, column));
 
         continue;
       }
@@ -219,7 +228,7 @@ function tokenize(input: string) {
        * Handle types
        */
       if (valtypes.indexOf(value) !== -1) {
-        tokens.push(ValtypeToken(value, line));
+        tokens.push(ValtypeToken(value, line, column));
 
         continue;
       }
@@ -227,7 +236,7 @@ function tokenize(input: string) {
       /*
        * Handle literals
        */
-      tokens.push(NameToken(value, line));
+      tokens.push(NameToken(value, line, column));
 
       continue;
     }

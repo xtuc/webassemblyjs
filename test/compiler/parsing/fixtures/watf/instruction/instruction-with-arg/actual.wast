@@ -1,5 +1,3 @@
-(module
-  (func (
-    (set_local 0 (i32.const 1))
-  ))
-)
+(func (
+  (set_local 0 (i32.const 1))
+))

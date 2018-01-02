@@ -2,31 +2,46 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
+      "type": "Func",
       "id": null,
-      "fields": [
+      "params": [],
+      "result": null,
+      "body": [
         {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
+          "type": "BlockInstruction",
+          "id": "block",
+          "label": {
+            "type": "Identifier",
+            "name": "temp_1"
+          },
+          "instr": [
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "Identifier",
+                "name": "dummy"
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 150
+                }
+              ]
+            },
             {
               "type": "BlockInstruction",
               "id": "block",
               "label": {
                 "type": "Identifier",
-                "name": "temp_11"
+                "name": "temp_2"
               },
               "instr": [
-                {
-                  "type": "CallInstruction",
-                  "id": "call",
-                  "index": {
-                    "type": "Identifier",
-                    "name": "dummy"
-                  }
-                },
                 {
                   "type": "Instr",
                   "id": "const",
@@ -35,27 +50,6 @@
                     {
                       "type": "NumberLiteral",
                       "value": 150
-                    }
-                  ]
-                },
-                {
-                  "type": "BlockInstruction",
-                  "id": "block",
-                  "label": {
-                    "type": "Identifier",
-                    "name": "temp_12"
-                  },
-                  "instr": [
-                    {
-                      "type": "Instr",
-                      "id": "const",
-                      "object": "i32",
-                      "args": [
-                        {
-                          "type": "NumberLiteral",
-                          "value": 150
-                        }
-                      ]
                     }
                   ]
                 }

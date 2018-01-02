@@ -1,5 +1,3 @@
-(module
-  (func (
-    (f32.min)
-  ))
-)
+(func (
+  (f32.min)
+))

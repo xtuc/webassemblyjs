@@ -2,54 +2,48 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
-      "id": null,
-      "fields": [
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "add"
+      },
+      "params": [
         {
-          "type": "Func",
-          "id": {
-            "type": "Identifier",
-            "name": "add"
-          },
-          "params": [
+          "id": "lhs",
+          "valtype": "i32"
+        },
+        {
+          "id": "rhs",
+          "valtype": "i32"
+        }
+      ],
+      "result": "i32",
+      "body": [
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
             {
-              "id": "lhs",
-              "valtype": "i32"
-            },
-            {
-              "id": "rhs",
-              "valtype": "i32"
-            }
-          ],
-          "result": "i32",
-          "body": [
-            {
-              "type": "Instr",
-              "id": "get_local",
-              "args": [
-                {
-                  "type": "Identifier",
-                  "name": "a"
-                }
-              ]
-            },
-            {
-              "type": "Instr",
-              "id": "get_local",
-              "args": [
-                {
-                  "type": "NumberLiteral",
-                  "value": 0
-                }
-              ]
-            },
-            {
-              "type": "Instr",
-              "id": "add",
-              "object": "i32",
-              "args": []
+              "type": "Identifier",
+              "name": "a"
             }
           ]
+        },
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "add",
+          "object": "i32",
+          "args": []
         }
       ]
     }

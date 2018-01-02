@@ -20,7 +20,7 @@ interface Position {
 
 interface SourceLocation {
   start: Position;
-  end: Position;
+  // end: Position;
 }
 
 interface Node {

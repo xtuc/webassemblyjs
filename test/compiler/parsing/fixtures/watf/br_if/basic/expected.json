@@ -2,26 +2,12 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
-      "id": null,
-      "fields": [
-        {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
-            {
-              "type": "BrIfInstruction",
-              "id": "br_if",
-              "label": {
-                "type": "Identifier",
-                "name": "label"
-              }
-            }
-          ]
-        }
-      ]
+      "type": "BrIfInstruction",
+      "id": "br_if",
+      "label": {
+        "type": "Identifier",
+        "name": "label"
+      }
     }
   ]
 }

@@ -1,9 +1,4 @@
-(module
-  (func (
-    (call 1)
-  ))
-
-  (func (
-    (call $test)
-  ))
-)
+(func (
+  (call 1)
+  (call $test)
+))

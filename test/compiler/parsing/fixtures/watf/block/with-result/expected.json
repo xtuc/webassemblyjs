@@ -2,38 +2,44 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
-      "id": null,
-      "fields": [
-        {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
-            {
-              "type": "BlockInstruction",
-              "id": "block",
-              "label": {
-                "type": "Identifier",
-                "name": "test"
-              },
-              "instr": [],
-              "result": "i32"
-            },
-            {
-              "type": "BlockInstruction",
-              "id": "block",
-              "label": {
-                "type": "Identifier",
-                "name": "temp_8"
-              },
-              "instr": [],
-              "result": "i32"
-            }
-          ]
-        }
-      ]
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "name": "test"
+      },
+      "instr": [],
+      "result": "i32"
+    },
+    {
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "name": "temp_2"
+      },
+      "instr": [],
+      "result": "i32"
+    },
+    {
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "name": "temp_3"
+      },
+      "instr": [],
+      "result": "i64"
+    },
+    {
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "name": "temp_4"
+      },
+      "instr": [],
+      "result": "f64"
     }
   ]
 }

@@ -1,5 +1,1 @@
-(module
-  (func (
-    (block ())
-  ))
-)
+(block ())

@@ -1,5 +1,1 @@
-(module
-  (func (
-    (block $test ())
-  ))
-)
+(block $test ())

@@ -2,8 +2,14 @@
 
 const {tokens, keywords} = require('./tokenizer');
 const t = require('../../AST');
+const {codeFrameColumns} = require('@babel/code-frame');
 
 let inc = 0;
+
+// Used to have consistent tests
+export function resetUniqueNameGenerator() {
+  inc = 0;
+}
 
 function getUniqueName(prefix: string = 'temp'): string {
   inc++;
@@ -15,7 +21,13 @@ function isKeyword(token: Object, id: string): boolean {
   return token.type === tokens.keyword && token.value === id;
 }
 
-function parse(tokensList: Array<Object>): Program {
+function showCodeFrame(source: string, loc: SourceLocation) {
+  const out = codeFrameColumns(source, loc);
+
+  console.log(out);
+}
+
+export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
 
   const state = {
@@ -751,12 +763,18 @@ function parse(tokensList: Array<Object>): Program {
 
       if (isKeyword(token, keywords.br_table)) {
         eatToken();
-        return parseBrTable();
+        const node = parseBrTable();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
       }
 
       if (isKeyword(token, keywords.br_if)) {
         eatToken();
-        return parseBrIf();
+        const node = parseBrIf();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
       }
 
       if (isKeyword(token, keywords.func)) {
@@ -773,8 +791,18 @@ function parse(tokensList: Array<Object>): Program {
         eatToken();
         return parseImport();
       }
+
+      if (isKeyword(token, keywords.block)) {
+        eatToken();
+        const node = parseBlock();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
     }
 
+    showCodeFrame(source, token.loc);
     throw new TypeError('Unknown token: ' + token.type);
   }
 
@@ -788,5 +816,3 @@ function parse(tokensList: Array<Object>): Program {
 
   return t.program(body);
 }
-
-module.exports = {parse};

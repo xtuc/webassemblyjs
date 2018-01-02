@@ -1,5 +1,1 @@
-(module
-  (func (
-    (br_if $label)
-  ))
-)
+(br_if $label)

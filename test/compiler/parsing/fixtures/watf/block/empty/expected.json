@@ -2,27 +2,13 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
-      "id": null,
-      "fields": [
-        {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
-            {
-              "type": "BlockInstruction",
-              "id": "block",
-              "label": {
-                "type": "Identifier",
-                "name": "temp_4"
-              },
-              "instr": []
-            }
-          ]
-        }
-      ]
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "name": "temp_4"
+      },
+      "instr": []
     }
   ]
 }
