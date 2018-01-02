@@ -2,40 +2,26 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
+      "type": "Func",
       "id": null,
-      "fields": [
+      "params": [],
+      "result": null,
+      "body": [
         {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
-            {
-              "type": "CallInstruction",
-              "id": "call",
-              "index": {
-                "type": "NumberLiteral",
-                "value": 1
-              }
-            }
-          ]
+          "type": "CallInstruction",
+          "id": "call",
+          "index": {
+            "type": "NumberLiteral",
+            "value": 1
+          }
         },
         {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
-            {
-              "type": "CallInstruction",
-              "id": "call",
-              "index": {
-                "type": "Identifier",
-                "name": "test"
-              }
-            }
-          ]
+          "type": "CallInstruction",
+          "id": "call",
+          "index": {
+            "type": "Identifier",
+            "name": "test"
+          }
         }
       ]
     }

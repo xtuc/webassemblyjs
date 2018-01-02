@@ -2,33 +2,27 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
+      "type": "Func",
       "id": null,
-      "fields": [
+      "params": [],
+      "result": null,
+      "body": [
         {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
+          "type": "Instr",
+          "id": "set_local",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            },
             {
               "type": "Instr",
-              "id": "set_local",
+              "id": "const",
+              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 0
-                },
-                {
-                  "type": "Instr",
-                  "id": "const",
-                  "object": "i32",
-                  "args": [
-                    {
-                      "type": "NumberLiteral",
-                      "value": 1
-                    }
-                  ]
+                  "value": 1
                 }
               ]
             }

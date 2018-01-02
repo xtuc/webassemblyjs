@@ -1,5 +1,3 @@
-(module
-  (func (
-    (f32.const -98989898)
-  ))
-)
+(func (
+  (f32.const -98989898)
+))

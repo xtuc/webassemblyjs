@@ -1,7 +1,5 @@
-(module
-  (func (
-    (loop (result i32) (
-      (nop)
-    ))
+(func (
+  (loop (result i32) (
+    (nop)
   ))
-)
+))

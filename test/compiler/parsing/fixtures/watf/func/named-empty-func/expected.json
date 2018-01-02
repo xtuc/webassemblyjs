@@ -2,50 +2,44 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
-      "id": null,
-      "fields": [
-        {
-          "type": "Func",
-          "id": {
-            "type": "Identifier",
-            "name": "test"
-          },
-          "params": [],
-          "result": null,
-          "body": []
-        },
-        {
-          "type": "Func",
-          "id": {
-            "type": "Identifier",
-            "name": "TEST"
-          },
-          "params": [],
-          "result": null,
-          "body": []
-        },
-        {
-          "type": "Func",
-          "id": {
-            "type": "Identifier",
-            "name": "!"
-          },
-          "params": [],
-          "result": null,
-          "body": []
-        },
-        {
-          "type": "Func",
-          "id": {
-            "type": "Identifier",
-            "name": "$"
-          },
-          "params": [],
-          "result": null,
-          "body": []
-        }
-      ]
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "test"
+      },
+      "params": [],
+      "result": null,
+      "body": []
+    },
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "TEST"
+      },
+      "params": [],
+      "result": null,
+      "body": []
+    },
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "!"
+      },
+      "params": [],
+      "result": null,
+      "body": []
+    },
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "$"
+      },
+      "params": [],
+      "result": null,
+      "body": []
     }
   ]
 }

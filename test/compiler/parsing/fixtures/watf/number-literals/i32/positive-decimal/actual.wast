@@ -1,5 +1,3 @@
-(module
-  (func (
-    (i32.const 1234)
-  ))
-)
+(func (
+  (i32.const 1234)
+))

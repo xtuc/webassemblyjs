@@ -2,25 +2,19 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
+      "type": "Func",
       "id": null,
-      "fields": [
+      "params": [],
+      "result": null,
+      "body": [
         {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
-            {
-              "type": "LoopInstruction",
-              "id": "loop",
-              "label": {
-                "type": "Identifier",
-                "name": "1"
-              },
-              "instr": []
-            }
-          ]
+          "type": "LoopInstruction",
+          "id": "loop",
+          "label": {
+            "type": "Identifier",
+            "name": "1"
+          },
+          "instr": []
         }
       ]
     }

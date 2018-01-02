@@ -1,5 +1,3 @@
-(module
-  (func (
-    (loop ())
-  ))
-)
+(func (
+  (loop ())
+))

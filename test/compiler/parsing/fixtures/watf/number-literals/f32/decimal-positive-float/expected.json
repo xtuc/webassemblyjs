@@ -2,25 +2,19 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
+      "type": "Func",
       "id": null,
-      "fields": [
+      "params": [],
+      "result": null,
+      "body": [
         {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
+          "type": "Instr",
+          "id": "const",
+          "object": "f32",
+          "args": [
             {
-              "type": "Instr",
-              "id": "const",
-              "object": "f32",
-              "args": [
-                {
-                  "type": "NumberLiteral",
-                  "value": 0.3
-                }
-              ]
+              "type": "NumberLiteral",
+              "value": 0.3
             }
           ]
         }
