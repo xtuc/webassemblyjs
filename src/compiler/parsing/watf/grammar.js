@@ -230,7 +230,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     function parseBlock(): BlockInstruction {
-      let label = t.identifier(getUniqueName());
+      let label = t.identifier(getUniqueName('block'));
       const instr = [];
 
       if (token.type === tokens.identifier) {
@@ -394,8 +394,23 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       );
     }
 
+    /**
+     * Parses a loop instruction
+     *
+     * WATF:
+     *
+     * blockinstr :: 'loop' I:label rt:resulttype (in:instr*) 'end' id?
+     *
+     * WAST:
+     *
+     * instr     :: loop <name>? <block_sig> <instr>* end <name>?
+     * expr      :: ( loop <name>? <block_sig> <instr>* )
+     * block_sig :: ( result <type>* )*
+     *
+     */
     function parseLoop(): LoopInstruction {
-      let label;
+      let label = t.identifier(getUniqueName('loop'));
+      let blockResult;
       const instr = [];
 
       if (token.type === tokens.identifier) {
@@ -403,36 +418,36 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
-      /**
-       * Loop instructions
-       *
-       * Parses a line into a instruction
-       */
-      eatTokenOfType(tokens.openParen);
-
-      const {result} = parseMaybeSignature();
-
-      if (typeof result === 'string') {
-        eatTokenOfType(tokens.closeParen);
-        eatTokenOfType(tokens.openParen);
-      }
-
-      // Empty block
-      if (token.type === tokens.closeParen) {
+      while (token.type === tokens.openParen) {
         eatToken();
 
-        return t.loopInstruction(label, result, instr);
+        if (lookaheadAndCheck(keywords.result) === true) {
+          eatToken();
+
+          blockResult = token.value;
+          eatToken();
+
+        } else
+
+        // Instruction
+        if (
+          lookaheadAndCheck(tokens.name) === true
+          || lookaheadAndCheck(tokens.valtype) === true
+        ) {
+          instr.push(
+            parseFuncInstr()
+          );
+        }
+
+        else {
+          showCodeFrame(source, token.loc);
+          throw new Error('Unexpected token in loop body of type: ' + token.type);
+        }
+
+        eatTokenOfType(tokens.closeParen);
       }
 
-      while (
-        (token.type !== tokens.closeParen)
-      ) {
-        parseInstructionLine(token.loc.line, instr);
-      }
-
-      eatTokenOfType(tokens.closeParen);
-
-      return t.loopInstruction(label, result, instr);
+      return t.loopInstruction(label, blockResult, instr);
     }
 
     function parseExport(): ModuleExport {
@@ -902,7 +917,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error('Parse func: unsupported WATF grammar');
       }
 
-      let fnName = null;
+      let fnName = t.identifier(getUniqueName('func'));
       let fnResult = null;
 
       const fnBody = [];
@@ -942,6 +957,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         else if (
           lookaheadAndCheck(tokens.name) === true
           || lookaheadAndCheck(tokens.valtype) === true
+          || token.type === 'keyword' // is any keyword
         ) {
           fnBody.push(
             parseFuncInstr()
@@ -979,7 +995,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        *
        * We give the anonymous function a generated name and export it.
        */
-      const id = getUniqueName();
+      const id = getUniqueName('export');
 
       state.registredExportedFuncs.push({
         name,

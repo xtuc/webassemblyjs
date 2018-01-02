@@ -3,7 +3,10 @@
   "body": [
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_1"
+      },
       "params": [
         {
           "id": "p",
@@ -15,7 +18,10 @@
     },
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_2"
+      },
       "params": [
         {
           "id": "P",
@@ -27,7 +33,10 @@
     },
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_3"
+      },
       "params": [
         {
           "id": "$",
@@ -39,7 +48,10 @@
     },
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_4"
+      },
       "params": [
         {
           "id": "$",

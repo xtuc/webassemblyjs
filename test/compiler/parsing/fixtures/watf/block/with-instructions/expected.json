@@ -6,7 +6,7 @@
       "id": "block",
       "label": {
         "type": "Identifier",
-        "name": "temp_1"
+        "name": "block_1"
       },
       "instr": [
         {

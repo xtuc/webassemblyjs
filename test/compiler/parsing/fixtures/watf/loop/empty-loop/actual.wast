@@ -1,3 +1,3 @@
 (func
-  (loop ())
+  (loop)
 )

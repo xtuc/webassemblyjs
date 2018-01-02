@@ -3,7 +3,10 @@
   "body": [
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_1"
+      },
       "params": [
         {
           "valtype": "i32"
@@ -20,7 +23,10 @@
     },
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_2"
+      },
       "params": [
         {
           "valtype": "f64"
@@ -34,7 +40,10 @@
     },
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_3"
+      },
       "params": [
         {
           "valtype": "f64"

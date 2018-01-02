@@ -3,7 +3,10 @@
   "body": [
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_1"
+      },
       "params": [],
       "result": null,
       "body": [
@@ -12,7 +15,7 @@
           "id": "block",
           "label": {
             "type": "Identifier",
-            "name": "temp_1"
+            "name": "block_2"
           },
           "instr": [
             {
@@ -39,7 +42,7 @@
               "id": "block",
               "label": {
                 "type": "Identifier",
-                "name": "temp_2"
+                "name": "block_3"
               },
               "instr": [
                 {

@@ -16,7 +16,7 @@
       "id": "block",
       "label": {
         "type": "Identifier",
-        "name": "temp_2"
+        "name": "block_2"
       },
       "instr": [],
       "result": "i32"
@@ -26,7 +26,7 @@
       "id": "block",
       "label": {
         "type": "Identifier",
-        "name": "temp_3"
+        "name": "block_3"
       },
       "instr": [],
       "result": "i64"
@@ -36,7 +36,7 @@
       "id": "block",
       "label": {
         "type": "Identifier",
-        "name": "temp_4"
+        "name": "block_4"
       },
       "instr": [],
       "result": "f64"
