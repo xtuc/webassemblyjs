@@ -2,6 +2,7 @@
 
 const {tokens, keywords} = require('./tokenizer');
 const t = require('../../AST');
+const {codeFrameColumns} = require('@babel/code-frame');
 
 let inc = 0;
 
@@ -20,7 +21,13 @@ function isKeyword(token: Object, id: string): boolean {
   return token.type === tokens.keyword && token.value === id;
 }
 
-export function parse(tokensList: Array<Object>): Program {
+function showCodeFrame(source: string, loc: SourceLocation) {
+  const out = codeFrameColumns(source, loc);
+
+  console.log(out);
+}
+
+export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
 
   const state = {
