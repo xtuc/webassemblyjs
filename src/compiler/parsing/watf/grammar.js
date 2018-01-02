@@ -157,6 +157,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
     }
 
+    /**
+     * Parse import statement
+     *
+     * WAST:
+     *
+     * import:  ( import <string> <string> <imkind> )
+     * imkind:  ( func <name>? <func_sig> )
+     *          ( global <name>? <global_sig> )
+     *          ( table <name>? <table_sig> )
+     *          ( memory <name>? <memory_sig> )
+     *
+     */
     function parseImport(): ModuleImport {
 
       if (token.type !== tokens.string) {
@@ -173,11 +185,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       let funcName = token.value;
       eatToken();
 
-      if (token.type !== tokens.openParen) {
-        throw new Error('Expected a open paren, ' + token.type + ' given.');
-      }
-
-      eatToken(); // open paren
+      eatTokenOfType(tokens.openParen);
 
       let descr;
 
@@ -192,19 +200,26 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
         }
 
-        while (
-          (token.type === tokens.openParen)
-        ) {
-          eatTokenOfType(tokens.openParen);
+        while (token.type === tokens.openParen) {
+          eatToken();
 
-          const {params, result} = parseMaybeSignature();
+          if (lookaheadAndCheck(keywords.param) === true) {
+            eatToken();
 
-          if (typeof params !== 'undefined') {
-            fnParams.push(...params);
+            fnParams.push(
+              ...parseFuncParam()
+            );
           }
 
-          if (typeof result !== 'undefined') {
-            fnResult = result;
+          else if (lookaheadAndCheck(keywords.result) === true) {
+            eatToken();
+
+            fnResult = parseFuncResult()[0];
+          }
+
+          else {
+            showCodeFrame(source, token.loc);
+            throw new Error('Unexpected token in import of type: ' + token.type);
           }
 
           eatTokenOfType(tokens.closeParen);
