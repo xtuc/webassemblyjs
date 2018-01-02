@@ -1,6 +1,8 @@
+MOCHA_OPTS =
 NODE_OPTS =
+
 NODE = node
-MOCHA = ./node_modules/.bin/mocha --reporter=tap
+MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
 BABEL = ./node_modules/.bin/babel
 FLOW = ./node_modules/.bin/flow
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1

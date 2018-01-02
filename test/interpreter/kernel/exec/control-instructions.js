@@ -25,7 +25,7 @@ describe('kernel exec - control instruction', () => {
     assert.equal(code.length, pc + 1);
   });
 
-  describe.skip('loop', () => {
+  describe('loop', () => {
 
     it('should execute the body of loop in a child stack frame', () => {
       let maxDepth = 0;
@@ -120,7 +120,7 @@ describe('kernel exec - control instruction', () => {
     });
   });
 
-  describe.skip('br_if', () => {
+  describe('br_if', () => {
 
     it('should break if non-zero', () => {
       const code = [
@@ -130,14 +130,12 @@ describe('kernel exec - control instruction', () => {
 
         t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
         t.brIfInstruction(t.identifier('label')),
-
-        t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
       ];
 
       const stackFrame = createStackFrame(code, []);
       const res = executeStackFrame(stackFrame);
 
-      assert.notEqual(res.value, 10);
+      assert.typeOf(res, 'object');
       assert.equal(res.value, 2);
     });
 

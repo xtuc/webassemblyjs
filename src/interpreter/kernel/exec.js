@@ -21,6 +21,7 @@ const label = require('../runtime/values/label');
 const {createChildStackFrame} = require('./stackframe');
 const {createTrap, isTrapped} = require('./signals');
 const {RuntimeError} = require('../../errors');
+const t = require('../../compiler/AST');
 
 // TODO(sven): can remove asserts call at compile to gain perf in prod
 function assert(cond) {
@@ -138,6 +139,14 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       throw new RuntimeError(`Label ${label.value || label.name} doesn't exist`);
     }
 
+    // FIXME(sven): find a more generic way to handle label and its code
+    // Currently func body and block instr*.
+    const childStackFrame = createChildStackFrame(frame, code.body || code.instr);
+    childStackFrame.trace = frame.trace;
+
+    const res = executeStackFrame(childStackFrame, depth + 1);
+
+    return res;
   }
 
   while (pc < frame.code.length) {
@@ -208,10 +217,17 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     }
 
     case 'loop': {
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-loop
+      // https://webassembly.github.io/spec/core/exec/instructions.html#exec-loop
       const loop = instruction;
 
       assert(typeof loop.instr === 'object' && typeof loop.instr.length !== 'undefined');
+
+      // 2. Enter the block instr∗ with label
+      frame.labels.push({
+        value: loop,
+        arity: 0,
+        id: t.identifier('loop' + pc), // random
+      });
 
       if (loop.instr.length > 0) {
         const childStackFrame = createChildStackFrame(frame, loop.instr);
@@ -221,6 +237,10 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         if (isTrapped(res)) {
           return res;
+        }
+
+        if (typeof res !== 'undefined') {
+          pushResult(res);
         }
       }
 
@@ -403,7 +423,15 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         // 3. If c is non-zero, then
         // 3. a. Execute the instruction (br l).
-        br(label);
+        const res = br(label);
+
+        if (isTrapped(res)) {
+          return res;
+        }
+
+        if (typeof res !== 'undefined') {
+          pushResult(res);
+        }
 
       } else {
         // 4. Else:
@@ -1025,23 +1053,23 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       break;
     }
 
-	/**
-	 * Bitwise operators
-	 */
-	case 'or': {
-	  switch (instruction.object) {
+    /**
+     * Bitwise operators
+     */
+    case 'or': {
+      switch (instruction.object) {
 
-	  case 'i32': {
-	  	const [c1, c2] = pop2('i32', 'i32');
+      case 'i32': {
+        const [c1, c2] = pop2('i32', 'i32');
 
-		pushResult(
-			binopi32(c1, c2, '|')
-		);
+        pushResult(
+          binopi32(c1, c2, '|')
+        );
 
-		break;
-	  }
-	  }
-	}
+        break;
+      }
+      }
+    }
     }
 
     if (typeof frame.trace === 'function') {
