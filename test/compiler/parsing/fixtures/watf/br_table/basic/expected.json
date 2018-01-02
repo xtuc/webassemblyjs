@@ -2,36 +2,22 @@
   "type": "Program",
   "body": [
     {
-      "type": "Module",
-      "id": null,
-      "fields": [
+      "type": "BrTableInstruction",
+      "id": "br_table",
+      "labels": [
         {
-          "type": "Func",
-          "id": null,
-          "params": [],
-          "result": null,
-          "body": [
-            {
-              "type": "BrTableInstruction",
-              "id": "br_table",
-              "labels": [
-                {
-                  "type": "Identifier",
-                  "name": "a"
-                },
-                {
-                  "type": "Identifier",
-                  "name": "b"
-                }
-              ],
-              "label": {
-                "type": "Identifier",
-                "name": "z"
-              }
-            }
-          ]
+          "type": "Identifier",
+          "name": "a"
+        },
+        {
+          "type": "Identifier",
+          "name": "b"
         }
-      ]
+      ],
+      "label": {
+        "type": "Identifier",
+        "name": "z"
+      }
     }
   ]
 }

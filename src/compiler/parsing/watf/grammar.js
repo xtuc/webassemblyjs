@@ -763,12 +763,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       if (isKeyword(token, keywords.br_table)) {
         eatToken();
-        return parseBrTable();
+        const node = parseBrTable();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
       }
 
       if (isKeyword(token, keywords.br_if)) {
         eatToken();
-        return parseBrIf();
+        const node = parseBrIf();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
       }
 
       if (isKeyword(token, keywords.func)) {
