@@ -30,7 +30,7 @@ export class Instance {
 
     if (module instanceof Module === false) {
 
-      throw new Error(
+      throw new TypeError(
         'module must be of type WebAssembly.Module, '
         + (typeof module) + ' given.'
       );
@@ -73,7 +73,7 @@ export class Instance {
     const moduleAst = getModuleFromProgram(ast);
 
     if (typeof moduleAst === 'undefined') {
-      throw new Error('Module not found');
+      throw new RuntimeError('Module not found');
     }
 
     const moduleInstance = modulevalue.createInstance(
@@ -141,7 +141,7 @@ function createHostfunc(
     const funcinst = allocator.get(exportinstAddr);
 
     if (funcinst === null) {
-      throw new Error(`Function was not found at addr ${exportinstAddr.index}`);
+      throw new RuntimeError(`Function was not found at addr ${exportinstAddr.index}`);
     }
 
     const funcinstArgs = funcinst.type[0];
