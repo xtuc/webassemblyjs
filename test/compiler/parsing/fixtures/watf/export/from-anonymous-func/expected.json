@@ -9,7 +9,7 @@
           "type": "Func",
           "id": {
             "type": "Identifier",
-            "name": "temp_9"
+            "name": "temp_1"
           },
           "params": [],
           "result": "i32",
@@ -29,14 +29,14 @@
           "name": "type-i32",
           "descr": {
             "type": "Func",
-            "id": "temp_9"
+            "id": "temp_1"
           }
         },
         {
           "type": "Func",
           "id": {
             "type": "Identifier",
-            "name": "temp_10"
+            "name": "temp_2"
           },
           "params": [],
           "result": null,
@@ -47,7 +47,7 @@
           "name": "an",
           "descr": {
             "type": "Func",
-            "id": "temp_10"
+            "id": "temp_2"
           }
         }
       ]

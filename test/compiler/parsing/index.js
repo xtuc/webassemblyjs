@@ -7,6 +7,7 @@ const {writeFileSync, readFileSync} = require('fs');
 const path = require('path');
 
 const {_debug} = require('../../../lib');
+const watf = require('../../../lib/compiler/parsing/watf/grammar');
 
 function toArrayBuffer(buf) {
   return buf.buffer.slice(
@@ -19,6 +20,8 @@ describe('compiler', () => {
 
   describe('WATF parsing', () => {
     const testSuites = glob.sync('test/compiler/parsing/fixtures/**/actual.wast');
+
+    afterEach(() => watf.resetUniqueNameGenerator());
 
     testSuites.forEach((suite) => {
 

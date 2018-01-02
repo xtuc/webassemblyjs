@@ -16,7 +16,7 @@
               "id": "block",
               "label": {
                 "type": "Identifier",
-                "name": "temp_11"
+                "name": "temp_1"
               },
               "instr": [
                 {
@@ -43,7 +43,7 @@
                   "id": "block",
                   "label": {
                     "type": "Identifier",
-                    "name": "temp_12"
+                    "name": "temp_2"
                   },
                   "instr": [
                     {

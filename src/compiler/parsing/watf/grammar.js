@@ -5,6 +5,11 @@ const t = require('../../AST');
 
 let inc = 0;
 
+// Used to have consistent tests
+export function resetUniqueNameGenerator() {
+  inc = 0;
+}
+
 function getUniqueName(prefix: string = 'temp'): string {
   inc++;
 
@@ -15,7 +20,7 @@ function isKeyword(token: Object, id: string): boolean {
   return token.type === tokens.keyword && token.value === id;
 }
 
-function parse(tokensList: Array<Object>): Program {
+export function parse(tokensList: Array<Object>): Program {
   let current = 0;
 
   const state = {
@@ -788,5 +793,3 @@ function parse(tokensList: Array<Object>): Program {
 
   return t.program(body);
 }
-
-module.exports = {parse};
