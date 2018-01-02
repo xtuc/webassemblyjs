@@ -741,16 +741,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         // Nested instruction
         if (token.type === tokens.openParen) {
-          eatTokenOfType(tokens.openParen);
-
           const callBody = [];
 
           parseListOfInstructions(callBody);
 
           // Ignore call body for now since it's just in the WAST format and
           // not in the WASM production format.
-
-          eatTokenOfType(tokens.closeParen);
         }
 
         if (typeof index === 'undefined') {

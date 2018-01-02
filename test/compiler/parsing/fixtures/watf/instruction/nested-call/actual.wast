@@ -1,5 +1,5 @@
 (func
-  (call $name (
+  (call $name
     (i32.const 16)
-  ))
+  )
 )
