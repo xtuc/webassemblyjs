@@ -999,7 +999,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         else if (lookaheadAndCheck(keywords.export) === true) {
           eatToken();
-          parseFuncExport();
+          parseFuncExport(fnName);
         }
 
         // Instruction
@@ -1029,7 +1029,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      * export :: ( export <string> )
      */
-    function parseFuncExport() {
+    function parseFuncExport(funcId: Identifier) {
 
       if (token.type !== tokens.string) {
         throw new Error('Function export expected a string, ' + token.type + ' given');
@@ -1044,7 +1044,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        *
        * We give the anonymous function a generated name and export it.
        */
-      const id = getUniqueName('export');
+      const id = funcId.name;
 
       state.registredExportedFuncs.push({
         name,
