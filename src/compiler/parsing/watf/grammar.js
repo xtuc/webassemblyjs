@@ -717,8 +717,25 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         /**
          * Maybe some nested instructions
          */
-        if (token.type === tokens.openParen) {
-          parseListOfInstructions(args);
+
+        while (token.type === tokens.openParen) {
+          eatToken();
+
+          // Instruction
+          if (
+            lookaheadAndCheck(tokens.name) === true
+            || lookaheadAndCheck(tokens.valtype) === true
+            || token.type === 'keyword' // is any keyword
+          ) {
+            args.push(
+              parseFuncInstr()
+            );
+          }
+
+          else {
+            showCodeFrame(source, token.loc);
+            throw new Error('Unexpected token in nested instruction of type: ' + token.type);
+          }
 
           eatTokenOfType(tokens.closeParen);
         }
