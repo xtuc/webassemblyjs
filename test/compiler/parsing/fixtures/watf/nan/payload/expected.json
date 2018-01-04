@@ -1,0 +1,25 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": null,
+      "params": [],
+      "result": null,
+      "body": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "f32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+			  "value": NaN,
+              "payload": 0x400012
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
