@@ -133,7 +133,7 @@ function tokenize(input: string) {
     }
 
     const NUMBERS = /[0-9|.|_]/;
-    const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P]/;
+    const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
     if (NUMBERS.test(char) || char === '-' && NUMBERS.test(input[current + 1]) ) {
       let value = '';
       if (char === '-') {

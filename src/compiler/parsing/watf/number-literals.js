@@ -38,5 +38,5 @@ function isDecimalExponentLiteral(sourceString: string): boolean {
 }
 
 function isHexLiteral( sourceString: string): boolean {
-  return sourceString.substring(0,2).toUpperCase() === '0X';
+  return sourceString.substring(0,2).toUpperCase() === '0X' || sourceString.substring(0,3).toUpperCase() === '-0X';
 }
