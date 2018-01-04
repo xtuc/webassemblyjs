@@ -1,10 +1,18 @@
 // @flow
 
+const parseHexFloat = require('webassembly-floating-point-hex-parser');
+
 export function parse32F( sourceString: string ): number {
+  if (isHexLiteral(sourceString)) {
+	return parseHexFloat(sourceString);
+  }
   return parseFloat(sourceString);
 }
 
 export function parse64F( sourceString: string ): number {
+  if (isHexLiteral(sourceString)) {
+	return parseHexFloat(sourceString);
+  }
   return parseFloat(sourceString);
 }
 
