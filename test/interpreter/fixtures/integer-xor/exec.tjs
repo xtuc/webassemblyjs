@@ -1,0 +1,9 @@
+const m = WebAssembly.instantiateFromSource(watfmodule);
+
+it('should produce correct result', () => {
+  const arg1 = 45, arg2 = 77;
+  const res = m.exports.xor(arg1, arg2);
+
+  assert.typeOf(res, 'number');
+  assert.equal(res, arg1 ^ arg2);
+});
