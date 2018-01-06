@@ -1,10 +1,18 @@
 // @flow
 
+const parseHexFloat = require('webassembly-floating-point-hex-parser');
+
 export function parse32F( sourceString: string ): number {
+  if (isHexLiteral(sourceString)) {
+	return parseHexFloat(sourceString);
+  }
   return parseFloat(sourceString);
 }
 
 export function parse64F( sourceString: string ): number {
+  if (isHexLiteral(sourceString)) {
+	return parseHexFloat(sourceString);
+  }
   return parseFloat(sourceString);
 }
 
@@ -30,5 +38,5 @@ function isDecimalExponentLiteral(sourceString: string): boolean {
 }
 
 function isHexLiteral( sourceString: string): boolean {
-  return sourceString.substring(0,2).toUpperCase() === '0X';
+  return sourceString.substring(0,2).toUpperCase() === '0X' || sourceString.substring(0,3).toUpperCase() === '-0X';
 }

@@ -1069,6 +1069,25 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         break;
       }
       }
+
+      break;
+    }
+
+    case 'xor': {
+      switch (instruction.object) {
+
+      case 'i32': {
+        const [c1, c2] = pop2('i32', 'i32');
+
+        pushResult(
+          binopi32(c1, c2, '^')
+        );
+
+        break;
+      }
+      }
+
+      break;
     }
     }
 
