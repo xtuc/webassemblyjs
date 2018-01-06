@@ -53,7 +53,7 @@ Provides core features (memory management, execution, ...).
 
 ##### Why is this using a giant switch/case?
 
-As explained here: https://github.com/xtuc/js-webassembly-interpreter/issues/56#issuecomment-355736921, it's a critical part of the interpreter and needs to be very fast.
+As explained here: [56#issuecomment-355736921](https://github.com/xtuc/js-webassembly-interpreter/issues/56#issuecomment-355736921), it's a critical part of the interpreter and needs to be very fast.
 Note that most of the interpreter uses that technique.
 
 ##### Memory management
