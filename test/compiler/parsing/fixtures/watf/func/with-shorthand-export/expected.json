@@ -1,0 +1,47 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "id": {
+            "type": "Identifier",
+            "name": "func_1"
+          },
+          "params": [],
+          "result": null,
+          "body": []
+        },
+        {
+          "type": "ModuleExport",
+          "name": "an",
+          "descr": {
+            "type": "Func",
+            "id": "func_1"
+          }
+        },
+        {
+          "type": "Func",
+          "id": {
+            "type": "Identifier",
+            "name": "add"
+          },
+          "params": [],
+          "result": null,
+          "body": []
+        },
+        {
+          "type": "ModuleExport",
+          "name": "add",
+          "descr": {
+            "type": "Func",
+            "id": "add"
+          }
+        }
+      ]
+    }
+  ]
+}

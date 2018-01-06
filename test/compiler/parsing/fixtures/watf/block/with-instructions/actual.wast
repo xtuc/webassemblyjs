@@ -1,4 +1,4 @@
-(block (
+(block
   (nop)
   (nop)
-))
+)

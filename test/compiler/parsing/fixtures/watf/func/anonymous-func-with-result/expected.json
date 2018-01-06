@@ -3,7 +3,10 @@
   "body": [
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_1"
+      },
       "params": [],
       "result": "i32",
       "body": []

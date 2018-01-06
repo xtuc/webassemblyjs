@@ -1,9 +1,12 @@
-(func (
+(func
 
-  (if $label then (
-    (nop)
-  ) else (
-    (nop)
-  ))
+  (if $label
+    (then
+      (nop)
+    )
+    (else
+      (nop)
+    )
+  )
 
-))
+)

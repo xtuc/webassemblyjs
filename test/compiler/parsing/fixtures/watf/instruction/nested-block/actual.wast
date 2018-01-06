@@ -1,9 +1,9 @@
-(func (
- (block (
+(func
+ (block
    (call $dummy)
    (i32.const 150)
-   (block (
+   (block
      (i32.const 150)
-   ))
- ))
-))
+   )
+ )
+)

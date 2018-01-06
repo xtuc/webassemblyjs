@@ -3,13 +3,20 @@
   "body": [
     {
       "type": "Func",
-      "id": null,
+      "id": {
+        "type": "Identifier",
+        "name": "func_1"
+      },
       "params": [],
       "result": null,
       "body": [
         {
           "type": "LoopInstruction",
           "id": "loop",
+          "label": {
+            "type": "Identifier",
+            "name": "loop_2"
+          },
           "resulttype": "i32",
           "instr": [
             {

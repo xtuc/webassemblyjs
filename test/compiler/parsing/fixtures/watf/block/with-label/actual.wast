@@ -1,1 +1,1 @@
-(block $test ())
+(block $test)

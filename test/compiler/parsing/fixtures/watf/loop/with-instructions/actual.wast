@@ -1,6 +1,6 @@
-(func (
-  (loop (
+(func
+  (loop
     (nop)
     (nop)
-  ))
-))
+  )
+)

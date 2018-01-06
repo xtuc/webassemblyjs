@@ -1,5 +1,5 @@
-(func (
-  (loop (result i32) (
+(func
+  (loop (result i32)
     (nop)
-  ))
-))
+  )
+)
