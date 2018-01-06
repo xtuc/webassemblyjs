@@ -48,6 +48,6 @@
     "wasmrun": "./lib/bin/wasmrun.js"
   },
   "dependencies": {
-    "webassembly-floating-point-hex-parser": "^0.1.2"
+    "webassembly-floating-point-hex-parser": "0.1.2"
   }
 }
