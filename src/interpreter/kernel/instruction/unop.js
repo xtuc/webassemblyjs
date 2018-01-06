@@ -1,6 +1,6 @@
 // @flow
 
-type Sign = 'abs';
+type Sign = 'abs' | 'neg';
 
 const i32 = require('../../runtime/values/i32');
 const i64 = require('../../runtime/values/i64');
