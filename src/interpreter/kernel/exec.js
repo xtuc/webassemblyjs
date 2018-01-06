@@ -724,65 +724,38 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     }
 
     /**
-     * Numeric Instructions
-     *
-     * https://webassembly.github.io/spec/exec/instructions.html#numeric-instructions
+     * Unary operations
      */
-
-    case 'abs': {
-
-      switch (instruction.object) {
-
-      case 'f32': {
-        const c = pop1('f32');
-
-        pushResult(
-          unopf32(c, 'abs')
-        );
-
-        break;
-      }
-
-      default:
-        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-      }
-
-      break;
-    }
-
-
+    case 'abs':
     case 'neg': {
-
+      let unopFn;
       switch (instruction.object) {
-
-      case 'f32': {
-        const c = pop1('f32');
-
-        pushResult(
-          unopf32(c, 'neg')
-        );
-
-        break;
+        case 'i32': 
+          unopFn = unopi32;
+          break;
+        case 'i64': 
+          unopFn = unopi64;
+          break;
+        case 'f32': 
+          unopFn = unopf32;
+          break;
+        case 'f64': 
+          unopFn = unopf64;
+          break;
+        default:
+          throw new RuntimeError(
+            'Unsupported operation ' + instruction.id + ' on ' + instruction.object
+          );
       }
+      
+      const c = pop1('f32');
 
-      case 'f64': {
-        const c = pop1('f64');
-
-        pushResult(
-          unopf64(c, 'neg')
-        );
-
-        break;
-      }
-
-      default:
-        throw new RuntimeError('Unsupported operation ' + instruction.id + ' on ' + instruction.object);
-      }
+      pushResult(
+        unopf32(c, instruction.id)
+      );
 
       break;
     }
-
-
     }
 
     if (typeof frame.trace === 'function') {
