@@ -690,7 +690,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i32', 'i32');
 
         pushResult(
-          binopi32(c2, c1, '+')
+          binopi32(c2, c1, 'add')
         );
 
         break;
@@ -700,7 +700,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i64', 'i64');
 
         pushResult(
-          binopi64(c2, c1, '+')
+          binopi64(c2, c1, 'add')
         );
 
         break;
@@ -710,7 +710,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('f32', 'f32');
 
         pushResult(
-          binopf32(c2, c1, '+')
+          binopf32(c2, c1, 'add')
         );
 
         break;
@@ -720,7 +720,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('f64', 'f64');
 
         pushResult(
-          binopf64(c2, c1, '+')
+          binopf64(c2, c1, 'add')
         );
 
         break;
@@ -744,7 +744,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i32', 'i32');
 
         pushResult(
-          binopi32(c2, c1, '*')
+          binopi32(c2, c1, 'mul')
         );
 
         break;
@@ -754,7 +754,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i64', 'i64');
 
         pushResult(
-          binopi64(c2, c1, '*')
+          binopi64(c2, c1, 'mul')
         );
 
         break;
@@ -764,7 +764,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('f32', 'f32');
 
         pushResult(
-          binopf32(c2, c1, '*')
+          binopf32(c2, c1, 'mul')
         );
 
         break;
@@ -774,7 +774,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('f64', 'f64');
 
         pushResult(
-          binopf64(c2, c1, '*')
+          binopf64(c2, c1, 'mul')
         );
 
         break;
@@ -798,7 +798,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i32', 'i32');
 
         pushResult(
-          binopi32(c2, c1, '-')
+          binopi32(c2, c1, 'sub')
         );
 
         break;
@@ -808,7 +808,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i64', 'i64');
 
         pushResult(
-          binopi64(c2, c1, '-')
+          binopi64(c2, c1, 'sub')
         );
 
         break;
@@ -818,7 +818,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('f32', 'f32');
 
         pushResult(
-          binopf32(c2, c1, '-')
+          binopf32(c2, c1, 'sub')
         );
 
         break;
@@ -828,7 +828,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('f64', 'f64');
 
         pushResult(
-          binopf64(c2, c1, '-')
+          binopf64(c2, c1, 'sub')
         );
 
         break;
@@ -858,7 +858,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i32', 'i32');
 
         pushResult(
-          binopi32(c2, c1, '/')
+          binopi32(c2, c1, 'div')
         );
 
         break;
@@ -868,7 +868,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i64', 'i64');
 
         pushResult(
-          binopi64(c2, c1, '/')
+          binopi64(c2, c1, 'div')
         );
 
         break;
@@ -878,7 +878,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('f32', 'f32');
 
         pushResult(
-          binopf32(c2, c1, '/')
+          binopf32(c2, c1, 'div')
         );
 
         break;
@@ -888,7 +888,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('f64', 'f64');
 
         pushResult(
-          binopf64(c2, c1, '/')
+          binopf64(c2, c1, 'div')
         );
 
         break;
@@ -1063,7 +1063,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i32', 'i32');
 
         pushResult(
-          binopi32(c1, c2, '|')
+          binopi32(c1, c2, 'or')
         );
 
         break;
@@ -1080,7 +1080,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         const [c1, c2] = pop2('i32', 'i32');
 
         pushResult(
-          binopi32(c1, c2, '^')
+          binopi32(c1, c2, 'xor')
         );
 
         break;

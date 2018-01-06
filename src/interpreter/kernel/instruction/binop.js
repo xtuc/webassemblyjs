@@ -1,6 +1,6 @@
 // @flow
 
-type Sign = '+' | '-' | '/' | '*' | '&' | '|' | '^' | '~' | 'min' | 'max' | 'copysign';
+type Sign = 'add' | 'sub' | 'div' | 'div_s' | 'div_u' | 'mul' | 'and' | 'or' | 'xor' | '~' | 'min' | 'max' | 'copysign';
 
 const i32 = require('../../runtime/values/i32');
 const i64 = require('../../runtime/values/i64');
@@ -17,32 +17,34 @@ function binop(
 
   switch (sign) {
   // https://webassembly.github.io/spec/exec/numerics.html#op-iadd
-  case '+':
+  case 'add':
     return createValue(c1.value + c2.value);
 
     // https://webassembly.github.io/spec/exec/numerics.html#op-isub
-  case '-':
+  case 'sub':
     return createValue(c1.value - c2.value);
 
   // https://webassembly.github.io/spec/exec/numerics.html#op-imul
-  case '*':
+  case 'mul':
     return createValue(c1.value * c2.value);
 
   // https://webassembly.github.io/spec/exec/numerics.html#op-idiv-u
   // https://webassembly.github.io/spec/exec/numerics.html#op-idiv-s
-  case '/':
+  case 'div_s':
+  case 'div_u':
+  case 'div':
     return createValue(c1.value / c2.value);
 
   // https://webassembly.github.io/spec/exec/numerics.html#op-iand
-  case '&':
+  case 'and':
     return createValue(c1.value & c2.value);
 
   // https://webassembly.github.io/spec/exec/numerics.html#op-ior
-  case '|':
+  case 'or':
     return createValue(c1.value | c2.value);
 
   // https://webassembly.github.io/spec/exec/numerics.html#op-ixor
-  case '^':
+  case 'xor':
     return createValue(c1.value ^ c2.value);
 
   case 'min':
