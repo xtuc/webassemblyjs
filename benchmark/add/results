@@ -1,13 +1,13 @@
 
 Testing interpreted
-total 3459.1666850000 ms
-mean 345.9166685000 ns
+total 3540.2786830000 ms
+mean 354.0278683000 ns
 
 Testing native
-total 217.1513420000 ms
-mean 21.7151342000 ns
+total 225.5535580000 ms
+mean 22.5553558000 ns
 
 Interations: 10000000
-Date: 2017-12-29
+Date: 2018-1-6
 V8 version: 6.2.414.46-node.15
-Interpreter version: 0.0.14
+Interpreter version: 0.0.15
