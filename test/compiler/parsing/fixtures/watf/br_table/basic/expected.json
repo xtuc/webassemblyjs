@@ -2,22 +2,33 @@
   "type": "Program",
   "body": [
     {
-      "type": "BrTableInstruction",
-      "id": "br_table",
-      "labels": [
-        {
-          "type": "Identifier",
-          "name": "a"
-        },
-        {
-          "type": "Identifier",
-          "name": "b"
-        }
-      ],
-      "label": {
+      "type": "Func",
+      "id": {
         "type": "Identifier",
-        "name": "z"
-      }
+        "name": "func_1"
+      },
+      "params": [],
+      "result": null,
+      "body": [
+        {
+          "type": "Instr",
+          "id": "br_table",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            },
+            {
+              "type": "NumberLiteral",
+              "value": 1
+            },
+            {
+              "type": "NumberLiteral",
+              "value": 3
+            }
+          ]
+        }
+      ]
     }
   ]
 }

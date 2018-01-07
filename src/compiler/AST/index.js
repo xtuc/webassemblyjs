@@ -322,29 +322,3 @@ export function byteArray(values: Array<Byte>): ByteArray {
   };
 }
 
-export function brTableInstruction(
-  labels: Array<Index>,
-  label: Index,
-): BrTableInstruction {
-  assert(typeof label.type === 'string');
-  assert(typeof labels === 'object' && typeof labels.length !== 'undefined');
-
-  return {
-    type: 'BrTableInstruction',
-    id: 'br_table',
-    labels,
-    label,
-  };
-}
-
-export function brIfInstruction(
-  label: Index,
-): BrIfInstruction {
-  assert(typeof label.type === 'string');
-
-  return {
-    type: 'BrIfInstruction',
-    id: 'br_if',
-    label,
-  };
-}

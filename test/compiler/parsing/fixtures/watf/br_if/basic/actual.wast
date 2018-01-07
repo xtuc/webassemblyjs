@@ -1,1 +1,3 @@
-(br_if $label)
+(func
+  (br_if 0)
+)

@@ -2,12 +2,25 @@
   "type": "Program",
   "body": [
     {
-      "type": "BrIfInstruction",
-      "id": "br_if",
-      "label": {
+      "type": "Func",
+      "id": {
         "type": "Identifier",
-        "name": "label"
-      }
+        "name": "func_1"
+      },
+      "params": [],
+      "result": null,
+      "body": [
+        {
+          "type": "Instr",
+          "id": "br_if",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          ]
+        }
+      ]
     }
   ]
 }
