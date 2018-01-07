@@ -288,6 +288,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           if (typeof res !== 'undefined') {
             pushResult(res);
           }
+        } else {
+          throw new RuntimeError('Ilegal call instruction on type: ' + element.type);
         }
       }
 
