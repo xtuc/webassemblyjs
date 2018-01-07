@@ -1,0 +1,111 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "func_1"
+      },
+      "params": [
+        {
+          "id": "c",
+          "valtype": "f64"
+        },
+        {
+          "id": "a",
+          "valtype": "i32"
+        },
+        {
+          "id": "b",
+          "valtype": "i64"
+        }
+      ],
+      "result": null,
+      "body": [
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "get_local",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "set_local",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 1
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "tee_local",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 1
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
