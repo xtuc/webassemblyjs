@@ -117,17 +117,6 @@ type CallInstruction = Instruction & {
   index: Index;
 }
 
-type BrTableInstruction = Instruction & {
-  type: 'BrTableInstruction';
-  labels: Array<Index>;
-  label: Index;
-}
-
-type BrIfInstruction = Instruction & {
-  type: 'BrIfInstruction';
-  label: Index;
-}
-
 interface ModuleExport {
   type: 'ModuleExport';
   name: string;

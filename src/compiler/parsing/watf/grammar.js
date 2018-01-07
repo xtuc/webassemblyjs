@@ -82,73 +82,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return true;
     }
 
-    function parseMaybeSignature() {
-      const params = [];
-      let signatureName, result;
-
-      /**
-       * Function params
-       */
-      if (isKeyword(token, keywords.param)) {
-        params.push(
-          ...parseFuncParam()
-        );
-      } else
-
-      /**
-       * Else an export
-       */
-      if (isKeyword(token, keywords.export)) {
-        eatToken();
-
-        if (token.type !== tokens.string) {
-          throw new Error('Function export expected a string, ' + token.type + ' given');
-        }
-
-        const name = token.value;
-        eatToken();
-
-        /**
-         * Func export shorthand, we trait it as a syntaxic sugar.
-         * A export ModuleField will be added later.
-         *
-         * We give the anonymous function a generated name and export it.
-         */
-        const id = getUniqueName();
-
-        signatureName = id;
-
-        state.registredExportedFuncs.push({
-          name,
-          id,
-        });
-
-      } else
-
-      /**
-       * Else the result result
-       */
-      if (isKeyword(token, keywords.result)) {
-        eatToken();
-
-        if (token.type === tokens.valtype) {
-
-          // Already declared the result, but not supported yet by WebAssembly
-          if (typeof result !== 'undefined') {
-            throw new Error('Multiple return types are not supported yet');
-          }
-
-          result = token.value;
-          eatToken();
-
-        } else {
-          throw new Error('Function result has no valtype');
-        }
-      }
-
-      return {params, result, signatureName};
-    }
-
     function parseListOfInstructions(acc: Array<Instruction>) {
       while (
         (token.type === tokens.openParen)
@@ -410,58 +343,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return t.ifInstruction(label, blockResult, consequent, alternate);
     }
 
-    function parseBrIf(): BrIfInstruction {
-      let label;
-
-      if (token.type === tokens.identifier) {
-        label = t.identifier(token.value);
-        eatToken();
-      } else if (token.type === tokens.number) {
-        label = t.numberLiteral(token.value);
-        eatToken();
-      } else {
-        throw new Error('Unexpected token in br_if of type: ' + token.type);
-      }
-
-      // nested
-      if (token.type === tokens.openParen) {
-        const children = [];
-
-        parseListOfInstructions(children);
-
-        // Ignore children for now since it's just in the WAST format and
-        // not in the WASM production format.
-        children;
-
-        eatTokenOfType(tokens.closeParen);
-      }
-
-      return t.brIfInstruction(label);
-    }
-
-    function parseBrTable(): BrTableInstruction {
-      const labels = [];
-
-      while (
-        (token.type === tokens.identifier)
-      ) {
-        const value = token.value;
-        eatToken();
-
-        labels.push(
-          t.identifier(value)
-        );
-      }
-
-      const label = labels.pop();
-      const tableLabels = labels;
-
-      return t.brTableInstruction(
-        tableLabels,
-        label,
-      );
-    }
-
     /**
      * Parses a loop instruction
      *
@@ -695,10 +576,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         /**
          * Handle arguments
-         *
-         * Currently only one argument is allowed
          */
-        if (token.type === tokens.identifier) {
+        while (token.type === tokens.identifier) {
           args.push(
             t.identifier(token.value)
           );
@@ -706,7 +585,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
         }
 
-        if (token.type === tokens.number) {
+        while (token.type === tokens.number) {
           args.push(
             t.numberLiteral(token.value, object)
           );
@@ -717,7 +596,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         /**
          * Maybe some nested instructions
          */
-
         while (token.type === tokens.openParen) {
           eatToken();
 
@@ -754,14 +632,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // keyword
 
         return parseLoop();
-      } else if (isKeyword(token, keywords.br_table)) {
-        eatToken();
-
-        return parseBrTable();
-      } else if (isKeyword(token, keywords.br_if)) {
-        eatToken();
-
-        return parseBrIf();
       } else if (isKeyword(token, keywords.block)) {
         eatToken(); // keyword
 
@@ -1003,22 +873,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.loop)) {
         eatToken();
         return parseLoop();
-      }
-
-      if (isKeyword(token, keywords.br_table)) {
-        eatToken();
-        const node = parseBrTable();
-        eatTokenOfType(tokens.closeParen);
-
-        return node;
-      }
-
-      if (isKeyword(token, keywords.br_if)) {
-        eatToken();
-        const node = parseBrIf();
-        eatTokenOfType(tokens.closeParen);
-
-        return node;
       }
 
       if (isKeyword(token, keywords.func)) {
