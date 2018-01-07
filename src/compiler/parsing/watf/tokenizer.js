@@ -61,7 +61,6 @@ const keywords = {
   else: 'else',
   call: 'call',
   import: 'import',
-  br_table: 'br_table',
 };
 
 const CloseParenToken = createToken(tokens.closeParen);

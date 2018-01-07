@@ -343,29 +343,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return t.ifInstruction(label, blockResult, consequent, alternate);
     }
 
-    function parseBrTable(): BrTableInstruction {
-      const labels = [];
-
-      while (
-        (token.type === tokens.identifier)
-      ) {
-        const value = token.value;
-        eatToken();
-
-        labels.push(
-          t.identifier(value)
-        );
-      }
-
-      const label = labels.pop();
-      const tableLabels = labels;
-
-      return t.brTableInstruction(
-        tableLabels,
-        label,
-      );
-    }
-
     /**
      * Parses a loop instruction
      *
@@ -600,7 +577,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         /**
          * Handle arguments
          */
-        if (token.type === tokens.identifier) {
+        while (token.type === tokens.identifier) {
           args.push(
             t.identifier(token.value)
           );
@@ -608,7 +585,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
         }
 
-        if (token.type === tokens.number) {
+        while (token.type === tokens.number) {
           args.push(
             t.numberLiteral(token.value, object)
           );
@@ -619,7 +596,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         /**
          * Maybe some nested instructions
          */
-
         while (token.type === tokens.openParen) {
           eatToken();
 
@@ -656,10 +632,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // keyword
 
         return parseLoop();
-      } else if (isKeyword(token, keywords.br_table)) {
-        eatToken();
-
-        return parseBrTable();
       } else if (isKeyword(token, keywords.block)) {
         eatToken(); // keyword
 
@@ -901,14 +873,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.loop)) {
         eatToken();
         return parseLoop();
-      }
-
-      if (isKeyword(token, keywords.br_table)) {
-        eatToken();
-        const node = parseBrTable();
-        eatTokenOfType(tokens.closeParen);
-
-        return node;
       }
 
       if (isKeyword(token, keywords.func)) {

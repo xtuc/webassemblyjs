@@ -198,6 +198,86 @@
               ]
             }
           ]
+        },
+        {
+          "type": "Instr",
+          "id": "br_table",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            },
+            {
+              "type": "BlockInstruction",
+              "id": "block",
+              "label": {
+                "type": "Identifier",
+                "name": "block_5"
+              },
+              "instr": [
+                {
+                  "type": "Instr",
+                  "id": "drop",
+                  "args": [
+                    {
+                      "type": "Instr",
+                      "id": "br_if",
+                      "args": [
+                        {
+                          "type": "NumberLiteral",
+                          "value": 1
+                        },
+                        {
+                          "type": "Instr",
+                          "id": "const",
+                          "object": "i32",
+                          "args": [
+                            {
+                              "type": "NumberLiteral",
+                              "value": 8
+                            }
+                          ]
+                        },
+                        {
+                          "type": "Instr",
+                          "id": "get_local",
+                          "args": [
+                            {
+                              "type": "NumberLiteral",
+                              "value": 0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 4
+                    }
+                  ]
+                }
+              ],
+              "result": "i32"
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
+              ]
+            }
+          ]
         }
       ]
     }
