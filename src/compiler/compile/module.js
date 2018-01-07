@@ -1,6 +1,11 @@
 // @flow
 
 const {traverse} = require('../AST/traverse');
+const funcResultTypeValidation = require('../validation/func-result-type');
+
+function validateAST(ast: Program) {
+  funcResultTypeValidation.validate(ast)
+}
 
 export class Module {
   _ast: Program;
@@ -13,6 +18,8 @@ export class Module {
     exports: Array<CompiledModuleExportDescr>,
     imports: Array<CompiledModuleImportDescr>,
   ) {
+    validateAST(ast);
+
     this._ast = ast;
 
     this.exports = exports;
