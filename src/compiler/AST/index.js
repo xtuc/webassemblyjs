@@ -144,7 +144,7 @@ export function blockInstruction(
 export function numberLiteral(
   rawValue: number | string,
   type: Valtype = "f64"
-): NumberLiteral {
+): NumberLiteral | LongLiteral {
   let value;
 
   if (typeof rawValue === "number") {
@@ -172,7 +172,7 @@ export function numberLiteral(
   }
 
   return {
-    type: "NumberLiteral",
+    type: type === "i64" ? "LongLiteral" : "NumberLiteral",
     value
   };
 }

@@ -13,6 +13,11 @@ type NodePath<T> = {
  * AST types
  */
 
+interface LongNumber {
+  high: number,
+  low: number
+}
+
 interface Position {
   line: number;
   column: number;
@@ -40,6 +45,11 @@ interface Program {
 interface NumberLiteral {
   type: "NumberLiteral";
   value: number;
+}
+
+interface LongLiteral {
+  type: 'LongLiteral';
+  value: LongNumber;
 }
 
 interface Identifier {
@@ -83,7 +93,7 @@ interface Func {
 interface Instruction {
   type: "Instr";
   id: string;
-  args: Array<NumberLiteral | Identifier>;
+  args: Array<NumberLiteral | LongLiteral | Identifier>;
 }
 
 type ObjectInstruction = Instruction & {
