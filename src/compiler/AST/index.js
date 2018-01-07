@@ -20,6 +20,13 @@ export function identifier(name: string): Identifier {
   };
 }
 
+export function valtype(name: string): Valtype {
+  return {
+    type: 'Valtype',
+    name,
+  };
+}
+
 export function program(body: Array<Node>): Program {
   return {
     type: 'Program',
