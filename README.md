@@ -83,7 +83,6 @@ Our runtime instance values.
 ## Notes
 
 -  Text format supports floating point hexadecimals as described in this article [maurobringolf.ch/2017/12/hexadecimal-floating-point-notation](https://maurobringolf.ch/2017/12/hexadecimal-floating-point-notation)
--  get_local of identifier is not supported as in the binary format
 
 ## Source
 
