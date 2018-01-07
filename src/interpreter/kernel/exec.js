@@ -687,22 +687,22 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     case 'xor': {
       let binopFn;
       switch (instruction.object) {
-        case 'i32': 
-          binopFn = binopi32;
-          break;
-        case 'i64': 
-          binopFn = binopi64;
-          break;
-        case 'f32': 
-          binopFn = binopf32;
-          break;
-        case 'f64': 
-          binopFn = binopf64;
-          break;
-        default:
-          throw new RuntimeError(
-            'Unsupported operation ' + instruction.id + ' on ' + instruction.object
-          );
+      case 'i32':
+        binopFn = binopi32;
+        break;
+      case 'i64':
+        binopFn = binopi64;
+        break;
+      case 'f32':
+        binopFn = binopf32;
+        break;
+      case 'f64':
+        binopFn = binopf64;
+        break;
+      default:
+        throw new RuntimeError(
+          'Unsupported operation ' + instruction.id + ' on ' + instruction.object
+        );
       }
 
       const [c1, c2] = pop2(instruction.object, instruction.object);
@@ -720,24 +720,24 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     case 'neg': {
       let unopFn;
       switch (instruction.object) {
-        case 'i32': 
-          unopFn = unopi32;
-          break;
-        case 'i64': 
-          unopFn = unopi64;
-          break;
-        case 'f32': 
-          unopFn = unopf32;
-          break;
-        case 'f64': 
-          unopFn = unopf64;
-          break;
-        default:
-          throw new RuntimeError(
-            'Unsupported operation ' + instruction.id + ' on ' + instruction.object
-          );
+      case 'i32':
+        unopFn = unopi32;
+        break;
+      case 'i64':
+        unopFn = unopi64;
+        break;
+      case 'f32':
+        unopFn = unopf32;
+        break;
+      case 'f64':
+        unopFn = unopf64;
+        break;
+      default:
+        throw new RuntimeError(
+          'Unsupported operation ' + instruction.id + ' on ' + instruction.object
+        );
       }
-      
+
       const c = pop1('f32');
 
       pushResult(
