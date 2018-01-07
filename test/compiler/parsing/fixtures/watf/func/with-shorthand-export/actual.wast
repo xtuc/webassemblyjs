@@ -1,5 +1,5 @@
 (module
-  (func (export "an"))
-  (func $add)
-  (export "add" (func $add))
+  (func (export "a"))
+  (func (export "b") (result i32))
+  (func (export "c") (param i32))
 )
