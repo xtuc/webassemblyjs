@@ -29,7 +29,10 @@ watch:
 	$(BABEL) --out-dir lib/ src/ --watch
 
 test: build
-	$(MOCHA) --recursive
+	$(MOCHA) --recursive --grep spec --invert
+
+test-spec: build
+	$(MOCHA) --grep spec
 
 lint:
 	$(FLOW) src/
