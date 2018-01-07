@@ -167,6 +167,37 @@
               "result": "i32"
             }
           ]
+        },
+        {
+          "type": "Instr",
+          "id": "br_if",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 10
+                }
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
+              ]
+            }
+          ]
         }
       ]
     }

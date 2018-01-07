@@ -123,11 +123,6 @@ type BrTableInstruction = Instruction & {
   label: Index;
 }
 
-type BrIfInstruction = Instruction & {
-  type: 'BrIfInstruction';
-  label: Index;
-}
-
 interface ModuleExport {
   type: 'ModuleExport';
   name: string;

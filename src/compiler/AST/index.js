@@ -337,14 +337,3 @@ export function brTableInstruction(
   };
 }
 
-export function brIfInstruction(
-  label: Index,
-): BrIfInstruction {
-  assert(typeof label.type === 'string');
-
-  return {
-    type: 'BrIfInstruction',
-    id: 'br_if',
-    label,
-  };
-}

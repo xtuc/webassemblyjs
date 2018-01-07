@@ -403,7 +403,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     }
 
     case 'br_if': {
-      const {label} = instruction;
+      const [label] = instruction.args;
 
       // 1. Assert: due to validation, a value of type i32 is on the top of the stack.
       // 2. Pop the value ci32.const c from the stack.

@@ -129,7 +129,7 @@ describe('kernel exec - control instruction', () => {
         ]),
 
         t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
-        t.brIfInstruction(t.identifier('label')),
+        t.instruction('br_if', [t.identifier('label')]),
       ];
 
       const stackFrame = createStackFrame(code, []);
@@ -146,7 +146,7 @@ describe('kernel exec - control instruction', () => {
         ]),
 
         t.objectInstruction('const', 'i32', [t.numberLiteral(0)]),
-        t.brIfInstruction(t.identifier('label')),
+        t.instruction('br_if', [t.identifier('label')]),
 
         t.objectInstruction('const', 'i32', [t.numberLiteral(1)]),
       ];

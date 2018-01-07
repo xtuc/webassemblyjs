@@ -9,4 +9,6 @@
       (i32.const 32)
     )
   )
+
+  (br_if 0 (i32.const 10) (get_local 0))
 )
