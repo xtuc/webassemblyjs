@@ -14,8 +14,8 @@
           "type": "CallInstruction",
           "id": "call",
           "index": {
-            "type": "Identifier",
-            "name": "const-i32"
+            "type": "NumberLiteral",
+            "value": 0
           }
         }
       ]

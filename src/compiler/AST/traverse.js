@@ -44,6 +44,10 @@ export function walk(
     cb(n.type, createPath(n));
   }
 
+  if (n.type === 'CallInstruction') {
+    cb(n.type, createPath(n));
+  }
+
   if (n.type === 'Func') {
     cb(n.type, createPath(n));
 

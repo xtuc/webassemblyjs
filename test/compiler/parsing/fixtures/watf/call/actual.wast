@@ -1,4 +1,6 @@
+(func $a)
+(func $test)
 (func
-  (call 1)
+  (call 0)
   (call $test)
 )

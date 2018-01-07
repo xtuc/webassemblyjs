@@ -5,7 +5,17 @@
       "type": "Func",
       "id": {
         "type": "Identifier",
-        "name": "func_1"
+        "name": "funca"
+      },
+      "params": [],
+      "result": null,
+      "body": []
+    },
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "func_2"
       },
       "params": [
         {
@@ -104,8 +114,34 @@
               ]
             }
           ]
+        },
+        {
+          "type": "CallInstruction",
+          "id": "call",
+          "index": {
+            "type": "NumberLiteral",
+            "value": 0
+          }
+        },
+        {
+          "type": "CallInstruction",
+          "id": "call",
+          "index": {
+            "type": "NumberLiteral",
+            "value": 2
+          }
         }
       ]
+    },
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "funcb"
+      },
+      "params": [],
+      "result": null,
+      "body": []
     }
   ]
 }
