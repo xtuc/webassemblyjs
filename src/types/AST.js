@@ -2,7 +2,7 @@
 
 type Valtype = 'i32' | 'i64' | 'f32' | 'f64' | 'label';
 type ExportDescr = 'func' | 'table' | 'memory' | 'global';
-type Index = NumberLiteral | Identifier;
+type Index = NumberLiteral | LongLiteral | Identifier;
 type Mutability = 'const' | 'var';
 
 type NodePath<T> = {
@@ -44,7 +44,12 @@ interface Program {
 
 interface NumberLiteral {
   type: 'NumberLiteral';
-  value: number | Long;
+  value: number;
+}
+
+interface LongLiteral {
+  type: 'LongLiteral';
+  value: Long;
 }
 
 interface Identifier {
@@ -84,7 +89,7 @@ interface Func {
 interface Instruction {
   type: 'Instr';
   id: string;
-  args: Array<NumberLiteral | Identifier>;
+  args: Array<NumberLiteral | LongLiteral | Identifier>;
 }
 
 type ObjectInstruction = Instruction & {
@@ -146,7 +151,7 @@ type Limit = {
 
 type FuncImportDescr = {
   type: 'FuncImportDescr';
-  value: NumberLiteral | Identifier;
+  value: NumberLiteral | LongLiteral | Identifier;
   params: Array<FuncParam>;
   results: Array<Valtype>;
 }

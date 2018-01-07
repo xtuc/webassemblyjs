@@ -1,14 +1,12 @@
 // @flow
-
+const Long = require('long');
 
 const bits = 64;
 const type = 'i64';
 
-export function createValue(value: number): StackLocal {
-  value = (value | 0) % Math.pow(2, bits);
-
+export function createValue(value: Long): StackLocal {
   return {
     type,
-    value,
+    value: new Long(value.lower, value.upper)
   };
 }

@@ -30,7 +30,6 @@ export function parse32I( sourceString: string ): number {
 }
 
 export function parse64I( sourceString: string ): number | Long {
-  debugger;
   const long = Long.fromString(sourceString);
   return {
     upper: long.high,

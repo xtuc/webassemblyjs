@@ -194,7 +194,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         throw new RuntimeError('const requires one argument, none given.');
       }
 
-      if (n.type !== 'NumberLiteral') {
+      if (n.type !== 'NumberLiteral' && n.type !== 'LongLiteral') {
         throw new RuntimeError('const: unsupported value of type: ' + n.type);
       }
 
@@ -1086,6 +1086,15 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         break;
       }
       }
+
+      break;
+    }
+
+    case 'reinterpret/i64': {
+      
+      const c1 = pop1('i64');
+      const res = f64.createValue(c1.value.toNumber());
+      pushResult(res);
 
       break;
     }

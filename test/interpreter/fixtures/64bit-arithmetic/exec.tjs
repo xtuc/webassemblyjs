@@ -1,0 +1,13 @@
+const m = WebAssembly.instantiateFromSource(watfmodule);
+
+it('should have correct arithmetic with 64bits integers', () => {
+  const res = m.exports.add();
+
+  //   1844674407379551615 (i64)
+  // +               10000 (i64)  
+  // = 1844674407379561615 (i64)
+  //
+  // ≈ 1844674407379561700 (f64)
+
+  assert.equal(res, 1844674407379561700);
+});
