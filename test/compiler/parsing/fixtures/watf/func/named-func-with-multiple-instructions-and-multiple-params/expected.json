@@ -24,8 +24,8 @@
           "id": "get_local",
           "args": [
             {
-              "type": "Identifier",
-              "name": "a"
+              "type": "NumberLiteral",
+              "value": 0
             }
           ]
         },
@@ -35,7 +35,7 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": 0
+              "value": 1
             }
           ]
         },

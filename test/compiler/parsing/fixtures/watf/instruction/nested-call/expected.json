@@ -5,7 +5,17 @@
       "type": "Func",
       "id": {
         "type": "Identifier",
-        "name": "func_1"
+        "name": "name"
+      },
+      "params": [],
+      "result": null,
+      "body": []
+    },
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "func_2"
       },
       "params": [],
       "result": null,
@@ -14,8 +24,8 @@
           "type": "CallInstruction",
           "id": "call",
           "index": {
-            "type": "Identifier",
-            "name": "name"
+            "type": "NumberLiteral",
+            "value": 0
           }
         }
       ]

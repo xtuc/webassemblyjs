@@ -262,35 +262,15 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     case 'call': {
       // According to the spec call doesn't support an Identifier as argument
       // but the Script syntax supports it.
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-call
+      // https://webassembly.github.io/spec/core/exec/instructions.html#exec-call
 
       const call = instruction;
 
-      // WAST
       if (call.index.type === 'Identifier') {
-
-        const element = getLabel(call.index);
-
-        if (typeof element === 'undefined') {
-          throw new RuntimeError('Cannot call ' + call.index.name + ': label not found on the call stack');
-        }
-
-        if (element.type === 'Func') {
-
-          const childStackFrame = createChildStackFrame(frame, element.body);
-
-          const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (isTrapped(res)) {
-            return res;
-          }
-
-          if (typeof res !== 'undefined') {
-            pushResult(res);
-          }
-        } else {
-          throw new RuntimeError('Ilegal call instruction on type: ' + element.type);
-        }
+        throw new RuntimeError(
+          'Internal compiler error: Identifier argument in call must be '
+          + 'transformed to a NumberLiteral node'
+        );
       }
 
       // WASM

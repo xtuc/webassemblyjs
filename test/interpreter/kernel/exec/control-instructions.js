@@ -214,35 +214,4 @@ describe('kernel exec - control instruction', () => {
     });
 
   });
-
-  describe('call', () => {
-
-    it('should call a function', () => {
-      const label = 'foo';
-
-      const code = [
-        t.func(t.identifier(label), /* params */ [], /* result */ null, [
-          t.objectInstruction('const', 'i32', [t.numberLiteral(10)]),
-        ]),
-        t.callInstruction(t.identifier(label)),
-      ];
-
-      const stackFrame = createStackFrame(code, []);
-      const res = executeStackFrame(stackFrame);
-
-      assert.equal(res.value, 10);
-    });
-
-    it('should handle unexisting label', () => {
-      const code = [
-        t.callInstruction(t.identifier('some_label')),
-      ];
-
-      const stackFrame = createStackFrame(code, []);
-      const fn = () => executeStackFrame(stackFrame);
-
-      assert.throws(fn, /Cannot call some_label/);
-    });
-
-  });
 });

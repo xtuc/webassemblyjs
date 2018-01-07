@@ -1,22 +1,9 @@
 // @flow
 
-function cloneNode(o: Node): Node {
-  let v, key;
-  const output = Array.isArray(o) ? [] : {};
-  for (key in o) {
-    // $FlowIgnore
-    v = o[key];
-    // $FlowIgnore
-    output[key] = (typeof v === 'object') ? cloneNode(v) : v;
-  }
-  // $FlowIgnore
-  return output;
-}
-
 function createPath(node: Node): NodePath<Node> {
 
   return {
-    node: cloneNode(node),
+    node,
   };
 }
 
@@ -50,6 +37,14 @@ export function walk(
   }
 
   if (n.type === 'Global') {
+    cb(n.type, createPath(n));
+  }
+
+  if (n.type === 'Instr') {
+    cb(n.type, createPath(n));
+  }
+
+  if (n.type === 'CallInstruction') {
     cb(n.type, createPath(n));
   }
 
