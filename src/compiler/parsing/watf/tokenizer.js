@@ -198,13 +198,14 @@ function tokenize(input: string) {
 
       char = input[++current];
 
-      while (name.test(char)) {
+      while (char !== '"') {
+
+        if (isNewLine(char)) {
+          throw new Error('Unterminated string constant');
+        }
+
         value += char;
         char = input[++current];
-      }
-
-      if (char !== '"') {
-        throw new Error('Unterminated string constant');
       }
 
       // Shift by the length of the string
