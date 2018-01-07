@@ -66,7 +66,11 @@ type FuncParam = {
 
 interface Func {
   type: 'Func';
+
+  // Only in WAST
+  // TODO(sven): rename id to name and replace Index by Identifier
   id: ?Index;
+
   params: Array<FuncParam>;
   result: ?Valtype;
   body: Array<Instruction>;

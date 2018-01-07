@@ -17,7 +17,7 @@
         },
         {
           "type": "ModuleExport",
-          "name": "an",
+          "name": "a",
           "descr": {
             "type": "Func",
             "id": "func_1"
@@ -27,18 +27,40 @@
           "type": "Func",
           "id": {
             "type": "Identifier",
-            "name": "add"
+            "name": "func_2"
           },
           "params": [],
+          "result": "i32",
+          "body": []
+        },
+        {
+          "type": "ModuleExport",
+          "name": "b",
+          "descr": {
+            "type": "Func",
+            "id": "func_2"
+          }
+        },
+        {
+          "type": "Func",
+          "id": {
+            "type": "Identifier",
+            "name": "func_3"
+          },
+          "params": [
+            {
+              "valtype": "i32"
+            }
+          ],
           "result": null,
           "body": []
         },
         {
           "type": "ModuleExport",
-          "name": "add",
+          "name": "c",
           "descr": {
             "type": "Func",
-            "id": "add"
+            "id": "func_3"
           }
         }
       ]
