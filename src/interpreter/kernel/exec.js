@@ -31,6 +31,12 @@ function assert(cond) {
   }
 }
 
+function assertStackDepth(depth: number) {
+  if (depth >= 300) {
+    throw new RuntimeError('Maximum call stack depth reached');
+  }
+}
+
 function castIntoStackLocalOfType(type: string, v: any): StackLocal {
 
   const castFn = {
@@ -148,6 +154,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
     return res;
   }
+
+  assertStackDepth(depth);
 
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
