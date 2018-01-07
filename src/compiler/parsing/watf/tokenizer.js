@@ -44,6 +44,7 @@ const tokens = {
   identifier: 'identifier',
   valtype: 'valtype',
   dot: 'dot',
+  comment: 'comment',
 
   keyword: 'keyword',
 };
@@ -74,6 +75,7 @@ const IdentifierToken = createToken(tokens.identifier);
 const KeywordToken = createToken(tokens.keyword);
 const DotToken = createToken(tokens.dot);
 const StringToken = createToken(tokens.string);
+const CommentToken = createToken(tokens.comment);
 
 function tokenize(input: string) {
   let current = 0;
@@ -91,6 +93,28 @@ function tokenize(input: string) {
 
   while (current < input.length) {
     let char = input[current];
+
+    // ;;
+    if (char === ';' && input[current + 1] === ';') {
+      eatToken();
+      eatToken();
+
+      char = input[current];
+
+      let text = '';
+
+      while (!isNewLine(char)) {
+        text += char;
+        char = input[++current];
+      }
+
+      // Shift by the length of the string
+      column += text.length;
+
+      tokens.push(CommentToken(text, line, column));
+
+      continue;
+    }
 
     if (char === '(') {
       tokens.push(OpenParenToken(char, line, column));

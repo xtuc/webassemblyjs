@@ -1,0 +1,22 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "LeadingComment",
+      "value": " h"
+    },
+    {
+      "type": "LeadingComment",
+      "value": " b"
+    },
+    {
+      "type": "LeadingComment",
+      "value": " a"
+    },
+    {
+      "type": "Module",
+      "id": null,
+      "fields": []
+    }
+  ]
+}

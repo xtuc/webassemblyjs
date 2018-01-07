@@ -1049,6 +1049,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
     }
 
+    if (token.type === tokens.comment) {
+      const node = t.leadingComment(token.value);
+
+      eatToken();
+
+      return node;
+    }
+
     showCodeFrame(source, token.loc);
     throw new TypeError('Unknown token: ' + token.type);
   }

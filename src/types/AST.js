@@ -194,3 +194,8 @@ type GlobalType = {
   valtype: Valtype;
   mutability: Mutability;
 }
+
+type LeadingComment = {
+  type: 'LeadingComment';
+  value: string;
+}

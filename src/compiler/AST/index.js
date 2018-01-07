@@ -348,3 +348,10 @@ export function brIfInstruction(
     label,
   };
 }
+
+export function leadingComment(value: string): LeadingComment {
+  return {
+    type: 'LeadingComment',
+    value,
+  };
+}
