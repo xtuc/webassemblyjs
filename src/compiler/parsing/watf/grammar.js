@@ -577,7 +577,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         /**
          * Handle arguments
          */
-        while (token.type === tokens.identifier) {
+        while (
+          token.type === tokens.identifier
+          || token.type === tokens.valtype
+        ) {
           args.push(
             t.identifier(token.value)
           );

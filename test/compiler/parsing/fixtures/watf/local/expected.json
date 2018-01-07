@@ -1,0 +1,84 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "func_1"
+      },
+      "params": [],
+      "result": null,
+      "body": [
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "Valtype",
+              "name": "i32"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "Valtype",
+              "name": "i64"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "Valtype",
+              "name": "f32"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "Valtype",
+              "name": "f64"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "Identifier",
+              "name": "a"
+            },
+            {
+              "type": "Valtype",
+              "name": "i32"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "Identifier",
+              "name": "b"
+            },
+            {
+              "type": "Valtype",
+              "name": "f32"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
