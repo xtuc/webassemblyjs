@@ -1,5 +1,5 @@
 // @flow
-
+const Long = require('long');
 const parseHexFloat = require('webassembly-floating-point-hex-parser');
 
 export function parse32F( sourceString: string ): number {
@@ -29,8 +29,13 @@ export function parse32I( sourceString: string ): number {
   return value;
 }
 
-export function parse64I( sourceString: string ): number {
-  return parseInt(sourceString);
+export function parse64I( sourceString: string ): number | Long {
+  debugger;
+  const long = Long.fromString(sourceString);
+  return {
+    upper: long.high,
+    lower: long.low
+  };
 }
 
 function isDecimalExponentLiteral(sourceString: string): boolean {

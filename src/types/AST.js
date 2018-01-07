@@ -13,6 +13,11 @@ type NodePath<T> = {
  * AST types
  */
 
+interface Long {
+  upper: number,
+  lower: number
+}
+
 interface Position {
   line: number;
   column: number;
@@ -39,7 +44,7 @@ interface Program {
 
 interface NumberLiteral {
   type: 'NumberLiteral';
-  value: number;
+  value: number | Long;
 }
 
 interface Identifier {
