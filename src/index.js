@@ -1,33 +1,34 @@
 // @flow
 
-const {parseSource} = require('./compiler/parsing/watf');
-const {parseBinary} = require('./compiler/parsing/wasm');
-const {Instance} = require('./interpreter');
-const {RuntimeError, CompileError, LinkError} = require('./errors');
-const {createCompiledModule, Module} = require('./compiler/compile/module');
-const {Memory} = require('./interpreter/runtime/values/memory');
-const {Table} = require('./interpreter/runtime/values/table');
-const {checkEndianness} = require('./check-endianness');
+const { parseSource } = require("./compiler/parsing/watf");
+const { parseBinary } = require("./compiler/parsing/wasm");
+const { Instance } = require("./interpreter");
+const { RuntimeError, CompileError, LinkError } = require("./errors");
+const { createCompiledModule, Module } = require("./compiler/compile/module");
+const { Memory } = require("./interpreter/runtime/values/memory");
+const { Table } = require("./interpreter/runtime/values/table");
+const { checkEndianness } = require("./check-endianness");
 
 const WebAssembly = {
-
-  instantiate(buff: ArrayBuffer, importObject: ImportObject = {}): Promise<InstansitatedInstanceAndModule> {
-
+  instantiate(
+    buff: ArrayBuffer,
+    importObject: ImportObject = {}
+  ): Promise<InstansitatedInstanceAndModule> {
     return new Promise((resolve, reject) => {
-
       if (checkEndianness() === false) {
         return reject(
-          new RuntimeError('expected the system to be little-endian')
+          new RuntimeError("expected the system to be little-endian")
         );
       }
 
       if (
-        buff instanceof ArrayBuffer === false
-        && buff instanceof Uint8Array === false
+        buff instanceof ArrayBuffer === false &&
+        buff instanceof Uint8Array === false
       ) {
         return reject(
-          'Module must be either an ArrayBuffer or an Uint8Array (BufferSource), '
-            + (typeof buff) + ' given.'
+          "Module must be either an ArrayBuffer or an Uint8Array (BufferSource), " +
+            typeof buff +
+            " given."
         );
       }
 
@@ -36,24 +37,23 @@ const WebAssembly = {
 
       resolve({
         instance: new Instance(module, importObject),
-        module,
+        module
       });
-
     });
   },
 
   compile(buff: ArrayBuffer): Promise<CompiledModule> {
-
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const ast = parseBinary(buff);
 
-      resolve(
-        createCompiledModule(ast)
-      );
+      resolve(createCompiledModule(ast));
     });
   },
 
-  instantiateFromSource(content: string, importObject: ImportObject = {}): Instance {
+  instantiateFromSource(
+    content: string,
+    importObject: ImportObject = {}
+  ): Instance {
     const ast = parseSource(content);
     const module = createCompiledModule(ast);
 
@@ -66,11 +66,10 @@ const WebAssembly = {
   Table,
   RuntimeError,
   LinkError,
-  CompileError,
+  CompileError
 };
 
 const _debug = {
-
   parseWATF(content: string, cb: (ast: Node) => void) {
     const ast = parseSource(content);
 
@@ -81,8 +80,7 @@ const _debug = {
     const ast = parseBinary(content);
 
     cb(ast);
-  },
-
+  }
 };
 
 module.exports = WebAssembly;

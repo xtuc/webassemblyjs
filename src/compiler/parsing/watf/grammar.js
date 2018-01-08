@@ -1,13 +1,13 @@
 // @flow
 
-const {tokens, keywords} = require('./tokenizer');
-const t = require('../../AST');
-const {codeFrameColumns} = require('@babel/code-frame');
+const { tokens, keywords } = require("./tokenizer");
+const t = require("../../AST");
+const { codeFrameColumns } = require("@babel/code-frame");
 
 let inc = 0;
 
 function hasPlugin(name: string): boolean {
-  if (name !== 'wast') throw new Error('unknow plugin');
+  if (name !== "wast") throw new Error("unknow plugin");
 
   return true;
 }
@@ -17,10 +17,10 @@ export function resetUniqueNameGenerator() {
   inc = 0;
 }
 
-function getUniqueName(prefix: string = 'temp'): string {
+function getUniqueName(prefix: string = "temp"): string {
   inc++;
 
-  return prefix + '_' + inc;
+  return prefix + "_" + inc;
 }
 
 function isKeyword(token: Object, id: string): boolean {
@@ -30,14 +30,14 @@ function isKeyword(token: Object, id: string): boolean {
 function showCodeFrame(source: string, loc: SourceLocation) {
   const out = codeFrameColumns(source, loc);
 
-  process.stdout.write(out + '\n');
+  process.stdout.write(out + "\n");
 }
 
 export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
 
   const state = {
-    registredExportedFuncs: [],
+    registredExportedFuncs: []
   };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
@@ -54,8 +54,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         showCodeFrame(source, token.loc);
 
         throw new Error(
-          'Assertion error: expected token of type ' + type
-          + ', given ' + token.type
+          "Assertion error: expected token of type " +
+            type +
+            ", given " +
+            token.type
         );
       }
 
@@ -69,8 +71,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const tokenAhead = tokensList[current + i];
         const expectedToken = tokenTypes[i];
 
-        if (tokenAhead.type === 'keyword') {
-
+        if (tokenAhead.type === "keyword") {
           if (isKeyword(tokenAhead, expectedToken) === false) {
             return false;
           }
@@ -83,14 +84,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     function parseListOfInstructions(acc: Array<Instruction>) {
-      while (
-        (token.type === tokens.openParen)
-      ) {
+      while (token.type === tokens.openParen) {
         eatToken();
 
-        acc.push(
-          parseFuncInstr()
-        );
+        acc.push(parseFuncInstr());
       }
     }
 
@@ -107,16 +104,15 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseImport(): ModuleImport {
-
       if (token.type !== tokens.string) {
-        throw new Error('Expected a string, ' + token.type + ' given.');
+        throw new Error("Expected a string, " + token.type + " given.");
       }
 
       const moduleName = token.value;
       eatToken();
 
       if (token.type !== tokens.string) {
-        throw new Error('Expected a string, ' + token.type + ' given.');
+        throw new Error("Expected a string, " + token.type + " given.");
       }
 
       let funcName = token.value;
@@ -143,36 +139,32 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           if (lookaheadAndCheck(keywords.param) === true) {
             eatToken();
 
-            fnParams.push(
-              ...parseFuncParam()
-            );
-          }
-
-          else if (lookaheadAndCheck(keywords.result) === true) {
+            fnParams.push(...parseFuncParam());
+          } else if (lookaheadAndCheck(keywords.result) === true) {
             eatToken();
 
             fnResult = parseFuncResult()[0];
-          }
-
-          else {
+          } else {
             showCodeFrame(source, token.loc);
-            throw new Error('Unexpected token in import of type: ' + token.type);
+            throw new Error(
+              "Unexpected token in import of type: " + token.type
+            );
           }
 
           eatTokenOfType(tokens.closeParen);
         }
 
-        if (typeof funcName === 'undefined') {
-          throw new Error('Imported function must have a name');
+        if (typeof funcName === "undefined") {
+          throw new Error("Imported function must have a name");
         }
 
         descr = t.funcImportDescr(
           t.identifier(funcName),
           fnParams,
-          fnResult ? [fnResult] : [],
+          fnResult ? [fnResult] : []
         );
       } else {
-        throw new Error('Unsupported import type: ' + token.type);
+        throw new Error("Unsupported import type: " + token.type);
       }
 
       eatTokenOfType(tokens.closeParen);
@@ -192,7 +184,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseBlock(): BlockInstruction {
-      let label = t.identifier(getUniqueName('block'));
+      let label = t.identifier(getUniqueName("block"));
       let blockResult;
       const instr = [];
 
@@ -209,23 +201,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           blockResult = token.value;
           eatToken();
-
-        } else
-
-        // Instruction
-        if (
-          lookaheadAndCheck(tokens.name) === true
-          || lookaheadAndCheck(tokens.valtype) === true
-          || token.type === 'keyword' // is any keyword
+        } else if (
+          lookaheadAndCheck(tokens.name) === true ||
+          lookaheadAndCheck(tokens.valtype) === true ||
+          token.type === "keyword" // is any keyword
         ) {
-          instr.push(
-            parseFuncInstr()
-          );
-        }
-
-        else {
+          // Instruction
+          instr.push(parseFuncInstr());
+        } else {
           showCodeFrame(source, token.loc);
-          throw new Error('Unexpected token in block body of type: ' + token.type);
+          throw new Error(
+            "Unexpected token in block body of type: " + token.type
+          );
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -252,7 +239,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseIf(): IfInstruction {
       let blockResult;
-      let label = t.identifier(getUniqueName('if'));
+      let label = t.identifier(getUniqueName("if"));
 
       const consequent = [];
       const alternate = [];
@@ -283,18 +270,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           // Instruction
           if (
-            lookaheadAndCheck(tokens.name) === true
-            || lookaheadAndCheck(tokens.valtype) === true
-            || token.type === 'keyword' // is any keyword
+            lookaheadAndCheck(tokens.name) === true ||
+            lookaheadAndCheck(tokens.valtype) === true ||
+            token.type === "keyword" // is any keyword
           ) {
-            consequent.push(
-              parseFuncInstr()
-            );
-          }
-
-          else {
+            consequent.push(parseFuncInstr());
+          } else {
             showCodeFrame(source, token.loc);
-            throw new Error('Unexpected token in consequent body of type: ' + token.type);
+            throw new Error(
+              "Unexpected token in consequent body of type: " + token.type
+            );
           }
 
           eatTokenOfType(tokens.closeParen);
@@ -314,30 +299,27 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
             // Instruction
             if (
-              lookaheadAndCheck(tokens.name) === true
-              || lookaheadAndCheck(tokens.valtype) === true
-              || token.type === 'keyword' // is any keyword
+              lookaheadAndCheck(tokens.name) === true ||
+              lookaheadAndCheck(tokens.valtype) === true ||
+              token.type === "keyword" // is any keyword
             ) {
-              alternate.push(
-                parseFuncInstr()
-              );
-            }
-
-            else {
+              alternate.push(parseFuncInstr());
+            } else {
               showCodeFrame(source, token.loc);
-              throw new Error('Unexpected token in alternate body of type: ' + token.type);
+              throw new Error(
+                "Unexpected token in alternate body of type: " + token.type
+              );
             }
 
             eatTokenOfType(tokens.closeParen);
           }
-
         }
 
         eatTokenOfType(tokens.closeParen);
       }
 
       if (token.type === tokens.openParen) {
-        throw 'f';
+        throw "f";
       }
 
       return t.ifInstruction(label, blockResult, consequent, alternate);
@@ -358,7 +340,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseLoop(): LoopInstruction {
-      let label = t.identifier(getUniqueName('loop'));
+      let label = t.identifier(getUniqueName("loop"));
       let blockResult;
       const instr = [];
 
@@ -375,23 +357,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           blockResult = token.value;
           eatToken();
-
-        } else
-
-        // Instruction
-        if (
-          lookaheadAndCheck(tokens.name) === true
-          || lookaheadAndCheck(tokens.valtype) === true
-          || token.type === 'keyword' // is any keyword
+        } else if (
+          lookaheadAndCheck(tokens.name) === true ||
+          lookaheadAndCheck(tokens.valtype) === true ||
+          token.type === "keyword" // is any keyword
         ) {
-          instr.push(
-            parseFuncInstr()
-          );
-        }
-
-        else {
+          // Instruction
+          instr.push(parseFuncInstr());
+        } else {
           showCodeFrame(source, token.loc);
-          throw new Error('Unexpected token in loop body of type: ' + token.type);
+          throw new Error(
+            "Unexpected token in loop body of type: " + token.type
+          );
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -402,7 +379,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
     function parseExport(): ModuleExport {
       if (token.type !== tokens.string) {
-        throw new Error('Expected string after export, got: ' + token.type);
+        throw new Error("Expected string after export, got: " + token.type);
       }
 
       const name = token.value;
@@ -415,12 +392,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.openParen) {
         eatToken();
 
-        while (
-          (token.type !== tokens.closeParen)
-        ) {
-
+        while (token.type !== tokens.closeParen) {
           if (isKeyword(token, keywords.func)) {
-            type = 'Func';
+            type = "Func";
 
             eatToken();
 
@@ -428,9 +402,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
               id = token.value;
               eatToken();
             } else {
-              throw new Error('Exported function must have a name');
+              throw new Error("Exported function must have a name");
             }
-
           }
 
           eatToken();
@@ -451,17 +424,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
-      while (
-        (token.type !== tokens.closeParen)
-      ) {
+      while (token.type !== tokens.closeParen) {
         moduleFields.push(walk());
 
         if (state.registredExportedFuncs.length > 0) {
-
-          state.registredExportedFuncs.forEach((decl) => {
-            moduleFields.push(
-              t.moduleExport(decl.name, 'Func', decl.id)
-            );
+          state.registredExportedFuncs.forEach(decl => {
+            moduleFields.push(t.moduleExport(decl.name, "Func", decl.id));
           });
 
           state.registredExportedFuncs = [];
@@ -558,7 +526,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
 
           if (token.type !== tokens.name) {
-            throw new TypeError('Unknown token: ' + token.type + ', name expected');
+            throw new TypeError(
+              "Unknown token: " + token.type + ", name expected"
+            );
           }
 
           name = token.value;
@@ -566,8 +536,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
 
         if (token.type === tokens.closeParen) {
-
-          if (typeof object === 'undefined') {
+          if (typeof object === "undefined") {
             return t.instruction(name, []);
           } else {
             return t.objectInstruction(name, object, []);
@@ -578,17 +547,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
          * Handle arguments
          */
         while (token.type === tokens.identifier) {
-          args.push(
-            t.identifier(token.value)
-          );
+          args.push(t.identifier(token.value));
 
           eatToken();
         }
 
         while (token.type === tokens.number) {
-          args.push(
-            t.numberLiteral(token.value, object)
-          );
+          args.push(t.numberLiteral(token.value, object));
 
           eatToken();
         }
@@ -601,34 +566,30 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           // Instruction
           if (
-            lookaheadAndCheck(tokens.name) === true
-            || lookaheadAndCheck(tokens.valtype) === true
-            || token.type === 'keyword' // is any keyword
+            lookaheadAndCheck(tokens.name) === true ||
+            lookaheadAndCheck(tokens.valtype) === true ||
+            token.type === "keyword" // is any keyword
           ) {
-            args.push(
-              parseFuncInstr()
-            );
-          }
-
-          else {
+            args.push(parseFuncInstr());
+          } else {
             showCodeFrame(source, token.loc);
-            throw new Error('Unexpected token in nested instruction of type: ' + token.type);
+            throw new Error(
+              "Unexpected token in nested instruction of type: " + token.type
+            );
           }
 
           eatTokenOfType(tokens.closeParen);
         }
 
-        if (typeof object === 'undefined') {
+        if (typeof object === "undefined") {
           return t.instruction(name, args);
         } else {
           return t.objectInstruction(name, object, args);
         }
-      } else
-
-      /**
-       * Else a instruction with a keyword (loop or block)
-       */
-      if (isKeyword(token, keywords.loop)) {
+      } else if (isKeyword(token, keywords.loop)) {
+        /**
+         * Else a instruction with a keyword (loop or block)
+         */
         eatToken(); // keyword
 
         return parseLoop();
@@ -660,21 +621,21 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatTokenOfType(tokens.closeParen);
         }
 
-        if (typeof index === 'undefined') {
-          throw new Error('Missing argument in call instruciton');
+        if (typeof index === "undefined") {
+          throw new Error("Missing argument in call instruciton");
         }
 
         return t.callInstruction(index);
       } else if (isKeyword(token, keywords.if)) {
-
         eatToken(); // Keyword
 
         return parseIf();
       } else {
         showCodeFrame(source, token.loc);
-        throw new Error('Unexpected instruction in function body: ' + token.type);
+        throw new Error(
+          "Unexpected instruction in function body: " + token.type
+        );
       }
-
     }
 
     /*
@@ -698,11 +659,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseFunc(): Func {
-      if (hasPlugin('wast') === false) {
-        throw new Error('Parse func: unsupported WATF grammar');
+      if (hasPlugin("wast") === false) {
+        throw new Error("Parse func: unsupported WATF grammar");
       }
 
-      let fnName = t.identifier(getUniqueName('func'));
+      let fnName = t.identifier(getUniqueName("func"));
       let fnResult = null;
 
       const fnBody = [];
@@ -720,38 +681,28 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         if (lookaheadAndCheck(keywords.param) === true) {
           eatToken();
 
-          fnParams.push(
-            ...parseFuncParam()
-          );
-        }
-
-        else if (lookaheadAndCheck(keywords.result) === true) {
+          fnParams.push(...parseFuncParam());
+        } else if (lookaheadAndCheck(keywords.result) === true) {
           eatToken();
 
           // FIXME(sven): func result should be an array here
           // https://github.com/xtuc/js-webassembly-interpreter/issues/5
           fnResult = parseFuncResult()[0];
-        }
-
-        else if (lookaheadAndCheck(keywords.export) === true) {
+        } else if (lookaheadAndCheck(keywords.export) === true) {
           eatToken();
           parseFuncExport(fnName);
-        }
-
-        // Instruction
-        else if (
-          lookaheadAndCheck(tokens.name) === true
-          || lookaheadAndCheck(tokens.valtype) === true
-          || token.type === 'keyword' // is any keyword
+        } else if (
+          lookaheadAndCheck(tokens.name) === true ||
+          lookaheadAndCheck(tokens.valtype) === true ||
+          token.type === "keyword" // is any keyword
         ) {
-          fnBody.push(
-            parseFuncInstr()
-          );
-        }
-
-        else {
+          // Instruction
+          fnBody.push(parseFuncInstr());
+        } else {
           showCodeFrame(source, token.loc);
-          throw new Error('Unexpected token in func body of type: ' + token.type);
+          throw new Error(
+            "Unexpected token in func body of type: " + token.type
+          );
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -766,9 +717,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      * export :: ( export <string> )
      */
     function parseFuncExport(funcId: Identifier) {
-
       if (token.type !== tokens.string) {
-        throw new Error('Function export expected a string, ' + token.type + ' given');
+        throw new Error(
+          "Function export expected a string, " + token.type + " given"
+        );
       }
 
       const name = token.value;
@@ -784,10 +736,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       state.registredExportedFuncs.push({
         name,
-        id,
+        id
       });
     }
-
 
     /**
      * Parses a function result
@@ -801,7 +752,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       if (token.type !== tokens.valtype) {
         showCodeFrame(source, token.loc);
-        throw new Error('Unexpected token in func result: ' + token.type);
+        throw new Error("Unexpected token in func result: " + token.type);
       }
 
       const valtype = token.value;
@@ -819,7 +770,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      * param    :: ( param <type>* ) | ( param <name> <type> )
      */
-    function parseFuncParam(): Array<{id?: Object, valtype: string}> {
+    function parseFuncParam(): Array<{ id?: Object, valtype: string }> {
       const params = [];
       let id;
       let valtype;
@@ -835,7 +786,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         params.push({
           id,
-          valtype,
+          valtype
         });
 
         /**
@@ -844,25 +795,23 @@ export function parse(tokensList: Array<Object>, source: string): Program {
          * @see https://github.com/xtuc/js-webassembly-interpreter/issues/6
          */
         if (id === undefined) {
-          while ( token.type === tokens.valtype ) {
+          while (token.type === tokens.valtype) {
             valtype = token.value;
             eatToken();
 
             params.push({
-              valtype,
+              valtype
             });
           }
         }
-
       } else {
-        throw new Error('Function param has no valtype');
+        throw new Error("Function param has no valtype");
       }
 
       return params;
     }
 
     if (token.type === tokens.openParen) {
-
       eatToken();
 
       if (isKeyword(token, keywords.export)) {
@@ -900,19 +849,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         return node;
       }
-
     }
 
     showCodeFrame(source, token.loc);
-    throw new TypeError('Unknown token: ' + token.type);
+    throw new TypeError("Unknown token: " + token.type);
   }
 
   const body = [];
 
   while (current < tokensList.length) {
-    body.push(
-      walk()
-    );
+    body.push(walk());
   }
 
   return t.program(body);

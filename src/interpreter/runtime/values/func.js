@@ -4,7 +4,7 @@ function createInstance(n: Func, fromModule: ModuleInstance): FuncInstance {
   //       [param*, result*]
   const type = [[], []];
 
-  n.params.forEach((param) => {
+  n.params.forEach(param => {
     type[0].push(param.valtype);
   });
 
@@ -18,7 +18,7 @@ function createInstance(n: Func, fromModule: ModuleInstance): FuncInstance {
     type,
     code,
     module: fromModule,
-    isExternal: false,
+    isExternal: false
   };
 }
 
@@ -29,11 +29,11 @@ function createExternalInstance(func: Function): FuncInstance {
     type,
     code: func,
     module: null,
-    isExternal: true,
+    isExternal: true
   };
 }
 
 module.exports = {
   createInstance,
-  createExternalInstance,
+  createExternalInstance
 };

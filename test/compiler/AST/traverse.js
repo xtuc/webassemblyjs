@@ -1,13 +1,12 @@
 // @flow
-const {assert} = require('chai');
+const { assert } = require("chai");
 
-const {traverse} = require('../../../lib/compiler/AST/traverse');
-const t = require('../../../lib/compiler/AST');
+const { traverse } = require("../../../lib/compiler/AST/traverse");
+const t = require("../../../lib/compiler/AST");
 
-describe('AST traverse', () => {
-
-  it('Should traverse a node', () => {
-    const node = t.module('test', []);
+describe("AST traverse", () => {
+  it("Should traverse a node", () => {
+    const node = t.module("test", []);
     let called = false;
 
     traverse(node, {
@@ -19,7 +18,6 @@ describe('AST traverse', () => {
       }
     });
 
-    assert.isTrue(called, 'Module visitor has not been called');
+    assert.isTrue(called, "Module visitor has not been called");
   });
-
 });

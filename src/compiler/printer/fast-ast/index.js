@@ -1,13 +1,13 @@
 // @flow
 
-const {traverse} = require('../../AST/traverse');
+const { traverse } = require("../../AST/traverse");
 
 let i = 0;
 
 function generateUniqueId() {
   i++;
 
-  return 'unknown_' + i;
+  return "unknown_" + i;
 }
 
 export function print(ast: Node) {
@@ -15,39 +15,32 @@ export function print(ast: Node) {
     imports: [],
     exports: {},
     functions: {},
-    globals: [],
+    globals: []
   };
 
   traverse(ast, {
-
-    ModuleExport({node}: NodePath<ModuleExport>) {
-
-      if (node.descr.type === 'Func') {
+    ModuleExport({ node }: NodePath<ModuleExport>) {
+      if (node.descr.type === "Func") {
         out.exports[node.descr.id] = node;
       }
-
     },
 
-    Func({node}: NodePath<Func>) {
-
-      if (typeof node.id !== 'string') {
+    Func({ node }: NodePath<Func>) {
+      if (typeof node.id !== "string") {
         node.id = generateUniqueId();
       }
 
       out.functions[node.id] = node;
     },
 
-    Global({node}: NodePath<Global>) {
+    Global({ node }: NodePath<Global>) {
       out.globals.push(node.globalType);
     },
 
-    ModuleImport({node}: NodePath<ModuleImport>) {
+    ModuleImport({ node }: NodePath<ModuleImport>) {
       out.imports.push(node);
-    },
-
+    }
   });
 
-  console.log(
-    JSON.stringify(out, null, 4)
-  );
+  console.log(JSON.stringify(out, null, 4));
 }

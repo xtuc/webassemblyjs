@@ -1,10 +1,10 @@
 // @flow
 
-const {traverse} = require('../AST/traverse');
-const funcResultTypeValidation = require('../validation/func-result-type');
+const { traverse } = require("../AST/traverse");
+const funcResultTypeValidation = require("../validation/func-result-type");
 
 function validateAST(ast: Program) {
-  funcResultTypeValidation.validate(ast)
+  funcResultTypeValidation.validate(ast);
 }
 
 export class Module {
@@ -16,7 +16,7 @@ export class Module {
   constructor(
     ast: Program,
     exports: Array<CompiledModuleExportDescr>,
-    imports: Array<CompiledModuleImportDescr>,
+    imports: Array<CompiledModuleImportDescr>
   ) {
     validateAST(ast);
 
@@ -32,18 +32,14 @@ export function createCompiledModule(ast: Program): CompiledModule {
   const imports = [];
 
   traverse(ast, {
-
-    ModuleExport({node}: NodePath<ModuleExport>) {
-
-      if (node.descr.type === 'Func') {
-
+    ModuleExport({ node }: NodePath<ModuleExport>) {
+      if (node.descr.type === "Func") {
         exports.push({
           name: node.descr.id,
-          kind: 'function',
+          kind: "function"
         });
       }
     }
-
   });
 
   return new Module(ast, exports, imports);

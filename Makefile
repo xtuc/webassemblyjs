@@ -2,9 +2,10 @@ MOCHA_OPTS =
 NODE_OPTS =
 
 NODE = node
+PRETTIER = ./node_modules/.bin/prettier
 MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
 BABEL = ./node_modules/.bin/babel
-FLOW = ./node_modules/.bin/flow
+ESLINT = ./node_modules/.bin/eslint
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1
 MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 
@@ -32,7 +33,7 @@ test: build
 	$(MOCHA) --recursive
 
 lint:
-	$(FLOW) src/
+	$(ESLINT) src test docs benchmark
 
 publish: build
 	npm publish
@@ -48,3 +49,6 @@ serve-docs:
 
 bench:
 	$(NODE) $(NODE_OPTS) ./benchmark
+
+fix:
+	$(PRETTIER) --write "{src,test,docs,benchmark}/**/*.js"

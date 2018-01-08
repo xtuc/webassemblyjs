@@ -14,8 +14,7 @@
   "main": "lib/index.js",
   "license": "GPL-2.0",
   "scripts": {
-    "test": "make test",
-    "build": "make build"
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -36,10 +35,13 @@
     "flow-bin": "^0.60.1",
     "glob": "^7.1.2",
     "http-server": "^0.10.0",
+    "husky": "^0.14.3",
     "jest-diff": "^21.2.1",
+    "lint-staged": "^6.0.0",
     "markdown-to-html": "0.0.13",
     "mocha": "^4.0.1",
-    "performance-now": "^2.1.0"
+    "performance-now": "^2.1.0",
+    "prettier": "^1.9.2"
   },
   "bin": {
     "wasmdump": "./lib/bin/wasmdump.js",
@@ -49,5 +51,11 @@
   "dependencies": {
     "webassembly-floating-point-hex-parser": "0.1.2",
     "@babel/code-frame": "^7.0.0-beta.36"
+  },
+  "lint-staged": {
+    "{src,test,docs,benchmark}/**/*.js": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

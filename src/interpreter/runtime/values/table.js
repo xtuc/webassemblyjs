@@ -11,22 +11,23 @@ export class Table {
   _elements: Array<Hostfunc>;
 
   constructor(descr: TableDescriptor) {
-
-    if (typeof descr !== 'object') {
-      throw new TypeError('TableDescriptor must be an object');
+    if (typeof descr !== "object") {
+      throw new TypeError("TableDescriptor must be an object");
     }
 
-    if (typeof descr.maximum === 'number') {
+    if (typeof descr.maximum === "number") {
       this._maximum = descr.maximum;
     } else {
       this._maximum = DEFAULT_MAX_TABLE_ENTRY;
     }
 
-    if (typeof descr.initial === 'number') {
+    if (typeof descr.initial === "number") {
       this._initial = descr.initial;
 
       if (this._initial > this._maximum) {
-        throw new RangeError('Initial number can not be higher than the maximum');
+        throw new RangeError(
+          "Initial number can not be higher than the maximum"
+        );
       }
     }
 
@@ -44,7 +45,7 @@ export class Table {
   get(offset: number): ?Hostfunc {
     const element = this._elements[offset];
 
-    if (typeof element === 'undefined') {
+    if (typeof element === "undefined") {
       return null;
     } else {
       return element;
@@ -54,5 +55,4 @@ export class Table {
   get length() {
     return this._elements.length;
   }
-
 }
