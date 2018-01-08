@@ -444,11 +444,35 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
     function parseModule(): Module {
       let name = null;
+      let isBinary = false;
       const moduleFields = [];
 
       if (token.type === tokens.identifier) {
         name = token.value;
         eatToken();
+      }
+
+      if (
+        hasPlugin('wast')
+        && token.type === tokens.name
+        && token.value === 'binary'
+      ) {
+        eatToken();
+
+        isBinary = true;
+      }
+
+      if (isBinary === true) {
+        const blob = [];
+
+        while (token.type === tokens.string) {
+          blob.push(token.value);
+          eatToken();
+        }
+
+        eatTokenOfType(tokens.closeParen);
+
+        return t.binaryModule(name, blob);
       }
 
       while (
@@ -473,6 +497,76 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       eatTokenOfType(tokens.closeParen);
 
       return t.module(name, moduleFields);
+    }
+
+    /**
+     * Parses the arguments of an instruction
+     */
+    function parseFuncInstrArguments(object: ?string): Array<Node> {
+      const args = [];
+
+      while (token.type !== tokens.closeParen) {
+
+        if (token.type === tokens.identifier) {
+          args.push(
+            t.identifier(token.value)
+          );
+
+          eatToken();
+        }
+
+        if (token.type === tokens.valtype) {
+          args.push(
+            t.valtype(token.value)
+          );
+
+          eatToken();
+        }
+
+        if (token.type === tokens.string) {
+          args.push(
+            t.stringLiteral(token.value)
+          );
+
+          eatToken();
+        }
+
+        if (token.type === tokens.number) {
+          args.push(
+            t.numberLiteral(token.value, object)
+          );
+
+          eatToken();
+        }
+
+        /**
+       * Maybe some nested instructions
+       */
+        if (token.type === tokens.openParen) {
+          eatToken();
+
+          // Instruction
+          if (
+            lookaheadAndCheck(tokens.name) === true
+        || lookaheadAndCheck(tokens.valtype) === true
+        || token.type === 'keyword' // is any keyword
+          ) {
+            args.push(
+              parseFuncInstr()
+            );
+          }
+
+          else {
+            showCodeFrame(source, token.loc);
+            throw new Error('Unexpected token in nested instruction of type: ' + token.type);
+          }
+
+          eatTokenOfType(tokens.closeParen);
+        }
+
+      }
+
+      return args;
     }
 
     /**
@@ -542,7 +636,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *   <type>.<cvtop>/<type>
      */
     function parseFuncInstr() {
-      const args = [];
 
       /**
        * A simple instruction
@@ -574,57 +667,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
 
-        /**
-         * Handle arguments
-         */
-        while (token.type === tokens.identifier) {
-          args.push(
-            t.identifier(token.value)
-          );
-
-          eatToken();
-        }
-
-        while (token.type === tokens.valtype) {
-          args.push(
-            t.valtype(token.value)
-          );
-
-          eatToken();
-        }
-
-        while (token.type === tokens.number) {
-          args.push(
-            t.numberLiteral(token.value, object)
-          );
-
-          eatToken();
-        }
-
-        /**
-         * Maybe some nested instructions
-         */
-        while (token.type === tokens.openParen) {
-          eatToken();
-
-          // Instruction
-          if (
-            lookaheadAndCheck(tokens.name) === true
-            || lookaheadAndCheck(tokens.valtype) === true
-            || token.type === 'keyword' // is any keyword
-          ) {
-            args.push(
-              parseFuncInstr()
-            );
-          }
-
-          else {
-            showCodeFrame(source, token.loc);
-            throw new Error('Unexpected token in nested instruction of type: ' + token.type);
-          }
-
-          eatTokenOfType(tokens.closeParen);
-        }
+        const args = parseFuncInstrArguments(object);
 
         if (typeof object === 'undefined') {
           return t.instruction(name, args);
@@ -678,6 +721,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // Keyword
 
         return parseIf();
+      } else if (isKeyword(token, keywords.module) && hasPlugin('wast')) {
+
+        eatToken();
+
+        return parseModule();
       } else {
         showCodeFrame(source, token.loc);
         throw new Error('Unexpected instruction in function body: ' + token.type);

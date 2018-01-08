@@ -63,6 +63,11 @@ interface Module {
   fields: ModuleFields;
 }
 
+interface BinaryModule {
+  type: 'BinaryModule';
+  blob: Array<string>;
+}
+
 type FuncParam = {
   id: ?string,
   valtype: Valtype,

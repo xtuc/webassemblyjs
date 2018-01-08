@@ -55,6 +55,13 @@ export function module(id: ?string, fields: ModuleFields): Module {
   };
 }
 
+export function binaryModule(id: ?string, blob: Array<string>): BinaryModule {
+  return {
+    type: 'BinaryModule',
+    blob,
+  };
+}
+
 export function moduleExport(name: string, type: ExportDescr, id: string): ModuleExport {
   return {
     type: 'ModuleExport',
