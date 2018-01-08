@@ -1,10 +1,12 @@
 MOCHA_OPTS =
 NODE_OPTS =
 
+FLOWTYPED = ./node_modules/.bin/flow-typed
 NODE = node
+PRETTIER = ./node_modules/.bin/prettier
 MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
 BABEL = ./node_modules/.bin/babel
-FLOW = ./node_modules/.bin/flow
+ESLINT = ./node_modules/.bin/eslint
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1
 MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 
@@ -28,6 +30,8 @@ build: clean
 watch:
 	$(BABEL) --out-dir lib/ src/ --watch
 
+test-ci: test lint
+
 test: build
 	$(MOCHA) --recursive --grep spec --invert
 
@@ -35,7 +39,7 @@ test-spec: build
 	$(MOCHA) --grep spec
 
 lint:
-	$(FLOW) src/
+	$(ESLINT) src test docs benchmark
 
 publish: build
 	npm publish
@@ -51,3 +55,9 @@ serve-docs:
 
 bench:
 	$(NODE) $(NODE_OPTS) ./benchmark
+
+fix:
+	$(PRETTIER) --write "{src,test,docs,benchmark}/**/*.js"
+
+flow-update-def:
+	$(FLOWTYPED) install --libdefDir src/types

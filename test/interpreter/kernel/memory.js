@@ -1,16 +1,15 @@
 // @flow
 
-const {assert} = require('chai');
+const { assert } = require("chai");
 
-const {Memory} = require('../../../lib/interpreter/runtime/values/memory');
-const {createAllocator} = require('../../../lib/interpreter/kernel/memory');
+const { Memory } = require("../../../lib/interpreter/runtime/values/memory");
+const { createAllocator } = require("../../../lib/interpreter/kernel/memory");
 
-describe('kernel - memory management', () => {
-  const memory = new Memory({initial: 100});
+describe("kernel - memory management", () => {
+  const memory = new Memory({ initial: 100 });
 
-  describe('memory allocation', () => {
-
-    it('should start from NULL and increment', () => {
+  describe("memory allocation", () => {
+    it("should start from NULL and increment", () => {
       const size = 8;
 
       const allocator = createAllocator(memory);
@@ -21,12 +20,10 @@ describe('kernel - memory management', () => {
       const p2 = allocator.malloc(size);
       assert.equal(p2.index, size * 2);
     });
-
   });
 
-  describe('set/get', () => {
-
-    it('should get an empty value', () => {
+  describe("set/get", () => {
+    it("should get an empty value", () => {
       const allocator = createAllocator(memory);
       const p = allocator.malloc(8);
 
@@ -35,7 +32,7 @@ describe('kernel - memory management', () => {
       assert.equal(value, undefined);
     });
 
-    it('should get and set a value', () => {
+    it("should get and set a value", () => {
       const allocator = createAllocator(memory);
 
       const data = 1;
@@ -47,6 +44,5 @@ describe('kernel - memory management', () => {
 
       assert.equal(value, data);
     });
-
   });
 });

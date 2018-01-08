@@ -83,12 +83,6 @@ type Label = {
 
 type Signal = number;
 
-/**
- * Mocha
- */
-declare var it;
-declare var describe;
-
 interface MemoryInstance {
   buffer: Array<any>;
   offset: number;

@@ -723,6 +723,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       case "abs":
       case "neg": {
         let unopFn;
+
         switch (instruction.object) {
           case "i32":
             unopFn = unopi32;
@@ -747,7 +748,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
         const c = pop1("f32");
 
-        pushResult(unopf32(c, instruction.id));
+        pushResult(unopFn(c, instruction.id));
 
         break;
       }

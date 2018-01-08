@@ -1,15 +1,14 @@
 // @flow
 
-const {assert} = require('chai');
+const { assert } = require("chai");
 
-const {decodeUInt32} = require('../../../lib/compiler/parsing/wasm/LEB128');
+const { decodeUInt32 } = require("../../../lib/compiler/parsing/wasm/LEB128");
 
-describe('LEB128', () => {
-
-  describe('should decode an u32', () => {
+describe("LEB128", () => {
+  describe("should decode an u32", () => {
     let u32;
 
-    it('1 byte', () => {
+    it("1 byte", () => {
       u32 = decodeUInt32(Buffer.from([0x00]));
       assert.equal(u32.value, 0);
       assert.equal(u32.nextIndex, 1);
@@ -19,24 +18,22 @@ describe('LEB128', () => {
       assert.equal(u32.nextIndex, 1);
     });
 
-    it('2 byte', () => {
+    it("2 byte", () => {
       u32 = decodeUInt32(Buffer.from([0x80, 0x7f]));
       assert.equal(u32.value, 16256);
       assert.equal(u32.nextIndex, 2);
     });
 
-    it('3 byte', () => {
+    it("3 byte", () => {
       u32 = decodeUInt32(Buffer.from([0xe5, 0x8e, 0x26]));
       assert.equal(u32.value, 624485);
       assert.equal(u32.nextIndex, 3);
     });
 
-    it('4 byte', () => {
+    it("4 byte", () => {
       u32 = decodeUInt32(Buffer.from([0x80, 0x80, 0x80, 0x4f]));
       assert.equal(u32.value, 165675008);
       assert.equal(u32.nextIndex, 4);
     });
-
   });
-
 });
