@@ -1,17 +1,25 @@
 // @flow
 
+const {codeFrameColumns} = require('@babel/code-frame');
+
+function showCodeFrame(source: string, line: number, column: number) {
+  const loc = {
+    start: {line, column},
+  };
+
+  const out = codeFrameColumns(source, loc);
+
+  process.stdout.write(out + '\n');
+}
+
+const WHITESPACE = /\s/;
 const LETTERS = /[a-z0-9_\/]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ['i32', 'i64', 'f32', 'f64'];
 
-/**
- * FIXME(sven): this is not spec compliant
- * A name string must form a valid UTF-8 encoding as defined by Unicode
- * (Section 2.5) (http://www.unicode.org/versions/Unicode10.0.0/)
- *
- * https://webassembly.github.io/spec/text/values.html#names
- */
-const name = /[a-z0-9_-]/i;
+const NAN = 'nan';
+const NUMBERS = /[0-9|.|_+-]/;
+const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
 
 function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
@@ -136,7 +144,6 @@ function tokenize(input: string) {
       continue;
     }
 
-    const WHITESPACE = /\s/;
     if (WHITESPACE.test(char)) {
       eatToken();
       continue;
@@ -160,15 +167,38 @@ function tokenize(input: string) {
       continue;
     }
 
-    const NUMBERS = /[0-9|.|_]/;
-    const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
-    if (NUMBERS.test(char) || char === '-' && NUMBERS.test(input[current + 1]) ) {
+    if (
+      NUMBERS.test(char)
+      || char === '-' && NUMBERS.test(input[current + 1])
+      || (char === 'n'
+          && input[current + 1] === 'a'
+          && input[current + 2] === 'n'
+      )
+    ) {
       let value = '';
       if (char === '-') {
         value += char;
         char = input[++current];
       }
       let numberLiterals = NUMBERS;
+
+      if (
+        char === 'n'
+        && input[current + 1] === 'a'
+        && input[current + 2] === 'n'
+      ) {
+        // Float has nan
+
+        // Shift out 'nan'
+        current += 3;
+        column += 3;
+
+        char = input[current];
+
+        if (char === ':') {
+          eatToken();
+        }
+      }
 
       if (char === '0' && input[current + 1].toUpperCase() === 'X') {
         value += '0x';
@@ -290,6 +320,8 @@ function tokenize(input: string) {
 
       continue;
     }
+
+    showCodeFrame(input, line, column);
 
     throw new TypeError('Unknown char: ' + char);
   }
