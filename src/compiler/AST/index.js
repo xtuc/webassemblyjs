@@ -27,6 +27,13 @@ export function valtype(name: string): Valtype {
   };
 }
 
+export function stringLiteral(value: string): StringLiteral {
+  return {
+    type: 'StringLiteral',
+    value,
+  };
+}
+
 export function program(body: Array<Node>): Program {
   return {
     type: 'Program',

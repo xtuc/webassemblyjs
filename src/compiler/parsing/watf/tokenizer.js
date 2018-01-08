@@ -17,7 +17,6 @@ const LETTERS = /[a-z0-9_\/]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ['i32', 'i64', 'f32', 'f64'];
 
-const NAN = 'nan';
 const NUMBERS = /[0-9|.|_+-]/;
 const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
 

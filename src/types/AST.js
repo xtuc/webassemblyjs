@@ -36,6 +36,10 @@ interface Program {
 /**
  * Concrete values
  */
+interface StringLiteral {
+  type: 'StringLiteral';
+  value: string;
+}
 
 interface NumberLiteral {
   type: 'NumberLiteral';
