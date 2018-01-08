@@ -1,18 +1,18 @@
 // @flow
 
-const {traverse} = require('../compiler/AST/traverse');
-const modulevalue = require('./runtime/values/module');
-const {executeStackFrame} = require('./kernel/exec');
-const {createStackFrame} = require('./kernel/stackframe');
-const {isTrapped} = require('./kernel/signals');
-const {RuntimeError} = require('../errors');
-const {Module} = require('../compiler/compile/module');
-const {Memory} = require('./runtime/values/memory');
-const {Table} = require('./runtime/values/table');
-const {createAllocator} = require('./kernel/memory');
-const importObjectUtils = require('./import-object');
+const { traverse } = require("../compiler/AST/traverse");
+const modulevalue = require("./runtime/values/module");
+const { executeStackFrame } = require("./kernel/exec");
+const { createStackFrame } = require("./kernel/stackframe");
+const { isTrapped } = require("./kernel/signals");
+const { RuntimeError } = require("../errors");
+const { Module } = require("../compiler/compile/module");
+const { Memory } = require("./runtime/values/memory");
+const { Table } = require("./runtime/values/table");
+const { createAllocator } = require("./kernel/memory");
+const importObjectUtils = require("./import-object");
 
-const DEFAULT_MEMORY = new Memory({initial: 1, maximum: 1024});
+const DEFAULT_MEMORY = new Memory({ initial: 1, maximum: 1024 });
 
 export class Instance {
   exports: any;
@@ -27,12 +27,11 @@ export class Instance {
   _externalFunctions: any;
 
   constructor(module: CompiledModule, importObject: ImportObject) {
-
     if (module instanceof Module === false) {
-
       throw new TypeError(
-        'module must be of type WebAssembly.Module, '
-        + (typeof module) + ' given.'
+        "module must be of type WebAssembly.Module, " +
+          typeof module +
+          " given."
       );
     }
 
@@ -47,10 +46,9 @@ export class Instance {
     /**
      * importObject.
      */
-    if (typeof importObject === 'object') {
-
+    if (typeof importObject === "object") {
       importObjectUtils.walk(importObject, (key, key2, value) => {
-        if (typeof this._externalFunctions[key] !== 'object') {
+        if (typeof this._externalFunctions[key] !== "object") {
           this._externalFunctions[key] = {};
         }
 
@@ -62,41 +60,35 @@ export class Instance {
           this._table = value;
         }
 
-        if (typeof value === 'function') {
+        if (typeof value === "function") {
           this._externalFunctions[key][key2] = value;
         }
-
       });
     }
 
     const ast = module._ast;
     const moduleAst = getModuleFromProgram(ast);
 
-    if (typeof moduleAst === 'undefined') {
-      throw new RuntimeError('Module not found');
+    if (typeof moduleAst === "undefined") {
+      throw new RuntimeError("Module not found");
     }
 
     const moduleInstance = modulevalue.createInstance(
       this._allocator,
       moduleAst,
-      this._externalFunctions,
+      this._externalFunctions
     );
 
-    moduleInstance.exports.forEach((exportinst) => {
-
+    moduleInstance.exports.forEach(exportinst => {
       this.exports[exportinst.name] = createHostfunc(
         moduleInstance,
         exportinst,
-        this._allocator,
+        this._allocator
       );
 
       if (this._table != undefined) {
-
-        this._table.push(
-          this.exports[exportinst.name]
-        );
+        this._table.push(this.exports[exportinst.name]);
       }
-
     });
 
     this._moduleInstance = moduleInstance;
@@ -107,8 +99,7 @@ function getModuleFromProgram(ast: Program): ?Module {
   let module;
 
   traverse(ast, {
-
-    Module({node}: NodePath<Module>) {
+    Module({ node }: NodePath<Module>) {
       module = node;
     }
   });
@@ -119,29 +110,33 @@ function getModuleFromProgram(ast: Program): ?Module {
 function createHostfunc(
   moduleinst: ModuleInstance,
   exportinst: ExportInstance,
-  allocator: Allocator,
+  allocator: Allocator
 ): Hostfunc {
-
   return function hostfunc(...args) {
-
     const exportinstAddr = exportinst.value.addr;
 
     /**
      * Find callable in instantiated function in the module funcaddrs
      */
-    const hasModuleInstantiatedFunc = moduleinst.funcaddrs.indexOf(exportinstAddr);
+    const hasModuleInstantiatedFunc = moduleinst.funcaddrs.indexOf(
+      exportinstAddr
+    );
 
     if (hasModuleInstantiatedFunc === -1) {
       throw new RuntimeError(
-        `Function at addr ${exportinstAddr.index} has not been initialized in the module.` +
-        'Probably an internal failure'
+        `Function at addr ${
+          exportinstAddr.index
+        } has not been initialized in the module.` +
+          "Probably an internal failure"
       );
     }
 
     const funcinst = allocator.get(exportinstAddr);
 
     if (funcinst === null) {
-      throw new RuntimeError(`Function was not found at addr ${exportinstAddr.index}`);
+      throw new RuntimeError(
+        `Function was not found at addr ${exportinstAddr.index}`
+      );
     }
 
     const funcinstArgs = funcinst.type[0];
@@ -151,13 +146,12 @@ function createHostfunc(
      * If the signature contains an i64 (as argument or result), the host
      * function immediately throws a TypeError when called.
      */
-    const funcinstArgsHasi64 = funcinstArgs.indexOf('i64') !== -1;
-    const funcinstResultsHasi64 = funcinstResults.indexOf('i64') !== -1;
+    const funcinstArgsHasi64 = funcinstArgs.indexOf("i64") !== -1;
+    const funcinstResultsHasi64 = funcinstResults.indexOf("i64") !== -1;
 
     if (funcinstArgsHasi64 === true || funcinstResultsHasi64 === true) {
       throw new TypeError(
-        'Can not call this function from JavaScript: '
-        + 'i64 in signature.'
+        "Can not call this function from JavaScript: " + "i64 in signature."
       );
     }
 
@@ -165,10 +159,12 @@ function createHostfunc(
      * Check number of argument passed vs the function arity
      */
     if (args.length !== funcinstArgs.length) {
-
       throw new RuntimeError(
-        `Function ${exportinstAddr.index} called with ${args.length} arguments but `
-        + funcinst.type[0].length + ' expected'
+        `Function ${exportinstAddr.index} called with ${
+          args.length
+        } arguments but ` +
+          funcinst.type[0].length +
+          " expected"
       );
     }
 
@@ -177,7 +173,7 @@ function createHostfunc(
 
       return {
         value,
-        type,
+        type
       };
     });
 
@@ -185,7 +181,7 @@ function createHostfunc(
       funcinst.code,
       argsWithType,
       funcinst.module,
-      allocator,
+      allocator
     );
 
     // stackFrame.trace = (depth, pc, i) => console.log(
@@ -199,10 +195,10 @@ function createHostfunc(
     const res = executeStackFrame(stackFrame);
 
     if (isTrapped(res)) {
-      throw new RuntimeError('Execution has been trapped');
+      throw new RuntimeError("Execution has been trapped");
     }
 
-    if (typeof res !== 'undefined') {
+    if (typeof res !== "undefined") {
       return res.value;
     }
   };

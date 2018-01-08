@@ -1,28 +1,27 @@
 // @flow
 
-type Sign = 'abs' | 'neg';
+type Sign = "abs" | "neg";
 
-const i32 = require('../../runtime/values/i32');
-const i64 = require('../../runtime/values/i64');
-const f32 = require('../../runtime/values/f32');
-const f64 = require('../../runtime/values/f64');
+const i32 = require("../../runtime/values/i32");
+const i64 = require("../../runtime/values/i64");
+const f32 = require("../../runtime/values/f32");
+const f64 = require("../../runtime/values/f64");
 
 // https://webassembly.github.io/spec/exec/instructions.html#exec-binop
 function unop(
   c: StackLocal,
   sign: Sign,
-  createValue: (number) => StackLocal
+  createValue: number => StackLocal
 ): StackLocal {
-
   switch (sign) {
-  case 'abs':
-    return createValue(Math.abs(c.value));
+    case "abs":
+      return createValue(Math.abs(c.value));
 
-  case 'neg':
-    return createValue(-c.value);
+    case "neg":
+      return createValue(-c.value);
   }
 
-  throw new Error('Unsupported unop: ' + sign);
+  throw new Error("Unsupported unop: " + sign);
 }
 
 export function unopi32(c: StackLocal, sign: Sign): StackLocal {

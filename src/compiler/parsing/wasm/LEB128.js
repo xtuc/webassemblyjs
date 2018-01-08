@@ -27,7 +27,7 @@ const TEMP_BUF_MAXIMUM_LENGTH = 20;
 const bufPool = [];
 
 function decodeBufferCommon(encodedBuffer, index, signed) {
-  index = (index === undefined) ? 0 : index;
+  index = index === undefined ? 0 : index;
 
   let length = encodedLength(encodedBuffer, index);
   const bitLength = length * 7;
@@ -62,14 +62,16 @@ function decodeBufferCommon(encodedBuffer, index, signed) {
 
   // Slice off any superfluous bytes, that is, ones that add no meaningful
   // bits (because the value would be the same if they were removed).
-  while ((byteLength > 1) &&
-         (result[byteLength - 1] === signByte) &&
-         (!signed || ((result[byteLength - 2] >> 7) === signBit))) {
+  while (
+    byteLength > 1 &&
+    result[byteLength - 1] === signByte &&
+    (!signed || result[byteLength - 2] >> 7 === signBit)
+  ) {
     byteLength--;
   }
   result = bufResize(result, byteLength);
 
-  return {value: result, nextIndex: index};
+  return { value: result, nextIndex: index };
 }
 
 /**
@@ -77,13 +79,13 @@ function decodeBufferCommon(encodedBuffer, index, signed) {
  * bits in the value beyond the length to set are ignored.
  */
 function bitsInject(buffer, bitIndex, bitLength, value) {
-  if ((bitLength < 0) || (bitLength > 32)) {
-    throw new Error('Bad value for bitLength.');
+  if (bitLength < 0 || bitLength > 32) {
+    throw new Error("Bad value for bitLength.");
   }
 
   const lastByte = Math.floor((bitIndex + bitLength - 1) / 8);
-  if ((bitIndex < 0) || (lastByte >= buffer.length)) {
-    throw new Error('Index out of range.');
+  if (bitIndex < 0 || lastByte >= buffer.length) {
+    throw new Error("Index out of range.");
   }
 
   // Just keeping it simple, until / unless profiling shows that this
@@ -94,7 +96,7 @@ function bitsInject(buffer, bitIndex, bitLength, value) {
 
   while (bitLength > 0) {
     if (value & 1) {
-      buffer[atByte] |= (1 << atBit);
+      buffer[atByte] |= 1 << atBit;
     } else {
       buffer[atByte] &= ~(1 << atBit);
     }
@@ -158,8 +160,8 @@ function encodedLength(encodedBuffer, index) {
 
   result++; // to account for the last byte
 
-  if ((index + result) > encodedBuffer.length) {
-    throw new Error('Bogus encoding');
+  if (index + result > encodedBuffer.length) {
+    throw new Error("Bogus encoding");
   }
 
   return result;
@@ -183,9 +185,8 @@ export function decodeUInt64(encodedBuffer, index) {
 
   bufFree(result.value);
 
-  return {value: value, nextIndex: result.nextIndex, lossy: parsed.lossy};
+  return { value: value, nextIndex: result.nextIndex, lossy: parsed.lossy };
 }
-
 
 export function decodeUInt32(encodedBuffer, index) {
   const result = decodeBufferCommon(encodedBuffer, index, false);
@@ -194,7 +195,7 @@ export function decodeUInt32(encodedBuffer, index) {
 
   bufFree(result.value);
 
-  return {value: value, nextIndex: result.nextIndex};
+  return { value: value, nextIndex: result.nextIndex };
 }
 
 /**
@@ -210,7 +211,7 @@ function bufReadUInt(buffer) {
   if (length < 7) {
     // Common case which can't possibly be lossy (see above).
     for (let i = length - 1; i >= 0; i--) {
-      result = (result * 0x100) + buffer[i];
+      result = result * 0x100 + buffer[i];
     }
   } else {
     for (let i = length - 1; i >= 0; i--) {
@@ -223,7 +224,7 @@ function bufReadUInt(buffer) {
     }
   }
 
-  return {value: result, lossy: lossy};
+  return { value: result, lossy: lossy };
 }
 
 /**
@@ -242,7 +243,7 @@ function isLossyToAdd(accum, num) {
     return true;
   }
 
-  if ((added - lowBit) !== accum) {
+  if (added - lowBit !== accum) {
     return true;
   }
 

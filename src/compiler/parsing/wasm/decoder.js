@@ -1,7 +1,7 @@
 // @flow
 
-const t = require('../../AST');
-const {CompileError} = require('../../../errors');
+const t = require("../../AST");
+const { CompileError } = require("../../../errors");
 
 const {
   importTypes,
@@ -15,34 +15,33 @@ const {
   magicModuleHeader,
   valtypes,
   moduleVersion,
-  sections,
-} = require('./constants');
+  sections
+} = require("./constants");
 
 const {
   decodeUInt32,
   MAX_NUMBER_OF_BYTE_U32,
 
   decodeUInt64,
-  MAX_NUMBER_OF_BYTE_U64,
-} = require('./LEB128');
+  MAX_NUMBER_OF_BYTE_U64
+} = require("./LEB128");
 
-const ieee754 = require('./ieee754');
-const {utf8ArrayToStr} = require('./utf8');
+const ieee754 = require("./ieee754");
+const { utf8ArrayToStr } = require("./utf8");
 
 let inc = 0;
 
-function getUniqueName(prefix: string = 'temp'): string {
+function getUniqueName(prefix: string = "temp"): string {
   inc++;
 
-  return prefix + '_' + inc;
+  return prefix + "_" + inc;
 }
 
 function toHex(n: number): string {
-  return '0x' + Number(n).toString('16');
+  return "0x" + Number(n).toString("16");
 }
 
 function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
-
   if (l.length !== r.length) {
     return false;
   }
@@ -64,21 +63,21 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   function dump(b: Array<Byte>, msg: string) {
     if (!printDump) return;
 
-    const pad = '\t\t\t\t\t\t\t\t\t\t';
+    const pad = "\t\t\t\t\t\t\t\t\t\t";
 
     if (b.length < 5) {
-      b = b.map(toHex).join(' ');
+      b = b.map(toHex).join(" ");
     } else {
-      b = '...';
+      b = "...";
     }
 
-    console.log(toHex(offset) + ':\t', b, pad, ';', msg);
+    console.log(toHex(offset) + ":\t", b, pad, ";", msg);
   }
 
   function dumpSep(msg: string) {
     if (!printDump) return;
 
-    console.log(';', msg);
+    console.log(";", msg);
   }
 
   /**
@@ -107,7 +106,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
      * - Function section
      * - Import section
      */
-    functionsInModule: [],
+    functionsInModule: []
   };
 
   function eatBytes(n: number) {
@@ -133,12 +132,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       0,
       true,
       ieee754.SINGLE_PRECISION_MANTISSA,
-      ieee754.NUMBER_OF_BYTE_F64,
+      ieee754.NUMBER_OF_BYTE_F64
     );
 
     return {
       value,
-      nextIndex: ieee754.NUMBER_OF_BYTE_F64,
+      nextIndex: ieee754.NUMBER_OF_BYTE_F64
     };
   }
 
@@ -151,12 +150,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       0,
       true,
       ieee754.SINGLE_PRECISION_MANTISSA,
-      ieee754.NUMBER_OF_BYTE_F32,
+      ieee754.NUMBER_OF_BYTE_F32
     );
 
     return {
       value,
-      nextIndex: ieee754.NUMBER_OF_BYTE_F32,
+      nextIndex: ieee754.NUMBER_OF_BYTE_F32
     };
   }
 
@@ -170,7 +169,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
     return {
       value,
-      nextIndex: len,
+      nextIndex: len
     };
   }
 
@@ -202,10 +201,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const header = readBytes(4);
 
     if (byteArrayEq(magicModuleHeader, header) === false) {
-      throw new CompileError('magic header not detected');
+      throw new CompileError("magic header not detected");
     }
 
-    dump(header, 'wasm magic header');
+    dump(header, "wasm magic header");
 
     eatBytes(4);
   }
@@ -214,22 +213,21 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const version = readBytes(4);
 
     if (byteArrayEq(moduleVersion, version) === false) {
-      throw new CompileError('unknown wasm version: ' + version.join(' '));
+      throw new CompileError("unknown wasm version: " + version.join(" "));
     }
 
-    dump(version, 'wasm version');
+    dump(version, "wasm version");
 
     eatBytes(4);
   }
 
-  function parseVec<T>(cast: (Byte) => T): Array<T> {
-
+  function parseVec<T>(cast: Byte => T): Array<T> {
     // Int on 1byte
     const u32 = readU32();
     const length = u32.value;
     eatBytes(u32.nextIndex);
 
-    dump([length], 'number');
+    dump([length], "number");
 
     if (length === 0) {
       return [];
@@ -245,8 +243,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       dump([byte], value);
 
-      if (typeof value === 'undefined') {
-        throw new CompileError('Internal failure: parseVec could not cast the value');
+      if (typeof value === "undefined") {
+        throw new CompileError(
+          "Internal failure: parseVec could not cast the value"
+        );
       }
 
       elements.push(value);
@@ -258,30 +258,28 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   // Type section
   // https://webassembly.github.io/spec/binary/modules.html#binary-typesec
   function parseTypeSection(numberOfTypes: number) {
-
-    dump([numberOfTypes], 'num types');
+    dump([numberOfTypes], "num types");
 
     for (let i = 0; i < numberOfTypes; i++) {
-      dumpSep('type ' + i);
+      dumpSep("type " + i);
 
       const type = readByte();
       eatBytes(1);
 
       if (type == types.func) {
-        dump([type], 'func');
+        dump([type], "func");
 
-        const params: Array<Valtype> = parseVec((b) => valtypes[b]);
-        const result: Array<Valtype> = parseVec((b) => valtypes[b]);
+        const params: Array<Valtype> = parseVec(b => valtypes[b]);
+        const result: Array<Valtype> = parseVec(b => valtypes[b]);
 
         state.typesInModule.push({
           params,
-          result,
+          result
         });
       } else {
-        throw new Error('Unsupported type: ' + toHex(type));
+        throw new Error("Unsupported type: " + toHex(type));
       }
     }
-
   }
 
   // Import section
@@ -294,7 +292,6 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     eatBytes(numberOfImportsu32.nextIndex);
 
     for (let i = 0; i < numberOfImports; i++) {
-
       /**
        * Module name
        */
@@ -319,32 +316,35 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       const descrType = importTypes[descrTypeByte];
 
-      dump([descrTypeByte], 'import type');
+      dump([descrTypeByte], "import type");
 
-      if (typeof descrType === 'undefined') {
-        throw new CompileError('Unknown import description type: ' + toHex(descrTypeByte));
+      if (typeof descrType === "undefined") {
+        throw new CompileError(
+          "Unknown import description type: " + toHex(descrTypeByte)
+        );
       }
 
       let importDescr;
 
-      if (descrType === 'func') {
-
+      if (descrType === "func") {
         const indexU32 = readU32();
         const typeindex = indexU32.value;
         eatBytes(indexU32.nextIndex);
 
-        dump([typeindex], 'type index');
+        dump([typeindex], "type index");
 
         const signature = state.typesInModule[typeindex];
 
-        if (typeof signature === 'undefined') {
-          throw new CompileError('function signature not found in type section');
+        if (typeof signature === "undefined") {
+          throw new CompileError(
+            "function signature not found in type section"
+          );
         }
 
         importDescr = t.funcImportDescr(
           t.numberLiteral(typeindex),
           signature.params,
-          signature.result,
+          signature.result
         );
 
         const id = t.identifier(name.value);
@@ -352,20 +352,15 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         state.functionsInModule.push({
           id,
           signature,
-          isExternal: true,
+          isExternal: true
         });
-
-      } else if (descrType === 'global') {
-
+      } else if (descrType === "global") {
         importDescr = parseGlobalType();
-
       } else {
-        throw new CompileError('Unsupported import of type: ' + descrType);
+        throw new CompileError("Unsupported import of type: " + descrType);
       }
 
-      imports.push(
-        t.moduleImport(moduleName.value, name.value, importDescr)
-      );
+      imports.push(t.moduleImport(moduleName.value, name.value, importDescr));
     }
 
     return imports;
@@ -374,31 +369,29 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   // Function section
   // https://webassembly.github.io/spec/binary/modules.html#function-section
   function parseFuncSection() {
-
     const numberOfFunctionsu32 = readU32();
     const numberOfFunctions = numberOfFunctionsu32.value;
     eatBytes(numberOfFunctionsu32.nextIndex);
 
     for (let i = 0; i < numberOfFunctions; i++) {
-
       const indexU32 = readU32();
       const typeindex = indexU32.value;
       eatBytes(indexU32.nextIndex);
 
-      dump([typeindex], 'type index');
+      dump([typeindex], "type index");
 
       const signature = state.typesInModule[typeindex];
 
-      if (typeof signature === 'undefined') {
-        throw new CompileError('function signature not found');
+      if (typeof signature === "undefined") {
+        throw new CompileError("function signature not found");
       }
 
-      const id = t.identifier(getUniqueName('func'));
+      const id = t.identifier(getUniqueName("func"));
 
       state.functionsInModule.push({
         id,
         signature,
-        isExternal: false,
+        isExternal: false
       });
     }
   }
@@ -410,11 +403,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const numberOfExport = u32.value;
     eatBytes(u32.nextIndex);
 
-    dump([numberOfExport], 'num exports');
+    dump([numberOfExport], "num exports");
 
     // Parse vector of exports
     for (let i = 0; i < numberOfExport; i++) {
-
       /**
        * Name
        */
@@ -430,20 +422,20 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       const typeIndex = readByte();
       eatBytes(1);
 
-      dump([typeIndex], 'export kind');
+      dump([typeIndex], "export kind");
 
       const indexu32 = readU32();
       const index = indexu32.value;
       eatBytes(indexu32.nextIndex);
 
-      dump([index], 'export index');
+      dump([index], "export index");
 
       let id, signature;
 
-      if (exportTypes[typeIndex] === 'Func') {
+      if (exportTypes[typeIndex] === "Func") {
         const func = state.functionsInModule[index];
 
-        if (typeof func === 'undefined') {
+        if (typeof func === "undefined") {
           throw new CompileError(
             `entry not found at index ${index} in function section`
           );
@@ -451,10 +443,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         id = func.id;
         signature = func.signature;
-      } else if (exportTypes[typeIndex] === 'Mem') {
+      } else if (exportTypes[typeIndex] === "Mem") {
         const memNode = state.memoriesInModule[index];
 
-        if (typeof memNode === 'undefined') {
+        if (typeof memNode === "undefined") {
           throw new CompileError(
             `entry not found at index ${index} in memory section`
           );
@@ -463,7 +455,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         id = memNode.id;
         signature = null;
       } else {
-        throw new CompileError('Unsupported export type: ' + toHex(typeIndex));
+        throw new CompileError("Unsupported export type: " + toHex(typeIndex));
       }
 
       state.elementsInExportSection.push({
@@ -471,9 +463,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         type: exportTypes[typeIndex],
         signature,
         id,
-        index,
+        index
       });
-
     }
   }
 
@@ -484,19 +475,18 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const numberOfFuncs = u32.value;
     eatBytes(u32.nextIndex);
 
-    dump([numberOfFuncs], 'number functions');
+    dump([numberOfFuncs], "number functions");
 
     // Parse vector of function
     for (let i = 0; i < numberOfFuncs; i++) {
-
-      dumpSep('function body ' + i);
+      dumpSep("function body " + i);
 
       // the u32 size of the function code in bytes
       // Ignore it for now
       const bodySizeU32 = readU32();
       eatBytes(bodySizeU32.nextIndex);
 
-      dump([0x0], 'function body size (guess)');
+      dump([0x0], "function body size (guess)");
 
       const code = [];
 
@@ -507,17 +497,16 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       const funcLocalNum = funcLocalNumU32.value;
       eatBytes(funcLocalNumU32.nextIndex);
 
-      dump([funcLocalNum], 'num locals');
+      dump([funcLocalNum], "num locals");
 
       const locals = [];
 
       for (let i = 0; i < funcLocalNum; i++) {
-
         const localCountU32 = readU32();
         const localCount = localCountU32.value;
         eatBytes(localCountU32.nextIndex);
 
-        dump([localCount], 'num local');
+        dump([localCount], "num local");
 
         const valtypeByte = readByte();
         eatBytes(1);
@@ -526,8 +515,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         dump([valtypeByte], type);
 
-        if (typeof type === 'undefined') {
-          throw new CompileError('Unexpected valtype: ' + toHex(valtypeByte));
+        if (typeof type === "undefined") {
+          throw new CompileError("Unexpected valtype: " + toHex(valtypeByte));
         }
       }
 
@@ -536,13 +525,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       state.elementsInCodeSection.push({
         code,
-        locals,
+        locals
       });
     }
   }
 
   function parseInstructionBlock(code: Array<any>) {
-
     while (true) {
       let instructionAlreadyCreated = false;
 
@@ -553,30 +541,33 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       dump([instructionByte], instruction.name);
 
-      if (typeof instruction === 'undefined') {
-        throw new CompileError('Unexpected instruction: ' + toHex(instructionByte));
+      if (typeof instruction === "undefined") {
+        throw new CompileError(
+          "Unexpected instruction: " + toHex(instructionByte)
+        );
       }
 
       /**
        * End of the function
        */
-      if (instruction.name === 'end') {
+      if (instruction.name === "end") {
         break;
       }
 
       const args = [];
 
-      if (instruction.name === 'loop') {
-
+      if (instruction.name === "loop") {
         const blocktypeByte = readByte();
         eatBytes(1);
 
         const blocktype = blockTypes[blocktypeByte];
 
-        dump([blocktypeByte], 'blocktype');
+        dump([blocktypeByte], "blocktype");
 
-        if (typeof blocktype === 'undefined') {
-          throw new CompileError('Unexpected blocktype: ' + toHex(blocktypeByte));
+        if (typeof blocktype === "undefined") {
+          throw new CompileError(
+            "Unexpected blocktype: " + toHex(blocktypeByte)
+          );
         }
 
         const instr = [];
@@ -587,18 +578,18 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         code.push(loopNode);
         instructionAlreadyCreated = true;
-
-      } else if (instruction.name === 'if') {
-
+      } else if (instruction.name === "if") {
         const blocktypeByte = readByte();
         eatBytes(1);
 
         const blocktype = blockTypes[blocktypeByte];
 
-        dump([blocktypeByte], 'blocktype');
+        dump([blocktypeByte], "blocktype");
 
-        if (typeof blocktype === 'undefined') {
-          throw new CompileError('Unexpected blocktype: ' + toHex(blocktypeByte));
+        if (typeof blocktype === "undefined") {
+          throw new CompileError(
+            "Unexpected blocktype: " + toHex(blocktypeByte)
+          );
         }
 
         const consequentInstr = [];
@@ -619,18 +610,18 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         code.push(ifNode);
         instructionAlreadyCreated = true;
-
-      } else if (instruction.name === 'block') {
-
+      } else if (instruction.name === "block") {
         const blocktypeByte = readByte();
         eatBytes(1);
 
         const blocktype = blockTypes[blocktypeByte];
 
-        dump([blocktypeByte], 'blocktype');
+        dump([blocktypeByte], "blocktype");
 
-        if (typeof blocktype === 'undefined') {
-          throw new CompileError('Unexpected blocktype: ' + toHex(blocktypeByte));
+        if (typeof blocktype === "undefined") {
+          throw new CompileError(
+            "Unexpected blocktype: " + toHex(blocktypeByte)
+          );
         }
 
         const instr = [];
@@ -643,150 +634,115 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         code.push(blockNode);
         instructionAlreadyCreated = true;
-
-      } else if (instruction.name === 'call') {
-
+      } else if (instruction.name === "call") {
         const indexu32 = readU32();
         const index = indexu32.value;
         eatBytes(indexu32.nextIndex);
 
-        dump([index], 'index');
+        dump([index], "index");
 
         const callNode = t.callInstruction(t.numberLiteral(index));
 
         code.push(callNode);
         instructionAlreadyCreated = true;
-
-      } else if (instruction.name === 'br_table') {
-
+      } else if (instruction.name === "br_table") {
         const indicesu32 = readU32();
         const indices = indicesu32.value;
         eatBytes(indicesu32.nextIndex);
 
-        dump([indices], 'num indices');
+        dump([indices], "num indices");
 
         for (let i = 0; i < indices; i++) {
-
           const indexu32 = readU32();
           const index = indexu32.value;
           eatBytes(indexu32.nextIndex);
 
-          dump([index], 'index');
+          dump([index], "index");
         }
 
         const labelIndexu32 = readU32();
         const labelIndex = labelIndexu32.value;
         eatBytes(labelIndexu32.nextIndex);
 
-        dump([labelIndex], 'label index');
-
-      } else
-
-      /**
-       * Memory instructions
-       */
-      if (instructionByte >= 0x28 && instructionByte <= 0x40) {
-
+        dump([labelIndex], "label index");
+      } else if (instructionByte >= 0x28 && instructionByte <= 0x40) {
+        /**
+         * Memory instructions
+         */
         const aligun32 = readU32();
         const align = aligun32.value;
         eatBytes(aligun32.nextIndex);
 
-        dump([align], 'align');
+        dump([align], "align");
 
         const offsetu32 = readU32();
         const offset = offsetu32.value;
         eatBytes(offsetu32.nextIndex);
 
-        dump([offset], 'offset');
-
-      } else
-
-      /**
-       * Numeric instructions
-       */
-      if (instructionByte >= 0x41 && instructionByte <= 0x44) {
-
-        if (instruction.object === 'i32') {
+        dump([offset], "offset");
+      } else if (instructionByte >= 0x41 && instructionByte <= 0x44) {
+        /**
+         * Numeric instructions
+         */
+        if (instruction.object === "i32") {
           const valueu32 = readU32();
           const value = valueu32.value;
           eatBytes(valueu32.nextIndex);
 
-          dump([value], 'value');
+          dump([value], "value");
 
-          args.push(
-            t.numberLiteral(value)
-          );
+          args.push(t.numberLiteral(value));
         }
 
-        if (instruction.object === 'i64') {
+        if (instruction.object === "i64") {
           const valueu64 = readU64();
           const value = valueu64.value;
           eatBytes(valueu64.nextIndex);
 
-          dump([value], 'value');
+          dump([value], "value");
 
-          args.push(
-            t.numberLiteral(value)
-          );
+          args.push(t.numberLiteral(value));
         }
 
-        if (instruction.object === 'f32') {
+        if (instruction.object === "f32") {
           const valuef32 = readF32();
           const value = valuef32.value;
           eatBytes(valuef32.nextIndex);
 
-          dump([value], 'value');
+          dump([value], "value");
 
-          args.push(
-            t.numberLiteral(value)
-          );
+          args.push(t.numberLiteral(value));
         }
 
-
-        if (instruction.object === 'f64') {
+        if (instruction.object === "f64") {
           const valuef64 = readF64();
           const value = valuef64.value;
           eatBytes(valuef64.nextIndex);
 
-          dump([value], 'value');
+          dump([value], "value");
 
-          args.push(
-            t.numberLiteral(value)
-          );
+          args.push(t.numberLiteral(value));
         }
-
       } else {
-
         for (let i = 0; i < instruction.numberOfArgs; i++) {
           const u32 = readU32();
           eatBytes(u32.nextIndex);
 
-          dump([u32.value], 'argument ' + i);
+          dump([u32.value], "argument " + i);
 
-          args.push(
-            t.numberLiteral(u32.value)
-          );
+          args.push(t.numberLiteral(u32.value));
         }
-
       }
 
-
       if (instructionAlreadyCreated === false) {
-
-        if (typeof instruction.object === 'string') {
-
-          code.push(t.objectInstruction(
-            instruction.name,
-            instruction.object,
-            args
-          ));
-
+        if (typeof instruction.object === "string") {
+          code.push(
+            t.objectInstruction(instruction.name, instruction.object, args)
+          );
         } else {
-
           code.push(t.instruction(instruction.name, args));
         }
       }
-
     }
   }
 
@@ -798,18 +754,20 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const numberOfTable = u32.value;
     eatBytes(u32.nextIndex);
 
-    dump([numberOfTable], 'num tables');
+    dump([numberOfTable], "num tables");
 
     for (let i = 0; i < numberOfTable; i++) {
       const elementTypeByte = readByte();
       eatBytes(1);
 
-      dump([elementTypeByte], 'element type');
+      dump([elementTypeByte], "element type");
 
       const elementType = tableTypes[elementTypeByte];
 
-      if (typeof elementType === 'undefined') {
-        throw new CompileError('Unknown element type in table: ' + toHex(elementType));
+      if (typeof elementType === "undefined") {
+        throw new CompileError(
+          "Unknown element type in table: " + toHex(elementType)
+        );
       }
 
       const limitType = readByte();
@@ -818,31 +776,26 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       let min, max;
 
       if (limitHasMaximum[limitType] === true) {
-
         const u32min = readU32();
         min = u32min.value;
         eatBytes(u32min.nextIndex);
 
-        dump([min], 'min');
+        dump([min], "min");
 
         const u32max = readU32();
         max = u32max.value;
         eatBytes(u32max.nextIndex);
 
-        dump([max], 'max');
-
+        dump([max], "max");
       } else {
-
         const u32min = readU32();
         min = u32min.value;
         eatBytes(u32min.nextIndex);
 
-        dump([min], 'min');
+        dump([min], "min");
       }
 
-      tables.push(
-        t.table(elementType, t.limits(min, max))
-      );
+      tables.push(t.table(elementType, t.limits(min, max)));
     }
 
     return tables;
@@ -850,25 +803,24 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
   // https://webassembly.github.io/spec/binary/types.html#global-types
   function parseGlobalType(): GlobalType {
-
     const valtypeByte = readByte();
     eatBytes(1);
 
     const type = valtypes[valtypeByte];
 
-    dump([valtypeByte], 'valtype type');
+    dump([valtypeByte], "valtype type");
 
-    if (typeof type === 'undefined') {
-      throw new CompileError('Unknown valtype: ' + toHex(valtypeByte));
+    if (typeof type === "undefined") {
+      throw new CompileError("Unknown valtype: " + toHex(valtypeByte));
     }
 
     const globalTypeByte = readByte();
     const globalType = globalTypes[globalTypeByte];
 
-    dump([globalTypeByte], 'global type');
+    dump([globalTypeByte], "global type");
 
-    if (typeof globalType === 'undefined') {
-      throw new CompileError('Unknown global type: ' + toHex(globalTypeByte));
+    if (typeof globalType === "undefined") {
+      throw new CompileError("Unknown global type: " + toHex(globalTypeByte));
     }
 
     return t.globalType(type, globalType);
@@ -881,10 +833,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const numberOfGlobals = numberOfGlobalsu32.value;
     eatBytes(numberOfGlobalsu32.nextIndex);
 
-    dump([numberOfGlobals], 'num globals');
+    dump([numberOfGlobals], "num globals");
 
     for (let i = 0; i < numberOfGlobals; i++) {
-
       const globalType = parseGlobalType();
 
       /**
@@ -894,30 +845,25 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       parseInstructionBlock(init);
 
-      globals.push(
-        t.global(globalType, init)
-      );
-
+      globals.push(t.global(globalType, init));
     }
 
     return globals;
   }
 
   function parseElemSection() {
-
     const numberOfElementsu32 = readU32();
     const numberOfElements = numberOfElementsu32.value;
     eatBytes(numberOfElementsu32.nextIndex);
 
-    dump([numberOfElements], 'num elements');
+    dump([numberOfElements], "num elements");
 
     for (let i = 0; i < numberOfElements; i++) {
-
       const tableindexu32 = readU32();
       const tableindex = tableindexu32.value;
       eatBytes(tableindexu32.nextIndex);
 
-      dump([tableindex], 'table index');
+      dump([tableindex], "table index");
 
       /**
        * Parse instructions
@@ -932,19 +878,16 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       const indices = indicesu32.value;
       eatBytes(indicesu32.nextIndex);
 
-      dump([indices], 'num indices');
+      dump([indices], "num indices");
 
       for (let i = 0; i < indices; i++) {
-
         const indexu32 = readU32();
         const index = indexu32.value;
         eatBytes(indexu32.nextIndex);
 
-        dump([index], 'index');
+        dump([index], "index");
       }
-
     }
-
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#memory-section
@@ -955,42 +898,35 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const numberOfElements = numberOfElementsu32.value;
     eatBytes(numberOfElementsu32.nextIndex);
 
-    dump([numberOfElements], 'num elements');
+    dump([numberOfElements], "num elements");
 
     for (let i = 0; i < numberOfElements; i++) {
-
       const limitType = readByte();
       eatBytes(1);
 
       let min, max;
 
       if (limitHasMaximum[limitType] === true) {
-
         const u32min = readU32();
         min = u32min.value;
         eatBytes(u32min.nextIndex);
 
-        dump([min], 'min');
+        dump([min], "min");
 
         const u32max = readU32();
         max = u32max.value;
         eatBytes(u32max.nextIndex);
 
-        dump([max], 'max');
-
+        dump([max], "max");
       } else {
-
         const u32min = readU32();
         min = u32min.value;
         eatBytes(u32min.nextIndex);
 
-        dump([min], 'min');
+        dump([min], "min");
       }
 
-      const memoryNode = t.memory(
-        t.limits(min, max),
-        t.numberLiteral(i),
-      );
+      const memoryNode = t.memory(t.limits(min, max), t.numberLiteral(i));
 
       state.memoriesInModule.push(memoryNode);
       memories.push(memoryNode);
@@ -1001,17 +937,16 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-startsec
   function parseStartSection() {
-
     const u32 = readU32();
     const startFuncIndex = u32.value;
     eatBytes(u32.nextIndex);
 
-    dump([startFuncIndex], 'index');
+    dump([startFuncIndex], "index");
 
     const func = state.functionsInModule[startFuncIndex];
 
-    if (typeof func === 'undefined') {
-      throw new CompileError('Unknown start function');
+    if (typeof func === "undefined") {
+      throw new CompileError("Unknown start function");
     }
   }
 
@@ -1023,34 +958,29 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const numberOfElements = numberOfElementsu32.value;
     eatBytes(numberOfElementsu32.nextIndex);
 
-    dump([numberOfElements], 'num elements');
+    dump([numberOfElements], "num elements");
 
     for (let i = 0; i < numberOfElements; i++) {
-
       const memoryIndexu32 = readU32();
       const memoryIndex = memoryIndexu32.value;
       eatBytes(memoryIndexu32.nextIndex);
 
-      dump([memoryIndex], 'memory index');
+      dump([memoryIndex], "memory index");
 
       const instrus = [];
       parseInstructionBlock(instrus);
 
-      let bytes: Array<Byte> = parseVec((b) => b);
+      let bytes: Array<Byte> = parseVec(b => b);
 
       // FIXME(sven): the Go binary can store > 100kb of data here
       // my testing suite doesn't handle that.
       // Disabling for now.
       bytes = [];
 
-      dump([], 'init');
+      dump([], "init");
 
       dataEntries.push(
-        t.data(
-          t.numberLiteral(memoryIndex),
-          instrus,
-          t.byteArray(bytes),
-        )
+        t.data(t.numberLiteral(memoryIndex), instrus, t.byteArray(bytes))
       );
     }
 
@@ -1067,120 +997,120 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     eatBytes(u32.nextIndex);
 
     switch (sectionId) {
+      case sections.typeSection: {
+        dumpSep("section Type");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.typeSection: {
-      dumpSep('section Type');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        const u32 = readU32();
+        const numberOfTypes = u32.value;
+        eatBytes(u32.nextIndex);
 
-      const u32 = readU32();
-      const numberOfTypes = u32.value;
-      eatBytes(u32.nextIndex);
+        parseTypeSection(numberOfTypes);
+        break;
+      }
 
-      parseTypeSection(numberOfTypes);
-      break;
-    }
+      case sections.tableSection: {
+        dumpSep("section Table");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.tableSection: {
-      dumpSep('section Table');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        return parseTableSection();
+      }
 
-      return parseTableSection();
-    }
+      case sections.importSection: {
+        dumpSep("section Import");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.importSection: {
-      dumpSep('section Import');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        return parseImportSection();
+      }
 
-      return parseImportSection();
-    }
+      case sections.funcSection: {
+        dumpSep("section Function");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.funcSection: {
-      dumpSep('section Function');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        parseFuncSection();
+        break;
+      }
 
-      parseFuncSection();
-      break;
-    }
+      case sections.exportSection: {
+        dumpSep("section Export");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.exportSection: {
-      dumpSep('section Export');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        parseExportSection();
+        break;
+      }
 
-      parseExportSection();
-      break;
-    }
+      case sections.codeSection: {
+        dumpSep("section Code");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.codeSection: {
-      dumpSep('section Code');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        parseCodeSection();
+        break;
+      }
 
-      parseCodeSection();
-      break;
-    }
+      case sections.startSection: {
+        dumpSep("section Start");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.startSection: {
-      dumpSep('section Start');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        parseStartSection();
+        break;
+      }
 
-      parseStartSection();
-      break;
-    }
+      case sections.elemSection: {
+        dumpSep("section Element");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.elemSection: {
-      dumpSep('section Element');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        parseElemSection();
+        break;
+      }
 
-      parseElemSection();
-      break;
-    }
+      case sections.globalSection: {
+        dumpSep("section Global");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.globalSection: {
-      dumpSep('section Global');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        return parseGlobalSection();
+      }
 
-      return parseGlobalSection();
-    }
+      case sections.memorySection: {
+        dumpSep("section Memory");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.memorySection: {
-      dumpSep('section Memory');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        return parseMemorySection();
+      }
 
-      return parseMemorySection();
-    }
+      case sections.dataSection: {
+        dumpSep("section Data");
+        dump([sectionId], "section code");
+        dump([0x0], "section size (ignore)");
 
-    case sections.dataSection: {
-      dumpSep('section Data');
-      dump([sectionId], 'section code');
-      dump([0x0], 'section size (ignore)');
+        return parseDataSection();
+      }
 
-      return parseDataSection();
-    }
+      case sections.customSection: {
+        dumpSep("section Custom");
+        dump([sectionId], "section code");
+        dump([sectionSizeInBytes], "section size");
 
-    case sections.customSection: {
-      dumpSep('section Custom');
-      dump([sectionId], 'section code');
-      dump([sectionSizeInBytes], 'section size');
+        // We don't need to parse it, just eat all the bytes
+        eatBytes(sectionSizeInBytes);
 
-      // We don't need to parse it, just eat all the bytes
-      eatBytes(sectionSizeInBytes);
+        break;
+      }
 
-      break;
-    }
-
-    default: {
-      throw new CompileError('Unexpected section: ' + JSON.stringify(sectionId));
-    }
-
+      default: {
+        throw new CompileError(
+          "Unexpected section: " + JSON.stringify(sectionId)
+        );
+      }
     }
 
     return [];
@@ -1204,10 +1134,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
    */
   let funcIndex = 0;
   state.functionsInModule.forEach((func: DecodedModuleFunc) => {
-
     const params = func.signature.params.map((valtype: Valtype) => ({
       valtype,
-      id: undefined,
+      id: undefined
     }));
 
     const result = func.signature.result[0];
@@ -1231,26 +1160,25 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     moduleFields.push(funcNode);
   });
 
-  state.elementsInExportSection.forEach((moduleExport: DecodedElementInExportSection) => {
-
-    /**
-     * If the export has no id, we won't be able to call it from the outside
-     * so we can omit it
-     */
-    if (typeof moduleExport.id === 'object') {
-
-      moduleFields.push(
-        t.moduleExport(
-          moduleExport.name,
-          moduleExport.type,
-          moduleExport.id.name,
-        )
-      );
+  state.elementsInExportSection.forEach(
+    (moduleExport: DecodedElementInExportSection) => {
+      /**
+       * If the export has no id, we won't be able to call it from the outside
+       * so we can omit it
+       */
+      if (typeof moduleExport.id === "object") {
+        moduleFields.push(
+          t.moduleExport(
+            moduleExport.name,
+            moduleExport.type,
+            moduleExport.id.name
+          )
+        );
+      }
     }
+  );
 
-  });
-
-  dumpSep('end of program');
+  dumpSep("end of program");
 
   const module = t.module(null, moduleFields);
   return t.program([module]);

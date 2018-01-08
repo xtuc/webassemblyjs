@@ -3,14 +3,13 @@
 [include]
 
 [libs]
-./src/types/AST.js
-./src/types/index.js
-./src/types/userland.js
+./src/types/
 ./src/compiler/parsing/wasm/types/decoder.js
 
 [lints]
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowIgnore
+unsafe.enable_getters_and_setters=true
 
 [strict]

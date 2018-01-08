@@ -30,16 +30,20 @@
     "babel-eslint": "^8.0.3",
     "chai": "^4.1.2",
     "eslint": "^4.12.1",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-flowtype": "^2.39.1",
     "eslint-plugin-flowtype-errors": "^3.3.6",
     "eslint-plugin-mocha": "^4.11.0",
+    "eslint-plugin-prettier": "^2.4.0",
     "flow-bin": "^0.60.1",
+    "flow-typed": "^2.2.3",
     "glob": "^7.1.2",
     "http-server": "^0.10.0",
     "jest-diff": "^21.2.1",
     "markdown-to-html": "0.0.13",
     "mocha": "^4.0.1",
-    "performance-now": "^2.1.0"
+    "performance-now": "^2.1.0",
+    "prettier": "^1.9.2"
   },
   "bin": {
     "wasmdump": "./lib/bin/wasmdump.js",

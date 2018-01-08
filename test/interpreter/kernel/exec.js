@@ -1,22 +1,19 @@
 // @flow
 
-const {assert} = require('chai');
+const { assert } = require("chai");
 
-const t = require('../../../lib/compiler/AST');
-const {executeStackFrame} = require('../../../lib/interpreter/kernel/exec');
-const {createStackFrame} = require('../../../lib/interpreter/kernel/stackframe');
+const t = require("../../../lib/compiler/AST");
+const { executeStackFrame } = require("../../../lib/interpreter/kernel/exec");
+const {
+  createStackFrame
+} = require("../../../lib/interpreter/kernel/stackframe");
 
-describe('kernel exec', () => {
-
-  describe('stackframe tracing', () => {
-
-    it('should be called after each instruction', () => {
+describe("kernel exec", () => {
+  describe("stackframe tracing", () => {
+    it("should be called after each instruction", () => {
       let calls = 0;
 
-      const code = [
-        t.instruction('nop'),
-        t.instruction('nop'),
-      ];
+      const code = [t.instruction("nop"), t.instruction("nop")];
 
       const stackFrame = createStackFrame(code, []);
       stackFrame.trace = () => calls++;
@@ -27,15 +24,11 @@ describe('kernel exec', () => {
     });
   });
 
-  describe('pc', () => {
-
-    it('should increase after each instruction', () => {
+  describe("pc", () => {
+    it("should increase after each instruction", () => {
       let pc = 0;
 
-      const code = [
-        t.instruction('nop'),
-        t.instruction('nop'),
-      ];
+      const code = [t.instruction("nop"), t.instruction("nop")];
 
       const stackFrame = createStackFrame(code, []);
       stackFrame.trace = (_, x) => (pc = x);

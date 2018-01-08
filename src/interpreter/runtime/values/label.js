@@ -1,9 +1,8 @@
 // @flow
 
-const type = 'label';
+const type = "label";
 
 export function createValue(value: string): StackLocal {
-
   return {
     type,
     value

@@ -13,55 +13,55 @@ type DecodedF32 = VariableLengthValue;
 type DecodedF64 = VariableLengthValue;
 
 type DecodedUTF8String = {
-  value: string;
-  nextIndex: number;
+  value: string,
+  nextIndex: number
 };
 
 type DecodedSymbol = {
-  name: string;
-  object?: Valtype;
-  numberOfArgs: number;
+  name: string,
+  object?: Valtype,
+  numberOfArgs: number
 };
 
 /**
  * Data structures used in decoder's state
  */
 type DecodedModuleType = {
-  params: Array<Valtype>;
-  result: Array<Valtype>;
-}
+  params: Array<Valtype>,
+  result: Array<Valtype>
+};
 
 type DecodedModuleFunc = {
-  id: Identifier;
-  signature: DecodedModuleType;
-  isExternal: boolean,
+  id: Identifier,
+  signature: DecodedModuleType,
+  isExternal: boolean
 };
 
 type DecodedElementInExportSection = {
-  name: string;
-  type: ExportDescr;
-  signature: ?DecodedModuleType;
-  id: ?Identifier;
-  index: number;
+  name: string,
+  type: ExportDescr,
+  signature: ?DecodedModuleType,
+  id: ?Identifier,
+  index: number
 };
 
 type DecodedInstructionInCodeSection = {
-  instruction: DecodedSymbol;
-  args: Array<any>;
+  instruction: DecodedSymbol,
+  args: Array<any>
 };
 
 type DecodedElementInCodeSection = {
-  code: Array<DecodedInstructionInCodeSection>;
-  locals: Array<Valtype>;
+  code: Array<DecodedInstructionInCodeSection>,
+  locals: Array<Valtype>
 };
 
 type DecodedModuleMemory = Memory;
 
 type State = {
-  typesInModule: Array<DecodedModuleType>;
-  functionsInModule: Array<DecodedModuleFunc>;
-  memoriesInModule: Array<DecodedModuleMemory>;
+  typesInModule: Array<DecodedModuleType>,
+  functionsInModule: Array<DecodedModuleFunc>,
+  memoriesInModule: Array<DecodedModuleMemory>,
 
-  elementsInExportSection: Array<DecodedElementInExportSection>;
-  elementsInCodeSection: Array<DecodedElementInCodeSection>,
+  elementsInExportSection: Array<DecodedElementInExportSection>,
+  elementsInCodeSection: Array<DecodedElementInCodeSection>
 };

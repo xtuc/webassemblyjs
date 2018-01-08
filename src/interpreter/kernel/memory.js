@@ -10,7 +10,7 @@ export function createAllocator(memory: MemoryInstance): Allocator {
   const heap = memory.buffer;
 
   if (heap === null) {
-    throw new Error('heap is not initalized');
+    throw new Error("heap is not initalized");
   }
 
   function malloc(size: Bytes): Addr {
@@ -18,7 +18,7 @@ export function createAllocator(memory: MemoryInstance): Allocator {
 
     return {
       index: memory.offset,
-      size,
+      size
     };
   }
 
@@ -39,6 +39,6 @@ export function createAllocator(memory: MemoryInstance): Allocator {
     free,
 
     get,
-    set,
+    set
   };
 }
