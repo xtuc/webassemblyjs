@@ -1,0 +1,235 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "func_1"
+      },
+      "params": [],
+      "result": null,
+      "body": [
+        {
+          "type": "Instr",
+          "id": "assert_return",
+          "args": [
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "invoke",
+          "args": [
+            {
+              "type": "StringLiteral",
+              "value": "foo"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "assert_return_canonical_nan",
+          "args": [
+            {
+              "type": "Instr",
+              "id": "invoke",
+              "args": [
+                {
+                  "type": "StringLiteral",
+                  "value": "add"
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "f32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": null
+                    },
+                    {
+                      "type": "NumberLiteral",
+                      "value": 0
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "f32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": null
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "assert_return_arithmetic_nan",
+          "args": [
+            {
+              "type": "Instr",
+              "id": "invoke",
+              "args": [
+                {
+                  "type": "StringLiteral",
+                  "value": "add"
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "f32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": null
+                    },
+                    {
+                      "type": "NumberLiteral",
+                      "value": 0
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "f32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": null
+                    },
+                    {
+                      "type": "NumberLiteral",
+                      "value": 2097152
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "assert_trap",
+          "args": [
+            {
+              "type": "Instr",
+              "id": "invoke",
+              "args": [
+                {
+                  "type": "StringLiteral",
+                  "value": "type-i32"
+                }
+              ]
+            },
+            {
+              "type": "StringLiteral",
+              "value": "unreachable"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "assert_malformed",
+          "args": [
+            {
+              "type": "BinaryModule",
+              "blob": [
+                ""
+              ]
+            },
+            {
+              "type": "StringLiteral",
+              "value": "unexpected end"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "assert_invalid",
+          "args": [
+            {
+              "type": "Module",
+              "id": null,
+              "fields": [
+                {
+                  "type": "Memory",
+                  "limits": {
+                    "type": "Limit",
+                    "min": "0"
+                  }
+                },
+                {
+                  "type": "Memory",
+                  "limits": {
+                    "type": "Limit",
+                    "min": "0"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "StringLiteral",
+              "value": "multiple memories"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "assert_unlinkable",
+          "args": [
+            {
+              "type": "Module",
+              "id": null,
+              "fields": [
+                {
+                  "type": "ModuleImport",
+                  "module": "test",
+                  "name": "unknown",
+                  "descr": {
+                    "type": "FuncImportDescr",
+                    "value": {
+                      "type": "Identifier",
+                      "name": "unknown"
+                    },
+                    "params": [],
+                    "results": []
+                  }
+                }
+              ]
+            },
+            {
+              "type": "StringLiteral",
+              "value": "unknown import"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
