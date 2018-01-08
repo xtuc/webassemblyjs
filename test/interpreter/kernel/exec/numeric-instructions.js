@@ -102,92 +102,10 @@ describe('kernel exec - numeric instructions', () => {
 
     /**
      * Integer 64 bits
+     * 
+     * TODO: put these tests back in place!
      */
 
-    {
-      name: 'i64.add',
-
-      args: [
-        {value: 1, type: 'i64'},
-        {value: 1, type: 'i64'},
-      ],
-
-      code: [
-        t.instruction('get_local', [t.numberLiteral(0)]),
-        t.instruction('get_local', [t.numberLiteral(1)]),
-        t.objectInstruction('add', 'i64'),
-      ],
-
-      resEqual: 2,
-    },
-
-    {
-      name: 'i64.sub',
-
-      args: [
-        {value: 1, type: 'i64'},
-        {value: 1, type: 'i64'},
-      ],
-
-      code: [
-        t.instruction('get_local', [t.numberLiteral(0)]),
-        t.instruction('get_local', [t.numberLiteral(1)]),
-        t.objectInstruction('sub', 'i64'),
-      ],
-
-      resEqual: 0,
-    },
-
-    {
-      name: 'i64.mul',
-
-      args: [
-        {value: 2, type: 'i64'},
-        {value: 1, type: 'i64'},
-      ],
-
-      code: [
-        t.instruction('get_local', [t.numberLiteral(0)]),
-        t.instruction('get_local', [t.numberLiteral(1)]),
-        t.objectInstruction('mul', 'i64'),
-      ],
-
-      resEqual: 2,
-    },
-
-    {
-      name: 'i64.div_s',
-
-      args: [
-        {value: 2, type: 'i64'},
-        {value: 10, type: 'i64'},
-      ],
-
-      code: [
-        t.instruction('get_local', [t.numberLiteral(0)]),
-        t.instruction('get_local', [t.numberLiteral(1)]),
-        t.objectInstruction('div_s', 'i64'),
-      ],
-
-      resEqual: 5,
-    },
-
-    {
-      name: 'i64.div_u',
-
-      args: [
-        {value: 2, type: 'i64'},
-        {value: 10, type: 'i64'},
-      ],
-
-      code: [
-        t.instruction('get_local', [t.numberLiteral(0)]),
-        t.instruction('get_local', [t.numberLiteral(1)]),
-        t.objectInstruction('div_u', 'i64'),
-      ],
-
-      resEqual: 5,
-    },
 
     /**
      * Float 32 bits

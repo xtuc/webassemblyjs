@@ -1,0 +1,30 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "id": {
+        "type": "Identifier",
+        "name": "func_1"
+      },
+      "params": [],
+      "result": null,
+      "body": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i64",
+          "args": [
+            {
+              "type": "LongLiteral",
+              "value": {
+                "upper": 429496729,
+                "lower": -1717986919
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

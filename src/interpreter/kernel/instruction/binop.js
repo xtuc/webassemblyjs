@@ -1,4 +1,5 @@
 // @flow
+const Long = require('long');
 
 type Sign = 'add' | 'sub' | 'div' | 'div_s' | 'div_u' | 'mul' | 'and' | 'or' | 'xor' | '~' | 'min' | 'max' | 'copysign';
 
@@ -60,12 +61,41 @@ function binop(
   throw new Error('Unsupported binop: ' + sign);
 }
 
+function binopi64s(
+  c1: StackLocal,
+  c2: StackLocal,
+  sign: Sign,
+  createValue: (Long) => StackLocal
+): StackLocal {
+  
+  let res;
+
+  switch (sign) {
+  // https://webassembly.github.io/spec/exec/numerics.html#op-iadd
+  case '+':
+    res = c1.value.add(c2.value);
+    return createValue({
+      upper: res.high,
+      lower: res.low
+    });
+
+  case '-':
+    res = c1.value.sub(c2.value);
+    return createValue({
+      upper: res.high,
+      lower: res.low
+    });
+  }
+
+  throw new Error('Unsupported binop: ' + sign);
+}
+
 export function binopi32(c1: StackLocal, c2: StackLocal, sign: Sign): StackLocal {
   return binop(c1, c2, sign, i32.createValue);
 }
 
 export function binopi64(c1: StackLocal, c2: StackLocal, sign: Sign): StackLocal {
-  return binop(c1, c2, sign, i64.createValue);
+  return binopi64s(c1, c2, sign, i64.createValue);
 }
 
 export function binopf32(c1: StackLocal, c2: StackLocal, sign: Sign): StackLocal {

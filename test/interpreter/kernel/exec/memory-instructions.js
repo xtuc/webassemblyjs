@@ -11,18 +11,6 @@ describe('kernel exec - memory instructions', () => {
   const operations = [
 
     {
-      name: 'i64.const',
-
-      args: [],
-
-      code: [
-        t.objectInstruction('const', 'i64', [t.numberLiteral(10)]),
-      ],
-
-      resEqual: 10,
-    },
-
-    {
       name: 'i32.const',
 
       args: [],

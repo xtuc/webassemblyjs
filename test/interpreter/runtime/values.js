@@ -137,38 +137,7 @@ describe('module create interface', () => {
 
   describe('integer 64bits', () => {
 
-    it('createValue should return the correct value', () => {
-      const v = i64.createValue(1);
-
-      assert.typeOf(v, 'object');
-      assert.typeOf(v.type, 'string');
-      assert.typeOf(v.value, 'number');
-
-      assert.equal(v.value, 1);
-      assert.equal(v.type, 'i64');
-    });
-
-    it('createValue should return an int from a float', () => {
-      const v = i64.createValue(1.1);
-
-      assert.typeOf(v, 'object');
-      assert.typeOf(v.type, 'string');
-      assert.typeOf(v.value, 'number');
-
-      assert.equal(v.value, 1);
-      assert.equal(v.type, 'i64');
-    });
-
-    it('createValue should overflow and result to 0', () => {
-      const v = i64.createValue(Math.pow(2, 64) + 1);
-
-      assert.typeOf(v, 'object');
-      assert.typeOf(v.type, 'string');
-      assert.typeOf(v.value, 'number');
-
-      assert.equal(v.value, 0);
-      assert.equal(v.type, 'i64');
-    });
+    // TODO: replace these tests
   });
 
   describe('float 32bits', () => {
