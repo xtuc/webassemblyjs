@@ -1,8 +1,8 @@
 // @flow
 
-const {parse} = require('./grammar');
-const {tokenize} = require('./tokenizer');
-const wastIdentifierToIndex = require('../../transform/wast-identifier-to-index');
+const { parse } = require("./grammar");
+const { tokenize } = require("./tokenizer");
+const wastIdentifierToIndex = require("../../transform/wast-identifier-to-index");
 
 export function parseSource(source: string): Program {
   const tokens = tokenize(source);

@@ -5,70 +5,74 @@ const {
   parse64F,
   parse32I,
   parse64I
-} = require('../parsing/watf/number-literals');
+} = require("../parsing/watf/number-literals");
 
 function assert(cond: boolean) {
   if (!cond) {
-    throw new Error('assertion error');
+    throw new Error("assertion error");
   }
 }
 
 export function identifier(name: string): Identifier {
   return {
-    type: 'Identifier',
-    name,
+    type: "Identifier",
+    name
   };
 }
 
 export function valtype(name: string): Valtype {
   return {
-    type: 'Valtype',
-    name,
+    type: "Valtype",
+    name
   };
 }
 
 export function stringLiteral(value: string): StringLiteral {
   return {
-    type: 'StringLiteral',
-    value,
+    type: "StringLiteral",
+    value
   };
 }
 
 export function program(body: Array<Node>): Program {
   return {
-    type: 'Program',
-    body,
+    type: "Program",
+    body
   };
 }
 
 export function module(id: ?string, fields: ModuleFields): Module {
   if (id != null) {
-    assert(typeof id === 'string');
+    assert(typeof id === "string");
   }
 
-  assert(typeof fields === 'object' && typeof fields.length !== 'undefined');
+  assert(typeof fields === "object" && typeof fields.length !== "undefined");
 
   return {
-    type: 'Module',
+    type: "Module",
     id,
-    fields,
+    fields
   };
 }
 
 export function binaryModule(id: ?string, blob: Array<string>): BinaryModule {
   return {
-    type: 'BinaryModule',
-    blob,
+    type: "BinaryModule",
+    blob
   };
 }
 
-export function moduleExport(name: string, type: ExportDescr, id: string): ModuleExport {
+export function moduleExport(
+  name: string,
+  type: ExportDescr,
+  id: string
+): ModuleExport {
   return {
-    type: 'ModuleExport',
+    type: "ModuleExport",
     name,
     descr: {
       type,
-      id,
+      id
     }
   };
 }
@@ -77,130 +81,130 @@ export function func(
   id: ?Index,
   params: Array<FuncParam>,
   result: ?Valtype,
-  body: Array<Instruction>,
+  body: Array<Instruction>
 ): Func {
-  assert(typeof params === 'object' && typeof params.length !== 'undefined');
-  assert(typeof body === 'object' && typeof body.length !== 'undefined');
-  assert(typeof id !== 'string');
+  assert(typeof params === "object" && typeof params.length !== "undefined");
+  assert(typeof body === "object" && typeof body.length !== "undefined");
+  assert(typeof id !== "string");
 
   return {
-    type: 'Func',
+    type: "Func",
     id,
     params,
     result,
-    body,
+    body
   };
 }
 
 export function objectInstruction(
   id: string,
   object: Valtype,
-  args: Array<Number | string> = [],
+  args: Array<Number | string> = []
 ): Instruction {
-  assert(typeof args === 'object' && typeof args.length !== 'undefined');
-  assert(typeof object === 'string');
+  assert(typeof args === "object" && typeof args.length !== "undefined");
+  assert(typeof object === "string");
 
   return {
-    type: 'Instr',
+    type: "Instr",
     id,
     object,
-    args,
+    args
   };
 }
 
-export function instruction(id: string, args: Array<Number | string> = []): Instruction {
-  assert(typeof args === 'object' && typeof args.length !== 'undefined');
-  assert(id !== 'block');
-  assert(id !== 'if');
-  assert(id !== 'loop');
+export function instruction(
+  id: string,
+  args: Array<Number | string> = []
+): Instruction {
+  assert(typeof args === "object" && typeof args.length !== "undefined");
+  assert(id !== "block");
+  assert(id !== "if");
+  assert(id !== "loop");
 
   return {
-    type: 'Instr',
+    type: "Instr",
     id,
-    args,
+    args
   };
 }
 
 export function loopInstruction(
   label: ?Identifier,
   resulttype: ?Valtype,
-  instr: Array<Instruction>,
+  instr: Array<Instruction>
 ): LoopInstruction {
-  assert(typeof instr === 'object' && typeof instr.length !== 'undefined');
+  assert(typeof instr === "object" && typeof instr.length !== "undefined");
 
   return {
-    type: 'LoopInstruction',
-    id: 'loop',
+    type: "LoopInstruction",
+    id: "loop",
     label,
     resulttype,
-    instr,
+    instr
   };
 }
 
 export function blockInstruction(
   label: Identifier,
   instr: Array<Instruction>,
-  result: ?Valtype,
+  result: ?Valtype
 ): BlockInstruction {
-  assert(typeof label !== 'undefined');
-  assert(typeof label.type === 'string');
-  assert(typeof instr === 'object' && typeof instr.length !== 'undefined');
+  assert(typeof label !== "undefined");
+  assert(typeof label.type === "string");
+  assert(typeof instr === "object" && typeof instr.length !== "undefined");
 
   return {
-    type: 'BlockInstruction',
-    id: 'block',
+    type: "BlockInstruction",
+    id: "block",
     label,
     instr,
-    result,
+    result
   };
 }
 
 export function numberLiteral(
   rawValue: number | string,
-  type: Valtype = 'f64'
+  type: Valtype = "f64"
 ): NumberLiteral {
-
   let value;
 
-  if (typeof rawValue === 'number') {
+  if (typeof rawValue === "number") {
     value = rawValue;
   } else {
     switch (type) {
-    case 'i32': {
-      value = parse32I(rawValue);
-      break;
-    }
-    case 'i64': {
-      value = parse64I(rawValue);
-      break;
-    }
-    case 'f32': {
-      value = parse32F(rawValue);
-      break;
-    }
-    // f64
-    default: {
-      value = parse64F(rawValue);
-      break;
-    }
+      case "i32": {
+        value = parse32I(rawValue);
+        break;
+      }
+      case "i64": {
+        value = parse64I(rawValue);
+        break;
+      }
+      case "f32": {
+        value = parse32F(rawValue);
+        break;
+      }
+      // f64
+      default: {
+        value = parse64F(rawValue);
+        break;
+      }
     }
   }
 
   return {
-    type: 'NumberLiteral',
-    value,
+    type: "NumberLiteral",
+    value
   };
 }
 
-export function callInstruction(
-  index: Index,
-): CallInstruction {
-  assert(typeof index.type === 'string');
+export function callInstruction(index: Index): CallInstruction {
+  assert(typeof index.type === "string");
 
   return {
-    type: 'CallInstruction',
-    id: 'call',
-    index,
+    type: "CallInstruction",
+    id: "call",
+    index
   };
 }
 
@@ -208,24 +212,24 @@ export function ifInstruction(
   testLabel: Index,
   result: ?Valtype,
   consequent: Array<Instruction>,
-  alternate: Array<Instruction>,
+  alternate: Array<Instruction>
 ): IfInstruction {
-  assert(typeof testLabel.type === 'string');
+  assert(typeof testLabel.type === "string");
 
   return {
-    type: 'IfInstruction',
-    id: 'if',
+    type: "IfInstruction",
+    id: "if",
     testLabel,
     result,
     consequent,
-    alternate,
+    alternate
   };
 }
 
 export function withLoc(n: Node, end: Position, start: Position): Node {
   const loc = {
     start,
-    end,
+    end
   };
 
   n.loc = loc;
@@ -240,112 +244,111 @@ export function withLoc(n: Node, end: Position, start: Position): Node {
 export function moduleImport(
   module: string,
   name: string,
-  descr: ImportDescr,
+  descr: ImportDescr
 ): ModuleImport {
-
   return {
-    type: 'ModuleImport',
+    type: "ModuleImport",
     module,
     name,
-    descr,
+    descr
   };
 }
 
 export function globalImportDescr(
   valtype: Valtype,
-  mutability: Mutability,
+  mutability: Mutability
 ): GlobalImportDescr {
-
   return {
-    type: 'GlobalImportDescr',
-    elementType: 'anyfunc',
+    type: "GlobalImportDescr",
+    elementType: "anyfunc",
 
     valtype,
-    mutability,
+    mutability
   };
 }
 
 export function funcImportDescr(
   value: NumberLiteral | Identifier,
   params: Array<FuncParam> = [],
-  results: Array<Valtype> = [],
+  results: Array<Valtype> = []
 ): FuncImportDescr {
-  assert(typeof params === 'object' && typeof params.length !== 'undefined');
-  assert(typeof results === 'object' && typeof results.length !== 'undefined');
+  assert(typeof params === "object" && typeof params.length !== "undefined");
+  assert(typeof results === "object" && typeof results.length !== "undefined");
 
   return {
-    type: 'FuncImportDescr',
+    type: "FuncImportDescr",
     value,
     params,
-    results,
+    results
   };
 }
 
 export function table(elementType: string, limits: Limit): Table {
-
   return {
-    type: 'Table',
+    type: "Table",
     elementType,
-    limits,
+    limits
   };
 }
 
 export function limits(min: number, max?: number): Limit {
-
   return {
-    type: 'Limit',
+    type: "Limit",
     min,
-    max,
+    max
   };
 }
 
 export function memory(limits: Limit, id: ?Identifier): Memory {
-
   return {
-    type: 'Memory',
+    type: "Memory",
     limits,
-    id,
+    id
   };
 }
 
-export function data(memoryIndex: Index, offset: Array<Node>, init: ByteArray): Data {
-
+export function data(
+  memoryIndex: Index,
+  offset: Array<Node>,
+  init: ByteArray
+): Data {
   return {
-    type: 'Data',
+    type: "Data",
     memoryIndex,
     offset,
-    init,
+    init
   };
 }
 
 export function global(globalType: GlobalType, init: Array<Node>): Global {
-
   return {
-    type: 'Global',
+    type: "Global",
     globalType,
-    init,
+    init
   };
 }
 
-export function globalType(valtype: Valtype, mutability: Mutability): GlobalType {
-
+export function globalType(
+  valtype: Valtype,
+  mutability: Mutability
+): GlobalType {
   return {
-    type: 'GlobalType',
+    type: "GlobalType",
     valtype,
-    mutability,
+    mutability
   };
 }
 
 export function byteArray(values: Array<Byte>): ByteArray {
   return {
-    type: 'Bytes',
-    values,
+    type: "Bytes",
+    values
   };
 }
 
 export function leadingComment(value: string): LeadingComment {
   return {
-    type: 'LeadingComment',
-    value,
+    type: "LeadingComment",
+    value
   };
 }

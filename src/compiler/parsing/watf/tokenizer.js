@@ -1,21 +1,21 @@
 // @flow
 
-const {codeFrameColumns} = require('@babel/code-frame');
+const { codeFrameColumns } = require("@babel/code-frame");
 
 function showCodeFrame(source: string, line: number, column: number) {
   const loc = {
-    start: {line, column},
+    start: { line, column }
   };
 
   const out = codeFrameColumns(source, loc);
 
-  process.stdout.write(out + '\n');
+  process.stdout.write(out + "\n");
 }
 
 const WHITESPACE = /\s/;
 const LETTERS = /[a-z0-9_\/]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
-const valtypes = ['i32', 'i64', 'f32', 'f64'];
+const valtypes = ["i32", "i64", "f32", "f64"];
 
 const NUMBERS = /[0-9|.|_+-]/;
 const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
@@ -28,10 +28,10 @@ function Token(type, value, line, column) {
   return {
     type,
     value,
-    loc:{
+    loc: {
       start: {
         line,
-        column,
+        column
       }
     }
   };
@@ -43,32 +43,32 @@ function createToken(type: string) {
 }
 
 const tokens = {
-  openParen: 'openParen',
-  closeParen: 'closeParen',
-  number: 'number',
-  string: 'string',
-  name: 'name',
-  identifier: 'identifier',
-  valtype: 'valtype',
-  dot: 'dot',
-  comment: 'comment',
+  openParen: "openParen",
+  closeParen: "closeParen",
+  number: "number",
+  string: "string",
+  name: "name",
+  identifier: "identifier",
+  valtype: "valtype",
+  dot: "dot",
+  comment: "comment",
 
-  keyword: 'keyword',
+  keyword: "keyword"
 };
 
 const keywords = {
-  module: 'module',
-  func: 'func',
-  param: 'param',
-  result: 'result',
-  export: 'export',
-  loop: 'loop',
-  block: 'block',
-  if: 'if',
-  then: 'then',
-  else: 'else',
-  call: 'call',
-  import: 'import',
+  module: "module",
+  func: "func",
+  param: "param",
+  result: "result",
+  export: "export",
+  loop: "loop",
+  block: "block",
+  if: "if",
+  then: "then",
+  else: "else",
+  call: "call",
+  import: "import"
 };
 
 const CloseParenToken = createToken(tokens.closeParen);
@@ -100,13 +100,13 @@ function tokenize(input: string) {
     let char = input[current];
 
     // ;;
-    if (char === ';' && input[current + 1] === ';') {
+    if (char === ";" && input[current + 1] === ";") {
       eatToken();
       eatToken();
 
       char = input[current];
 
-      let text = '';
+      let text = "";
 
       while (!isNewLine(char)) {
         text += char;
@@ -121,7 +121,7 @@ function tokenize(input: string) {
       continue;
     }
 
-    if (char === '(') {
+    if (char === "(") {
       tokens.push(OpenParenToken(char, line, column));
 
       eatToken();
@@ -129,7 +129,7 @@ function tokenize(input: string) {
       continue;
     }
 
-    if (char === ')') {
+    if (char === ")") {
       tokens.push(CloseParenToken(char, line, column));
 
       eatToken();
@@ -148,10 +148,10 @@ function tokenize(input: string) {
       continue;
     }
 
-    if (char === '$') {
+    if (char === "$") {
       char = input[++current];
 
-      let value = '';
+      let value = "";
 
       while (idchar.test(char)) {
         value += char;
@@ -167,24 +167,21 @@ function tokenize(input: string) {
     }
 
     if (
-      NUMBERS.test(char)
-      || char === '-' && NUMBERS.test(input[current + 1])
-      || (char === 'n'
-          && input[current + 1] === 'a'
-          && input[current + 2] === 'n'
-      )
+      NUMBERS.test(char) ||
+      (char === "-" && NUMBERS.test(input[current + 1])) ||
+      (char === "n" && input[current + 1] === "a" && input[current + 2] === "n")
     ) {
-      let value = '';
-      if (char === '-') {
+      let value = "";
+      if (char === "-") {
         value += char;
         char = input[++current];
       }
       let numberLiterals = NUMBERS;
 
       if (
-        char === 'n'
-        && input[current + 1] === 'a'
-        && input[current + 2] === 'n'
+        char === "n" &&
+        input[current + 1] === "a" &&
+        input[current + 2] === "n"
       ) {
         // Float has nan
 
@@ -194,19 +191,19 @@ function tokenize(input: string) {
 
         char = input[current];
 
-        if (char === ':') {
+        if (char === ":") {
           eatToken();
         }
       }
 
-      if (char === '0' && input[current + 1].toUpperCase() === 'X') {
-        value += '0x';
+      if (char === "0" && input[current + 1].toUpperCase() === "X") {
+        value += "0x";
         numberLiterals = HEX_NUMBERS;
-        char = input[current += 2];
+        char = input[(current += 2)];
       }
 
       while (numberLiterals.test(char)) {
-        if (char !== '_') {
+        if (char !== "_") {
           value += char;
         }
         char = input[++current];
@@ -221,14 +218,13 @@ function tokenize(input: string) {
     }
 
     if (char === '"') {
-      let value = '';
+      let value = "";
 
       char = input[++current];
 
       while (char !== '"') {
-
         if (isNewLine(char)) {
-          throw new Error('Unterminated string constant');
+          throw new Error("Unterminated string constant");
         }
 
         value += char;
@@ -246,7 +242,7 @@ function tokenize(input: string) {
     }
 
     if (LETTERS.test(char)) {
-      let value = '';
+      let value = "";
 
       while (LETTERS.test(char)) {
         value += char;
@@ -259,15 +255,14 @@ function tokenize(input: string) {
       /*
        * Handle MemberAccess
        */
-      if (char === '.') {
-
+      if (char === ".") {
         if (valtypes.indexOf(value) !== -1) {
           tokens.push(ValtypeToken(value, line, column));
         } else {
           tokens.push(NameToken(value, line, column));
         }
 
-        value = '';
+        value = "";
         char = input[++current];
 
         while (LETTERS.test(char)) {
@@ -278,7 +273,7 @@ function tokenize(input: string) {
         // Shift by the length of the string
         column += value.length;
 
-        tokens.push(DotToken('.', line, column));
+        tokens.push(DotToken(".", line, column));
         tokens.push(NameToken(value, line, column));
 
         continue;
@@ -288,7 +283,7 @@ function tokenize(input: string) {
        * Handle keywords
        */
       // $FlowIgnore
-      if (typeof keywords[value] === 'string') {
+      if (typeof keywords[value] === "string") {
         tokens.push(KeywordToken(value, line, column));
 
         // Shift by the length of the string
@@ -322,7 +317,7 @@ function tokenize(input: string) {
 
     showCodeFrame(input, line, column);
 
-    throw new TypeError('Unknown char: ' + char);
+    throw new TypeError("Unknown char: " + char);
   }
 
   return tokens;
@@ -331,5 +326,5 @@ function tokenize(input: string) {
 module.exports = {
   tokenize,
   tokens,
-  keywords,
+  keywords
 };

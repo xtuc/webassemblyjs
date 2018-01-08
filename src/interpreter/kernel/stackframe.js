@@ -4,9 +4,8 @@ export function createStackFrame(
   code: Array<Instruction>,
   locals: Array<StackLocal>,
   originatingModule: ModuleInstance,
-  allocator: Allocator,
+  allocator: Allocator
 ): StackFrame {
-
   return {
     code,
     locals,
@@ -38,20 +37,15 @@ export function createStackFrame(
     /**
      * For shared memory operations
      */
-    allocator,
+    allocator
   };
 }
 
 export function createChildStackFrame(
   parent: StackFrame,
-  code: Array<Instruction>,
+  code: Array<Instruction>
 ): StackFrame {
-  const {
-    locals,
-    originatingModule,
-    labels,
-    allocator,
-  } = parent;
+  const { locals, originatingModule, labels, allocator } = parent;
 
   const frame = createStackFrame(code, locals, originatingModule, allocator);
   frame.labels = labels;

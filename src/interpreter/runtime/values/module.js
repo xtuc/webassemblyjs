@@ -1,16 +1,15 @@
 // @flow
 
-const importObjectUtils = require('../../import-object');
-const {traverse} = require('../../../compiler/AST/traverse');
-const func = require('./func');
-const global = require('./global');
+const importObjectUtils = require("../../import-object");
+const { traverse } = require("../../../compiler/AST/traverse");
+const func = require("./func");
+const global = require("./global");
 
 function createInstance(
   allocator: Allocator,
   n: Module,
-  externalFunctions: any = {},
+  externalFunctions: any = {}
 ): ModuleInstance {
-
   // Keep a ref to the module instance
   const moduleInstance = {
     types: [],
@@ -20,7 +19,7 @@ function createInstance(
     memaddrs: [],
     globaladdrs: [],
 
-    exports: [],
+    exports: []
   };
 
   /**
@@ -42,9 +41,7 @@ function createInstance(
    * Instantiate the function in the module
    */
   traverse(n, {
-
-    Func({node}: NodePath<Func>) {
-
+    Func({ node }: NodePath<Func>) {
       // Only instantiate/allocate our own functions
       if (node.isExternal === true) {
         return;
@@ -57,14 +54,14 @@ function createInstance(
 
       moduleInstance.funcaddrs.push(addr);
 
-      if (typeof node.id === 'object') {
-        if (node.id.type === 'Identifier') {
+      if (typeof node.id === "object") {
+        if (node.id.type === "Identifier") {
           instantiatedFuncs[node.id.name] = addr;
         }
       }
     },
 
-    Global({node}: NodePath<Global>) {
+    Global({ node }: NodePath<Global>) {
       const globalinstance = global.createInstance(allocator, node);
 
       const addr = allocator.malloc(1 /* size of the funcinstance struct */);
@@ -73,15 +70,16 @@ function createInstance(
       moduleInstance.globaladdrs.push(addr);
     },
 
-    ModuleImport({node}: NodePath<ModuleImport>) {
-      const instantiatedFuncAddr = instantiatedFuncs[`${node.module}_${node.name}`];
+    ModuleImport({ node }: NodePath<ModuleImport>) {
+      const instantiatedFuncAddr =
+        instantiatedFuncs[`${node.module}_${node.name}`];
 
-      if (node.descr.type === 'FuncImportDescr') {
-
-        if (typeof instantiatedFuncAddr === 'undefined') {
+      if (node.descr.type === "FuncImportDescr") {
+        if (typeof instantiatedFuncAddr === "undefined") {
           throw new Error(
-            'Cannot import function ' + node.name
-            + ' was not declared or instantiated'
+            "Cannot import function " +
+              node.name +
+              " was not declared or instantiated"
           );
         }
 
@@ -91,47 +89,40 @@ function createInstance(
          * - results
          */
         const func = allocator.get(instantiatedFuncAddr);
-        func.type = [
-          node.descr.params,
-          node.descr.results,
-        ];
+        func.type = [node.descr.params, node.descr.results];
 
         allocator.set(func, instantiatedFuncAddr);
 
         moduleInstance.funcaddrs.push(instantiatedFuncAddr);
-
       } else {
-        throw new Error('Unsupported import of type: ' + node.descr.type);
+        throw new Error("Unsupported import of type: " + node.descr.type);
       }
     }
-
   });
 
   traverse(n, {
-
-    ModuleExport({node}: NodePath<ModuleExport>) {
-
-      if (node.descr.type === 'Func') {
+    ModuleExport({ node }: NodePath<ModuleExport>) {
+      if (node.descr.type === "Func") {
         const instantiatedFuncAddr = instantiatedFuncs[node.descr.id];
 
-        if (typeof instantiatedFuncs === 'undefined') {
+        if (typeof instantiatedFuncs === "undefined") {
           throw new Error(
-            'Cannot create exportinst: function ' + node.descr.id
-            + ' was not declared or instantiated'
+            "Cannot create exportinst: function " +
+              node.descr.id +
+              " was not declared or instantiated"
           );
         }
 
         const externalVal = {
           type: node.descr.type,
-          addr: instantiatedFuncAddr,
+          addr: instantiatedFuncAddr
         };
 
         moduleInstance.exports.push(
           createModuleExportIntance(node.name, externalVal)
         );
       }
-    },
-
+    }
   });
 
   return moduleInstance;
@@ -139,14 +130,14 @@ function createInstance(
 
 function createModuleExportIntance(
   name: string,
-  value: ExternalVal,
+  value: ExternalVal
 ): ExportInstance {
   return {
     name,
-    value,
+    value
   };
 }
 
 module.exports = {
-  createInstance,
+  createInstance
 };

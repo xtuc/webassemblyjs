@@ -1,12 +1,12 @@
 // @flow
 
-type Valtype = 'i32' | 'i64' | 'f32' | 'f64' | 'label';
-type ExportDescr = 'func' | 'table' | 'memory' | 'global';
+type Valtype = "i32" | "i64" | "f32" | "f64" | "label";
+type ExportDescr = "func" | "table" | "memory" | "global";
 type Index = NumberLiteral | Identifier;
-type Mutability = 'const' | 'var';
+type Mutability = "const" | "var";
 
 type NodePath<T> = {
-  node: T;
+  node: T
 };
 
 /**
@@ -29,7 +29,7 @@ interface Node {
 }
 
 interface Program {
-  type: 'Program';
+  type: "Program";
   body: Array<Node>;
 }
 
@@ -37,17 +37,17 @@ interface Program {
  * Concrete values
  */
 interface StringLiteral {
-  type: 'StringLiteral';
+  type: "StringLiteral";
   value: string;
 }
 
 interface NumberLiteral {
-  type: 'NumberLiteral';
+  type: "NumberLiteral";
   value: number;
 }
 
 interface Identifier {
-  type: 'Identifier';
+  type: "Identifier";
   name: string;
 }
 
@@ -58,23 +58,23 @@ interface Identifier {
 type ModuleFields = Array<Node>;
 
 interface Module {
-  type: 'Module';
+  type: "Module";
   id: ?string;
   fields: ModuleFields;
 }
 
 interface BinaryModule {
-  type: 'BinaryModule';
+  type: "BinaryModule";
   blob: Array<string>;
 }
 
 type FuncParam = {
   id: ?string,
-  valtype: Valtype,
+  valtype: Valtype
 };
 
 interface Func {
-  type: 'Func';
+  type: "Func";
 
   // Only in WAST
   // TODO(sven): rename id to name and replace Index by Identifier
@@ -90,110 +90,110 @@ interface Func {
  * Instructions
  */
 interface Instruction {
-  type: 'Instr';
+  type: "Instr";
   id: string;
   args: Array<NumberLiteral | Identifier>;
 }
 
 type ObjectInstruction = Instruction & {
-  object: Valtype;
-}
+  object: Valtype
+};
 
 type LoopInstruction = Instruction & {
-  type: 'LoopInstruction';
-  label: ?Identifier;
-  resulttype: ?Valtype;
-  instr: Array<Instruction>;
-}
+  type: "LoopInstruction",
+  label: ?Identifier,
+  resulttype: ?Valtype,
+  instr: Array<Instruction>
+};
 
 type BlockInstruction = Instruction & {
-  type: 'BlockInstruction';
-  label: ?Identifier;
-  instr: Array<Instruction>;
-  result: ?Valtype;
-}
+  type: "BlockInstruction",
+  label: ?Identifier,
+  instr: Array<Instruction>,
+  result: ?Valtype
+};
 
 type IfInstruction = Instruction & {
-  type: 'IfInstruction';
-  testLabel: Index;
-  result: ?Valtype;
-  consequent: Array<Instruction>;
-  alternate: Array<Instruction>;
-}
+  type: "IfInstruction",
+  testLabel: Index,
+  result: ?Valtype,
+  consequent: Array<Instruction>,
+  alternate: Array<Instruction>
+};
 
 type CallInstruction = Instruction & {
-  type: 'CallInstruction';
-  index: Index;
-}
+  type: "CallInstruction",
+  index: Index
+};
 
 interface ModuleExport {
-  type: 'ModuleExport';
+  type: "ModuleExport";
   name: string;
   descr: {
-    type: ExportDescr;
-    id: string;
+    type: ExportDescr,
+    id: string
   };
 }
 
 type Limit = {
-  type: 'Limit';
-  min: number;
-  max?: number;
-}
+  type: "Limit",
+  min: number,
+  max?: number
+};
 
 type FuncImportDescr = {
-  type: 'FuncImportDescr';
-  value: NumberLiteral | Identifier;
-  params: Array<FuncParam>;
-  results: Array<Valtype>;
-}
+  type: "FuncImportDescr",
+  value: NumberLiteral | Identifier,
+  params: Array<FuncParam>,
+  results: Array<Valtype>
+};
 
 type ImportDescr = FuncImportDescr | GlobalType;
 
 interface ModuleImport {
-  type: 'ModuleImport';
+  type: "ModuleImport";
   module: string;
   name: string;
   descr: ImportDescr;
 }
 
 type Table = {
-  type: 'Table';
-  elementType: 'anyfunc';
-  limits: Limit;
-}
+  type: "Table",
+  elementType: "anyfunc",
+  limits: Limit
+};
 
 type Memory = {
-  type: 'Memory';
-  limits: Limit;
-  id: ?Identifier;
-}
+  type: "Memory",
+  limits: Limit,
+  id: ?Identifier
+};
 
 type ByteArray = {
-  type: 'Bytes';
-  values: Array<Byte>;
-}
+  type: "Bytes",
+  values: Array<Byte>
+};
 
 type Data = {
-  type: 'Data';
-  memoryIndex: Index;
-  offset: Array<Node>;
-  init: ByteArray;
-}
+  type: "Data",
+  memoryIndex: Index,
+  offset: Array<Node>,
+  init: ByteArray
+};
 
 type Global = {
-  type: 'Global';
-  globalType: GlobalType;
-  init: Array<Instruction>;
-}
+  type: "Global",
+  globalType: GlobalType,
+  init: Array<Instruction>
+};
 
 type GlobalType = {
-  type: 'GlobalType';
-  valtype: Valtype;
-  mutability: Mutability;
-}
+  type: "GlobalType",
+  valtype: Valtype,
+  mutability: Mutability
+};
 
 type LeadingComment = {
-  type: 'LeadingComment';
-  value: string;
-}
+  type: "LeadingComment",
+  value: string
+};
