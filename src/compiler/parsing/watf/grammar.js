@@ -92,6 +92,43 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     /**
+     * Parses a memory instruction
+     *
+     * WAST:
+     *
+     * memory:  ( memory <name>? <memory_sig> )
+     *          ( memory <name>? ( export <string> ) <...> )
+     *          ( memory <name>? ( import <string> <string> ) <memory_sig> )
+     *          ( memory <name>? ( export <string> )* ( data <string>* )
+     * memory_sig: <nat> <nat>?
+     *
+     */
+    function parseMemory(): Memory {
+      let id;
+
+      if (token.type === tokens.string) {
+        id = t.identifier(token.value);
+
+        eatToken();
+      }
+
+      if (token.type !== tokens.number) {
+        showCodeFrame(source, token.loc);
+        throw new Error("Unexpected token in memory instruction: " + token.type);
+      }
+
+      const limits = t.limits(token.value);
+      eatToken();
+
+      if (token.type === tokens.number) {
+        limits.max = token.value;
+        eatToken();
+      }
+
+      return t.memory(limits, id);
+    }
+
+    /**
      * Parse import statement
      *
      * WAST:
@@ -518,7 +555,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             );
           }
 
-          eatTokenOfType(tokens.closeParen);
+          if (token.type === tokens.closeParen) {
+            eatToken();
+          }
         }
       }
 
@@ -893,6 +932,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.block)) {
         eatToken();
         const node = parseBlock();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.memory)) {
+        eatToken();
+        const node = parseMemory();
         eatTokenOfType(tokens.closeParen);
 
         return node;
