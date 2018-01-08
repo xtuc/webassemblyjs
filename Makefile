@@ -1,6 +1,7 @@
 MOCHA_OPTS =
 NODE_OPTS =
 
+FLOWTYPED = ./node_modules/.bin/flow-typed
 NODE = node
 PRETTIER = ./node_modules/.bin/prettier
 MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
@@ -52,3 +53,6 @@ bench:
 
 fix:
 	$(PRETTIER) --write "{src,test,docs,benchmark}/**/*.js"
+
+flow-update-def:
+	$(FLOWTYPED) install --libdefDir src/types
