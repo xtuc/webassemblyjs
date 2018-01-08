@@ -10,6 +10,10 @@ export function transform(ast: Program) {
 
   // First collect the indices of all the functions in the Program
   traverse(ast, {
+    ModuleImport({ node }: NodePath<ModuleImport>) {
+      functionsInProgram.push(t.identifier(node.name));
+    },
+
     Func({ node }: NodePath<Func>) {
       functionsInProgram.push(node.id);
     }
@@ -72,9 +76,9 @@ function transformFuncPath(
 
         if (offsetInFunctionsInProgram === -1) {
           throw new Error(
-            `${
+            `'${
               index.name
-            } not found in CallInstruction: not declared in Program`
+            }' not found in CallInstruction: not declared in Program`
           );
         }
 

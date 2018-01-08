@@ -2,21 +2,126 @@
   "type": "Program",
   "body": [
     {
-      "type": "Func",
-      "id": {
-        "type": "Identifier",
-        "name": "func_1"
-      },
-      "params": [],
-      "result": null,
-      "body": [
+      "type": "Module",
+      "id": null,
+      "fields": [
         {
-          "type": "Instr",
-          "id": "assert_return",
-          "args": [
+          "type": "ModuleImport",
+          "module": "test",
+          "name": "assert_return",
+          "descr": {
+            "type": "FuncImportDescr",
+            "value": {
+              "type": "Identifier",
+              "name": "assert_return"
+            },
+            "params": [],
+            "results": []
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "test",
+          "name": "assert_return_canonical_nan",
+          "descr": {
+            "type": "FuncImportDescr",
+            "value": {
+              "type": "Identifier",
+              "name": "assert_return_canonical_nan"
+            },
+            "params": [],
+            "results": []
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "test",
+          "name": "assert_return_arithmetic_nan",
+          "descr": {
+            "type": "FuncImportDescr",
+            "value": {
+              "type": "Identifier",
+              "name": "assert_return_arithmetic_nan"
+            },
+            "params": [],
+            "results": []
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "test",
+          "name": "assert_trap",
+          "descr": {
+            "type": "FuncImportDescr",
+            "value": {
+              "type": "Identifier",
+              "name": "assert_trap"
+            },
+            "params": [],
+            "results": []
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "test",
+          "name": "assert_malformed",
+          "descr": {
+            "type": "FuncImportDescr",
+            "value": {
+              "type": "Identifier",
+              "name": "assert_malformed"
+            },
+            "params": [],
+            "results": []
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "test",
+          "name": "assert_unlinkable",
+          "descr": {
+            "type": "FuncImportDescr",
+            "value": {
+              "type": "Identifier",
+              "name": "assert_unlinkable"
+            },
+            "params": [],
+            "results": []
+          }
+        },
+        {
+          "type": "Func",
+          "id": {
+            "type": "Identifier",
+            "name": "func_1"
+          },
+          "params": [],
+          "result": null,
+          "body": [
             {
               "type": "CallInstruction",
               "id": "call",
+              "args": [
+                {
+                  "type": "CallInstruction",
+                  "id": "call",
+                  "index": {
+                    "type": "NumberLiteral",
+                    "value": 0
+                  }
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 1
+                    }
+                  ]
+                }
+              ],
               "index": {
                 "type": "NumberLiteral",
                 "value": 0
@@ -24,208 +129,217 @@
             },
             {
               "type": "Instr",
-              "id": "const",
-              "object": "i32",
-              "args": [
-                {
-                  "type": "NumberLiteral",
-                  "value": 1
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "Instr",
-          "id": "invoke",
-          "args": [
-            {
-              "type": "StringLiteral",
-              "value": "foo"
-            }
-          ]
-        },
-        {
-          "type": "Instr",
-          "id": "assert_return_canonical_nan",
-          "args": [
-            {
-              "type": "Instr",
               "id": "invoke",
               "args": [
                 {
                   "type": "StringLiteral",
-                  "value": "add"
-                },
-                {
-                  "type": "Instr",
-                  "id": "const",
-                  "object": "f32",
-                  "args": [
-                    {
-                      "type": "NumberLiteral",
-                      "value": null
-                    },
-                    {
-                      "type": "NumberLiteral",
-                      "value": 0
-                    }
-                  ]
-                },
-                {
-                  "type": "Instr",
-                  "id": "const",
-                  "object": "f32",
-                  "args": [
-                    {
-                      "type": "NumberLiteral",
-                      "value": null
-                    }
-                  ]
+                  "value": "foo"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "type": "Instr",
-          "id": "assert_return_arithmetic_nan",
-          "args": [
+            },
             {
-              "type": "Instr",
-              "id": "invoke",
+              "type": "CallInstruction",
+              "id": "call",
               "args": [
                 {
-                  "type": "StringLiteral",
-                  "value": "add"
-                },
-                {
                   "type": "Instr",
-                  "id": "const",
-                  "object": "f32",
+                  "id": "invoke",
                   "args": [
                     {
-                      "type": "NumberLiteral",
-                      "value": null
+                      "type": "StringLiteral",
+                      "value": "add"
                     },
                     {
-                      "type": "NumberLiteral",
-                      "value": 0
-                    }
-                  ]
-                },
-                {
-                  "type": "Instr",
-                  "id": "const",
-                  "object": "f32",
-                  "args": [
-                    {
-                      "type": "NumberLiteral",
-                      "value": null
+                      "type": "Instr",
+                      "id": "const",
+                      "object": "f32",
+                      "args": [
+                        {
+                          "type": "NumberLiteral",
+                          "value": null
+                        },
+                        {
+                          "type": "NumberLiteral",
+                          "value": 0
+                        }
+                      ]
                     },
                     {
-                      "type": "NumberLiteral",
-                      "value": 2097152
+                      "type": "Instr",
+                      "id": "const",
+                      "object": "f32",
+                      "args": [
+                        {
+                          "type": "NumberLiteral",
+                          "value": null
+                        }
+                      ]
                     }
                   ]
                 }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "Instr",
-          "id": "assert_trap",
-          "args": [
+              ],
+              "index": {
+                "type": "NumberLiteral",
+                "value": 1
+              }
+            },
             {
-              "type": "Instr",
-              "id": "invoke",
+              "type": "CallInstruction",
+              "id": "call",
               "args": [
                 {
-                  "type": "StringLiteral",
-                  "value": "type-i32"
+                  "type": "Instr",
+                  "id": "invoke",
+                  "args": [
+                    {
+                      "type": "StringLiteral",
+                      "value": "add"
+                    },
+                    {
+                      "type": "Instr",
+                      "id": "const",
+                      "object": "f32",
+                      "args": [
+                        {
+                          "type": "NumberLiteral",
+                          "value": null
+                        },
+                        {
+                          "type": "NumberLiteral",
+                          "value": 0
+                        }
+                      ]
+                    },
+                    {
+                      "type": "Instr",
+                      "id": "const",
+                      "object": "f32",
+                      "args": [
+                        {
+                          "type": "NumberLiteral",
+                          "value": null
+                        },
+                        {
+                          "type": "NumberLiteral",
+                          "value": 2097152
+                        }
+                      ]
+                    }
+                  ]
                 }
-              ]
+              ],
+              "index": {
+                "type": "NumberLiteral",
+                "value": 2
+              }
             },
             {
-              "type": "StringLiteral",
-              "value": "unreachable"
-            }
-          ]
-        },
-        {
-          "type": "Instr",
-          "id": "assert_malformed",
-          "args": [
-            {
-              "type": "BinaryModule",
-              "blob": [
-                ""
-              ]
-            },
-            {
-              "type": "StringLiteral",
-              "value": "unexpected end"
-            }
-          ]
-        },
-        {
-          "type": "Instr",
-          "id": "assert_invalid",
-          "args": [
-            {
-              "type": "Module",
-              "id": null,
-              "fields": [
+              "type": "CallInstruction",
+              "id": "call",
+              "args": [
                 {
-                  "type": "Memory",
-                  "limits": {
-                    "type": "Limit",
-                    "min": "0"
-                  }
+                  "type": "Instr",
+                  "id": "invoke",
+                  "args": [
+                    {
+                      "type": "StringLiteral",
+                      "value": "type-i32"
+                    }
+                  ]
                 },
                 {
-                  "type": "Memory",
-                  "limits": {
-                    "type": "Limit",
-                    "min": "0"
-                  }
+                  "type": "StringLiteral",
+                  "value": "unreachable"
                 }
-              ]
+              ],
+              "index": {
+                "type": "NumberLiteral",
+                "value": 3
+              }
             },
             {
-              "type": "StringLiteral",
-              "value": "multiple memories"
-            }
-          ]
-        },
-        {
-          "type": "Instr",
-          "id": "assert_unlinkable",
-          "args": [
-            {
-              "type": "Module",
-              "id": null,
-              "fields": [
+              "type": "CallInstruction",
+              "id": "call",
+              "args": [
                 {
-                  "type": "ModuleImport",
-                  "module": "test",
-                  "name": "unknown",
-                  "descr": {
-                    "type": "FuncImportDescr",
-                    "value": {
-                      "type": "Identifier",
-                      "name": "unknown"
+                  "type": "BinaryModule",
+                  "blob": [
+                    ""
+                  ]
+                },
+                {
+                  "type": "StringLiteral",
+                  "value": "unexpected end"
+                }
+              ],
+              "index": {
+                "type": "NumberLiteral",
+                "value": 4
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "assert_invalid",
+              "args": [
+                {
+                  "type": "Module",
+                  "id": null,
+                  "fields": [
+                    {
+                      "type": "Memory",
+                      "limits": {
+                        "type": "Limit",
+                        "min": "0"
+                      }
                     },
-                    "params": [],
-                    "results": []
-                  }
+                    {
+                      "type": "Memory",
+                      "limits": {
+                        "type": "Limit",
+                        "min": "0"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "StringLiteral",
+                  "value": "multiple memories"
                 }
               ]
             },
             {
-              "type": "StringLiteral",
-              "value": "unknown import"
+              "type": "CallInstruction",
+              "id": "call",
+              "args": [
+                {
+                  "type": "Module",
+                  "id": null,
+                  "fields": [
+                    {
+                      "type": "ModuleImport",
+                      "module": "test",
+                      "name": "unknown",
+                      "descr": {
+                        "type": "FuncImportDescr",
+                        "value": {
+                          "type": "Identifier",
+                          "name": "unknown"
+                        },
+                        "params": [],
+                        "results": []
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "StringLiteral",
+                  "value": "unknown import"
+                }
+              ],
+              "index": {
+                "type": "NumberLiteral",
+                "value": 5
+              }
             }
           ]
         }
