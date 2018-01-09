@@ -7,7 +7,7 @@ const i64 = require("../../runtime/values/i64");
 const f32 = require("../../runtime/values/f32");
 const f64 = require("../../runtime/values/f64");
 
-// https://webassembly.github.io/spec/exec/instructions.html#exec-binop
+// https://webassembly.github.io/spec/core/exec/instructions.html#exec-binop
 function unop(
   c: StackLocal,
   sign: Sign,

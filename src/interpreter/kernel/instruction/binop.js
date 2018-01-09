@@ -21,7 +21,7 @@ const i64 = require("../../runtime/values/i64");
 const f32 = require("../../runtime/values/f32");
 const f64 = require("../../runtime/values/f64");
 
-// https://webassembly.github.io/spec/exec/instructions.html#exec-binop
+// https://webassembly.github.io/spec/core/exec/instructions.html#exec-binop
 function binop(
   { value: c1 }: StackLocal,
   { value: c2 }: StackLocal,
@@ -29,46 +29,46 @@ function binop(
   createValue: number => StackLocal
 ): StackLocal {
   switch (sign) {
-    // https://webassembly.github.io/spec/exec/numerics.html#op-iadd
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-iadd
     case "add":
       return createValue(c1 + c2);
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-isub
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-isub
     case "sub":
       return createValue(c1 - c2);
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-imul
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-imul
     case "mul":
       return createValue(c1 * c2);
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-idiv-u
-    // https://webassembly.github.io/spec/exec/numerics.html#op-idiv-s
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-idiv-u
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-idiv-s
     case "div_s":
     case "div_u":
     case "div":
       return createValue(c1 / c2);
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-iand
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-iand
     case "and":
       return createValue(c1 & c2);
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-ior
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ior
     case "or":
       return createValue(c1 | c2);
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-ixor
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ixor
     case "xor":
       return createValue(c1 ^ c2);
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-fmin
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-fmin
     case "min":
       return createValue(Math.min(c1, c2));
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-fmax
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-fmax
     case "max":
       return createValue(Math.max(c1, c2));
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-fcopysign
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-fcopysign
     case "copysign":
       return createValue(Math.sign(c1) === Math.sign(c2) ? c1 : -c1);
   }
@@ -83,34 +83,34 @@ function binopLong(
   createValue: LongNumber => StackLocal
 ): StackLocal {
   switch (sign) {
-    // https://webassembly.github.io/spec/exec/numerics.html#op-iadd
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-iadd
     case "add":
       return createValue(c1.add(c2));
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-imul
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-imul
     case "sub":
       return createValue(c1.sub(c2));
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-imul
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-imul
     case "mul":
       return createValue(c1.mul(c2));
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-idiv-u
-    // https://webassembly.github.io/spec/exec/numerics.html#op-idiv-s
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-idiv-u
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-idiv-s
     case "div_s":
     case "div_u":
     case "div":
       return createValue(c1.div(c2));
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-iand
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-iand
     case "and":
       return createValue(c1.and(c2));
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-ior
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ior
     case "or":
       return createValue(c1.or(c2));
 
-    // https://webassembly.github.io/spec/exec/numerics.html#op-ixor
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ixor
     case "xor":
       return createValue(c1.xor(c2));
   }
