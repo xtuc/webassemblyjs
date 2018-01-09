@@ -54,7 +54,7 @@ bench:
 	$(NODE) $(NODE_OPTS) ./benchmark
 
 fix:
-	$(PRETTIER) --write "{src,test,docs,benchmark}/**/*.js"
+	$(PRETTIER) --write "{src,test,docs,benchmark}/**/*.js" "**/*.tjs"
 
 flow-update-def:
 	$(FLOWTYPED) install --libdefDir src/types

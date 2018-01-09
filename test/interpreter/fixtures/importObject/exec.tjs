@@ -10,7 +10,7 @@ const importObject = {
   }
 };
 
-it('should import the function', () => {
+it("should import the function", () => {
   const m = WebAssembly.instantiateFromSource(watfmodule, importObject);
 
   m.exports.main();

@@ -1,9 +1,9 @@
 const m = WebAssembly.instantiateFromSource(watfmodule);
 
-it('should call a function by its index', () => {
+it("should call a function by its index", () => {
   assert.equal(m.exports.callByIndex(), 1);
 });
 
-it('should call a function by its name', () => {
+it("should call a function by its name", () => {
   assert.equal(m.exports.callByName(), 1);
 });
