@@ -1,3 +1,3 @@
 (func (
-  (f32.const nan)
+  f32.const nan
 ))
