@@ -52,7 +52,7 @@ export class Table {
     }
   }
 
-  get length() {
+  get length(): number {
     return this._elements.length;
   }
 }

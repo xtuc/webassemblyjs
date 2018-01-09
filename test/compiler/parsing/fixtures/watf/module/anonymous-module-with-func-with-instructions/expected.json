@@ -9,7 +9,7 @@
           "type": "Func",
           "id": {
             "type": "Identifier",
-            "name": "funcfoo"
+            "value": "funcfoo"
           },
           "params": [],
           "result": null,

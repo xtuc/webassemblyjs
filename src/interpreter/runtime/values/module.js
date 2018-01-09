@@ -5,7 +5,7 @@ const { traverse } = require("../../../compiler/AST/traverse");
 const func = require("./func");
 const global = require("./global");
 
-function createInstance(
+export function createInstance(
   allocator: Allocator,
   n: Module,
   externalFunctions: any = {}
@@ -54,9 +54,9 @@ function createInstance(
 
       moduleInstance.funcaddrs.push(addr);
 
-      if (typeof node.id === "object") {
+      if (node.id != null) {
         if (node.id.type === "Identifier") {
-          instantiatedFuncs[node.id.name] = addr;
+          instantiatedFuncs[node.id.value] = addr;
         }
       }
     },
@@ -89,7 +89,10 @@ function createInstance(
          * - results
          */
         const func = allocator.get(instantiatedFuncAddr);
-        func.type = [node.descr.params, node.descr.results];
+
+        if (node.descr.params != null && node.descr.results != null) {
+          func.type = [node.descr.params, node.descr.results];
+        }
 
         allocator.set(func, instantiatedFuncAddr);
 
@@ -137,7 +140,3 @@ function createModuleExportIntance(
     value
   };
 }
-
-module.exports = {
-  createInstance
-};

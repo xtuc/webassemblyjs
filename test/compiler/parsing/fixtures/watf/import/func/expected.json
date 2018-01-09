@@ -9,7 +9,7 @@
         "type": "FuncImportDescr",
         "value": {
           "type": "Identifier",
-          "name": "name"
+          "value": "name"
         },
         "params": [
           {

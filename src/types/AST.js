@@ -1,7 +1,7 @@
 // @flow
 
 type Valtype = "i32" | "i64" | "f32" | "f64" | "label";
-type ExportDescr = "func" | "table" | "memory" | "global";
+type ExportDescr = "Func" | "Table" | "Memory" | "Global";
 type Index = NumberLiteral | Identifier;
 type Mutability = "const" | "var";
 
@@ -44,7 +44,7 @@ interface NumberLiteral {
 
 interface Identifier {
   type: "Identifier";
-  name: string;
+  value: string;
 }
 
 /**

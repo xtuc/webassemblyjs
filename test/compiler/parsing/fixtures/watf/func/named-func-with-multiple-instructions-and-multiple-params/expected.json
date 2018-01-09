@@ -5,7 +5,7 @@
       "type": "Func",
       "id": {
         "type": "Identifier",
-        "name": "add"
+        "value": "add"
       },
       "params": [
         {

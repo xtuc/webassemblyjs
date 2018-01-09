@@ -5,7 +5,7 @@
       "type": "Func",
       "id": {
         "type": "Identifier",
-        "name": "a"
+        "value": "a"
       },
       "params": [],
       "result": null,
@@ -15,7 +15,7 @@
       "type": "Func",
       "id": {
         "type": "Identifier",
-        "name": "test"
+        "value": "test"
       },
       "params": [],
       "result": null,
@@ -25,7 +25,7 @@
       "type": "Func",
       "id": {
         "type": "Identifier",
-        "name": "func_3"
+        "value": "func_3"
       },
       "params": [],
       "result": null,

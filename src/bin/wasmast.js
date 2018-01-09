@@ -15,6 +15,7 @@ if (typeof filename === "undefined") {
   throw new Error("Missing file");
 }
 
+// $FlowIgnore: this is correct but not correctly documented
 const buff = toArrayBuffer(readFileSync(filename, null));
 const ast = decode(buff);
 

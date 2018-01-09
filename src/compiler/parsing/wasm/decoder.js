@@ -1171,7 +1171,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           t.moduleExport(
             moduleExport.name,
             moduleExport.type,
-            moduleExport.id.name
+            moduleExport.id.value
           )
         );
       }

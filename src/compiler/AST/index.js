@@ -13,10 +13,10 @@ function assert(cond: boolean) {
   }
 }
 
-export function identifier(name: string): Identifier {
+export function identifier(value: string): Identifier {
   return {
     type: "Identifier",
-    name
+    value
   };
 }
 
