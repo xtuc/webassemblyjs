@@ -513,8 +513,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *   <type>.<relop>
      *   <type>.<cvtop>/<type>
      */
-    function parseFuncInstr() {
-      const args = [];
+    function parseFuncInstr(): Instruction {
+      const args: Array<NumberLiteral | Identifier> = [];
 
       /**
        * A simple instruction
@@ -775,7 +775,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      * param    :: ( param <type>* ) | ( param <name> <type> )
      */
     function parseFuncParam(): Array<FuncParam> {
-      const params = [];
+      const params: Array<FuncParam> = [];
       let id;
       let valtype;
 
@@ -804,6 +804,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             eatToken();
 
             params.push({
+              id: undefined,
               valtype
             });
           }

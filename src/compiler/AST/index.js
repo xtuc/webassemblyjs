@@ -78,7 +78,7 @@ export function func(
 export function objectInstruction(
   id: string,
   object: Valtype,
-  args: Array<Number | string> = []
+  args: Array<NumberLiteral | Identifier> = []
 ): Instruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
   assert(typeof object === "string");
