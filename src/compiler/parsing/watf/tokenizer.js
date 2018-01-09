@@ -235,8 +235,11 @@ function tokenize(input: string) {
 
       if (NUMBER_KEYWORDS.test(input.substring(current, current + 3))) {
         let tokenLength = 3;
-        if (input.substring(current, current += 4) === 'nan:') {
+        if (input.substring(current, current + 4) === 'nan:') {
           tokenLength = 4;
+        }
+        else if (input.substring(current, current + 3) === 'nan') {
+          tokenLength = 3;
         }
         value += input.substring(current, current + tokenLength);
         char = input[current += tokenLength];
