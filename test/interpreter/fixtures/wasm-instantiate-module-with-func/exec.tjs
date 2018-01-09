@@ -1,16 +1,12 @@
-it('should instantiate and use wasm module', () => {
-  return WebAssembly
-    .instantiate(wasmmodule)
-    .then((m) => {
+it("should instantiate and use wasm module", () => {
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    assert.typeOf(m, "object");
+    assert.typeOf(m.module, "object");
+    assert.typeOf(m.instance, "object");
 
-      assert.typeOf(m, 'object')
-      assert.typeOf(m.module, 'object')
-      assert.typeOf(m.instance, 'object')
+    assert.typeOf(m.instance.exports, "object");
 
-      assert.typeOf(m.instance.exports, 'object')
-
-      assert.typeOf(m.instance.exports.add, 'function')
-      assert.equal(m.instance.exports.add(1, 1), 2);
-    });
-
+    assert.typeOf(m.instance.exports.add, "function");
+    assert.equal(m.instance.exports.add(1, 1), 2);
+  });
 });
