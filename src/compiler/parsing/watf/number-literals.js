@@ -2,9 +2,12 @@
 const Long = require("long");
 const parseHexFloat = require("webassembly-floating-point-hex-parser");
 
-export function parse32F(sourceString: string): number {
+export function parse32F( sourceString: string ): number {
   if (isHexLiteral(sourceString)) {
     return parseHexFloat(sourceString);
+  }
+  if (isNanLiteral(sourceString)) {
+    return sourceString.length > 3 ? parseInt(sourceString.substring(4), 16) : 0x400000;
   }
   return parseFloat(sourceString);
 }
@@ -45,6 +48,10 @@ export function parse64I(sourceString: string): LongNumber {
   };
 }
 
+export function isNanLiteral(sourceString: string): boolean {
+  return sourceString.substring(0,3).toUpperCase() === 'NAN';
+}
+
 function isDecimalExponentLiteral(sourceString: string): boolean {
   return (
     !isHexLiteral(sourceString) && sourceString.toUpperCase().includes("E")
@@ -57,3 +64,4 @@ function isHexLiteral(sourceString: string): boolean {
     sourceString.substring(0, 3).toUpperCase() === "-0X"
   );
 }
+

@@ -14,8 +14,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "payload": 0x400000,
-			  "value": NaN
+              "value": 4194304,
+              "isnan": true
             }
           ]
         }

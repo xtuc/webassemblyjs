@@ -4,8 +4,9 @@ const {
   parse32F,
   parse64F,
   parse32I,
-  parse64I
-} = require("../parsing/watf/number-literals");
+  parse64I,
+  isNanLiteral
+} = require('../parsing/watf/number-literals');
 
 function assert(cond: boolean) {
   if (!cond) {
@@ -188,35 +189,45 @@ export function numberLiteral(
   type: Valtype = "f64"
 ): NumberLiteral | LongNumberLiteral {
   let value;
+  let isnan = false;
 
   if (typeof rawValue === "number") {
     value = rawValue;
   } else {
     switch (type) {
-      case "i32": {
-        value = parse32I(rawValue);
-        break;
-      }
-      case "i64": {
-        value = parse64I(rawValue);
-        break;
-      }
-      case "f32": {
-        value = parse32F(rawValue);
-        break;
-      }
-      // f64
-      default: {
-        value = parse64F(rawValue);
-        break;
-      }
+    case 'i32': {
+      value = parse32I(rawValue);
+      break;
+    }
+    case 'i64': {
+      value = parse64I(rawValue);
+      break;
+    }
+    case 'f32': {
+      value = parse32F(rawValue);
+      isnan = isNanLiteral(rawValue);
+      break;
+    }
+    // f64
+    default: {
+      value = parse64F(rawValue);
+      isnan = isNanLiteral(rawValue);
+      break;
+    }
     }
   }
 
-  return {
+  // This is a hack to avoid rewriting all tests to have a "isnan: false" field
+  const x = {
     type: type === "i64" ? "LongNumberLiteral" : "NumberLiteral",
     value
-  };
+  }
+
+  if (isnan) {
+    x.isnan = true;
+  }
+
+  return x;
 }
 
 export function callInstruction(index: Index): CallInstruction {
