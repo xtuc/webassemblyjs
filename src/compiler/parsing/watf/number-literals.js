@@ -6,6 +6,9 @@ export function parse32F( sourceString: string ): number {
   if (isHexLiteral(sourceString)) {
     return parseHexFloat(sourceString);
   }
+  if (isInfLiteral(sourceString)) {
+    return 0;
+  }
   if (isNanLiteral(sourceString)) {
     return sourceString.length > 3 ? parseInt(sourceString.substring(4), 16) : 0x400000;
   }
@@ -13,6 +16,15 @@ export function parse32F( sourceString: string ): number {
 }
 
 export function parse64F(sourceString: string): number {
+  if (isHexLiteral(sourceString)) {
+    return parseHexFloat(sourceString);
+  }
+  if (isInfLiteral(sourceString)) {
+    return 0;
+  }
+  if (isNanLiteral(sourceString)) {
+    return sourceString.length > 3 ? parseInt(sourceString.substring(4), 16) : 0x400000;
+  }
   if (isHexLiteral(sourceString)) {
     return parseHexFloat(sourceString);
   }
@@ -46,6 +58,10 @@ export function parse64I(sourceString: string): LongNumber {
     high: long.high,
     low: long.low
   };
+}
+
+export function isInfLiteral(sourceString: string): boolean {
+  return sourceString.substring(0,3).toUpperCase() === 'INF';
 }
 
 export function isNanLiteral(sourceString: string): boolean {

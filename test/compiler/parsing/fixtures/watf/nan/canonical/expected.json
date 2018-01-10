@@ -18,7 +18,7 @@
             {
               "type": "NumberLiteral",
               "value": 4194304,
-              "isnan": true
+              "nan": true
             }
           ]
         }
