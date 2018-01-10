@@ -187,25 +187,28 @@ export function blockInstruction(
 
 export function numberLiteral(
   rawValue: number | string,
-  type: Valtype = "f64"
-): NumberLiteral | LongNumberLiteral {
+  instructionType: Valtype = "f64"
+): NumberLiteral | LongNumberLiteral | FloatLiteral {
   let value;
   let nan = false;
   let inf = false;
+  let type = "NumberLiteral";
 
   if (typeof rawValue === "number") {
     value = rawValue;
   } else {
-    switch (type) {
+    switch (instructionType) {
       case "i32": {
         value = parse32I(rawValue);
         break;
       }
       case "i64": {
+        type = "LongNumberLiteral";
         value = parse64I(rawValue);
         break;
       }
       case "f32": {
+        type = "FloatLiteral";
         value = parse32F(rawValue);
         nan = isNanLiteral(rawValue);
         inf = isInfLiteral(rawValue);
@@ -213,6 +216,7 @@ export function numberLiteral(
       }
       // f64
       default: {
+        type = "FloatLiteral";
         value = parse64F(rawValue);
         nan = isNanLiteral(rawValue);
         inf = isInfLiteral(rawValue);
@@ -223,7 +227,7 @@ export function numberLiteral(
 
   // This is a hack to avoid rewriting all tests to have a "isnan: false" field
   const x = {
-    type: type === "i64" ? "LongNumberLiteral" : "NumberLiteral",
+    type,
     value
   };
 

@@ -195,7 +195,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           throw new RuntimeError("const requires one argument, none given.");
         }
 
-        if (n.type !== "NumberLiteral" && n.type !== "LongNumberLiteral") {
+        if (
+          n.type !== "NumberLiteral" &&
+          n.type !== "LongNumberLiteral" &&
+          n.type !== "FloatLiteral"
+        ) {
           throw new RuntimeError("const: unsupported value of type: " + n.type);
         }
 
@@ -515,7 +519,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           );
         }
 
-        if (index.type === "NumberLiteral") {
+        if (index.type === "NumberLiteral" || index.type === "FloatLiteral") {
           getLocalByIndex(index.value);
         } else {
           throw new RuntimeError(
