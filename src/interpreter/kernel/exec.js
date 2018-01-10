@@ -712,7 +712,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         }
 
         const [c1, c2] = pop2(instruction.object, instruction.object);
-        pushResult(binopFn(c2, c1, instruction.id));
+        pushResult(binopFn(c1, c2, instruction.id));
 
         break;
       }
