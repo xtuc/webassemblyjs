@@ -61,7 +61,7 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "i32.div_s",
 
-      args: [{ value: 2, type: "i32" }, { value: 10, type: "i32" }],
+      args: [{ value: 10, type: "i32" }, { value: 2, type: "i32" }],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -75,7 +75,7 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "i32.div_u",
 
-      args: [{ value: 2, type: "i32" }, { value: 10, type: "i32" }],
+      args: [{ value: 10, type: "i32" }, { value: 2, type: "i32" }],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -162,8 +162,8 @@ describe("kernel exec - numeric instructions", () => {
       name: "i64.sub",
 
       args: [
-        { value: Long.fromString("1"), type: "i64" },
-        { value: Long.fromString("1844674407370955161"), type: "i64" }
+        { value: Long.fromString("1844674407370955161"), type: "i64" },
+        { value: Long.fromString("1"), type: "i64" }
       ],
 
       code: [
@@ -196,8 +196,8 @@ describe("kernel exec - numeric instructions", () => {
       name: "i64.div_s",
 
       args: [
-        { value: Long.fromString("2"), type: "i64" },
-        { value: Long.fromString("1844674407370955160"), type: "i64" }
+        { value: Long.fromString("1844674407370955160"), type: "i64" },
+        { value: Long.fromString("2"), type: "i64" }
       ],
 
       code: [
@@ -213,8 +213,8 @@ describe("kernel exec - numeric instructions", () => {
       name: "i64.div_u",
 
       args: [
-        { value: Long.fromString("2"), type: "i64" },
-        { value: Long.fromString("1844674407370955160"), type: "i64" }
+        { value: Long.fromString("1844674407370955160"), type: "i64" },
+        { value: Long.fromString("2"), type: "i64" }
       ],
 
       code: [
@@ -275,7 +275,7 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f32.div",
 
-      args: [{ value: 2.0, type: "f32" }, { value: 10.0, type: "f32" }],
+      args: [{ value: 10.0, type: "f32" }, { value: 2.0, type: "f32" }],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -515,7 +515,7 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f64.div",
 
-      args: [{ value: 2.0, type: "f64" }, { value: 10.0, type: "f64" }],
+      args: [{ value: 10.0, type: "f64" }, { value: 2.0, type: "f64" }],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
