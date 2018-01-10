@@ -187,7 +187,7 @@ export function blockInstruction(
 
 export function numberLiteral(
   rawValue: number | string,
-  instructionType: Valtype = "f64"
+  instructionType: Valtype = "i32"
 ): NumberLiteral | LongNumberLiteral | FloatLiteral {
   let value;
   let nan = false;

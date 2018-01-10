@@ -16,7 +16,7 @@
           "object": "f32",
           "args": [
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 33
             }
           ]
