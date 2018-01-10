@@ -1,7 +1,7 @@
 // @flow
 
 type CompiledModule = {
-  _ast: Program;
+  _ast: Program,
 
   exports: Array<CompiledModuleExportDescr>,
   imports: Array<CompiledModuleImportDescr>

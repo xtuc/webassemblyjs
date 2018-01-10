@@ -91,10 +91,7 @@ export function objectInstruction(
   };
 }
 
-export function instruction(
-  id: string,
-  args: Array<Number | string> = []
-): Instruction {
+export function instruction(id: string, args: Array<any> = []): Instruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
   assert(id !== "block");
   assert(id !== "if");

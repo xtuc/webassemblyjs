@@ -514,7 +514,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *   <type>.<cvtop>/<type>
      */
     function parseFuncInstr(): Instruction {
-      const args: Array<NumberLiteral | Identifier> = [];
+      const args: Array<any> = [];
 
       /**
        * A simple instruction
@@ -751,7 +751,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      * result :: ( result <type>* )
      */
-    function parseFuncResult(): Array<string> {
+    function parseFuncResult(): Array<Valtype> {
       const results = [];
 
       if (token.type !== tokens.valtype) {
