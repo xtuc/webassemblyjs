@@ -195,7 +195,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
     switch (instruction.id) {
       case "const": {
-        // https://webassembly.github.io/spec/exec/instructions.html#exec-const
+        // https://webassembly.github.io/spec/core/exec/instructions.html#exec-const
 
         const n = instruction.args[0];
 
@@ -203,7 +203,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           throw new RuntimeError("const requires one argument, none given.");
         }
 
-        if (n.type !== "NumberLiteral") {
+        if (n.type !== "NumberLiteral" && n.type !== "LongNumberLiteral") {
           throw new RuntimeError("const: unsupported value of type: " + n.type);
         }
 
@@ -215,11 +215,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       /**
        * Control Instructions
        *
-       * https://webassembly.github.io/spec/exec/instructions.html#control-instructions
+       * https://webassembly.github.io/spec/core/exec/instructions.html#control-instructions
        */
       case "nop": {
         // Do nothing
-        // https://webassembly.github.io/spec/exec/instructions.html#exec-nop
+        // https://webassembly.github.io/spec/core/exec/instructions.html#exec-nop
         break;
       }
 
@@ -498,23 +498,23 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       /**
        * Administrative Instructions
        *
-       * https://webassembly.github.io/spec/exec/runtime.html#administrative-instructions
+       * https://webassembly.github.io/spec/core/exec/runtime.html#administrative-instructions
        */
       case "unreachable":
-      // https://webassembly.github.io/spec/exec/instructions.html#exec-unreachable
+      // https://webassembly.github.io/spec/core/exec/instructions.html#exec-unreachable
       case "trap": {
         // signalling abrupt termination
-        // https://webassembly.github.io/spec/exec/runtime.html#syntax-trap
+        // https://webassembly.github.io/spec/core/exec/runtime.html#syntax-trap
         return createTrap();
       }
 
       /**
        * Memory Instructions
        *
-       * https://webassembly.github.io/spec/exec/instructions.html#memory-instructions
+       * https://webassembly.github.io/spec/core/exec/instructions.html#memory-instructions
        */
       case "get_local": {
-        // https://webassembly.github.io/spec/exec/instructions.html#exec-get-local
+        // https://webassembly.github.io/spec/core/exec/instructions.html#exec-get-local
         const index = instruction.args[0];
 
         if (typeof index === "undefined") {
@@ -535,7 +535,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       case "set_local": {
-        // https://webassembly.github.io/spec/exec/instructions.html#exec-set-local
+        // https://webassembly.github.io/spec/core/exec/instructions.html#exec-set-local
         const index = instruction.args[0];
         const init = instruction.args[1];
 
@@ -570,7 +570,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       case "tee_local": {
-        // https://webassembly.github.io/spec/exec/instructions.html#exec-tee-local
+        // https://webassembly.github.io/spec/core/exec/instructions.html#exec-tee-local
         const index = instruction.args[0];
         const init = instruction.args[1];
 
@@ -618,7 +618,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       case "set_global": {
-        // https://webassembly.github.io/spec/exec/instructions.html#exec-set-global
+        // https://webassembly.github.io/spec/core/exec/instructions.html#exec-set-global
         const index = instruction.args[0];
 
         // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
@@ -647,7 +647,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       }
 
       case "get_global": {
-        // https://webassembly.github.io/spec/exec/instructions.html#exec-get-global
+        // https://webassembly.github.io/spec/core/exec/instructions.html#exec-get-global
         const index = instruction.args[0];
 
         // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
