@@ -203,7 +203,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           throw new RuntimeError("const requires one argument, none given.");
         }
 
-        if (n.type !== "NumberLiteral" && n.type !== "LongLiteral") {
+        if (n.type !== "NumberLiteral" && n.type !== "LongNumberLiteral") {
           throw new RuntimeError("const: unsupported value of type: " + n.type);
         }
 

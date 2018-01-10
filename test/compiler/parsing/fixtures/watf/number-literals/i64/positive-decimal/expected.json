@@ -16,7 +16,7 @@
           "object": "i64",
           "args": [
             {
-              "type": "LongLiteral",
+              "type": "LongNumberLiteral",
               "value": {
                 "high": 429496729,
                 "low": -1717986919

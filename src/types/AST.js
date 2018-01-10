@@ -14,8 +14,8 @@ type NodePath<T> = {
  */
 
 interface LongNumber {
-  high: number,
-  low: number
+  high: number;
+  low: number;
 }
 
 interface Position {
@@ -47,8 +47,8 @@ interface NumberLiteral {
   value: number;
 }
 
-interface LongLiteral {
-  type: 'LongLiteral';
+interface LongNumberLiteral {
+  type: "LongNumberLiteral";
   value: LongNumber;
 }
 
@@ -93,7 +93,7 @@ interface Func {
 interface Instruction {
   type: "Instr";
   id: string;
-  args: Array<NumberLiteral | LongLiteral | Identifier>;
+  args: Array<NumberLiteral | LongNumberLiteral | Identifier>;
 }
 
 type ObjectInstruction = Instruction & {
