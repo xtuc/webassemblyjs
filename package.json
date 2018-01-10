@@ -51,7 +51,8 @@
     "wasmrun": "./lib/bin/wasmrun.js"
   },
   "dependencies": {
-    "webassembly-floating-point-hex-parser": "0.1.2",
-    "@babel/code-frame": "^7.0.0-beta.36"
+    "@babel/code-frame": "^7.0.0-beta.36",
+    "long": "^3.2.0",
+    "webassembly-floating-point-hex-parser": "0.1.2"
   }
 }

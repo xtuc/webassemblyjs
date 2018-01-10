@@ -1,5 +1,5 @@
 // @flow
-
+const Long = require("long");
 const parseHexFloat = require("webassembly-floating-point-hex-parser");
 
 export function parse32F(sourceString: string): number {
@@ -29,8 +29,20 @@ export function parse32I(sourceString: string): number {
   return value;
 }
 
-export function parse64I(sourceString: string): number {
-  return parseInt(sourceString);
+export function parse64I(sourceString: string): LongNumber {
+  let long: Long;
+  if (isHexLiteral(sourceString)) {
+    long = Long.fromString(sourceString.substr(2), false, 16);
+  } else if (isDecimalExponentLiteral(sourceString)) {
+    throw new Error("This number literal format is yet to be implemented.");
+  } else {
+    long = Long.fromString(sourceString);
+  }
+
+  return {
+    high: long.high,
+    low: long.low
+  };
 }
 
 function isDecimalExponentLiteral(sourceString: string): boolean {

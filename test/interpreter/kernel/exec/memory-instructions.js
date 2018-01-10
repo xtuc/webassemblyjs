@@ -1,5 +1,6 @@
 // @flow
 
+const Long = require("long");
 const { assert } = require("chai");
 
 const t = require("../../../../lib/compiler/AST");
@@ -17,9 +18,11 @@ describe("kernel exec - memory instructions", () => {
 
       args: [],
 
-      code: [t.objectInstruction("const", "i64", [t.numberLiteral(10)])],
+      code: [
+        t.objectInstruction("const", "i64", [t.numberLiteral("10", "i64")])
+      ],
 
-      resEqual: 10
+      resEqual: new Long(10, 0)
     },
 
     {
@@ -93,7 +96,11 @@ describe("kernel exec - memory instructions", () => {
         throw new Error("No result");
       }
 
-      assert.equal(res.value, op.resEqual);
+      if (res.value instanceof Long) {
+        assert.isTrue(res.value.equals(op.resEqual));
+      } else {
+        assert.equal(res.value, op.resEqual);
+      }
     });
   });
 });

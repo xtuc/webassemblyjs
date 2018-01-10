@@ -1,5 +1,5 @@
 // @flow
-
+const Long = require("long");
 const { assert } = require("chai");
 
 const t = require("../../../../lib/compiler/AST");
@@ -61,7 +61,7 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "i32.div_s",
 
-      args: [{ value: 2, type: "i32" }, { value: 10, type: "i32" }],
+      args: [{ value: 10, type: "i32" }, { value: 2, type: "i32" }],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -75,7 +75,7 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "i32.div_u",
 
-      args: [{ value: 2, type: "i32" }, { value: 10, type: "i32" }],
+      args: [{ value: 10, type: "i32" }, { value: 2, type: "i32" }],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -91,9 +91,63 @@ describe("kernel exec - numeric instructions", () => {
      */
 
     {
+      name: "i64.and",
+
+      args: [
+        { value: Long.fromString("10001001110010", false, 2), type: "i64" },
+        { value: Long.fromString("10001001010010", false, 2), type: "i64" }
+      ],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("and", "i64")
+      ],
+
+      resEqual: Long.fromString("10001001010010", false, 2)
+    },
+
+    {
+      name: "i64.or",
+
+      args: [
+        { value: Long.fromString("10001001110010", false, 2), type: "i64" },
+        { value: Long.fromString("10001011010010", false, 2), type: "i64" }
+      ],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("or", "i64")
+      ],
+
+      resEqual: Long.fromString("10001011110010", false, 2)
+    },
+
+    {
+      name: "i64.xor",
+
+      args: [
+        { value: Long.fromString("10001001110010", false, 2), type: "i64" },
+        { value: Long.fromString("10001011010010", false, 2), type: "i64" }
+      ],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("xor", "i64")
+      ],
+
+      resEqual: Long.fromString("00000010100000", false, 2)
+    },
+
+    {
       name: "i64.add",
 
-      args: [{ value: 1, type: "i64" }, { value: 1, type: "i64" }],
+      args: [
+        { value: Long.fromString("1844674407370955161"), type: "i64" },
+        { value: Long.fromString("1"), type: "i64" }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -101,13 +155,16 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("add", "i64")
       ],
 
-      resEqual: 2
+      resEqual: Long.fromString("1844674407370955162")
     },
 
     {
       name: "i64.sub",
 
-      args: [{ value: 1, type: "i64" }, { value: 1, type: "i64" }],
+      args: [
+        { value: Long.fromString("1844674407370955161"), type: "i64" },
+        { value: Long.fromString("1"), type: "i64" }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -115,13 +172,16 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("sub", "i64")
       ],
 
-      resEqual: 0
+      resEqual: Long.fromString("1844674407370955160")
     },
 
     {
       name: "i64.mul",
 
-      args: [{ value: 2, type: "i64" }, { value: 1, type: "i64" }],
+      args: [
+        { value: Long.fromString("2"), type: "i64" },
+        { value: Long.fromString("1844674407370955161"), type: "i64" }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -129,13 +189,16 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("mul", "i64")
       ],
 
-      resEqual: 2
+      resEqual: Long.fromString("3689348814741910322")
     },
 
     {
       name: "i64.div_s",
 
-      args: [{ value: 2, type: "i64" }, { value: 10, type: "i64" }],
+      args: [
+        { value: Long.fromString("1844674407370955160"), type: "i64" },
+        { value: Long.fromString("2"), type: "i64" }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -143,13 +206,16 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("div_s", "i64")
       ],
 
-      resEqual: 5
+      resEqual: Long.fromString("922337203685477580")
     },
 
     {
       name: "i64.div_u",
 
-      args: [{ value: 2, type: "i64" }, { value: 10, type: "i64" }],
+      args: [
+        { value: Long.fromString("1844674407370955160"), type: "i64" },
+        { value: Long.fromString("2"), type: "i64" }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -157,7 +223,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("div_u", "i64")
       ],
 
-      resEqual: 5
+      resEqual: Long.fromString("922337203685477580")
     },
 
     /**
@@ -209,7 +275,7 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f32.div",
 
-      args: [{ value: 2.0, type: "f32" }, { value: 10.0, type: "f32" }],
+      args: [{ value: 10.0, type: "f32" }, { value: 2.0, type: "f32" }],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -449,7 +515,7 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f64.div",
 
-      args: [{ value: 2.0, type: "f64" }, { value: 10.0, type: "f64" }],
+      args: [{ value: 10.0, type: "f64" }, { value: 2.0, type: "f64" }],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -647,7 +713,11 @@ describe("kernel exec - numeric instructions", () => {
         const stackFrame = createStackFrame(op.code, op.args);
         const res = executeStackFrame(stackFrame).value;
 
-        assert.deepEqual(res, op.resEqual);
+        if (res.value instanceof Long) {
+          assert.isTrue(res.value.equals(op.resEqual));
+        } else {
+          assert.deepEqual(res, op.resEqual);
+        }
       });
 
       it("should assert validations - 1 missing arg", () => {
