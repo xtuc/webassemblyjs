@@ -2,7 +2,7 @@
 const Long = require("long");
 const parseHexFloat = require("webassembly-floating-point-hex-parser");
 
-export function parse32F( sourceString: string ): number {
+export function parse32F(sourceString: string): number {
   if (isHexLiteral(sourceString)) {
     return parseHexFloat(sourceString);
   }
@@ -10,7 +10,9 @@ export function parse32F( sourceString: string ): number {
     return 0;
   }
   if (isNanLiteral(sourceString)) {
-    return sourceString.length > 3 ? parseInt(sourceString.substring(4), 16) : 0x400000;
+    return sourceString.length > 3
+      ? parseInt(sourceString.substring(4), 16)
+      : 0x400000;
   }
   return parseFloat(sourceString);
 }
@@ -23,7 +25,9 @@ export function parse64F(sourceString: string): number {
     return 0;
   }
   if (isNanLiteral(sourceString)) {
-    return sourceString.length > 3 ? parseInt(sourceString.substring(4), 16) : 0x400000;
+    return sourceString.length > 3
+      ? parseInt(sourceString.substring(4), 16)
+      : 0x400000;
   }
   if (isHexLiteral(sourceString)) {
     return parseHexFloat(sourceString);
@@ -61,11 +65,11 @@ export function parse64I(sourceString: string): LongNumber {
 }
 
 export function isInfLiteral(sourceString: string): boolean {
-  return sourceString.substring(0,3).toUpperCase() === 'INF';
+  return sourceString.substring(0, 3).toUpperCase() === "INF";
 }
 
 export function isNanLiteral(sourceString: string): boolean {
-  return sourceString.substring(0,3).toUpperCase() === 'NAN';
+  return sourceString.substring(0, 3).toUpperCase() === "NAN";
 }
 
 function isDecimalExponentLiteral(sourceString: string): boolean {
@@ -80,4 +84,3 @@ function isHexLiteral(sourceString: string): boolean {
     sourceString.substring(0, 3).toUpperCase() === "-0X"
   );
 }
-

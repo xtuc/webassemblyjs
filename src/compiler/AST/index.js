@@ -7,7 +7,7 @@ const {
   parse64I,
   isNanLiteral,
   isInfLiteral
-} = require('../parsing/watf/number-literals');
+} = require("../parsing/watf/number-literals");
 
 function assert(cond: boolean) {
   if (!cond) {
@@ -197,27 +197,27 @@ export function numberLiteral(
     value = rawValue;
   } else {
     switch (type) {
-    case 'i32': {
-      value = parse32I(rawValue);
-      break;
-    }
-    case 'i64': {
-      value = parse64I(rawValue);
-      break;
-    }
-    case 'f32': {
-      value = parse32F(rawValue);
-      nan = isNanLiteral(rawValue);
-      inf = isInfLiteral(rawValue);
-      break;
-    }
-    // f64
-    default: {
-      value = parse64F(rawValue);
-      nan = isNanLiteral(rawValue);
-      inf = isInfLiteral(rawValue);
-      break;
-    }
+      case "i32": {
+        value = parse32I(rawValue);
+        break;
+      }
+      case "i64": {
+        value = parse64I(rawValue);
+        break;
+      }
+      case "f32": {
+        value = parse32F(rawValue);
+        nan = isNanLiteral(rawValue);
+        inf = isInfLiteral(rawValue);
+        break;
+      }
+      // f64
+      default: {
+        value = parse64F(rawValue);
+        nan = isNanLiteral(rawValue);
+        inf = isInfLiteral(rawValue);
+        break;
+      }
     }
   }
 
@@ -225,7 +225,7 @@ export function numberLiteral(
   const x = {
     type: type === "i64" ? "LongNumberLiteral" : "NumberLiteral",
     value
-  }
+  };
 
   if (nan) {
     x.nan = true;
