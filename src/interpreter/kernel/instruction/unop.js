@@ -9,16 +9,16 @@ const f64 = require("../../runtime/values/f64");
 
 // https://webassembly.github.io/spec/core/exec/instructions.html#exec-binop
 function unop(
-  c: StackLocal,
+  { value: c }: StackLocal,
   sign: Sign,
   createValue: number => StackLocal
 ): StackLocal {
   switch (sign) {
     case "abs":
-      return createValue(Math.abs(c.value));
+      return createValue(c.abs());
 
     case "neg":
-      return createValue(-c.value);
+      return createValue(c.neg());
   }
 
   throw new Error("Unsupported unop: " + sign);

@@ -108,7 +108,7 @@ describe("kernel exec - control instruction", () => {
       const stackFrame = createStackFrame(code, []);
       const res = executeStackFrame(stackFrame);
 
-      assert.equal(res.value, 10);
+      assert.equal(res.value.toNumber(), 10);
     });
   });
 
@@ -130,7 +130,7 @@ describe("kernel exec - control instruction", () => {
       const res = executeStackFrame(stackFrame);
 
       assert.typeOf(res, "object");
-      assert.equal(res.value, 2);
+      assert.equal(res.value.toNumber(), 2);
     });
 
     it("should not break if zero", () => {
@@ -151,8 +151,8 @@ describe("kernel exec - control instruction", () => {
       const stackFrame = createStackFrame(code, []);
       const res = executeStackFrame(stackFrame);
 
-      assert.notEqual(res.value, 20);
-      assert.equal(res.value, 1);
+      assert.notEqual(res.value.toNumber(), 20);
+      assert.equal(res.value.toNumber(), 1);
     });
   });
 
@@ -216,7 +216,7 @@ describe("kernel exec - control instruction", () => {
       const stackFrame = createStackFrame(code, []);
       const res = executeStackFrame(stackFrame);
 
-      assert.equal(res.value, 10);
+      assert.equal(res.value.toNumber(), 10);
     });
   });
 });

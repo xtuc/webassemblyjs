@@ -1,7 +1,11 @@
 // @flow
-
 const Long = require("long");
 const { assert } = require("chai");
+
+const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
+const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
+const { f32 } = require("../../../../lib/interpreter/runtime/values/f32");
+const { f64 } = require("../../../../lib/interpreter/runtime/values/f64");
 
 const t = require("../../../../lib/compiler/AST");
 const {
@@ -22,7 +26,7 @@ describe("kernel exec - memory instructions", () => {
         t.objectInstruction("const", "i64", [t.numberLiteral("10", "i64")])
       ],
 
-      resEqual: new Long(10, 0)
+      resEqual: new i64(new Long.fromString("10"))
     },
 
     {
@@ -32,7 +36,7 @@ describe("kernel exec - memory instructions", () => {
 
       code: [t.objectInstruction("const", "i32", [t.numberLiteral(10)])],
 
-      resEqual: 10
+      resEqual: new i32(new Long.fromString("10"))
     },
 
     {
@@ -42,7 +46,7 @@ describe("kernel exec - memory instructions", () => {
 
       code: [t.objectInstruction("const", "f32", [t.numberLiteral(10.0)])],
 
-      resEqual: 10.0
+      resEqual: new f32(10.0)
     },
 
     {
@@ -52,7 +56,7 @@ describe("kernel exec - memory instructions", () => {
 
       code: [t.objectInstruction("const", "f64", [t.numberLiteral(10.0)])],
 
-      resEqual: 10.0
+      resEqual: new f64(10.0)
     },
 
     {
@@ -68,7 +72,7 @@ describe("kernel exec - memory instructions", () => {
         t.instruction("get_local", [t.numberLiteral(0)])
       ],
 
-      resEqual: 10
+      resEqual: new i32(10)
     },
 
     {
@@ -83,7 +87,7 @@ describe("kernel exec - memory instructions", () => {
         ])
       ],
 
-      resEqual: 2
+      resEqual: new i32(2)
     }
   ];
 
@@ -96,11 +100,7 @@ describe("kernel exec - memory instructions", () => {
         throw new Error("No result");
       }
 
-      if (res.value instanceof Long) {
-        assert.isTrue(res.value.equals(op.resEqual));
-      } else {
-        assert.equal(res.value, op.resEqual);
-      }
+      assert.isTrue(res.value.equals(op.resEqual));
     });
   });
 });
