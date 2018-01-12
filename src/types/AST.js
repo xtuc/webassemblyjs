@@ -1,9 +1,15 @@
 // @flow
 
 type Valtype = "i32" | "i64" | "f32" | "f64" | "label";
-type ExportDescr = "func" | "table" | "memory" | "global";
+type ExportDescr = "Func" | "Table" | "Memory" | "Global";
 type Index = NumberLiteral | Identifier;
 type Mutability = "const" | "var";
+type InstructionType = "Instr" | ControlInstruction;
+type ControlInstruction =
+  | "CallInstruction"
+  | "BlockInstruction"
+  | "LoopInstruction"
+  | "IfInstruction";
 
 type NodePath<T> = {
   node: T
@@ -12,6 +18,11 @@ type NodePath<T> = {
 /**
  * AST types
  */
+
+interface LongNumber {
+  high: number;
+  low: number;
+}
 
 interface Position {
   line: number;
@@ -46,9 +57,14 @@ interface NumberLiteral {
   value: number;
 }
 
+interface LongNumberLiteral {
+  type: "LongNumberLiteral";
+  value: LongNumber;
+}
+
 interface Identifier {
   type: "Identifier";
-  name: string;
+  value: string;
 }
 
 /**
@@ -90,9 +106,9 @@ interface Func {
  * Instructions
  */
 interface Instruction {
-  type: "Instr";
+  type: InstructionType;
   id: string;
-  args: Array<NumberLiteral | Identifier>;
+  args: Array<NumberLiteral | LongNumberLiteral | Identifier>;
 }
 
 type ObjectInstruction = Instruction & {

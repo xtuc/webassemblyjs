@@ -1,8 +1,5 @@
-it('should return the correct results', () => {
+it("should return the correct results", () => {
   const m = WebAssembly.instantiateFromSource(watfmodule);
 
-  assert.equal(
-    m.exports.singular(),
-    7
-  )
+  assert.equal(m.exports.singular(), 7);
 });

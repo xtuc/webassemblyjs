@@ -38,7 +38,7 @@ function getUniqueName(prefix: string = "temp"): string {
 }
 
 function toHex(n: number): string {
-  return "0x" + Number(n).toString("16");
+  return "0x" + Number(n).toString(16);
 }
 
 function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
@@ -60,18 +60,19 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
   let offset = 0;
 
-  function dump(b: Array<Byte>, msg: string) {
+  function dump(b: Array<Byte>, msg: any) {
     if (!printDump) return;
 
     const pad = "\t\t\t\t\t\t\t\t\t\t";
+    let str = "";
 
     if (b.length < 5) {
-      b = b.map(toHex).join(" ");
+      str = b.map(toHex).join(" ");
     } else {
-      b = "...";
+      str = "...";
     }
 
-    console.log(toHex(offset) + ":\t", b, pad, ";", msg);
+    console.log(toHex(offset) + ":\t", str, pad, ";", msg);
   }
 
   function dumpSep(msg: string) {
@@ -269,7 +270,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       if (type == types.func) {
         dump([type], "func");
 
-        const params: Array<Valtype> = parseVec(b => valtypes[b]);
+        const params: Array<FuncParam> = parseVec(b => valtypes[b]);
         const result: Array<Valtype> = parseVec(b => valtypes[b]);
 
         state.typesInModule.push({
@@ -598,8 +599,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         // FIXME(sven): handle the second block via the byte in between
         const alternate = [];
 
-        // FIXME(sven): where's that stored?
-        const test = null;
+        // FIXME(sven): where is that stored?
+        const test = 0;
 
         const ifNode = t.ifInstruction(
           t.numberLiteral(test),
@@ -627,7 +628,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         const instr = [];
         parseInstructionBlock(instr);
 
-        const label = getUniqueName();
+        const label = t.identifier(getUniqueName());
 
         // FIXME(sven): result type is ignored?
         const blockNode = t.blockInstruction(label, instr);
@@ -1171,7 +1172,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           t.moduleExport(
             moduleExport.name,
             moduleExport.type,
-            moduleExport.id.name
+            moduleExport.id.value
           )
         );
       }

@@ -5,7 +5,7 @@
       "type": "Func",
       "id": {
         "type": "Identifier",
-        "name": "func_1"
+        "value": "func_1"
       },
       "params": [],
       "result": null,
@@ -15,7 +15,7 @@
           "id": "if",
           "testLabel": {
             "type": "Identifier",
-            "name": "label"
+            "value": "label"
           },
           "result": "i32",
           "consequent": [

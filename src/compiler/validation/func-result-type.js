@@ -42,8 +42,8 @@ export function validate(ast: Program) {
       if (resultType !== lastInstructionResultType) {
         let name = "anonymous";
 
-        if (typeof node.id === "object") {
-          name = node.id.name;
+        if (node.id != null) {
+          name = node.id.value;
         }
 
         errors.push(

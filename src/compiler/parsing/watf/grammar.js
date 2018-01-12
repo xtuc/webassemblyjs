@@ -163,7 +163,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // keyword
 
         const fnParams = [];
-        let fnResult;
+        let fnResult: ?Valtype;
 
         if (token.type === tokens.identifier) {
           funcName = token.value;
@@ -423,8 +423,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       eatToken();
 
-      let type;
-      let id;
+      let type = "";
+      let id = "unknown";
 
       if (token.type === tokens.openParen) {
         eatToken();
@@ -445,6 +445,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           eatToken();
         }
+      }
+
+      if (type === "") {
+        throw new Error("Unknown export type");
       }
 
       eatTokenOfType(tokens.closeParen);
@@ -630,7 +634,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *   <type>.<relop>
      *   <type>.<cvtop>/<type>
      */
-    function parseFuncInstr() {
+    function parseFuncInstr(): Instruction {
       /**
        * A simple instruction
        */
@@ -751,10 +755,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       let fnName = t.identifier(getUniqueName("func"));
-      let fnResult = null;
+      let fnResult: ?Valtype = null;
 
       const fnBody = [];
-      const fnParams = [];
+      const fnParams: Array<FuncParam> = [];
 
       // name
       if (token.type === tokens.identifier) {
@@ -819,7 +823,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        *
        * We give the anonymous function a generated name and export it.
        */
-      const id = funcId.name;
+      const id = funcId.value;
 
       state.registredExportedFuncs.push({
         name,
@@ -834,7 +838,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      * result :: ( result <type>* )
      */
-    function parseFuncResult(): Array<string> {
+    function parseFuncResult(): Array<Valtype> {
       const results = [];
 
       if (token.type !== tokens.valtype) {
@@ -857,8 +861,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      * param    :: ( param <type>* ) | ( param <name> <type> )
      */
-    function parseFuncParam(): Array<{ id?: Object, valtype: string }> {
-      const params = [];
+    function parseFuncParam(): Array<FuncParam> {
+      const params: Array<FuncParam> = [];
       let id;
       let valtype;
 
@@ -887,6 +891,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             eatToken();
 
             params.push({
+              id: undefined,
               valtype
             });
           }

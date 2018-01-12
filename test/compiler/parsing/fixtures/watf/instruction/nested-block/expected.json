@@ -5,7 +5,7 @@
       "type": "Func",
       "id": {
         "type": "Identifier",
-        "name": "func_1"
+        "value": "func_1"
       },
       "params": [],
       "result": null,
@@ -15,7 +15,7 @@
           "id": "block",
           "label": {
             "type": "Identifier",
-            "name": "block_2"
+            "value": "block_2"
           },
           "instr": [
             {
@@ -23,7 +23,7 @@
               "id": "call",
               "index": {
                 "type": "Identifier",
-                "name": "dummy"
+                "value": "dummy"
               }
             },
             {
@@ -42,7 +42,7 @@
               "id": "block",
               "label": {
                 "type": "Identifier",
-                "name": "block_3"
+                "value": "block_3"
               },
               "instr": [
                 {

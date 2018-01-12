@@ -27,7 +27,7 @@ type DecodedSymbol = {
  * Data structures used in decoder's state
  */
 type DecodedModuleType = {
-  params: Array<Valtype>,
+  params: Array<FuncParam>,
   result: Array<Valtype>
 };
 

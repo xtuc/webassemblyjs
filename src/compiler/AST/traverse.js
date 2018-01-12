@@ -32,6 +32,8 @@ export function walk(
 
   if (n.type === "ModuleImport") {
     cb(n.type, createPath(n));
+
+    // $FlowIgnore
     cb(n.descr.type, createPath(n.descr));
   }
 

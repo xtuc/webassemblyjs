@@ -1,15 +1,13 @@
-it('should return be a valid WebAssembly.module', () => {
-  return WebAssembly
-    .compile(wasmmodule)
-    .then((m) => {
-      assert.instanceOf(m, WebAssembly.Module);
+it("should return be a valid WebAssembly.module", () => {
+  return WebAssembly.compile(wasmmodule).then(m => {
+    assert.instanceOf(m, WebAssembly.Module);
 
-      assert.typeOf(m.exports, 'array');
-      assert.typeOf(m.imports, 'array');
+    assert.typeOf(m.exports, "array");
+    assert.typeOf(m.imports, "array");
 
-      assert.lengthOf(m.exports, 1);
+    assert.lengthOf(m.exports, 1);
 
-      assert.equal(m.exports[0].kind, 'function');
-      assert.equal(m.exports[0].name, 'func_1');
-    });
-})
+    assert.equal(m.exports[0].kind, "function");
+    assert.equal(m.exports[0].name, "func_1");
+  });
+});
