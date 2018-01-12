@@ -216,8 +216,3 @@ type LeadingComment = {
   type: "LeadingComment",
   value: string
 };
-
-type OffsetArgument = {
-  type: "OffsetArgument",
-  value: numberLiteral;
-};
