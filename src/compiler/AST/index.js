@@ -62,6 +62,13 @@ export function binaryModule(id: ?string, blob: Array<string>): BinaryModule {
   };
 }
 
+export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
+  return {
+    type: "QuoteModule",
+    string
+  };
+}
+
 export function moduleExport(
   name: string,
   type: ExportDescr,

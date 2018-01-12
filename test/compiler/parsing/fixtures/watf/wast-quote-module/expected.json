@@ -1,0 +1,17 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "QuoteModule",
+      "string": [
+        "(func (i32.const 4294967296) drop)"
+      ]
+    },
+    {
+      "type": "QuoteModule",
+      "string": [
+        ""
+      ]
+    }
+  ]
+}

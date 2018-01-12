@@ -466,6 +466,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseModule(): Module {
       let name = null;
       let isBinary = false;
+      let isQuote = false;
       const moduleFields = [];
 
       if (token.type === tokens.identifier) {
@@ -483,6 +484,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         isBinary = true;
       }
 
+      if (
+        hasPlugin("wast") &&
+        token.type === tokens.name &&
+        token.value === "quote"
+      ) {
+        eatToken();
+
+        isQuote = true;
+      }
+
       if (isBinary === true) {
         const blob = [];
 
@@ -494,6 +505,19 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
 
         return t.binaryModule(name, blob);
+      }
+
+      if (isQuote === true) {
+        const string = [];
+
+        while (token.type === tokens.string) {
+          string.push(token.value);
+          eatToken();
+        }
+
+        eatTokenOfType(tokens.closeParen);
+
+        return t.quoteModule(name, string);
       }
 
       while (token.type !== tokens.closeParen) {
