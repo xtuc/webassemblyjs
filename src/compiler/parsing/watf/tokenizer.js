@@ -1,17 +1,24 @@
 // @flow
 
+const { codeFrameColumns } = require("@babel/code-frame");
+
+function showCodeFrame(source: string, line: number, column: number) {
+  const loc = {
+    start: { line, column }
+  };
+
+  const out = codeFrameColumns(source, loc);
+
+  process.stdout.write(out + "\n");
+}
+
+const WHITESPACE = /\s/;
 const LETTERS = /[a-z0-9_/]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ["i32", "i64", "f32", "f64"];
 
-/**
- * FIXME(sven): this is not spec compliant
- * A name string must form a valid UTF-8 encoding as defined by Unicode
- * (Section 2.5) (http://www.unicode.org/versions/Unicode10.0.0/)
- *
- * https://webassembly.github.io/spec/text/values.html#names
- */
-const name = /[a-z0-9_-]/i;
+const NUMBERS = /[0-9|.|_+-]/;
+const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
 
 function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
@@ -44,6 +51,7 @@ const tokens = {
   identifier: "identifier",
   valtype: "valtype",
   dot: "dot",
+  comment: "comment",
 
   keyword: "keyword"
 };
@@ -60,7 +68,8 @@ const keywords = {
   then: "then",
   else: "else",
   call: "call",
-  import: "import"
+  import: "import",
+  memory: "memory"
 };
 
 const CloseParenToken = createToken(tokens.closeParen);
@@ -72,6 +81,7 @@ const IdentifierToken = createToken(tokens.identifier);
 const KeywordToken = createToken(tokens.keyword);
 const DotToken = createToken(tokens.dot);
 const StringToken = createToken(tokens.string);
+const CommentToken = createToken(tokens.comment);
 
 function tokenize(input: string) {
   let current = 0;
@@ -89,6 +99,28 @@ function tokenize(input: string) {
 
   while (current < input.length) {
     let char = input[current];
+
+    // ;;
+    if (char === ";" && input[current + 1] === ";") {
+      eatToken();
+      eatToken();
+
+      char = input[current];
+
+      let text = "";
+
+      while (!isNewLine(char)) {
+        text += char;
+        char = input[++current];
+      }
+
+      // Shift by the length of the string
+      column += text.length;
+
+      tokens.push(CommentToken(text, line, column));
+
+      continue;
+    }
 
     if (char === "(") {
       tokens.push(OpenParenToken(char, line, column));
@@ -112,7 +144,6 @@ function tokenize(input: string) {
       continue;
     }
 
-    const WHITESPACE = /\s/;
     if (WHITESPACE.test(char)) {
       eatToken();
       continue;
@@ -136,11 +167,10 @@ function tokenize(input: string) {
       continue;
     }
 
-    const NUMBERS = /[0-9|.|_]/;
-    const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
     if (
       NUMBERS.test(char) ||
-      (char === "-" && NUMBERS.test(input[current + 1]))
+      (char === "-" && NUMBERS.test(input[current + 1])) ||
+      (char === "n" && input[current + 1] === "a" && input[current + 2] === "n")
     ) {
       let value = "";
       if (char === "-") {
@@ -148,6 +178,24 @@ function tokenize(input: string) {
         char = input[++current];
       }
       let numberLiterals = NUMBERS;
+
+      if (
+        char === "n" &&
+        input[current + 1] === "a" &&
+        input[current + 2] === "n"
+      ) {
+        // Float has nan
+
+        // Shift out 'nan'
+        current += 3;
+        column += 3;
+
+        char = input[current];
+
+        if (char === ":") {
+          eatToken();
+        }
+      }
 
       if (char === "0" && input[current + 1].toUpperCase() === "X") {
         value += "0x";
@@ -175,13 +223,13 @@ function tokenize(input: string) {
 
       char = input[++current];
 
-      while (name.test(char)) {
+      while (char !== '"') {
+        if (isNewLine(char)) {
+          throw new Error("Unterminated string constant");
+        }
+
         value += char;
         char = input[++current];
-      }
-
-      if (char !== '"') {
-        throw new Error("Unterminated string constant");
       }
 
       // Shift by the length of the string
@@ -267,6 +315,8 @@ function tokenize(input: string) {
 
       continue;
     }
+
+    showCodeFrame(input, line, column);
 
     throw new TypeError("Unknown char: " + char);
   }

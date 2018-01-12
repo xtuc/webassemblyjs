@@ -10,6 +10,10 @@ export function transform(ast: Program) {
 
   // First collect the indices of all the functions in the Program
   traverse(ast, {
+    ModuleImport({ node }: NodePath<ModuleImport>) {
+      functionsInProgram.push(t.identifier(node.name));
+    },
+
     Func({ node }: NodePath<Func>) {
       if (node.id == null) {
         return;

@@ -1,0 +1,18 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "BinaryModule",
+      "blob": [
+        ""
+      ]
+    },
+    {
+      "type": "BinaryModule",
+      "blob": [
+        "\\00asm",
+        "\\01\\00\\00\\00"
+      ]
+    }
+  ]
+}

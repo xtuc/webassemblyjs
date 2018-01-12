@@ -1,0 +1,49 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Memory",
+          "limits": {
+            "type": "Limit",
+            "min": "1"
+          }
+        },
+        {
+          "type": "Memory",
+          "limits": {
+            "type": "Limit",
+            "min": "1",
+            "max": "2"
+          }
+        },
+        {
+          "type": "Memory",
+          "limits": {
+            "type": "Limit",
+            "min": "1",
+            "max": "2"
+          },
+          "id": {
+            "type": "Identifier",
+            "value": "test"
+          }
+        },
+        {
+          "type": "Memory",
+          "limits": {
+            "type": "Limit",
+            "min": "1"
+          },
+          "id": {
+            "type": "Identifier",
+            "value": "test"
+          }
+        }
+      ]
+    }
+  ]
+}

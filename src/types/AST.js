@@ -47,6 +47,10 @@ interface Program {
 /**
  * Concrete values
  */
+interface StringLiteral {
+  type: "StringLiteral";
+  value: string;
+}
 
 interface NumberLiteral {
   type: "NumberLiteral";
@@ -73,6 +77,11 @@ interface Module {
   type: "Module";
   id: ?string;
   fields: ModuleFields;
+}
+
+interface BinaryModule {
+  type: "BinaryModule";
+  blob: Array<string>;
 }
 
 type FuncParam = {
@@ -198,4 +207,9 @@ type GlobalType = {
   type: "GlobalType",
   valtype: Valtype,
   mutability: Mutability
+};
+
+type LeadingComment = {
+  type: "LeadingComment",
+  value: string
 };

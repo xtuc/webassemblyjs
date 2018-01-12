@@ -20,6 +20,20 @@ export function identifier(value: string): Identifier {
   };
 }
 
+export function valtype(name: string): Valtype {
+  return {
+    type: "Valtype",
+    name
+  };
+}
+
+export function stringLiteral(value: string): StringLiteral {
+  return {
+    type: "StringLiteral",
+    value
+  };
+}
+
 export function program(body: Array<Node>): Program {
   return {
     type: "Program",
@@ -38,6 +52,13 @@ export function module(id: ?string, fields: ModuleFields): Module {
     type: "Module",
     id,
     fields
+  };
+}
+
+export function binaryModule(id: ?string, blob: Array<string>): BinaryModule {
+  return {
+    type: "BinaryModule",
+    blob
   };
 }
 
@@ -319,5 +340,12 @@ export function byteArray(values: Array<Byte>): ByteArray {
   return {
     type: "Bytes",
     values
+  };
+}
+
+export function leadingComment(value: string): LeadingComment {
+  return {
+    type: "LeadingComment",
+    value
   };
 }
