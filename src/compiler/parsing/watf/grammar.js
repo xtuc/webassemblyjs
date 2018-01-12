@@ -954,12 +954,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       const instruction = parseFuncInstr();
 
-      if (typeof instruction === 'object') {
+      if (typeof instruction === "object") {
         eatTokenOfType(tokens.closeParen);
 
         return instruction;
       }
-
     }
 
     if (token.type === tokens.comment) {
