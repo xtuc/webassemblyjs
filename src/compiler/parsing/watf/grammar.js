@@ -6,7 +6,7 @@ const { codeFrameColumns } = require("@babel/code-frame");
 
 type AllArgs = {
   args: Array<Node>,
-  namedArgs: any
+  namedArgs: Object
 };
 
 let inc = 0;
@@ -528,10 +528,17 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         eatTokenOfType(tokens.equal);
 
-        const value = token.value;
-        eatToken();
+        let value: any;
+
+        if (token.type === tokens.number) {
+          value = t.numberLiteral(token.value);
+        } else {
+          throw new Error("Unexpected type for argument: " + token.type);
+        }
 
         namedArgs[key] = value;
+
+        eatToken();
       }
 
       while (token.type !== tokens.closeParen) {
@@ -585,7 +592,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
       }
 
-      return {args, namedArgs};
+      return { args, namedArgs };
     }
 
     /**
@@ -686,7 +693,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
 
-        const {args, namedArgs} = parseFuncInstrArguments(object);
+        const { args, namedArgs } = parseFuncInstrArguments(object);
 
         if (typeof object === "undefined") {
           return t.instruction(name, args, namedArgs);

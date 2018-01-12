@@ -19,8 +19,14 @@
         }
       ],
       "namedArgs": {
-        "offset": "0x000",
-        "align": "1"
+        "offset": {
+          "type": "NumberLiteral",
+          "value": 0
+        },
+        "align": {
+          "type": "NumberLiteral",
+          "value": 1
+        }
       }
     }
   ]
