@@ -951,6 +951,15 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         return node;
       }
+
+      const instruction = parseFuncInstr();
+
+      if (typeof instruction === 'object') {
+        eatTokenOfType(tokens.closeParen);
+
+        return instruction;
+      }
+
     }
 
     if (token.type === tokens.comment) {

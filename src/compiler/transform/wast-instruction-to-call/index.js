@@ -29,6 +29,9 @@ function createImportInstructionNode(functionName: string): ModuleImport {
 export function transform(ast: Program) {
   const importInstructions = [];
 
+  // Keep track of which function has been imported
+  const importInstructionCache = {};
+
   traverse(ast, {
     Instr(path: NodePath<Instr>) {
       const { node } = path;
@@ -40,7 +43,10 @@ export function transform(ast: Program) {
           createCallInstructionNode(funcName)
         );
 
-        importInstructions.push(createImportInstructionNode(funcName));
+        if (importInstructionCache[funcName] == null) {
+          importInstructions.push(createImportInstructionNode(funcName));
+          importInstructionCache[funcName] = true;
+        }
       }
     }
   });
