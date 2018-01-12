@@ -109,6 +109,9 @@ interface Instruction {
   type: InstructionType;
   id: string;
   args: Array<NumberLiteral | LongNumberLiteral | Identifier>;
+
+  // key=value for special instruction arguments
+  namedArgs?: Object;
 }
 
 type ObjectInstruction = Instruction & {
@@ -212,4 +215,9 @@ type GlobalType = {
 type LeadingComment = {
   type: "LeadingComment",
   value: string
+};
+
+type OffsetArgument = {
+  type: "OffsetArgument",
+  value: numberLiteral;
 };
