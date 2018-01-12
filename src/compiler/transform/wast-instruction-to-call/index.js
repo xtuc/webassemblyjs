@@ -35,7 +35,10 @@ export function transform(ast: Program) {
       const funcName = node.id;
 
       if (instructions.indexOf(funcName) !== -1) {
-        path.node = Object.assign(path.node, createCallInstructionNode(funcName));
+        path.node = Object.assign(
+          path.node,
+          createCallInstructionNode(funcName)
+        );
 
         importInstructions.push(createImportInstructionNode(funcName));
       }

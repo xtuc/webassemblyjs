@@ -5,7 +5,7 @@
       "type": "Func",
       "id": {
         "type": "Identifier",
-        "name": "func_1"
+        "value": "func_1"
       },
       "params": [],
       "result": null,
@@ -56,7 +56,7 @@
           "args": [
             {
               "type": "Identifier",
-              "name": "a"
+              "value": "a"
             },
             {
               "type": "Valtype",
@@ -70,7 +70,7 @@
           "args": [
             {
               "type": "Identifier",
-              "name": "b"
+              "value": "b"
             },
             {
               "type": "Valtype",

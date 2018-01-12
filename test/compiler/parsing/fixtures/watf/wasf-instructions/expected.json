@@ -13,7 +13,7 @@
             "type": "FuncImportDescr",
             "value": {
               "type": "Identifier",
-              "name": "assert_return"
+              "value": "assert_return"
             },
             "params": [],
             "results": []
@@ -27,7 +27,7 @@
             "type": "FuncImportDescr",
             "value": {
               "type": "Identifier",
-              "name": "assert_return_canonical_nan"
+              "value": "assert_return_canonical_nan"
             },
             "params": [],
             "results": []
@@ -41,7 +41,7 @@
             "type": "FuncImportDescr",
             "value": {
               "type": "Identifier",
-              "name": "assert_return_arithmetic_nan"
+              "value": "assert_return_arithmetic_nan"
             },
             "params": [],
             "results": []
@@ -55,7 +55,7 @@
             "type": "FuncImportDescr",
             "value": {
               "type": "Identifier",
-              "name": "assert_trap"
+              "value": "assert_trap"
             },
             "params": [],
             "results": []
@@ -69,7 +69,7 @@
             "type": "FuncImportDescr",
             "value": {
               "type": "Identifier",
-              "name": "assert_malformed"
+              "value": "assert_malformed"
             },
             "params": [],
             "results": []
@@ -83,7 +83,7 @@
             "type": "FuncImportDescr",
             "value": {
               "type": "Identifier",
-              "name": "assert_unlinkable"
+              "value": "assert_unlinkable"
             },
             "params": [],
             "results": []
@@ -93,7 +93,7 @@
           "type": "Func",
           "id": {
             "type": "Identifier",
-            "name": "func_1"
+            "value": "func_1"
           },
           "params": [],
           "result": null,
@@ -323,7 +323,7 @@
                         "type": "FuncImportDescr",
                         "value": {
                           "type": "Identifier",
-                          "name": "unknown"
+                          "value": "unknown"
                         },
                         "params": [],
                         "results": []

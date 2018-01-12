@@ -114,7 +114,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       if (token.type !== tokens.number) {
         showCodeFrame(source, token.loc);
-        throw new Error("Unexpected token in memory instruction: " + token.type);
+        throw new Error(
+          "Unexpected token in memory instruction: " + token.type
+        );
       }
 
       const limits = t.limits(token.value);
