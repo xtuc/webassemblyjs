@@ -99,30 +99,47 @@ export function func(
 export function objectInstruction(
   id: string,
   object: Valtype,
-  args: Array<NumberLiteral | Identifier> = []
+  args: Array<NumberLiteral | Identifier> = [],
+  namedArgs: Object = {}
 ): Instruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
   assert(typeof object === "string");
 
-  return {
+  const n: Instruction = {
     type: "Instr",
     id,
     object,
     args
   };
+
+  if (Object.keys(namedArgs).length !== 0) {
+    n.namedArgs = namedArgs;
+  }
+
+  return n;
 }
 
-export function instruction(id: string, args: Array<any> = []): Instruction {
+export function instruction(
+  id: string,
+  args: Array<any> = [],
+  namedArgs: Object = {}
+): Instruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
   assert(id !== "block");
   assert(id !== "if");
   assert(id !== "loop");
 
-  return {
+  const n: Instruction = {
     type: "Instr",
     id,
     args
   };
+
+  if (Object.keys(namedArgs).length !== 0) {
+    n.namedArgs = namedArgs;
+  }
+
+  return n;
 }
 
 export function loopInstruction(

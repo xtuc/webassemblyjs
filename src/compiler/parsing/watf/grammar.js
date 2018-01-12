@@ -4,6 +4,11 @@ const { tokens, keywords } = require("./tokenizer");
 const t = require("../../AST");
 const { codeFrameColumns } = require("@babel/code-frame");
 
+type AllArgs = {
+  args: Array<Node>,
+  namedArgs: Object
+};
+
 let inc = 0;
 
 function hasPlugin(name: string): boolean {
@@ -513,8 +518,28 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses the arguments of an instruction
      */
-    function parseFuncInstrArguments(object: ?string): Array<Node> {
+    function parseFuncInstrArguments(object: ?string): AllArgs {
       const args = [];
+      const namedArgs = {};
+
+      while (token.type === tokens.name) {
+        const key = token.value;
+        eatToken();
+
+        eatTokenOfType(tokens.equal);
+
+        let value: any;
+
+        if (token.type === tokens.number) {
+          value = t.numberLiteral(token.value);
+        } else {
+          throw new Error("Unexpected type for argument: " + token.type);
+        }
+
+        namedArgs[key] = value;
+
+        eatToken();
+      }
 
       while (token.type !== tokens.closeParen) {
         if (token.type === tokens.identifier) {
@@ -567,7 +592,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
       }
 
-      return args;
+      return { args, namedArgs };
     }
 
     /**
@@ -662,18 +687,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (token.type === tokens.closeParen) {
           if (typeof object === "undefined") {
-            return t.instruction(name, []);
+            return t.instruction(name);
           } else {
             return t.objectInstruction(name, object, []);
           }
         }
 
-        const args = parseFuncInstrArguments(object);
+        const { args, namedArgs } = parseFuncInstrArguments(object);
 
         if (typeof object === "undefined") {
-          return t.instruction(name, args);
+          return t.instruction(name, args, namedArgs);
         } else {
-          return t.objectInstruction(name, object, args);
+          return t.objectInstruction(name, object, args, namedArgs);
         }
       } else if (isKeyword(token, keywords.loop)) {
         /**

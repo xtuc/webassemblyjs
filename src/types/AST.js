@@ -109,6 +109,9 @@ interface Instruction {
   type: InstructionType;
   id: string;
   args: Array<NumberLiteral | LongNumberLiteral | Identifier>;
+
+  // key=value for special instruction arguments
+  namedArgs?: Object;
 }
 
 type ObjectInstruction = Instruction & {

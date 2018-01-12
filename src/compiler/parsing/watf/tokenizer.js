@@ -52,6 +52,7 @@ const tokens = {
   valtype: "valtype",
   dot: "dot",
   comment: "comment",
+  equal: "equal",
 
   keyword: "keyword"
 };
@@ -82,6 +83,7 @@ const KeywordToken = createToken(tokens.keyword);
 const DotToken = createToken(tokens.dot);
 const StringToken = createToken(tokens.string);
 const CommentToken = createToken(tokens.comment);
+const EqualToken = createToken(tokens.equal);
 
 function tokenize(input: string) {
   let current = 0;
@@ -126,7 +128,13 @@ function tokenize(input: string) {
       tokens.push(OpenParenToken(char, line, column));
 
       eatToken();
+      continue;
+    }
 
+    if (char === "=") {
+      tokens.push(EqualToken(char, line, column));
+
+      eatToken();
       continue;
     }
 
