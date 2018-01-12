@@ -13,7 +13,7 @@ function showCodeFrame(source: string, line: number, column: number) {
 }
 
 const WHITESPACE = /\s/;
-const LETTERS = /[a-z0-9_\/]/i;
+const LETTERS = /[a-z0-9_/]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ["i32", "i64", "f32", "f64"];
 
