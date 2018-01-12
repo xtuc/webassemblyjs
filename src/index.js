@@ -9,6 +9,20 @@ const { Memory } = require("./interpreter/runtime/values/memory");
 const { Table } = require("./interpreter/runtime/values/table");
 const { checkEndianness } = require("./check-endianness");
 
+const _debug = {
+  parseWATF(content: string, cb: (ast: Node) => void) {
+    const ast = parseSource(content);
+
+    cb(ast);
+  },
+
+  parseWASM(content: ArrayBuffer, cb: (ast: Node) => void) {
+    const ast = parseBinary(content);
+
+    cb(ast);
+  }
+};
+
 const WebAssembly = {
   instantiate(
     buff: ArrayBuffer,
@@ -66,22 +80,9 @@ const WebAssembly = {
   Table,
   RuntimeError,
   LinkError,
-  CompileError
-};
+  CompileError,
 
-const _debug = {
-  parseWATF(content: string, cb: (ast: Node) => void) {
-    const ast = parseSource(content);
-
-    cb(ast);
-  },
-
-  parseWASM(content: ArrayBuffer, cb: (ast: Node) => void) {
-    const ast = parseBinary(content);
-
-    cb(ast);
-  }
+  _debug
 };
 
 module.exports = WebAssembly;
-module.exports._debug = _debug;

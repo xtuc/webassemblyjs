@@ -9,7 +9,7 @@
           "type": "Func",
           "id": {
             "type": "Identifier",
-            "name": "test"
+            "value": "test"
           },
           "params": [],
           "result": null,
@@ -25,7 +25,7 @@
           "type": "Func",
           "id": {
             "type": "Identifier",
-            "name": "TEST"
+            "value": "TEST"
           },
           "params": [],
           "result": null,
@@ -41,7 +41,7 @@
           "type": "Func",
           "id": {
             "type": "Identifier",
-            "name": "!"
+            "value": "!"
           },
           "params": [],
           "result": null,
@@ -57,7 +57,7 @@
           "type": "Func",
           "id": {
             "type": "Identifier",
-            "name": "$"
+            "value": "$"
           },
           "params": [],
           "result": null,

@@ -21,6 +21,7 @@ if (typeof filename === "undefined") {
 
 debug("Compiling...");
 
+// $FlowIgnore: this is correct but not correctly documented
 const buff = toArrayBuffer(fs.readFileSync(filename, null));
 
 const importObject = {

@@ -13,10 +13,10 @@ function assert(cond: boolean) {
   }
 }
 
-export function identifier(name: string): Identifier {
+export function identifier(value: string): Identifier {
   return {
     type: "Identifier",
-    name
+    value
   };
 }
 
@@ -78,7 +78,7 @@ export function func(
 export function objectInstruction(
   id: string,
   object: Valtype,
-  args: Array<Number | string> = []
+  args: Array<NumberLiteral | Identifier> = []
 ): Instruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
   assert(typeof object === "string");
@@ -91,10 +91,7 @@ export function objectInstruction(
   };
 }
 
-export function instruction(
-  id: string,
-  args: Array<Number | string> = []
-): Instruction {
+export function instruction(id: string, args: Array<any> = []): Instruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
   assert(id !== "block");
   assert(id !== "if");

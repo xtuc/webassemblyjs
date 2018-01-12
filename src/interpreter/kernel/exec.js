@@ -123,15 +123,25 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     return [c1, c2];
   }
 
-  function getLabel(label: Index): any {
+  function getLabel(index: Index): any {
     let code;
 
-    if (label.type === "NumberLiteral") {
+    if (index.type === "NumberLiteral") {
+      const label: NumberLiteral = index;
+
       // WASM
       code = frame.labels.find(l => l.value.value === label.value);
-    } else if (label.type === "Identifier") {
+    } else if (index.type === "Identifier") {
+      const label: Identifier = index;
+
       // WATF
-      code = frame.labels.find(l => l.id.name === label.name);
+      code = frame.labels.find(l => {
+        if (l.id == null) {
+          return false;
+        }
+
+        return l.id.value === label.value;
+      });
     }
 
     if (typeof code !== "undefined") {
@@ -143,9 +153,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     const code = getLabel(label);
 
     if (typeof code === "undefined") {
-      throw new RuntimeError(
-        `Label ${label.value || label.name} doesn't exist`
-      );
+      throw new RuntimeError(`Label ${label.value} doesn't exist`);
     }
 
     // FIXME(sven): find a more generic way to handle label and its code
@@ -354,7 +362,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
          * When entering block push the label onto the stack
          */
         if (block.label.type === "Identifier") {
-          pushResult(label.createValue(block.label.name));
+          pushResult(label.createValue(block.label.value));
         }
 
         assert(

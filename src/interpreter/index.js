@@ -66,16 +66,18 @@ export class Instance {
       });
     }
 
-    const ast = module._ast;
-    const moduleAst = getModuleFromProgram(ast);
+    const moduleNode = getModuleFromProgram(module._ast);
 
-    if (typeof moduleAst === "undefined") {
+    if (moduleNode === null) {
       throw new RuntimeError("Module not found");
     }
 
     const moduleInstance = modulevalue.createInstance(
       this._allocator,
-      moduleAst,
+
+      // $FlowIgnore: that's the correct type but Flow fails to get it
+      moduleNode,
+
       this._externalFunctions
     );
 
@@ -96,7 +98,7 @@ export class Instance {
 }
 
 function getModuleFromProgram(ast: Program): ?Module {
-  let module;
+  let module = null;
 
   traverse(ast, {
     Module({ node }: NodePath<Module>) {

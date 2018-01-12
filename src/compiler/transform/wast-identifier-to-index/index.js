@@ -6,11 +6,15 @@ const { traverse } = require("../../AST/traverse");
 const t = require("../../AST");
 
 export function transform(ast: Program) {
-  const functionsInProgram = [];
+  const functionsInProgram: Array<Index> = [];
 
   // First collect the indices of all the functions in the Program
   traverse(ast, {
     Func({ node }: NodePath<Func>) {
+      if (node.id == null) {
+        return;
+      }
+
       functionsInProgram.push(node.id);
     }
   });
@@ -43,12 +47,12 @@ function transformFuncPath(
 
         if (firstArg.type === "Identifier") {
           const offsetInParams = params.findIndex(
-            ({ id }) => id === firstArg.name
+            ({ id }) => id === firstArg.value
           );
 
           if (offsetInParams === -1) {
             throw new Error(
-              `${firstArg.name} not found in ${
+              `${firstArg.value} not found in ${
                 instrNode.id
               }: not declared in func params`
             );
@@ -67,18 +71,18 @@ function transformFuncPath(
 
       if (index.type === "Identifier") {
         const offsetInFunctionsInProgram = functionsInProgram.findIndex(
-          ({ name }) => name === index.name
+          ({ value }) => value === index.value
         );
 
         if (offsetInFunctionsInProgram === -1) {
           throw new Error(
             `${
-              index.name
+              index.value
             } not found in CallInstruction: not declared in Program`
           );
         }
 
-        const indexNode = t.numberLiteral(offsetInFunctionsInProgram);
+        const indexNode = t.numberLiteral(offsetInFunctionsInProgram, "i32");
 
         // Replace the index Identifier
         node.index = indexNode;
