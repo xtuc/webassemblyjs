@@ -84,6 +84,11 @@ interface BinaryModule {
   blob: Array<string>;
 }
 
+interface QuoteModule {
+  type: "QuoteModule";
+  string: Array<string>;
+}
+
 type FuncParam = {
   id: ?string,
   valtype: Valtype
