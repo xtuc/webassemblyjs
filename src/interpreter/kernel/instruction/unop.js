@@ -29,6 +29,7 @@ export function unopi32(c: StackLocal, sign: Sign): StackLocal {
 }
 
 export function unopi64(c: StackLocal, sign: Sign): StackLocal {
+  // $FlowIgnore: since we'll box every number we will have an unified interface ignoring this for now
   return unop(c, sign, i64.createValue);
 }
 

@@ -82,7 +82,7 @@ function transformFuncPath(
           );
         }
 
-        const indexNode = t.numberLiteral(offsetInFunctionsInProgram);
+        const indexNode = t.numberLiteral(offsetInFunctionsInProgram, "i32");
 
         // Replace the index Identifier
         node.index = indexNode;
