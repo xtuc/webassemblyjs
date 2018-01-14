@@ -5,9 +5,13 @@ const glob = require("glob");
 
 const WebAssembly = require("../lib");
 
+const TEST_WHITELIST = ["spec/test/core/exports.wast"];
+
 describe("spec", () => {
   describe("watf", () => {
-    const testSuites = glob.sync("spec/test/core/**/*.wast");
+    const testSuites = glob
+      .sync("spec/test/core/**/*.wast")
+      .filter(suite => TEST_WHITELIST.indexOf(suite) !== -1);
 
     testSuites.forEach(suite => {
       describe(suite, () => {
