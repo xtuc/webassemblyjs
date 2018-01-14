@@ -53,6 +53,7 @@ const tokens = {
   dot: "dot",
   comment: "comment",
   equal: "equal",
+  minus: "minus",
 
   keyword: "keyword"
 };
@@ -84,6 +85,7 @@ const DotToken = createToken(tokens.dot);
 const StringToken = createToken(tokens.string);
 const CommentToken = createToken(tokens.comment);
 const EqualToken = createToken(tokens.equal);
+const MinusToken = createToken(tokens.minus);
 
 function tokenize(input: string) {
   let current = 0;
@@ -97,6 +99,10 @@ function tokenize(input: string) {
   function eatToken() {
     column++;
     current++;
+  }
+
+  function isInfAtOffset(a: number, b: number, c: number): boolean {
+    return input[a] === "i" && input[b] === "n" && input[c] === "f";
   }
 
   while (current < input.length) {
@@ -171,6 +177,29 @@ function tokenize(input: string) {
       column += value.length;
 
       tokens.push(IdentifierToken(value, line, column));
+
+      continue;
+    }
+
+    /**
+     * Handles 'inf' and '-inf'
+     */
+    if (
+      (char === "-" && isInfAtOffset(current + 1, current + 2, current + 3)) ||
+      isInfAtOffset(current, current + 1, current + 2)
+    ) {
+      if (char === "-") {
+        // Shift out '-'
+        eatToken();
+
+        tokens.push(MinusToken("-", line, column));
+      }
+
+      // Shift out 'inf'
+      current += 3;
+      column += 3;
+
+      tokens.push(IdentifierToken("inf", line, column));
 
       continue;
     }

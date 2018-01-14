@@ -15,6 +15,10 @@ type NodePath<T> = {
   node: T
 };
 
+type UnaryExpressionOperators = '-' | '+';
+
+type Expression = Identifier | NumberLiteral;
+
 /**
  * AST types
  */
@@ -65,6 +69,12 @@ interface LongNumberLiteral {
 interface Identifier {
   type: "Identifier";
   value: string;
+}
+
+interface UnaryExpression {
+  type: "UnaryExpression";
+  operator: UnaryExpressionOperators;
+  argument: Expression;
 }
 
 /**
