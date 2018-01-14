@@ -577,10 +577,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
 
           if (token.type !== tokens.identifier) {
-            throw new Error('Unexpected token after -: ' + token.type)
+            throw new Error("Unexpected token after -: " + token.type);
           }
 
-          const node = t.unaryExpression('-', t.identifier(token.value));
+          const node = t.unaryExpression("-", t.identifier(token.value));
 
           args.push(node);
           eatToken();

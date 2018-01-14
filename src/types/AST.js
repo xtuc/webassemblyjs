@@ -15,7 +15,7 @@ type NodePath<T> = {
   node: T
 };
 
-type UnaryExpressionOperators = '-' | '+';
+type UnaryExpressionOperators = "-" | "+";
 
 type Expression = Identifier | NumberLiteral;
 
