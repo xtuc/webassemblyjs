@@ -10,9 +10,9 @@ export function parse32F(sourceString: string): number {
     return sourceString[0] === '-' ? -1 : 1;
   }
   if (isNanLiteral(sourceString)) {
-    return sourceString.length > 3
-      ? parseInt(sourceString.substring(4), 16)
-      : 0x400000;
+    return (sourceString[0] === '-' ? -1 : 1) * (sourceString.includes(':')
+      ? parseInt(sourceString.substring(sourceString.indexOf(':') + 1), 16)
+      : 0x400000);
   }
   return parseFloat(sourceString);
 }
