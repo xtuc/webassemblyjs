@@ -24,8 +24,8 @@ function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
 }
 
-function Token(type, value, line, column) {
-  return {
+function Token(type, value, line, column, opts = {}) {
+  const token = {
     type,
     value,
     loc: {
@@ -35,11 +35,18 @@ function Token(type, value, line, column) {
       }
     }
   };
+
+  if (Object.keys(opts).length > 0) {
+    // $FlowIgnore
+    token["opts"] = opts;
+  }
+
+  return token;
 }
 
 function createToken(type: string) {
-  return (v: string | number, line: number, col: number) =>
-    Token(type, v, line, col);
+  return (v: string | number, line: number, col: number, opts: Object = {}) =>
+    Token(type, v, line, col, opts);
 }
 
 const tokens = {
@@ -125,7 +132,44 @@ function tokenize(input: string) {
       // Shift by the length of the string
       column += text.length;
 
-      tokens.push(CommentToken(text, line, column));
+      tokens.push(CommentToken(text, line, column, { type: "leading" }));
+
+      continue;
+    }
+
+    // (;
+    if (char === "(" && input[current + 1] === ";") {
+      eatToken(); // (
+      eatToken(); // ;
+
+      char = input[current];
+
+      let text = "";
+
+      // ;)
+      while (true) {
+        char = input[current];
+
+        if (char === ";" && input[current + 1] === ")") {
+          eatToken(); // ;
+          eatToken(); // )
+
+          break;
+        }
+
+        text += char;
+
+        if (isNewLine(char)) {
+          line++;
+          column = 0;
+        } else {
+          column++;
+        }
+
+        eatToken();
+      }
+
+      tokens.push(CommentToken(text, line, column, { type: "block" }));
 
       continue;
     }

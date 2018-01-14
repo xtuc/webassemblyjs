@@ -231,3 +231,8 @@ type LeadingComment = {
   type: "LeadingComment",
   value: string
 };
+
+type BlockComment = {
+  type: "BlockComment",
+  value: string
+};

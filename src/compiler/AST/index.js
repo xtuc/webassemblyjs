@@ -374,6 +374,14 @@ export function leadingComment(value: string): LeadingComment {
   };
 }
 
+export function blockComment(value: string): BlockComment {
+  return {
+    type: "BlockComment",
+    value
+  };
+}
+
+
 export function unaryExpression(
   operator: UnaryExpressionOperators,
   argument: Expression
