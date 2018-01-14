@@ -7,7 +7,7 @@ export function parse32F(sourceString: string): number {
     return parseHexFloat(sourceString);
   }
   if (isInfLiteral(sourceString)) {
-    return 0;
+    return sourceString[0] === '-' ? -1 : 1;
   }
   if (isNanLiteral(sourceString)) {
     return sourceString.length > 3
@@ -64,12 +64,15 @@ export function parse64I(sourceString: string): LongNumber {
   };
 }
 
+const NAN_WORD = /^\+?\-?nan/
+const INF_WORD = /^\+?\-?inf/
+
 export function isInfLiteral(sourceString: string): boolean {
-  return sourceString.substring(0, 3).toUpperCase() === "INF";
+  return INF_WORD.test(sourceString.toLowerCase())
 }
 
 export function isNanLiteral(sourceString: string): boolean {
-  return sourceString.substring(0, 3).toUpperCase() === "NAN";
+  return NAN_WORD.test(sourceString.toLowerCase())
 }
 
 function isDecimalExponentLiteral(sourceString: string): boolean {
