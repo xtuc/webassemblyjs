@@ -1,0 +1,21 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "BlockComment",
+      "value": "a"
+    },
+    {
+      "type": "BlockComment",
+      "value": ""
+    },
+    {
+      "type": "BlockComment",
+      "value": "\na\nb\nc\n"
+    },
+    {
+      "type": "BlockComment",
+      "value": "\n)\n(;\n"
+    }
+  ]
+}

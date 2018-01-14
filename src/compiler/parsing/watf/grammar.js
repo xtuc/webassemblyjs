@@ -1025,7 +1025,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     if (token.type === tokens.comment) {
-      const node = t.leadingComment(token.value);
+      const builder =
+        token.opts.type === "leading" ? t.leadingComment : t.blockComment;
+
+      const node = builder(token.value);
 
       eatToken();
 
