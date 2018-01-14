@@ -225,7 +225,7 @@ function tokenize(input: string) {
     if (
       NUMBERS.test(char) ||
       NUMBER_KEYWORDS.test(input.substring(current, current + 3)) ||
-      (char === "-" && NUMBERS.test(input[current + 1]))
+      char === "-"
     ) {
       let value = "";
       if (char === "-") {

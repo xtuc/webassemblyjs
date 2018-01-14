@@ -580,7 +580,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             throw new Error("Unexpected token after -: " + token.type);
           }
 
-          const node = t.unaryExpression("-", t.identifier(token.value));
+          const node = t.unaryExpression("-", t.numberLiteral(token.value, object));
 
           args.push(node);
           eatToken();
