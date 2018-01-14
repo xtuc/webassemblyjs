@@ -246,24 +246,6 @@ function tokenize(input: string) {
 
       let numberLiterals = NUMBERS;
 
-      if (
-        char === "n" &&
-        input[current + 1] === "a" &&
-        input[current + 2] === "n"
-      ) {
-        // Float has nan
-
-        // Shift out 'nan'
-        current += 3;
-        column += 3;
-
-        char = input[current];
-
-        if (char === ":") {
-          eatToken();
-        }
-      }
-
       if (char === "0" && input[current + 1].toUpperCase() === "X") {
         value += "0x";
         numberLiterals = HEX_NUMBERS;
