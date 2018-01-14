@@ -373,3 +373,14 @@ export function leadingComment(value: string): LeadingComment {
     value
   };
 }
+
+export function unaryExpression(
+  operator: UnaryExpressionOperators,
+  argument: Expression
+): UnaryExpression {
+  return {
+    type: "UnaryExpression",
+    operator,
+    argument
+  };
+}

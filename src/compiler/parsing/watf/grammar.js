@@ -572,6 +572,20 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
         }
 
+        // Handle -inf
+        if (token.type === tokens.minus) {
+          eatToken();
+
+          if (token.type !== tokens.identifier) {
+            throw new Error("Unexpected token after -: " + token.type);
+          }
+
+          const node = t.unaryExpression("-", t.identifier(token.value));
+
+          args.push(node);
+          eatToken();
+        }
+
         if (token.type === tokens.valtype) {
           args.push(t.valtype(token.value));
 
