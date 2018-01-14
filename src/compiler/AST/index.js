@@ -381,7 +381,6 @@ export function blockComment(value: string): BlockComment {
   };
 }
 
-
 export function unaryExpression(
   operator: UnaryExpressionOperators,
   argument: Expression
