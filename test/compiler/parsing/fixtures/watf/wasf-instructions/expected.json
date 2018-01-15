@@ -186,11 +186,7 @@
                   "object": "f32",
                   "args": [
                     {
-                      "type": "NumberLiteral",
-                      "value": null
-                    },
-                    {
-                      "type": "NumberLiteral",
+                      "type": "FloatLiteral",
                       "value": 0
                     }
                   ]
@@ -201,8 +197,9 @@
                   "object": "f32",
                   "args": [
                     {
-                      "type": "NumberLiteral",
-                      "value": null
+                      "type": "FloatLiteral",
+                      "value": -4194304,
+                      "nan": true
                     }
                   ]
                 }
@@ -232,11 +229,7 @@
                   "object": "f32",
                   "args": [
                     {
-                      "type": "NumberLiteral",
-                      "value": null
-                    },
-                    {
-                      "type": "NumberLiteral",
+                      "type": "FloatLiteral",
                       "value": 0
                     }
                   ]
@@ -247,12 +240,9 @@
                   "object": "f32",
                   "args": [
                     {
-                      "type": "NumberLiteral",
-                      "value": null
-                    },
-                    {
-                      "type": "NumberLiteral",
-                      "value": 2097152
+                      "type": "FloatLiteral",
+                      "value": 2097152,
+                      "nan": true
                     }
                   ]
                 }
