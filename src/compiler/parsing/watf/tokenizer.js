@@ -252,7 +252,10 @@ function tokenize(input: string) {
         char = input[(current += 2)];
       }
 
-      while (numberLiterals.test(char) || (input[current-1] === 'p' && char === '+') ) {
+      while (
+        numberLiterals.test(char) ||
+        (input[current - 1] === "p" && char === "+")
+      ) {
         if (char !== "_") {
           value += char;
         }
