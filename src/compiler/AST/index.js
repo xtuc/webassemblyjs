@@ -20,9 +20,9 @@ export function identifier(value: string): Identifier {
   };
 }
 
-export function valtype(name: string): Valtype {
+export function valtype(name: Valtype): ValtypeLiteral {
   return {
-    type: "Valtype",
+    type: "ValtypeLiteral",
     name
   };
 }
@@ -304,7 +304,7 @@ export function funcImportDescr(
   };
 }
 
-export function table(elementType: string, limits: Limit): Table {
+export function table(elementType: TableElementType, limits: Limit): Table {
   return {
     type: "Table",
     elementType,
@@ -341,7 +341,10 @@ export function data(
   };
 }
 
-export function global(globalType: GlobalType, init: Array<Node>): Global {
+export function global(
+  globalType: GlobalType,
+  init: Array<Instruction>
+): Global {
   return {
     type: "Global",
     globalType,

@@ -19,6 +19,8 @@ type UnaryExpressionOperators = "-" | "+";
 
 type Expression = Identifier | NumberLiteral;
 
+type TableElementType = "anyfunc";
+
 /**
  * AST types
  */
@@ -193,7 +195,7 @@ interface ModuleImport {
 
 type Table = {
   type: "Table",
-  elementType: "anyfunc",
+  elementType: TableElementType,
   limits: Limit
 };
 
@@ -235,4 +237,9 @@ type LeadingComment = {
 type BlockComment = {
   type: "BlockComment",
   value: string
+};
+
+type ValtypeLiteral = {
+  type: "ValtypeLiteral",
+  name: Valtype;
 };
