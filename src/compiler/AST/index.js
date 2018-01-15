@@ -106,13 +106,13 @@ export function func(
 export function objectInstruction(
   id: string,
   object: Valtype,
-  args: Array<NumberLiteral | Identifier> = [],
+  args: Array<Expression> = [],
   namedArgs: Object = {}
-): Instruction {
+): ObjectInstruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
   assert(typeof object === "string");
 
-  const n: Instruction = {
+  const n: ObjectInstruction = {
     type: "Instr",
     id,
     object,
@@ -278,9 +278,9 @@ export function moduleImport(
 export function globalImportDescr(
   valtype: Valtype,
   mutability: Mutability
-): GlobalImportDescr {
+): GlobalType {
   return {
-    type: "GlobalImportDescr",
+    type: "GlobalType",
     elementType: "anyfunc",
 
     valtype,
@@ -320,7 +320,7 @@ export function limits(min: number, max?: number): Limit {
   };
 }
 
-export function memory(limits: Limit, id: ?Identifier): Memory {
+export function memory(limits: Limit, id: ?Index): Memory {
   return {
     type: "Memory",
     limits,
@@ -392,5 +392,12 @@ export function unaryExpression(
     type: "UnaryExpression",
     operator,
     argument
+  };
+}
+
+export function indexLiteral(value: U32Literal): Index {
+  return {
+    type: "NumberLiteral",
+    value
   };
 }

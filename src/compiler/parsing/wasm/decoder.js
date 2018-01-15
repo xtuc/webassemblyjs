@@ -343,7 +343,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         }
 
         importDescr = t.funcImportDescr(
-          t.numberLiteral(typeindex),
+          t.indexLiteral(typeindex),
           signature.params,
           signature.result
         );
@@ -600,10 +600,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         const alternate = [];
 
         // FIXME(sven): where is that stored?
-        const test = 0;
+        const testIndex = t.identifier(getUniqueName("ifindex"));
 
         const ifNode = t.ifInstruction(
-          t.numberLiteral(test),
+          testIndex,
           blocktype,
           consequentInstr,
           alternate
@@ -642,7 +642,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         dump([index], "index");
 
-        const callNode = t.callInstruction(t.numberLiteral(index));
+        const callNode = t.callInstruction(t.indexLiteral(index));
 
         code.push(callNode);
         instructionAlreadyCreated = true;
@@ -981,7 +981,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       dump([], "init");
 
       dataEntries.push(
-        t.data(t.numberLiteral(memoryIndex), instrus, t.byteArray(bytes))
+        t.data(t.indexLiteral(memoryIndex), instrus, t.byteArray(bytes))
       );
     }
 

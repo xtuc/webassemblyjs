@@ -1,8 +1,28 @@
 // @flow
 
+// FIXME(sven): replace this with a specialized Number type interface
+type U32Literal = NumberLiteral
+
+type Typeidx = U32Literal
+type Funcidx = U32Literal
+type Tableidx = U32Literal
+type Memidx = U32Literal
+type Globalidx = U32Literal
+type Localidx = U32Literal
+type Labelidx = U32Literal
+
+type Index =
+  | Typeidx
+  | Funcidx
+  | Tableidx
+  | Memidx
+  | Globalidx
+  | Localidx
+  | Labelidx
+  | Identifier; // WAST shorthand
+
 type Valtype = "i32" | "i64" | "f32" | "f64" | "label";
 type ExportDescr = "Func" | "Table" | "Memory" | "Global";
-type Index = NumberLiteral | Identifier;
 type Mutability = "const" | "var";
 type InstructionType = "Instr" | ControlInstruction;
 type ControlInstruction =
@@ -17,7 +37,7 @@ type NodePath<T> = {
 
 type UnaryExpressionOperators = "-" | "+";
 
-type Expression = Identifier | NumberLiteral;
+type Expression = Identifier | NumberLiteral | LongNumberLiteral;
 
 type TableElementType = "anyfunc";
 
@@ -125,7 +145,7 @@ interface Func {
 interface Instruction {
   type: InstructionType;
   id: string;
-  args: Array<NumberLiteral | LongNumberLiteral | Identifier>;
+  args: Array<Expression>;
 
   // key=value for special instruction arguments
   namedArgs?: Object;
@@ -135,29 +155,29 @@ type ObjectInstruction = Instruction & {
   object: Valtype
 };
 
-type LoopInstruction = Instruction & {
+type LoopInstruction = {
   type: "LoopInstruction",
   label: ?Identifier,
   resulttype: ?Valtype,
   instr: Array<Instruction>
 };
 
-type BlockInstruction = Instruction & {
+type BlockInstruction = {
   type: "BlockInstruction",
   label: ?Identifier,
   instr: Array<Instruction>,
   result: ?Valtype
 };
 
-type IfInstruction = Instruction & {
+type IfInstruction = {
   type: "IfInstruction",
-  testLabel: Index,
+  testLabel: Identifier, // only for WAST
   result: ?Valtype,
   consequent: Array<Instruction>,
   alternate: Array<Instruction>
 };
 
-type CallInstruction = Instruction & {
+type CallInstruction = {
   type: "CallInstruction",
   index: Index
 };
@@ -179,7 +199,7 @@ type Limit = {
 
 type FuncImportDescr = {
   type: "FuncImportDescr",
-  value: NumberLiteral | Identifier,
+  value: Typeidx,
   params: Array<FuncParam>,
   results: Array<Valtype>
 };
@@ -202,7 +222,7 @@ type Table = {
 type Memory = {
   type: "Memory",
   limits: Limit,
-  id: ?Identifier
+  id: ?Index
 };
 
 type ByteArray = {

@@ -3,7 +3,7 @@ const Long = require("long");
 
 const type = "i64";
 
-export class i64 implements Number<i64> {
+export class i64 implements NumberInterface<i64> {
   _value: Long;
 
   constructor(value: Long) {
