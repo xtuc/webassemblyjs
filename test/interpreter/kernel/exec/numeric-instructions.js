@@ -4,7 +4,7 @@ const { assert } = require("chai");
 
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
 const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
-const { f32 } = require("../../../../lib/interpreter/runtime/values/f32");
+const { f32, f32nan } = require("../../../../lib/interpreter/runtime/values/f32");
 const { f64 } = require("../../../../lib/interpreter/runtime/values/f64");
 const {
   castIntoStackLocalOfType
@@ -249,6 +249,50 @@ describe("kernel exec - numeric instructions", () => {
       ],
 
       resEqual: new f32(2)
+    },
+
+    {
+      name: "f32.add",
+
+      args: [{ value: 1, type: "f32", nan: true }, { value: 1.0, type: "f32" }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("add", "f32")
+      ],
+
+      resEqual: new f32nan(1)
+    },
+
+    {
+      name: "f32.add",
+
+      args: [{ value: -31.4, type: "f32" }, { value: 4747, type: "f32", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("add", "f32")
+      ],
+
+      resEqual: new f32nan(4747)
+    },
+
+    {
+      name: "f32.add",
+
+      args: [{ value: 777, type: "f32", nan: true }, { value: 4747, type: "f32", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("add", "f32")
+      ],
+
+      // The payload is not required to be the second operands one,
+      // but for consistency we can always do so
+      resEqual: new f32nan(777)
     },
 
     {
@@ -717,8 +761,8 @@ describe("kernel exec - numeric instructions", () => {
   operations.forEach(op => {
     describe(op.name, () => {
       it("should get the correct result", () => {
-        const args = op.args.map(({ value, type }) =>
-          castIntoStackLocalOfType(type, value)
+        const args = op.args.map(({ value, type, nan }) =>
+          castIntoStackLocalOfType(type, value, nan)
         );
 
         const stackFrame = createStackFrame(op.code, args);
