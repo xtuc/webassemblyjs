@@ -2,6 +2,7 @@
 
 const { assert } = require("chai");
 
+const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
 const t = require("../../../../lib/compiler/AST");
 const {
   executeStackFrame
@@ -23,7 +24,7 @@ describe("kernel exec - parametric instructions", () => {
         t.instruction("drop", [])
       ],
 
-      resEqual: 1
+      resEqual: new i32(1)
     }
   ];
 
@@ -36,7 +37,7 @@ describe("kernel exec - parametric instructions", () => {
         throw new Error("No result");
       }
 
-      assert.equal(res.value, op.resEqual);
+      assert.isTrue(res.value.equals(op.resEqual));
     });
   });
 

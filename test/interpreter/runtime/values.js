@@ -94,42 +94,42 @@ describe("module create interface", () => {
 
   describe("integer 32bits", () => {
     it("createValue should return the correct value", () => {
-      const v = i32.createValue(1);
+      const v = i32.createValueFromAST(1);
 
       assert.typeOf(v, "object");
       assert.typeOf(v.type, "string");
-      assert.typeOf(v.value, "number");
+      assert.typeOf(v.value._value, "number");
 
-      assert.equal(v.value, 1);
+      assert.equal(v.value.toNumber(), 1);
       assert.equal(v.type, "i32");
     });
 
     it("createValue should overflow and result to 1", () => {
-      const v = i32.createValue(Math.pow(2, 32) + 1);
+      const v = i32.createValueFromAST(Math.pow(2, 32) + 1);
 
       assert.typeOf(v, "object");
       assert.typeOf(v.type, "string");
-      assert.typeOf(v.value, "number");
+      assert.typeOf(v.value._value, "number");
 
-      assert.equal(v.value, 1);
+      assert.equal(v.value.toNumber(), 1);
       assert.equal(v.type, "i32");
     });
 
     it("createValue should return an int from a float", () => {
-      const v = i32.createValue(1.1);
+      const v = i32.createValueFromAST(1.1);
 
       assert.typeOf(v, "object");
       assert.typeOf(v.type, "string");
-      assert.typeOf(v.value, "number");
+      assert.typeOf(v.value._value, "number");
 
-      assert.equal(v.value, 1);
+      assert.equal(v.value.toNumber(), 1);
       assert.equal(v.type, "i32");
     });
   });
 
   describe("integer 64bits", () => {
     it("createValue should return the correct value", () => {
-      const v = i64.createValue({
+      const v = i64.createValueFromAST({
         high: 0,
         low: 1
       });
@@ -138,56 +138,56 @@ describe("module create interface", () => {
       assert.typeOf(v.type, "string");
       assert.typeOf(v.value, "object");
 
-      assert.equal(v.value.high, 0);
-      assert.equal(v.value.low, 1);
+      assert.equal(v.value._value.high, 0);
+      assert.equal(v.value._value.low, 1);
       assert.equal(v.type, "i64");
     });
   });
 
   describe("float 32bits", () => {
     it("createValue should return a float", () => {
-      const v = f32.createValue(1.0);
+      const v = f32.createValueFromAST(1.0);
 
       assert.typeOf(v, "object");
       assert.typeOf(v.type, "string");
-      assert.typeOf(v.value, "number");
+      assert.typeOf(v.value._value, "number");
 
-      assert.equal(v.value, 1.0);
+      assert.equal(v.value.toNumber(), 1.0);
       assert.equal(v.type, "f32");
     });
 
     it("createValue should return a float from a int", () => {
-      const v = f32.createValue(1);
+      const v = f32.createValueFromAST(1);
 
       assert.typeOf(v, "object");
       assert.typeOf(v.type, "string");
-      assert.typeOf(v.value, "number");
+      assert.typeOf(v.value._value, "number");
 
-      assert.equal(v.value, 1.0);
+      assert.equal(v.value.toNumber(), 1.0);
       assert.equal(v.type, "f32");
     });
   });
 
   describe("float 64bits", () => {
     it("createValue should return a float", () => {
-      const v = f64.createValue(1.0);
+      const v = f64.createValueFromAST(1.0);
 
       assert.typeOf(v, "object");
       assert.typeOf(v.type, "string");
-      assert.typeOf(v.value, "number");
+      assert.typeOf(v.value._value, "number");
 
-      assert.equal(v.value, 1.0);
+      assert.equal(v.value.toNumber(), 1.0);
       assert.equal(v.type, "f64");
     });
 
     it("createValue should return a float from a int", () => {
-      const v = f64.createValue(1);
+      const v = f64.createValueFromAST(1);
 
       assert.typeOf(v, "object");
       assert.typeOf(v.type, "string");
-      assert.typeOf(v.value, "number");
+      assert.typeOf(v.value._value, "number");
 
-      assert.equal(v.value, 1.0);
+      assert.equal(v.value.toNumber(), 1.0);
       assert.equal(v.type, "f64");
     });
   });
@@ -228,7 +228,7 @@ describe("module create interface", () => {
 
       assert.typeOf(instance, "object");
       assert.equal(instance.mutability, "const");
-      assert.equal(instance.value, 10);
+      assert.equal(instance.value.toNumber(), 10);
     });
   });
 

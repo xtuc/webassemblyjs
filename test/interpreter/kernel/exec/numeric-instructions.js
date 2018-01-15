@@ -2,6 +2,13 @@
 const Long = require("long");
 const { assert } = require("chai");
 
+const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
+const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
+const { f32 } = require("../../../../lib/interpreter/runtime/values/f32");
+const { f64 } = require("../../../../lib/interpreter/runtime/values/f64");
+const {
+  castIntoStackLocalOfType
+} = require("../../../../lib/interpreter/runtime/castIntoStackLocalOfType");
 const t = require("../../../../lib/compiler/AST");
 const {
   executeStackFrame
@@ -27,7 +34,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("add", "i32")
       ],
 
-      resEqual: 2
+      resEqual: new i32(2)
     },
 
     {
@@ -41,7 +48,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("sub", "i32")
       ],
 
-      resEqual: 0
+      resEqual: new i32(0)
     },
 
     {
@@ -55,7 +62,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("mul", "i32")
       ],
 
-      resEqual: 2
+      resEqual: new i32(2)
     },
 
     {
@@ -69,7 +76,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("div_s", "i32")
       ],
 
-      resEqual: 5
+      resEqual: new i32(5)
     },
 
     {
@@ -83,7 +90,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("div_u", "i32")
       ],
 
-      resEqual: 5
+      resEqual: new i32(5)
     },
 
     /**
@@ -104,7 +111,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("and", "i64")
       ],
 
-      resEqual: Long.fromString("10001001010010", false, 2)
+      resEqual: new i64(Long.fromString("10001001010010", false, 2))
     },
 
     {
@@ -121,7 +128,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("or", "i64")
       ],
 
-      resEqual: Long.fromString("10001011110010", false, 2)
+      resEqual: new i64(Long.fromString("10001011110010", false, 2))
     },
 
     {
@@ -138,7 +145,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("xor", "i64")
       ],
 
-      resEqual: Long.fromString("00000010100000", false, 2)
+      resEqual: new i64(Long.fromString("00000010100000", false, 2))
     },
 
     {
@@ -155,7 +162,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("add", "i64")
       ],
 
-      resEqual: Long.fromString("1844674407370955162")
+      resEqual: new i64(Long.fromString("1844674407370955162"))
     },
 
     {
@@ -172,7 +179,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("sub", "i64")
       ],
 
-      resEqual: Long.fromString("1844674407370955160")
+      resEqual: new i64(Long.fromString("1844674407370955160"))
     },
 
     {
@@ -189,7 +196,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("mul", "i64")
       ],
 
-      resEqual: Long.fromString("3689348814741910322")
+      resEqual: new i64(Long.fromString("3689348814741910322"))
     },
 
     {
@@ -206,7 +213,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("div_s", "i64")
       ],
 
-      resEqual: Long.fromString("922337203685477580")
+      resEqual: new i64(Long.fromString("922337203685477580"))
     },
 
     {
@@ -223,7 +230,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("div_u", "i64")
       ],
 
-      resEqual: Long.fromString("922337203685477580")
+      resEqual: new i64(Long.fromString("922337203685477580"))
     },
 
     /**
@@ -241,7 +248,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("add", "f32")
       ],
 
-      resEqual: 2
+      resEqual: new f32(2)
     },
 
     {
@@ -255,7 +262,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("sub", "f32")
       ],
 
-      resEqual: 0
+      resEqual: new f32(0)
     },
 
     {
@@ -269,7 +276,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("mul", "f32")
       ],
 
-      resEqual: 2
+      resEqual: new f32(2)
     },
 
     {
@@ -283,7 +290,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("div", "f32")
       ],
 
-      resEqual: 5.0
+      resEqual: new f32(5.0)
     },
 
     {
@@ -297,7 +304,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f32")
       ],
 
-      resEqual: 5.0
+      resEqual: new f32(5.0)
     },
 
     {
@@ -311,7 +318,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f32")
       ],
 
-      resEqual: -0
+      resEqual: new f32(-0)
     },
 
     {
@@ -328,7 +335,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f32")
       ],
 
-      resEqual: -Infinity
+      resEqual: new f32(-Infinity)
     },
 
     {
@@ -342,7 +349,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f32")
       ],
 
-      resEqual: 1234
+      resEqual: new f32(1234)
     },
 
     {
@@ -356,7 +363,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f32")
       ],
 
-      resEqual: NaN
+      resEqual: new f32(NaN)
     },
 
     {
@@ -373,7 +380,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f32")
       ],
 
-      resEqual: 0.00000000000000000000000001
+      resEqual: new f32(0.00000000000000000000000001)
     },
 
     {
@@ -387,7 +394,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f32")
       ],
 
-      resEqual: 1000.7
+      resEqual: new f32(1000.7)
     },
 
     {
@@ -401,7 +408,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f32")
       ],
 
-      resEqual: +0
+      resEqual: new f32(+0)
     },
 
     {
@@ -418,7 +425,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f32")
       ],
 
-      resEqual: Infinity
+      resEqual: new f32(Infinity)
     },
 
     {
@@ -432,7 +439,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f32")
       ],
 
-      resEqual: Infinity
+      resEqual: new f32(Infinity)
     },
 
     {
@@ -446,7 +453,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f32")
       ],
 
-      resEqual: NaN
+      resEqual: new f32(NaN)
     },
 
     {
@@ -463,7 +470,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f32")
       ],
 
-      resEqual: 0.0000000000000000000000001
+      resEqual: new f32(0.0000000000000000000000001)
     },
 
     /**
@@ -481,7 +488,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("add", "f64")
       ],
 
-      resEqual: 2.0
+      resEqual: new f64(2.0)
     },
 
     {
@@ -495,7 +502,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("sub", "f64")
       ],
 
-      resEqual: 0
+      resEqual: new f64(0)
     },
 
     {
@@ -509,7 +516,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("mul", "f64")
       ],
 
-      resEqual: 2.0
+      resEqual: new f64(2.0)
     },
 
     {
@@ -523,7 +530,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("div", "f64")
       ],
 
-      resEqual: 5.0
+      resEqual: new f64(5.0)
     },
 
     {
@@ -537,7 +544,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f64")
       ],
 
-      resEqual: 5.0
+      resEqual: new f64(5.0)
     },
 
     {
@@ -551,7 +558,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f64")
       ],
 
-      resEqual: -0
+      resEqual: new f64(-0)
     },
 
     {
@@ -568,7 +575,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f64")
       ],
 
-      resEqual: -Infinity
+      resEqual: new f64(-Infinity)
     },
 
     {
@@ -582,7 +589,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f64")
       ],
 
-      resEqual: 1234
+      resEqual: new f64(1234)
     },
 
     {
@@ -596,7 +603,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f64")
       ],
 
-      resEqual: NaN
+      resEqual: new f64(NaN)
     },
 
     {
@@ -613,7 +620,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("min", "f64")
       ],
 
-      resEqual: 0.00000000000000000000000001
+      resEqual: new f64(0.00000000000000000000000001)
     },
 
     {
@@ -627,7 +634,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f64")
       ],
 
-      resEqual: 1000.7
+      resEqual: new f64(1000.7)
     },
 
     {
@@ -641,7 +648,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f64")
       ],
 
-      resEqual: +0
+      resEqual: new f64(+0)
     },
 
     {
@@ -658,7 +665,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f64")
       ],
 
-      resEqual: Infinity
+      resEqual: new f64(Infinity)
     },
 
     {
@@ -672,7 +679,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f64")
       ],
 
-      resEqual: Infinity
+      resEqual: new f64(Infinity)
     },
 
     {
@@ -686,7 +693,7 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f64")
       ],
 
-      resEqual: NaN
+      resEqual: new f64(NaN)
     },
 
     {
@@ -703,21 +710,21 @@ describe("kernel exec - numeric instructions", () => {
         t.objectInstruction("max", "f64")
       ],
 
-      resEqual: 0.0000000000000000000000001
+      resEqual: new f64(0.0000000000000000000000001)
     }
   ];
 
   operations.forEach(op => {
     describe(op.name, () => {
       it("should get the correct result", () => {
-        const stackFrame = createStackFrame(op.code, op.args);
-        const res = executeStackFrame(stackFrame).value;
+        const args = op.args.map(({ value, type }) =>
+          castIntoStackLocalOfType(type, value)
+        );
 
-        if (res.value instanceof Long) {
-          assert.isTrue(res.value.equals(op.resEqual));
-        } else {
-          assert.deepEqual(res, op.resEqual);
-        }
+        const stackFrame = createStackFrame(op.code, args);
+        const res = executeStackFrame(stackFrame);
+
+        assert.isTrue(res.value.equals(op.resEqual));
       });
 
       it("should assert validations - 1 missing arg", () => {

@@ -75,6 +75,29 @@ type StackLocal = {
   value: any
 };
 
+interface Number<T> {
+  add(operand: T): T;
+  sub(operand: T): T;
+  mul(operand: T): T;
+  div_s(operand: T): T;
+  div_u(operand: T): T;
+  div(operand: T): T;
+  and(operand: T): T;
+  or(operand: T): T;
+  xor(operand: T): T;
+  min(operand: T): T;
+  max(operand: T): T;
+  copysign(operand: T): T;
+
+  neg(): T;
+  abs(): T;
+
+  isZero(): boolean;
+
+  equals(operand: T): boolean;
+  toNumber(): number;
+}
+
 type Label = {
   arity: number,
   value: any,

@@ -1,5 +1,8 @@
 // @flow
 
+const {
+  castIntoStackLocalOfType
+} = require("./runtime/castIntoStackLocalOfType");
 const { traverse } = require("../compiler/AST/traverse");
 const modulevalue = require("./runtime/values/module");
 const { executeStackFrame } = require("./kernel/exec");
@@ -170,14 +173,9 @@ function createHostfunc(
       );
     }
 
-    const argsWithType = args.map((value: any, i: number): StackLocal => {
-      const type = funcinstArgs[i];
-
-      return {
-        value,
-        type
-      };
-    });
+    const argsWithType = args.map((value: any, i: number): StackLocal =>
+      castIntoStackLocalOfType(funcinstArgs[i], value)
+    );
 
     const stackFrame = createStackFrame(
       funcinst.code,
@@ -201,7 +199,7 @@ function createHostfunc(
     }
 
     if (typeof res !== "undefined") {
-      return res.value;
+      return res.value.toNumber();
     }
   };
 }

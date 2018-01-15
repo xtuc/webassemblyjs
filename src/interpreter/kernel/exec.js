@@ -8,10 +8,9 @@ const {
   binopf64
 } = require("./instruction/binop");
 const { unopi32, unopi64, unopf32, unopf64 } = require("./instruction/unop");
-const i32 = require("../runtime/values/i32");
-const i64 = require("../runtime/values/i64");
-const f32 = require("../runtime/values/f32");
-const f64 = require("../runtime/values/f64");
+const {
+  castIntoStackLocalOfType
+} = require("../runtime/castIntoStackLocalOfType");
 const label = require("../runtime/values/label");
 const { createChildStackFrame } = require("./stackframe");
 const { createTrap, isTrapped } = require("./signals");
@@ -29,21 +28,6 @@ function assertStackDepth(depth: number) {
   if (depth >= 300) {
     throw new RuntimeError("Maximum call stack depth reached");
   }
-}
-
-function castIntoStackLocalOfType(type: string, v: any): StackLocal {
-  const castFn = {
-    i32: i32.createValue,
-    i64: i64.createValue,
-    f32: f32.createValue,
-    f64: f64.createValue
-  };
-
-  if (typeof castFn[type] === "undefined") {
-    throw new RuntimeError("Cannot cast: unsupported type " + type);
-  }
-
-  return castFn[type](v);
 }
 
 export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
@@ -418,7 +402,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         // 2. Pop the value ci32.const c from the stack.
         const c = pop1("i32");
 
-        if (!isZero(c)) {
+        if (!c.value.isZero()) {
           // 3. If c is non-zero, then
           // 3. a. Execute the instruction (br l).
           const res = br(label);
@@ -457,7 +441,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           return res;
         }
 
-        if (!isZero(res)) {
+        if (!res.value.isZero()) {
           /**
            * Execute consequent
            */
@@ -784,18 +768,4 @@ function assertNItemsOnStack(stack: Array<any>, numberOfItem: number) {
         stack.length
     );
   }
-}
-
-function valueEq(l: StackLocal, r: StackLocal): boolean {
-  return l.value == r.value && l.type == r.type;
-}
-
-function isZero(v: StackLocal): boolean {
-  if (typeof v === "undefined") {
-    return false;
-  }
-
-  const zero = i32.createValue(0);
-
-  return valueEq(v, zero);
 }

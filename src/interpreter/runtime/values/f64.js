@@ -1,10 +1,20 @@
 // @flow
+import { BaseNumber } from "./number";
 
 const type = "f64";
 
-export function createValue(value: number): StackLocal {
+export class f64 extends BaseNumber {}
+
+export function createValueFromAST(value: number): StackLocal {
   return {
     type,
-    value: value === 0 ? value : parseFloat(value)
+    value: new f64(value)
+  };
+}
+
+export function createValue(value: f64): StackLocal {
+  return {
+    type,
+    value
   };
 }
