@@ -61,7 +61,6 @@ const tokens = {
   dot: "dot",
   comment: "comment",
   equal: "equal",
-  minus: "minus",
 
   keyword: "keyword"
 };
@@ -93,7 +92,6 @@ const DotToken = createToken(tokens.dot);
 const StringToken = createToken(tokens.string);
 const CommentToken = createToken(tokens.comment);
 const EqualToken = createToken(tokens.equal);
-const MinusToken = createToken(tokens.minus);
 
 function tokenize(input: string) {
   let current = 0;

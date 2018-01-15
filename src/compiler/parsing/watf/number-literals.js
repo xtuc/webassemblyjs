@@ -67,8 +67,8 @@ export function parse64I(sourceString: string): LongNumber {
   };
 }
 
-const NAN_WORD = /^\+?\-?nan/;
-const INF_WORD = /^\+?\-?inf/;
+const NAN_WORD = /^\+?-?nan/;
+const INF_WORD = /^\+?-?inf/;
 
 export function isInfLiteral(sourceString: string): boolean {
   return INF_WORD.test(sourceString.toLowerCase());
