@@ -6,7 +6,11 @@ const i64 = require("./values/i64");
 const f32 = require("./values/f32");
 const f64 = require("./values/f64");
 
-export function castIntoStackLocalOfType(type: string, v: any, nan: boolean): StackLocal {
+export function castIntoStackLocalOfType(
+  type: string,
+  v: any,
+  nan: boolean
+): StackLocal {
   const castFn = {
     i32: i32.createValueFromAST,
     i64: i64.createValueFromAST,

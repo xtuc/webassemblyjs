@@ -4,7 +4,10 @@ const { assert } = require("chai");
 
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
 const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
-const { f32, f32nan } = require("../../../../lib/interpreter/runtime/values/f32");
+const {
+  f32,
+  f32nan
+} = require("../../../../lib/interpreter/runtime/values/f32");
 const { f64 } = require("../../../../lib/interpreter/runtime/values/f64");
 const {
   castIntoStackLocalOfType
@@ -268,7 +271,10 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f32.add",
 
-      args: [{ value: -31.4, type: "f32" }, { value: 4747, type: "f32", nan: true }],
+      args: [
+        { value: -31.4, type: "f32" },
+        { value: 4747, type: "f32", nan: true }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -282,7 +288,10 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f32.add",
 
-      args: [{ value: 777, type: "f32", nan: true }, { value: 4747, type: "f32", nan: true }],
+      args: [
+        { value: 777, type: "f32", nan: true },
+        { value: 4747, type: "f32", nan: true }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
