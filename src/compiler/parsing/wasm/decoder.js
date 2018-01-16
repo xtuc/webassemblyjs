@@ -270,7 +270,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       if (type == types.func) {
         dump([type], "func");
 
-        const params: Array<FuncParam> = parseVec(b => valtypes[b]);
+        const paramValtypes: Array<Valtype> = parseVec(b => valtypes[b]);
+        const params = paramValtypes.map(v => t.funcParam(v));
+
         const result: Array<Valtype> = parseVec(b => valtypes[b]);
 
         state.typesInModule.push({
@@ -285,7 +287,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
   // Import section
   // https://webassembly.github.io/spec/binary/modules.html#binary-importsec
-  function parseImportSection(): Array<ModuleImport> {
+  function parseImportSection() {
     const imports = [];
 
     const numberOfImportsu32 = readU32();
@@ -343,7 +345,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         }
 
         importDescr = t.funcImportDescr(
-          t.numberLiteral(typeindex),
+          t.indexLiteral(typeindex),
           signature.params,
           signature.result
         );
@@ -431,7 +433,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       dump([index], "export index");
 
-      let id, signature;
+      let id: Identifier, signature;
 
       if (exportTypes[typeIndex] === "Func") {
         const func = state.functionsInModule[index];
@@ -453,7 +455,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           );
         }
 
-        id = memNode.id;
+        if (memNode.id != null) {
+          id = t.identifier(memNode.id.value + "");
+        } else {
+          id = t.identifier(getUniqueName("memory"));
+        }
+
         signature = null;
       } else {
         throw new CompileError("Unsupported export type: " + toHex(typeIndex));
@@ -489,7 +496,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       dump([0x0], "function body size (guess)");
 
-      const code = [];
+      const code: Array<Instruction> = [];
 
       /**
        * Parse locals
@@ -531,7 +538,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     }
   }
 
-  function parseInstructionBlock(code: Array<any>) {
+  function parseInstructionBlock(code: Array<Instruction>) {
     while (true) {
       let instructionAlreadyCreated = false;
 
@@ -600,10 +607,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         const alternate = [];
 
         // FIXME(sven): where is that stored?
-        const test = 0;
+        const testIndex = t.identifier(getUniqueName("ifindex"));
 
         const ifNode = t.ifInstruction(
-          t.numberLiteral(test),
+          testIndex,
           blocktype,
           consequentInstr,
           alternate
@@ -642,7 +649,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         dump([index], "index");
 
-        const callNode = t.callInstruction(t.numberLiteral(index));
+        const callNode = t.callInstruction(t.indexLiteral(index));
 
         code.push(callNode);
         instructionAlreadyCreated = true;
@@ -748,7 +755,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
-  function parseTableSection(): Array<Table> {
+  function parseTableSection() {
     const tables = [];
 
     const u32 = readU32();
@@ -827,7 +834,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     return t.globalType(type, globalType);
   }
 
-  function parseGlobalSection(): Array<Global> {
+  function parseGlobalSection() {
     const globals = [];
 
     const numberOfGlobalsu32 = readU32();
@@ -892,7 +899,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#memory-section
-  function parseMemorySection(): Array<Memory> {
+  function parseMemorySection() {
     const memories = [];
 
     const numberOfElementsu32 = readU32();
@@ -927,7 +934,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         dump([min], "min");
       }
 
-      const memoryNode = t.memory(t.limits(min, max), t.numberLiteral(i));
+      const memoryNode = t.memory(t.limits(min, max), t.indexLiteral(i));
 
       state.memoriesInModule.push(memoryNode);
       memories.push(memoryNode);
@@ -952,7 +959,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#data-section
-  function parseDataSection(): Array<Data> {
+  function parseDataSection() {
     const dataEntries = [];
 
     const numberOfElementsu32 = readU32();
@@ -968,8 +975,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       dump([memoryIndex], "memory index");
 
-      const instrus = [];
-      parseInstructionBlock(instrus);
+      const instrs: Array<Instruction> = [];
+      parseInstructionBlock(instrs);
 
       let bytes: Array<Byte> = parseVec(b => b);
 
@@ -981,7 +988,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       dump([], "init");
 
       dataEntries.push(
-        t.data(t.numberLiteral(memoryIndex), instrus, t.byteArray(bytes))
+        t.data(t.indexLiteral(memoryIndex), instrs, t.byteArray(bytes))
       );
     }
 
@@ -1135,19 +1142,16 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
    */
   let funcIndex = 0;
   state.functionsInModule.forEach((func: DecodedModuleFunc) => {
-    const params = func.signature.params.map((valtype: Valtype) => ({
-      valtype,
-      id: undefined
-    }));
-
+    const params = func.signature.params;
     const result = func.signature.result[0];
 
     let body = [];
 
     // External functions doesn't provide any code, can skip it here
     if (func.isExternal === false) {
-      const code = state.elementsInCodeSection[funcIndex];
-      body = code.code;
+      const decodedElementInCodeSection =
+        state.elementsInCodeSection[funcIndex];
+      body = decodedElementInCodeSection.code;
 
       funcIndex++;
     }
@@ -1167,7 +1171,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
        * If the export has no id, we won't be able to call it from the outside
        * so we can omit it
        */
-      if (typeof moduleExport.id === "object") {
+      if (moduleExport.id != null) {
         moduleFields.push(
           t.moduleExport(
             moduleExport.name,

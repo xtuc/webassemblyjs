@@ -24,7 +24,7 @@ function binop(
   { value: c1 }: StackLocal,
   { value: c2 }: StackLocal,
   sign: Sign,
-  createValue: LongNumber => StackLocal
+  createValue: any => StackLocal
 ): StackLocal {
   switch (sign) {
     // https://webassembly.github.io/spec/core/exec/numerics.html#op-iadd

@@ -286,7 +286,9 @@
               "type": "BinaryModule",
               "blob": [
                 ""
-              ]
+              ],
+              "id": null,
+              "fields": []
             },
             {
               "type": "StringLiteral",

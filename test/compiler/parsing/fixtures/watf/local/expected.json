@@ -15,7 +15,7 @@
           "id": "local",
           "args": [
             {
-              "type": "Valtype",
+              "type": "ValtypeLiteral",
               "name": "i32"
             }
           ]
@@ -25,7 +25,7 @@
           "id": "local",
           "args": [
             {
-              "type": "Valtype",
+              "type": "ValtypeLiteral",
               "name": "i64"
             }
           ]
@@ -35,7 +35,7 @@
           "id": "local",
           "args": [
             {
-              "type": "Valtype",
+              "type": "ValtypeLiteral",
               "name": "f32"
             }
           ]
@@ -45,7 +45,7 @@
           "id": "local",
           "args": [
             {
-              "type": "Valtype",
+              "type": "ValtypeLiteral",
               "name": "f64"
             }
           ]
@@ -59,7 +59,7 @@
               "value": "a"
             },
             {
-              "type": "Valtype",
+              "type": "ValtypeLiteral",
               "name": "i32"
             }
           ]
@@ -73,7 +73,7 @@
               "value": "b"
             },
             {
-              "type": "Valtype",
+              "type": "ValtypeLiteral",
               "name": "f32"
             }
           ]

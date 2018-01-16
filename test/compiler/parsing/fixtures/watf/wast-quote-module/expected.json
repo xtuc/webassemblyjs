@@ -5,13 +5,17 @@
       "type": "QuoteModule",
       "string": [
         "(func (i32.const 4294967296) drop)"
-      ]
+      ],
+      "id": null,
+      "fields": []
     },
     {
       "type": "QuoteModule",
       "string": [
         ""
-      ]
+      ],
+      "id": null,
+      "fields": []
     }
   ]
 }

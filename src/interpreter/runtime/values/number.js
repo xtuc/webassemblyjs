@@ -1,6 +1,6 @@
 // @flow
 
-export class BaseNumber implements Number<BaseNumber> {
+export class BaseNumber implements NumberInterface<BaseNumber> {
   _value: number;
 
   constructor(value: number) {

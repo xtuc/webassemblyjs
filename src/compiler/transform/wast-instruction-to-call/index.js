@@ -33,11 +33,12 @@ export function transform(ast: Program) {
   const importInstructionCache = {};
 
   traverse(ast, {
-    Instr(path: NodePath<Instr>) {
+    Instr(path: NodePath<Instruction>) {
       const { node } = path;
       const funcName = node.id;
 
       if (instructions.indexOf(funcName) !== -1) {
+        // $FlowIgnore that's a hack, can't infer type
         path.node = Object.assign(
           path.node,
           createCallInstructionNode(funcName)
