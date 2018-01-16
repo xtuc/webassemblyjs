@@ -5,7 +5,7 @@ const t = require("../../AST");
 const { codeFrameColumns } = require("@babel/code-frame");
 
 type AllArgs = {
-  args: Array<Node>,
+  args: Array<Expression>,
   namedArgs: Object
 };
 
@@ -542,8 +542,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses the arguments of an instruction
      */
-    function parseFuncInstrArguments(object: ?string): AllArgs {
-      const args = [];
+    function parseFuncInstrArguments(object: ?Valtype): AllArgs {
+      const args: Array<Expression> = [];
       const namedArgs = {};
 
       while (token.type === tokens.name) {
@@ -582,10 +582,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           const node = t.unaryExpression("-", t.identifier(token.value));
 
+          // FIXME(sven): will be handled by https://github.com/xtuc/js-webassembly-interpreter/pull/85
+
           args.push(node);
           eatToken();
         }
 
+        // Handle locals
         if (token.type === tokens.valtype) {
           args.push(t.valtype(token.value));
 
@@ -599,7 +602,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
 
         if (token.type === tokens.number) {
-          args.push(t.numberLiteral(token.value, object));
+          args.push(t.numberLiteral(token.value, object || "f64"));
 
           eatToken();
         }

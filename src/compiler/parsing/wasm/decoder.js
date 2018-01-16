@@ -270,9 +270,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       if (type == types.func) {
         dump([type], "func");
 
-        const params: Array<FuncParam> = parseVec(b => valtypes[b]).map(v => ({
-          valtype: v
-        }));
+        const paramValtypes: Array<Valtype> = parseVec(b => valtypes[b]);
+        const params = paramValtypes.map(v => t.funcParam(v));
 
         const result: Array<Valtype> = parseVec(b => valtypes[b]);
 
@@ -288,7 +287,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
   // Import section
   // https://webassembly.github.io/spec/binary/modules.html#binary-importsec
-  function parseImportSection(): Array<ModuleImport> {
+  function parseImportSection() {
     const imports = [];
 
     const numberOfImportsu32 = readU32();
@@ -434,7 +433,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       dump([index], "export index");
 
-      let id, signature;
+      let id: Identifier, signature;
 
       if (exportTypes[typeIndex] === "Func") {
         const func = state.functionsInModule[index];
@@ -456,7 +455,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           );
         }
 
-        id = memNode.id;
+        if (memNode.id != null) {
+          id = t.identifier(memNode.id.value + "");
+        } else {
+          id = t.identifier(getUniqueName("memory"));
+        }
+
         signature = null;
       } else {
         throw new CompileError("Unsupported export type: " + toHex(typeIndex));
@@ -751,7 +755,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
-  function parseTableSection(): Array<Table> {
+  function parseTableSection() {
     const tables = [];
 
     const u32 = readU32();
@@ -830,7 +834,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     return t.globalType(type, globalType);
   }
 
-  function parseGlobalSection(): Array<Global> {
+  function parseGlobalSection() {
     const globals = [];
 
     const numberOfGlobalsu32 = readU32();
@@ -895,7 +899,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#memory-section
-  function parseMemorySection(): Array<Memory> {
+  function parseMemorySection() {
     const memories = [];
 
     const numberOfElementsu32 = readU32();
@@ -955,7 +959,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#data-section
-  function parseDataSection(): Array<Data> {
+  function parseDataSection() {
     const dataEntries = [];
 
     const numberOfElementsu32 = readU32();
@@ -971,8 +975,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       dump([memoryIndex], "memory index");
 
-      const instrus = [];
-      parseInstructionBlock(instrus);
+      const instrs: Array<Instruction> = [];
+      parseInstructionBlock(instrs);
 
       let bytes: Array<Byte> = parseVec(b => b);
 
@@ -984,7 +988,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       dump([], "init");
 
       dataEntries.push(
-        t.data(t.indexLiteral(memoryIndex), instrus, t.byteArray(bytes))
+        t.data(t.indexLiteral(memoryIndex), instrs, t.byteArray(bytes))
       );
     }
 
@@ -1167,7 +1171,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
        * If the export has no id, we won't be able to call it from the outside
        * so we can omit it
        */
-      if (typeof moduleExport.id === "object") {
+      if (moduleExport.id != null) {
         moduleFields.push(
           t.moduleExport(
             moduleExport.name,

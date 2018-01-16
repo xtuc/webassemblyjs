@@ -292,6 +292,13 @@ export function globalImportDescr(
   };
 }
 
+export function funcParam(valtype: Valtype, id: ?string): FuncParam {
+  return {
+    valtype,
+    id
+  };
+}
+
 export function funcImportDescr(
   value: Index,
   params: Array<FuncParam> = [],
@@ -334,7 +341,7 @@ export function memory(limits: Limit, id: ?Index): Memory {
 
 export function data(
   memoryIndex: Index,
-  offset: Array<Node>,
+  offset: Array<Instruction>,
   init: ByteArray
 ): Data {
   return {

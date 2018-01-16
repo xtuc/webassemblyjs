@@ -14,7 +14,7 @@ type Globalidx = U32Literal;
 type Localidx = U32Literal;
 type Labelidx = U32Literal;
 
-type ModuleTypes =
+type ModuleType =
   | "Module"
   | "BinaryModule" // WAST
   | "QuoteModule"; // WAST
@@ -45,7 +45,13 @@ type NodePath<T> = {
 
 type UnaryExpressionOperators = "-" | "+";
 
-type Expression = Identifier | NumberLiteral | LongNumberLiteral;
+type Expression =
+  | Identifier
+  | NumberLiteral
+  | LongNumberLiteral
+  | ValtypeLiteral
+  | Instruction
+  | StringLiteral;
 
 type TableElementType = "anyfunc";
 
@@ -114,7 +120,7 @@ interface UnaryExpression {
 type ModuleFields = Array<Node>;
 
 interface Module {
-  type: ModuleTypes;
+  type: ModuleType;
   id: ?string;
   fields: ModuleFields;
 }
