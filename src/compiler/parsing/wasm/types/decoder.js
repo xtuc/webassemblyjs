@@ -45,13 +45,8 @@ type DecodedElementInExportSection = {
   index: number
 };
 
-type DecodedInstructionInCodeSection = {
-  instruction: DecodedSymbol,
-  args: Array<any>
-};
-
 type DecodedElementInCodeSection = {
-  code: Array<DecodedInstructionInCodeSection>,
+  code: Array<Instruction>,
   locals: Array<Valtype>
 };
 

@@ -270,7 +270,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       if (type == types.func) {
         dump([type], "func");
 
-        const params: Array<FuncParam> = parseVec(b => valtypes[b]);
+        const params: Array<FuncParam> = parseVec(b => valtypes[b]).map(v => ({
+          valtype: v
+        }));
+
         const result: Array<Valtype> = parseVec(b => valtypes[b]);
 
         state.typesInModule.push({
@@ -489,7 +492,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       dump([0x0], "function body size (guess)");
 
-      const code = [];
+      const code: Array<Instruction> = [];
 
       /**
        * Parse locals
@@ -531,7 +534,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     }
   }
 
-  function parseInstructionBlock(code: Array<any>) {
+  function parseInstructionBlock(code: Array<Instruction>) {
     while (true) {
       let instructionAlreadyCreated = false;
 
@@ -927,7 +930,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         dump([min], "min");
       }
 
-      const memoryNode = t.memory(t.limits(min, max), t.numberLiteral(i));
+      const memoryNode = t.memory(t.limits(min, max), t.indexLiteral(i));
 
       state.memoriesInModule.push(memoryNode);
       memories.push(memoryNode);
@@ -1135,19 +1138,16 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
    */
   let funcIndex = 0;
   state.functionsInModule.forEach((func: DecodedModuleFunc) => {
-    const params = func.signature.params.map((valtype: Valtype) => ({
-      valtype,
-      id: undefined
-    }));
-
+    const params = func.signature.params;
     const result = func.signature.result[0];
 
     let body = [];
 
     // External functions doesn't provide any code, can skip it here
     if (func.isExternal === false) {
-      const code = state.elementsInCodeSection[funcIndex];
-      body = code.code;
+      const decodedElementInCodeSection =
+        state.elementsInCodeSection[funcIndex];
+      body = decodedElementInCodeSection.code;
 
       funcIndex++;
     }

@@ -1,15 +1,23 @@
 // @flow
 
-// FIXME(sven): replace this with a specialized Number type interface
-type U32Literal = NumberLiteral
+import type { i32 } from "../interpreter/runtime/values/i32";
 
-type Typeidx = U32Literal
-type Funcidx = U32Literal
-type Tableidx = U32Literal
-type Memidx = U32Literal
-type Globalidx = U32Literal
-type Localidx = U32Literal
-type Labelidx = U32Literal
+type U32Literal = NumberLiteral & {
+  value: NumberInterface<i32>
+};
+
+type Typeidx = U32Literal;
+type Funcidx = U32Literal;
+type Tableidx = U32Literal;
+type Memidx = U32Literal;
+type Globalidx = U32Literal;
+type Localidx = U32Literal;
+type Labelidx = U32Literal;
+
+type ModuleTypes =
+  | "Module"
+  | "BinaryModule" // WAST
+  | "QuoteModule"; // WAST
 
 type Index =
   | Typeidx
@@ -106,20 +114,20 @@ interface UnaryExpression {
 type ModuleFields = Array<Node>;
 
 interface Module {
-  type: "Module";
+  type: ModuleTypes;
   id: ?string;
   fields: ModuleFields;
 }
 
-interface BinaryModule {
-  type: "BinaryModule";
-  blob: Array<string>;
-}
+type BinaryModule = Module & {
+  type: "BinaryModule",
+  blob: Array<string>
+};
 
-interface QuoteModule {
-  type: "QuoteModule";
-  string: Array<string>;
-}
+type QuoteModule = Module & {
+  type: "QuoteModule",
+  string: Array<string>
+};
 
 type FuncParam = {
   id: ?string,
@@ -155,21 +163,21 @@ type ObjectInstruction = Instruction & {
   object: Valtype
 };
 
-type LoopInstruction = {
+type LoopInstruction = Instruction & {
   type: "LoopInstruction",
   label: ?Identifier,
   resulttype: ?Valtype,
   instr: Array<Instruction>
 };
 
-type BlockInstruction = {
+type BlockInstruction = Instruction & {
   type: "BlockInstruction",
   label: ?Identifier,
   instr: Array<Instruction>,
   result: ?Valtype
 };
 
-type IfInstruction = {
+type IfInstruction = Instruction & {
   type: "IfInstruction",
   testLabel: Identifier, // only for WAST
   result: ?Valtype,
@@ -177,7 +185,7 @@ type IfInstruction = {
   alternate: Array<Instruction>
 };
 
-type CallInstruction = {
+type CallInstruction = Instruction & {
   type: "CallInstruction",
   index: Index
 };
@@ -199,7 +207,7 @@ type Limit = {
 
 type FuncImportDescr = {
   type: "FuncImportDescr",
-  value: Typeidx,
+  value: Index,
   params: Array<FuncParam>,
   results: Array<Valtype>
 };
@@ -213,7 +221,7 @@ interface ModuleImport {
   descr: ImportDescr;
 }
 
-type Table = {
+type Table = Node & {
   type: "Table",
   elementType: TableElementType,
   limits: Limit
@@ -261,5 +269,5 @@ type BlockComment = {
 
 type ValtypeLiteral = {
   type: "ValtypeLiteral",
-  name: Valtype;
+  name: Valtype
 };

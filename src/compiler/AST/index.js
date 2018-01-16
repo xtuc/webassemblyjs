@@ -58,14 +58,18 @@ export function module(id: ?string, fields: ModuleFields): Module {
 export function binaryModule(id: ?string, blob: Array<string>): BinaryModule {
   return {
     type: "BinaryModule",
-    blob
+    blob,
+    id,
+    fields: []
   };
 }
 
 export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
   return {
     type: "QuoteModule",
-    string
+    string,
+    id,
+    fields: []
   };
 }
 
@@ -230,7 +234,7 @@ export function callInstruction(index: Index): CallInstruction {
 }
 
 export function ifInstruction(
-  testLabel: Index,
+  testLabel: Identifier,
   result: ?Valtype,
   consequent: Array<Instruction>,
   alternate: Array<Instruction>
@@ -289,7 +293,7 @@ export function globalImportDescr(
 }
 
 export function funcImportDescr(
-  value: NumberLiteral | Identifier,
+  value: Index,
   params: Array<FuncParam> = [],
   results: Array<Valtype> = []
 ): FuncImportDescr {
@@ -395,9 +399,6 @@ export function unaryExpression(
   };
 }
 
-export function indexLiteral(value: U32Literal): Index {
-  return {
-    type: "NumberLiteral",
-    value
-  };
+export function indexLiteral(value: number | string): Index {
+  return numberLiteral(value, "i32");
 }

@@ -1,6 +1,7 @@
 // @flow
 
 const { traverse } = require("../../AST/traverse");
+const t = require("../../AST");
 
 let i = 0;
 
@@ -27,10 +28,10 @@ export function print(ast: Node) {
 
     Func({ node }: NodePath<Func>) {
       if (typeof node.id !== "string") {
-        node.id = generateUniqueId();
+        node.id = t.identifier(generateUniqueId());
       }
 
-      out.functions[node.id] = node;
+      out.functions[node.id.value] = node;
     },
 
     Global({ node }: NodePath<Global>) {
