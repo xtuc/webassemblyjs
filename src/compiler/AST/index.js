@@ -20,9 +20,9 @@ export function identifier(value: string): Identifier {
   };
 }
 
-export function valtype(name: string): Valtype {
+export function valtype(name: Valtype): ValtypeLiteral {
   return {
-    type: "Valtype",
+    type: "ValtypeLiteral",
     name
   };
 }
@@ -58,14 +58,18 @@ export function module(id: ?string, fields: ModuleFields): Module {
 export function binaryModule(id: ?string, blob: Array<string>): BinaryModule {
   return {
     type: "BinaryModule",
-    blob
+    blob,
+    id,
+    fields: []
   };
 }
 
 export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
   return {
     type: "QuoteModule",
-    string
+    string,
+    id,
+    fields: []
   };
 }
 
@@ -106,13 +110,13 @@ export function func(
 export function objectInstruction(
   id: string,
   object: Valtype,
-  args: Array<NumberLiteral | Identifier> = [],
+  args: Array<Expression> = [],
   namedArgs: Object = {}
-): Instruction {
+): ObjectInstruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
   assert(typeof object === "string");
 
-  const n: Instruction = {
+  const n: ObjectInstruction = {
     type: "Instr",
     id,
     object,
@@ -230,7 +234,7 @@ export function callInstruction(index: Index): CallInstruction {
 }
 
 export function ifInstruction(
-  testLabel: Index,
+  testLabel: Identifier,
   result: ?Valtype,
   consequent: Array<Instruction>,
   alternate: Array<Instruction>
@@ -278,9 +282,9 @@ export function moduleImport(
 export function globalImportDescr(
   valtype: Valtype,
   mutability: Mutability
-): GlobalImportDescr {
+): GlobalType {
   return {
-    type: "GlobalImportDescr",
+    type: "GlobalType",
     elementType: "anyfunc",
 
     valtype,
@@ -288,8 +292,15 @@ export function globalImportDescr(
   };
 }
 
+export function funcParam(valtype: Valtype, id: ?string): FuncParam {
+  return {
+    valtype,
+    id
+  };
+}
+
 export function funcImportDescr(
-  value: NumberLiteral | Identifier,
+  value: Index,
   params: Array<FuncParam> = [],
   results: Array<Valtype> = []
 ): FuncImportDescr {
@@ -304,7 +315,7 @@ export function funcImportDescr(
   };
 }
 
-export function table(elementType: string, limits: Limit): Table {
+export function table(elementType: TableElementType, limits: Limit): Table {
   return {
     type: "Table",
     elementType,
@@ -320,7 +331,7 @@ export function limits(min: number, max?: number): Limit {
   };
 }
 
-export function memory(limits: Limit, id: ?Identifier): Memory {
+export function memory(limits: Limit, id: ?Index): Memory {
   return {
     type: "Memory",
     limits,
@@ -330,7 +341,7 @@ export function memory(limits: Limit, id: ?Identifier): Memory {
 
 export function data(
   memoryIndex: Index,
-  offset: Array<Node>,
+  offset: Array<Instruction>,
   init: ByteArray
 ): Data {
   return {
@@ -341,7 +352,10 @@ export function data(
   };
 }
 
-export function global(globalType: GlobalType, init: Array<Node>): Global {
+export function global(
+  globalType: GlobalType,
+  init: Array<Instruction>
+): Global {
   return {
     type: "Global",
     globalType,
@@ -390,4 +404,8 @@ export function unaryExpression(
     operator,
     argument
   };
+}
+
+export function indexLiteral(value: number | string): Index {
+  return numberLiteral(value, "i32");
 }

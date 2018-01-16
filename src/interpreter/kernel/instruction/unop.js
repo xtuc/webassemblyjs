@@ -2,16 +2,16 @@
 
 type Sign = "abs" | "neg";
 
-const i32 = require("../../runtime/values/i32");
-const i64 = require("../../runtime/values/i64");
-const f32 = require("../../runtime/values/f32");
-const f64 = require("../../runtime/values/f64");
+import * as i32 from "../../runtime/values/i32";
+import * as i64 from "../../runtime/values/i64";
+import * as f32 from "../../runtime/values/f32";
+import * as f64 from "../../runtime/values/f64";
 
 // https://webassembly.github.io/spec/core/exec/instructions.html#exec-binop
 function unop(
   { value: c }: StackLocal,
   sign: Sign,
-  createValue: number => StackLocal
+  createValue: any => StackLocal
 ): StackLocal {
   switch (sign) {
     case "abs":
@@ -29,7 +29,6 @@ export function unopi32(c: StackLocal, sign: Sign): StackLocal {
 }
 
 export function unopi64(c: StackLocal, sign: Sign): StackLocal {
-  // $FlowIgnore: since we'll box every number we will have an unified interface ignoring this for now
   return unop(c, sign, i64.createValue);
 }
 

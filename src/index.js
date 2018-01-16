@@ -10,13 +10,13 @@ const { Table } = require("./interpreter/runtime/values/table");
 const { checkEndianness } = require("./check-endianness");
 
 const _debug = {
-  parseWATF(content: string, cb: (ast: Node) => void) {
+  parseWATF(content: string, cb: (ast: Program) => void) {
     const ast = parseSource(content);
 
     cb(ast);
   },
 
-  parseWASM(content: ArrayBuffer, cb: (ast: Node) => void) {
+  parseWASM(content: ArrayBuffer, cb: (ast: Program) => void) {
     const ast = parseBinary(content);
 
     cb(ast);

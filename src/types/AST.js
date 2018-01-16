@@ -1,8 +1,36 @@
 // @flow
 
+import type { i32 } from "../interpreter/runtime/values/i32";
+
+type U32Literal = NumberLiteral & {
+  value: NumberInterface<i32>
+};
+
+type Typeidx = U32Literal;
+type Funcidx = U32Literal;
+type Tableidx = U32Literal;
+type Memidx = U32Literal;
+type Globalidx = U32Literal;
+type Localidx = U32Literal;
+type Labelidx = U32Literal;
+
+type ModuleType =
+  | "Module"
+  | "BinaryModule" // WAST
+  | "QuoteModule"; // WAST
+
+type Index =
+  | Typeidx
+  | Funcidx
+  | Tableidx
+  | Memidx
+  | Globalidx
+  | Localidx
+  | Labelidx
+  | Identifier; // WAST shorthand
+
 type Valtype = "i32" | "i64" | "f32" | "f64" | "label";
 type ExportDescr = "Func" | "Table" | "Memory" | "Global";
-type Index = NumberLiteral | Identifier;
 type Mutability = "const" | "var";
 type InstructionType = "Instr" | ControlInstruction;
 type ControlInstruction =
@@ -17,7 +45,15 @@ type NodePath<T> = {
 
 type UnaryExpressionOperators = "-" | "+";
 
-type Expression = Identifier | NumberLiteral;
+type Expression =
+  | Identifier
+  | NumberLiteral
+  | LongNumberLiteral
+  | ValtypeLiteral
+  | Instruction
+  | StringLiteral;
+
+type TableElementType = "anyfunc";
 
 /**
  * AST types
@@ -84,20 +120,20 @@ interface UnaryExpression {
 type ModuleFields = Array<Node>;
 
 interface Module {
-  type: "Module";
+  type: ModuleType;
   id: ?string;
   fields: ModuleFields;
 }
 
-interface BinaryModule {
-  type: "BinaryModule";
-  blob: Array<string>;
-}
+type BinaryModule = Module & {
+  type: "BinaryModule",
+  blob: Array<string>
+};
 
-interface QuoteModule {
-  type: "QuoteModule";
-  string: Array<string>;
-}
+type QuoteModule = Module & {
+  type: "QuoteModule",
+  string: Array<string>
+};
 
 type FuncParam = {
   id: ?string,
@@ -123,7 +159,7 @@ interface Func {
 interface Instruction {
   type: InstructionType;
   id: string;
-  args: Array<NumberLiteral | LongNumberLiteral | Identifier>;
+  args: Array<Expression>;
 
   // key=value for special instruction arguments
   namedArgs?: Object;
@@ -149,7 +185,7 @@ type BlockInstruction = Instruction & {
 
 type IfInstruction = Instruction & {
   type: "IfInstruction",
-  testLabel: Index,
+  testLabel: Identifier, // only for WAST
   result: ?Valtype,
   consequent: Array<Instruction>,
   alternate: Array<Instruction>
@@ -177,7 +213,7 @@ type Limit = {
 
 type FuncImportDescr = {
   type: "FuncImportDescr",
-  value: NumberLiteral | Identifier,
+  value: Index,
   params: Array<FuncParam>,
   results: Array<Valtype>
 };
@@ -191,16 +227,16 @@ interface ModuleImport {
   descr: ImportDescr;
 }
 
-type Table = {
+type Table = Node & {
   type: "Table",
-  elementType: "anyfunc",
+  elementType: TableElementType,
   limits: Limit
 };
 
 type Memory = {
   type: "Memory",
   limits: Limit,
-  id: ?Identifier
+  id: ?Index
 };
 
 type ByteArray = {
@@ -235,4 +271,9 @@ type LeadingComment = {
 type BlockComment = {
   type: "BlockComment",
   value: string
+};
+
+type ValtypeLiteral = {
+  type: "ValtypeLiteral",
+  name: Valtype
 };

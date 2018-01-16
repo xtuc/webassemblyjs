@@ -75,7 +75,7 @@ type StackLocal = {
   value: any
 };
 
-interface Number<T> {
+interface NumberInterface<T> {
   add(operand: T): T;
   sub(operand: T): T;
   mul(operand: T): T;
