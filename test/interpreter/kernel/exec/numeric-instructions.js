@@ -783,7 +783,7 @@ describe("kernel exec - numeric instructions", () => {
     }
   ];
 
-  operations.forEach((op/*: TestCase*/) => {
+  operations.forEach((op /*: TestCase*/) => {
     describe(op.name, () => {
       it("should get the correct result", () => {
         const args = op.args.map(({ value, type, nan }) =>
