@@ -9,7 +9,7 @@ const f64 = require("./values/f64");
 export function castIntoStackLocalOfType(
   type: string,
   v: any,
-  nan: boolean
+  nan: boolean = false
 ): StackLocal {
   const castFn = {
     i32: i32.createValueFromAST,

@@ -745,7 +745,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           index = t.identifier(token.value);
           eatToken();
         } else if (token.type === tokens.number) {
-          index = t.numberLiteral(token.value);
+          index = t.indexLiteral(token.value);
           eatToken();
         }
 
