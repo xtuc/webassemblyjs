@@ -27,46 +27,39 @@ function binop(
   createValue: any => StackLocal
 ): StackLocal {
   switch (sign) {
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-iadd
     case "add":
       return createValue(c1.add(c2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-imul
     case "sub":
       return createValue(c1.sub(c2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-imul
     case "mul":
       return createValue(c1.mul(c2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-idiv-u
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-idiv-s
     case "div_s":
+      return createValue(c1.div_s(c2));
+
     case "div_u":
+      return createValue(c1.div_u(c2));
+
     case "div":
       return createValue(c1.div(c2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-iand
     case "and":
       return createValue(c1.and(c2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ior
     case "or":
       return createValue(c1.or(c2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ixor
     case "xor":
       return createValue(c1.xor(c2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-fmin
     case "min":
       return createValue(c1.min(c2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-fmax
     case "max":
       return createValue(c1.max(c2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-fcopysign
     case "copysign":
       return createValue(c1.copysign(c2));
   }

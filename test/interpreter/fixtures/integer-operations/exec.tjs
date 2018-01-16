@@ -1,0 +1,405 @@
+const m = WebAssembly.instantiateFromSource(watfmodule);
+
+// \(assert_return \(invoke "([a-z_]*)" \(i32\.const ([0-9a-z-]*)\) \(i32\.const ([0-9a-z-]*)\)\) \(i32.const ([0-9a-z-]*)\)\)
+// equals(m.exports.$1($2, $3), $4);
+
+// \(assert_trap \(invoke "([a-z_]*)" \(i32\.const ([0-9a-z-]*)\) \(i32\.const ([0-9a-z-]*)\)\) "[a-z ]*"\)
+// throws(() => m.exports.$1($2, $3), "$4");
+
+// \(assert_return \(invoke "([a-z_]*)" \(i32\.const ([0-9a-zA-Z-]*)\)\) \(i32\.const ([0-9a-z-]*)\)\)
+// equals(m.exports.$1($2), $3);
+
+it("should conform to the wasm test suite", () => {
+  // the WebAssembly test suite assert values are unsigned integer values. The JS <=> WASM boundary
+  // converts these into signed values. Here we perform the required conversion so that we can use the
+  // same expected value in our tests.
+  const equals = (actual, expected) => assert.equal(actual, expected | 0);
+
+  equals(m.exports.add(1, 1), 2);
+  equals(m.exports.add(1, 0), 1);
+  equals(m.exports.add(-1, -1), -2);
+  equals(m.exports.add(-1, 1), 0);
+  equals(m.exports.add(0x7fffffff, 1), 0x80000000);
+  equals(m.exports.add(0x80000000, -1), 0x7fffffff);
+  equals(m.exports.add(0x80000000, 0x80000000), 0);
+  equals(m.exports.add(0x3fffffff, 1), 0x40000000);
+
+  equals(m.exports.sub(1, 1), 0);
+  equals(m.exports.sub(1, 0), 1);
+  equals(m.exports.sub(-1, -1), 0);
+  equals(m.exports.sub(0x7fffffff, -1), 0x80000000);
+  equals(m.exports.sub(0x80000000, 1), 0x7fffffff);
+  equals(m.exports.sub(0x80000000, 0x80000000), 0);
+  equals(m.exports.sub(0x3fffffff, -1), 0x40000000);
+
+  equals(m.exports.mul(1, 1), 1);
+  equals(m.exports.mul(1, 0), 0);
+  equals(m.exports.mul(-1, -1), 1);
+  equals(m.exports.mul(0x10000000, 4096), 0);
+  equals(m.exports.mul(0x80000000, 0), 0);
+  equals(m.exports.mul(0x80000000, -1), 0x80000000);
+  equals(m.exports.mul(0x7fffffff, -1), 0x80000001);
+  equals(m.exports.mul(0x01234567, 0x76543210), 0x358e7470);
+  equals(m.exports.mul(0x7fffffff, 0x7fffffff), 1);
+
+  assert.throws(() => m.exports.div_s(1, 0), "integer divide by zero");
+  assert.throws(() => m.exports.div_s(0, 0), "integer divide by zero");
+  // assert.throws(() => m.exports.div_s(0x80000000, -1), "integer overflow");
+  equals(m.exports.div_s(1, 1), 1);
+  equals(m.exports.div_s(0, 1), 0);
+  equals(m.exports.div_s(0, -1), 0);
+  equals(m.exports.div_s(-1, -1), 1);
+  equals(m.exports.div_s(0x80000000, 2), 0xc0000000);
+  equals(m.exports.div_s(0x80000001, 1000), 0xffdf3b65);
+  equals(m.exports.div_s(5, 2), 2);
+  equals(m.exports.div_s(-5, 2), -2);
+  equals(m.exports.div_s(5, -2), -2);
+  equals(m.exports.div_s(-5, -2), 2);
+  equals(m.exports.div_s(7, 3), 2);
+  equals(m.exports.div_s(-7, 3), -2);
+  equals(m.exports.div_s(7, -3), -2);
+  equals(m.exports.div_s(-7, -3), 2);
+  equals(m.exports.div_s(11, 5), 2);
+  equals(m.exports.div_s(17, 7), 2);
+
+  assert.throws(() => m.exports.div_u(1, 0), "integer divide by zero");
+  assert.throws(() => m.exports.div_u(0, 0), "integer divide by zero");
+  equals(m.exports.div_u(1, 1), 1);
+  equals(m.exports.div_u(0, 1), 0);
+  equals(m.exports.div_u(-1, -1), 1);
+  equals(m.exports.div_u(0x80000000, -1), 0);
+  equals(m.exports.div_u(0x80000000, 2), 0x40000000);
+  equals(m.exports.div_u(0x8ff00ff0, 0x10001), 0x8fef);
+  equals(m.exports.div_u(0x80000001, 1000), 0x20c49b);
+  equals(m.exports.div_u(5, 2), 2);
+  equals(m.exports.div_u(-5, 2), 0x7ffffffd);
+  equals(m.exports.div_u(5, -2), 0);
+  equals(m.exports.div_u(-5, -2), 0);
+  equals(m.exports.div_u(7, 3), 2);
+  equals(m.exports.div_u(11, 5), 2);
+  equals(m.exports.div_u(17, 7), 2);
+
+  // throws(() => m.exports.rem_s(1, 0), "$4");
+  // throws(() => m.exports.rem_s(0, 0), "$4");
+  // equals(m.exports.rem_s(0x7fffffff, -1), 0);
+  // equals(m.exports.rem_s(1, 1), 0);
+  // equals(m.exports.rem_s(0, 1), 0);
+  // equals(m.exports.rem_s(0, -1), 0);
+  // equals(m.exports.rem_s(-1, -1), 0);
+  // equals(m.exports.rem_s(0x80000000, -1), 0);
+  // equals(m.exports.rem_s(0x80000000, 2), 0);
+  // equals(m.exports.rem_s(0x80000001, 1000), -647);
+  // equals(m.exports.rem_s(5, 2), 1);
+  // equals(m.exports.rem_s(-5, 2), -1);
+  // equals(m.exports.rem_s(5, -2), 1);
+  // equals(m.exports.rem_s(-5, -2), -1);
+  // equals(m.exports.rem_s(7, 3), 1);
+  // equals(m.exports.rem_s(-7, 3), -1);
+  // equals(m.exports.rem_s(7, -3), 1);
+  // equals(m.exports.rem_s(-7, -3), -1);
+  // equals(m.exports.rem_s(11, 5), 1);
+  // equals(m.exports.rem_s(17, 7), 3);
+
+  // throws(() => m.exports.rem_u(1, 0), "$4");
+  // throws(() => m.exports.rem_u(0, 0), "$4");
+  // equals(m.exports.rem_u(1, 1), 0);
+  // equals(m.exports.rem_u(0, 1), 0);
+  // equals(m.exports.rem_u(-1, -1), 0);
+  // equals(m.exports.rem_u(0x80000000, -1), 0x80000000);
+  // equals(m.exports.rem_u(0x80000000, 2), 0);
+  // equals(m.exports.rem_u(0x8ff00ff0, 0x10001), 0x8001);
+  // equals(m.exports.rem_u(0x80000001, 1000), 649);
+  // equals(m.exports.rem_u(5, 2), 1);
+  // equals(m.exports.rem_u(-5, 2), 1);
+  // equals(m.exports.rem_u(5, -2), 5);
+  // equals(m.exports.rem_u(-5, -2), -5);
+  // equals(m.exports.rem_u(7, 3), 1);
+  // equals(m.exports.rem_u(11, 5), 1);
+  // equals(m.exports.rem_u(17, 7), 3);
+
+  // equals(m.exports.and(1, 0), 0);
+  // equals(m.exports.and(0, 1), 0);
+  // equals(m.exports.and(1, 1), 1);
+  // equals(m.exports.and(0, 0), 0);
+  // equals(m.exports.and(0x7fffffff, 0x80000000), 0);
+  // equals(m.exports.and(0x7fffffff, -1), 0x7fffffff);
+  // equals(m.exports.and(0xf0f0ffff, 0xfffff0f0), 0xf0f0f0f0);
+  // equals(m.exports.and(0xffffffff, 0xffffffff), 0xffffffff);
+
+  equals(m.exports.or(1, 0), 1);
+  equals(m.exports.or(0, 1), 1);
+  equals(m.exports.or(1, 1), 1);
+  equals(m.exports.or(0, 0), 0);
+  equals(m.exports.or(0x7fffffff, 0x80000000), -1);
+  equals(m.exports.or(0x80000000, 0), 0x80000000);
+  equals(m.exports.or(0xf0f0ffff, 0xfffff0f0), 0xffffffff);
+  equals(m.exports.or(0xffffffff, 0xffffffff), 0xffffffff);
+
+  equals(m.exports.xor(1, 0), 1);
+  equals(m.exports.xor(0, 1), 1);
+  equals(m.exports.xor(1, 1), 0);
+  equals(m.exports.xor(0, 0), 0);
+  equals(m.exports.xor(0x7fffffff, 0x80000000), -1);
+  equals(m.exports.xor(0x80000000, 0), 0x80000000);
+  equals(m.exports.xor(-1, 0x80000000), 0x7fffffff);
+  equals(m.exports.xor(-1, 0x7fffffff), 0x80000000);
+  equals(m.exports.xor(0xf0f0ffff, 0xfffff0f0), 0x0f0f0f0f);
+  equals(m.exports.xor(0xffffffff, 0xffffffff), 0);
+
+  // equals(m.exports.shl(1, 1), 2);
+  // equals(m.exports.shl(1, 0), 1);
+  // equals(m.exports.shl(0x7fffffff, 1), 0xfffffffe);
+  // equals(m.exports.shl(0xffffffff, 1), 0xfffffffe);
+  // equals(m.exports.shl(0x80000000, 1), 0);
+  // equals(m.exports.shl(0x40000000, 1), 0x80000000);
+  // equals(m.exports.shl(1, 31), 0x80000000);
+  // equals(m.exports.shl(1, 32), 1);
+  // equals(m.exports.shl(1, 33), 2);
+  // equals(m.exports.shl(1, -1), 0x80000000);
+  // equals(m.exports.shl(1, 0x7fffffff), 0x80000000);
+
+  // equals(m.exports.shr_s(1, 1), 0);
+  // equals(m.exports.shr_s(1, 0), 1);
+  // equals(m.exports.shr_s(-1, 1), -1);
+  // equals(m.exports.shr_s(0x7fffffff, 1), 0x3fffffff);
+  // equals(m.exports.shr_s(0x80000000, 1), 0xc0000000);
+  // equals(m.exports.shr_s(0x40000000, 1), 0x20000000);
+  // equals(m.exports.shr_s(1, 32), 1);
+  // equals(m.exports.shr_s(1, 33), 0);
+  // equals(m.exports.shr_s(1, -1), 0);
+  // equals(m.exports.shr_s(1, 0x7fffffff), 0);
+  // equals(m.exports.shr_s(1, 0x80000000), 1);
+  // equals(m.exports.shr_s(0x80000000, 31), -1);
+  // equals(m.exports.shr_s(-1, 32), -1);
+  // equals(m.exports.shr_s(-1, 33), -1);
+  // equals(m.exports.shr_s(-1, -1), -1);
+  // equals(m.exports.shr_s(-1, 0x7fffffff), -1);
+  // equals(m.exports.shr_s(-1, 0x80000000), -1);
+
+  // equals(m.exports.shr_u(1, 1), 0);
+  // equals(m.exports.shr_u(1, 0), 1);
+  // equals(m.exports.shr_u(-1, 1), 0x7fffffff);
+  // equals(m.exports.shr_u(0x7fffffff, 1), 0x3fffffff);
+  // equals(m.exports.shr_u(0x80000000, 1), 0x40000000);
+  // equals(m.exports.shr_u(0x40000000, 1), 0x20000000);
+  // equals(m.exports.shr_u(1, 32), 1);
+  // equals(m.exports.shr_u(1, 33), 0);
+  // equals(m.exports.shr_u(1, -1), 0);
+  // equals(m.exports.shr_u(1, 0x7fffffff), 0);
+  // equals(m.exports.shr_u(1, 0x80000000), 1);
+  // equals(m.exports.shr_u(0x80000000, 31), 1);
+  // equals(m.exports.shr_u(-1, 32), -1);
+  // equals(m.exports.shr_u(-1, 33), 0x7fffffff);
+  // equals(m.exports.shr_u(-1, -1), 1);
+  // equals(m.exports.shr_u(-1, 0x7fffffff), 1);
+  // equals(m.exports.shr_u(-1, 0x80000000), -1);
+
+  // equals(m.exports.rotl(1, 1), 2);
+  // equals(m.exports.rotl(1, 0), 1);
+  // equals(m.exports.rotl(-1, 1), -1);
+  // equals(m.exports.rotl(1, 32), 1);
+  // equals(m.exports.rotl(0xabcd9876, 1), 0x579b30ed);
+  // equals(m.exports.rotl(0xfe00dc00, 4), 0xe00dc00f);
+  // equals(m.exports.rotl(0xb0c1d2e3, 5), 0x183a5c76);
+  // equals(m.exports.rotl(0x00008000, 37), 0x00100000);
+  // equals(m.exports.rotl(0xb0c1d2e3, 0xff05), 0x183a5c76);
+  // equals(m.exports.rotl(0x769abcdf, 0xffffffed), 0x579beed3);
+  // equals(m.exports.rotl(0x769abcdf, 0x8000000d), 0x579beed3);
+  // equals(m.exports.rotl(1, 31), 0x80000000);
+  // equals(m.exports.rotl(0x80000000, 1), 1);
+
+  // equals(m.exports.rotr(1, 1), 0x80000000);
+  // equals(m.exports.rotr(1, 0), 1);
+  // equals(m.exports.rotr(-1, 1), -1);
+  // equals(m.exports.rotr(1, 32), 1);
+  // equals(m.exports.rotr(0xff00cc00, 1), 0x7f806600);
+  // equals(m.exports.rotr(0x00080000, 4), 0x00008000);
+  // equals(m.exports.rotr(0xb0c1d2e3, 5), 0x1d860e97);
+  // equals(m.exports.rotr(0x00008000, 37), 0x00000400);
+  // equals(m.exports.rotr(0xb0c1d2e3, 0xff05), 0x1d860e97);
+  // equals(m.exports.rotr(0x769abcdf, 0xffffffed), 0xe6fbb4d5);
+  // equals(m.exports.rotr(0x769abcdf, 0x8000000d), 0xe6fbb4d5);
+  // equals(m.exports.rotr(1, 31), 2);
+  // equals(m.exports.rotr(0x80000000, 31), 1);
+
+  // equals(m.exports.clz(0xffffffff), 0);
+  // equals(m.exports.clz(0), 32);
+  // equals(m.exports.clz(0x00008000), 16);
+  // equals(m.exports.clz(0xff), 24);
+  // equals(m.exports.clz(0x80000000), 0);
+  // equals(m.exports.clz(1), 31);
+  // equals(m.exports.clz(2), 30);
+  // equals(m.exports.clz(0x7fffffff), 1);
+
+  // equals(m.exports.ctz(-1), 0);
+  // equals(m.exports.ctz(0), 32);
+  // equals(m.exports.ctz(0x00008000), 15);
+  // equals(m.exports.ctz(0x00010000), 16);
+  // equals(m.exports.ctz(0x80000000), 31);
+  // equals(m.exports.ctz(0x7fffffff), 0);
+
+  // equals(m.exports.popcnt(-1), 32);
+  // equals(m.exports.popcnt(0), 0);
+  // equals(m.exports.popcnt(0x00008000), 1);
+  // equals(m.exports.popcnt(0x80008000), 2);
+  // equals(m.exports.popcnt(0x7fffffff), 31);
+  // equals(m.exports.popcnt(0xaaaaaaaa), 16);
+  // equals(m.exports.popcnt(0x55555555), 16);
+  // equals(m.exports.popcnt(0xdeadbeef), 24);
+
+  // equals(m.exports.eqz(0), 1);
+  // equals(m.exports.eqz(1), 0);
+  // equals(m.exports.eqz(0x80000000), 0);
+  // equals(m.exports.eqz(0x7fffffff), 0);
+  // equals(m.exports.eqz(0xffffffff), 0);
+
+  // equals(m.exports.eq(0, 0), 1);
+  // equals(m.exports.eq(1, 1), 1);
+  // equals(m.exports.eq(-1, 1), 0);
+  // equals(m.exports.eq(0x80000000, 0x80000000), 1);
+  // equals(m.exports.eq(0x7fffffff, 0x7fffffff), 1);
+  // equals(m.exports.eq(-1, -1), 1);
+  // equals(m.exports.eq(1, 0), 0);
+  // equals(m.exports.eq(0, 1), 0);
+  // equals(m.exports.eq(0x80000000, 0), 0);
+  // equals(m.exports.eq(0, 0x80000000), 0);
+  // equals(m.exports.eq(0x80000000, -1), 0);
+  // equals(m.exports.eq(-1, 0x80000000), 0);
+  // equals(m.exports.eq(0x80000000, 0x7fffffff), 0);
+  // equals(m.exports.eq(0x7fffffff, 0x80000000), 0);
+
+  // equals(m.exports.ne(0, 0), 0);
+  // equals(m.exports.ne(1, 1), 0);
+  // equals(m.exports.ne(-1, 1), 1);
+  // equals(m.exports.ne(0x80000000, 0x80000000), 0);
+  // equals(m.exports.ne(0x7fffffff, 0x7fffffff), 0);
+  // equals(m.exports.ne(-1, -1), 0);
+  // equals(m.exports.ne(1, 0), 1);
+  // equals(m.exports.ne(0, 1), 1);
+  // equals(m.exports.ne(0x80000000, 0), 1);
+  // equals(m.exports.ne(0, 0x80000000), 1);
+  // equals(m.exports.ne(0x80000000, -1), 1);
+  // equals(m.exports.ne(-1, 0x80000000), 1);
+  // equals(m.exports.ne(0x80000000, 0x7fffffff), 1);
+  // equals(m.exports.ne(0x7fffffff, 0x80000000), 1);
+
+  // equals(m.exports.lt_s(0, 0), 0);
+  // equals(m.exports.lt_s(1, 1), 0);
+  // equals(m.exports.lt_s(-1, 1), 1);
+  // equals(m.exports.lt_s(0x80000000, 0x80000000), 0);
+  // equals(m.exports.lt_s(0x7fffffff, 0x7fffffff), 0);
+  // equals(m.exports.lt_s(-1, -1), 0);
+  // equals(m.exports.lt_s(1, 0), 0);
+  // equals(m.exports.lt_s(0, 1), 1);
+  // equals(m.exports.lt_s(0x80000000, 0), 1);
+  // equals(m.exports.lt_s(0, 0x80000000), 0);
+  // equals(m.exports.lt_s(0x80000000, -1), 1);
+  // equals(m.exports.lt_s(-1, 0x80000000), 0);
+  // equals(m.exports.lt_s(0x80000000, 0x7fffffff), 1);
+  // equals(m.exports.lt_s(0x7fffffff, 0x80000000), 0);
+
+  // equals(m.exports.lt_u(0, 0), 0);
+  // equals(m.exports.lt_u(1, 1), 0);
+  // equals(m.exports.lt_u(-1, 1), 0);
+  // equals(m.exports.lt_u(0x80000000, 0x80000000), 0);
+  // equals(m.exports.lt_u(0x7fffffff, 0x7fffffff), 0);
+  // equals(m.exports.lt_u(-1, -1), 0);
+  // equals(m.exports.lt_u(1, 0), 0);
+  // equals(m.exports.lt_u(0, 1), 1);
+  // equals(m.exports.lt_u(0x80000000, 0), 0);
+  // equals(m.exports.lt_u(0, 0x80000000), 1);
+  // equals(m.exports.lt_u(0x80000000, -1), 1);
+  // equals(m.exports.lt_u(-1, 0x80000000), 0);
+  // equals(m.exports.lt_u(0x80000000, 0x7fffffff), 0);
+  // equals(m.exports.lt_u(0x7fffffff, 0x80000000), 1);
+
+  // equals(m.exports.le_s(0, 0), 1);
+  // equals(m.exports.le_s(1, 1), 1);
+  // equals(m.exports.le_s(-1, 1), 1);
+  // equals(m.exports.le_s(0x80000000, 0x80000000), 1);
+  // equals(m.exports.le_s(0x7fffffff, 0x7fffffff), 1);
+  // equals(m.exports.le_s(-1, -1), 1);
+  // equals(m.exports.le_s(1, 0), 0);
+  // equals(m.exports.le_s(0, 1), 1);
+  // equals(m.exports.le_s(0x80000000, 0), 1);
+  // equals(m.exports.le_s(0, 0x80000000), 0);
+  // equals(m.exports.le_s(0x80000000, -1), 1);
+  // equals(m.exports.le_s(-1, 0x80000000), 0);
+  // equals(m.exports.le_s(0x80000000, 0x7fffffff), 1);
+  // equals(m.exports.le_s(0x7fffffff, 0x80000000), 0);
+
+  // equals(m.exports.le_u(0, 0), 1);
+  // equals(m.exports.le_u(1, 1), 1);
+  // equals(m.exports.le_u(-1, 1), 0);
+  // equals(m.exports.le_u(0x80000000, 0x80000000), 1);
+  // equals(m.exports.le_u(0x7fffffff, 0x7fffffff), 1);
+  // equals(m.exports.le_u(-1, -1), 1);
+  // equals(m.exports.le_u(1, 0), 0);
+  // equals(m.exports.le_u(0, 1), 1);
+  // equals(m.exports.le_u(0x80000000, 0), 0);
+  // equals(m.exports.le_u(0, 0x80000000), 1);
+  // equals(m.exports.le_u(0x80000000, -1), 1);
+  // equals(m.exports.le_u(-1, 0x80000000), 0);
+  // equals(m.exports.le_u(0x80000000, 0x7fffffff), 0);
+  // equals(m.exports.le_u(0x7fffffff, 0x80000000), 1);
+
+  // equals(m.exports.gt_s(0, 0), 0);
+  // equals(m.exports.gt_s(1, 1), 0);
+  // equals(m.exports.gt_s(-1, 1), 0);
+  // equals(m.exports.gt_s(0x80000000, 0x80000000), 0);
+  // equals(m.exports.gt_s(0x7fffffff, 0x7fffffff), 0);
+  // equals(m.exports.gt_s(-1, -1), 0);
+  // equals(m.exports.gt_s(1, 0), 1);
+  // equals(m.exports.gt_s(0, 1), 0);
+  // equals(m.exports.gt_s(0x80000000, 0), 0);
+  // equals(m.exports.gt_s(0, 0x80000000), 1);
+  // equals(m.exports.gt_s(0x80000000, -1), 0);
+  // equals(m.exports.gt_s(-1, 0x80000000), 1);
+  // equals(m.exports.gt_s(0x80000000, 0x7fffffff), 0);
+  // equals(m.exports.gt_s(0x7fffffff, 0x80000000), 1);
+
+  // equals(m.exports.gt_u(0, 0), 0);
+  // equals(m.exports.gt_u(1, 1), 0);
+  // equals(m.exports.gt_u(-1, 1), 1);
+  // equals(m.exports.gt_u(0x80000000, 0x80000000), 0);
+  // equals(m.exports.gt_u(0x7fffffff, 0x7fffffff), 0);
+  // equals(m.exports.gt_u(-1, -1), 0);
+  // equals(m.exports.gt_u(1, 0), 1);
+  // equals(m.exports.gt_u(0, 1), 0);
+  // equals(m.exports.gt_u(0x80000000, 0), 1);
+  // equals(m.exports.gt_u(0, 0x80000000), 0);
+  // equals(m.exports.gt_u(0x80000000, -1), 0);
+  // equals(m.exports.gt_u(-1, 0x80000000), 1);
+  // equals(m.exports.gt_u(0x80000000, 0x7fffffff), 1);
+  // equals(m.exports.gt_u(0x7fffffff, 0x80000000), 0);
+
+  // equals(m.exports.ge_s(0, 0), 1);
+  // equals(m.exports.ge_s(1, 1), 1);
+  // equals(m.exports.ge_s(-1, 1), 0);
+  // equals(m.exports.ge_s(0x80000000, 0x80000000), 1);
+  // equals(m.exports.ge_s(0x7fffffff, 0x7fffffff), 1);
+  // equals(m.exports.ge_s(-1, -1), 1);
+  // equals(m.exports.ge_s(1, 0), 1);
+  // equals(m.exports.ge_s(0, 1), 0);
+  // equals(m.exports.ge_s(0x80000000, 0), 0);
+  // equals(m.exports.ge_s(0, 0x80000000), 1);
+  // equals(m.exports.ge_s(0x80000000, -1), 0);
+  // equals(m.exports.ge_s(-1, 0x80000000), 1);
+  // equals(m.exports.ge_s(0x80000000, 0x7fffffff), 0);
+  // equals(m.exports.ge_s(0x7fffffff, 0x80000000), 1);
+
+  // equals(m.exports.ge_u(0, 0), 1);
+  // equals(m.exports.ge_u(1, 1), 1);
+  // equals(m.exports.ge_u(-1, 1), 1);
+  // equals(m.exports.ge_u(0x80000000, 0x80000000), 1);
+  // equals(m.exports.ge_u(0x7fffffff, 0x7fffffff), 1);
+  // equals(m.exports.ge_u(-1, -1), 1);
+  // equals(m.exports.ge_u(1, 0), 1);
+  // equals(m.exports.ge_u(0, 1), 0);
+  // equals(m.exports.ge_u(0x80000000, 0), 1);
+  // equals(m.exports.ge_u(0, 0x80000000), 0);
+  // equals(m.exports.ge_u(0x80000000, -1), 0);
+  // equals(m.exports.ge_u(-1, 0x80000000), 1);
+  // equals(m.exports.ge_u(0x80000000, 0x7fffffff), 1);
+  // equals(m.exports.ge_u(0x7fffffff, 0x80000000), 0);
+});
