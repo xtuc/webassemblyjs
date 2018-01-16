@@ -418,17 +418,6 @@ export function blockComment(value: string): BlockComment {
   };
 }
 
-export function unaryExpression(
-  operator: UnaryExpressionOperators,
-  argument: Expression
-): UnaryExpression {
-  return {
-    type: "UnaryExpression",
-    operator,
-    argument
-  };
-}
-
 export function indexLiteral(value: number | string): Index {
   return numberLiteral(value, "i32");
 }
