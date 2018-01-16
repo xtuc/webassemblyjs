@@ -15,15 +15,15 @@
           "id": "br_table",
           "args": [
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 0
             },
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 1
             },
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 3
             }
           ]

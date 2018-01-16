@@ -24,7 +24,7 @@
           "id": "get_local",
           "args": [
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 0
             }
           ]
@@ -34,7 +34,7 @@
           "id": "get_local",
           "args": [
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 1
             }
           ]

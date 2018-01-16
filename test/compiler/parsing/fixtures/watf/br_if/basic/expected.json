@@ -15,7 +15,7 @@
           "id": "br_if",
           "args": [
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 0
             }
           ]
