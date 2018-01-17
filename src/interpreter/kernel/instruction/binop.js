@@ -13,7 +13,14 @@ type Sign =
   | "~"
   | "min"
   | "max"
-  | "copysign";
+  | "copysign"
+  | "rem_s"
+  | "rem_u"
+  | "shl"
+  | "shr_s"
+  | "shr_u"
+  | "rotl"
+  | "rotr";
 
 const i32 = require("../../runtime/values/i32");
 const i64 = require("../../runtime/values/i64");

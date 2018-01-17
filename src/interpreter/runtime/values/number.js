@@ -1,4 +1,5 @@
 // @flow
+import { RuntimeError } from "../../../errors";
 
 export class BaseNumber implements NumberInterface<BaseNumber> {
   _value: number;
@@ -68,6 +69,36 @@ export class BaseNumber implements NumberInterface<BaseNumber> {
   neg(): BaseNumber {
     return new BaseNumber(-this._value);
   }
+
+  /*eslint-disable no-unused-vars*/
+  rem_s(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  rem_u(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  shl(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  shr_s(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  shr_u(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  rotl(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  rotr(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+  /*eslint-enable */
 
   copysign(operand: BaseNumber): BaseNumber {
     return new BaseNumber(

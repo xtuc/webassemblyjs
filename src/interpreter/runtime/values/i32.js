@@ -11,7 +11,7 @@ const type = "i32";
 // this function performs the inverse
 const toUnsigned = a => (a < 0 ? a + Math.pow(2, bits) : a);
 
-export class i32 implements Number<i32> {
+export class i32 implements NumberInterface<i32> {
   _value: number;
 
   constructor(value: number) {
