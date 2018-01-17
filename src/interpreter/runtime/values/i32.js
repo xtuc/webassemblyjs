@@ -87,6 +87,22 @@ export class i32 implements Number<i32> {
     return new i32(this._value >>> operand._value);
   }
 
+  rotl(rotation: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-rotl
+    return new i32(
+      (this._value << rotation._value) |
+        (this._value >>> (bits - rotation._value))
+    );
+  }
+
+  rotr(rotation: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-rotl
+    return new i32(
+      (this._value >>> rotation._value) |
+        (this._value << (bits - rotation._value))
+    );
+  }
+
   div(): i32 {
     throw new RuntimeError("Unsupported operation");
   }

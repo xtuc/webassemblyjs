@@ -57,6 +57,12 @@ function binop(
     case "shr_u":
       return createValue(c1.shr_u(c2));
 
+    case "rotl":
+      return createValue(c1.rotl(c2));
+
+    case "rotr":
+      return createValue(c1.rotr(c2));
+
     case "div":
       return createValue(c1.div(c2));
 

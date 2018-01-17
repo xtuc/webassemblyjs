@@ -86,6 +86,8 @@ interface NumberInterface<T> {
   shl(operand: T): T;
   shr_s(operand: T): T;
   shr_u(operand: T): T;
+  rotl(operand: T): T;
+  rotr(operand: T): T;
   div(operand: T): T;
   and(operand: T): T;
   or(operand: T): T;
