@@ -103,6 +103,34 @@ export class i32 implements NumberInterface<i32> {
     );
   }
 
+  clz(): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-iclz
+    if (this._value == 0) {
+      return new i32(bits);
+    }
+    let lead = 0;
+    let temp = toUnsigned(this._value);
+    while ((temp & 0x80000000) == 0) {
+      lead++;
+      temp = (temp << 1) >>> 0;
+    }
+    return new i32(lead);
+  }
+
+  ctz(): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ictz
+    if (this._value == 0) {
+      return new i32(bits);
+    }
+    let lead = 0;
+    let temp = toUnsigned(this._value);
+    while ((temp & 0x1) == 0) {
+      lead++;
+      temp = (temp >> 1) >>> 0;
+    }
+    return new i32(lead);
+  }
+
   div(): i32 {
     throw new RuntimeError("Unsupported operation");
   }

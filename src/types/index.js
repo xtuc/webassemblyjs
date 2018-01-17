@@ -98,6 +98,8 @@ interface NumberInterface<T> {
 
   neg(): T;
   abs(): T;
+  clz(): T;
+  ctz(): T;
 
   isZero(): boolean;
 

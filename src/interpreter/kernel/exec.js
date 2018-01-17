@@ -721,7 +721,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
        * Unary operations
        */
       case "abs":
-      case "neg": {
+      case "neg":
+      case "clz":
+      case "ctz": {
         let unopFn;
 
         switch (instruction.object) {
@@ -746,7 +748,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
             );
         }
 
-        const c = pop1("f32");
+        const c = pop1(instruction.object);
 
         pushResult(unopFn(c, instruction.id));
 

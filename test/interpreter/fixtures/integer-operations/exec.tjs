@@ -222,21 +222,21 @@ it("should conform to the wasm test suite", () => {
   equals(m.exports.rotr(1, 31), 2);
   equals(m.exports.rotr(0x80000000, 31), 1);
 
-  // equals(m.exports.clz(0xffffffff), 0);
-  // equals(m.exports.clz(0), 32);
-  // equals(m.exports.clz(0x00008000), 16);
-  // equals(m.exports.clz(0xff), 24);
-  // equals(m.exports.clz(0x80000000), 0);
-  // equals(m.exports.clz(1), 31);
-  // equals(m.exports.clz(2), 30);
-  // equals(m.exports.clz(0x7fffffff), 1);
+  equals(m.exports.clz(0xffffffff), 0);
+  equals(m.exports.clz(0), 32);
+  equals(m.exports.clz(0x00008000), 16);
+  equals(m.exports.clz(0xff), 24);
+  equals(m.exports.clz(0x80000000), 0);
+  equals(m.exports.clz(1), 31);
+  equals(m.exports.clz(2), 30);
+  equals(m.exports.clz(0x7fffffff), 1);
 
-  // equals(m.exports.ctz(-1), 0);
-  // equals(m.exports.ctz(0), 32);
-  // equals(m.exports.ctz(0x00008000), 15);
-  // equals(m.exports.ctz(0x00010000), 16);
-  // equals(m.exports.ctz(0x80000000), 31);
-  // equals(m.exports.ctz(0x7fffffff), 0);
+  equals(m.exports.ctz(-1), 0);
+  equals(m.exports.ctz(0), 32);
+  equals(m.exports.ctz(0x00008000), 15);
+  equals(m.exports.ctz(0x00010000), 16);
+  equals(m.exports.ctz(0x80000000), 31);
+  equals(m.exports.ctz(0x7fffffff), 0);
 
   // equals(m.exports.popcnt(-1), 32);
   // equals(m.exports.popcnt(0), 0);

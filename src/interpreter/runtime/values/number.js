@@ -98,6 +98,14 @@ export class BaseNumber implements NumberInterface<BaseNumber> {
   rotr(operand: BaseNumber): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
+
+  clz(): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  ctz(): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
   /*eslint-enable */
 
   copysign(operand: BaseNumber): BaseNumber {
