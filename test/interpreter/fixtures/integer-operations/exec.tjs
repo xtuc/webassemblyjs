@@ -117,14 +117,14 @@ it("should conform to the wasm test suite", () => {
   // equals(m.exports.rem_u(11, 5), 1);
   // equals(m.exports.rem_u(17, 7), 3);
 
-  // equals(m.exports.and(1, 0), 0);
-  // equals(m.exports.and(0, 1), 0);
-  // equals(m.exports.and(1, 1), 1);
-  // equals(m.exports.and(0, 0), 0);
-  // equals(m.exports.and(0x7fffffff, 0x80000000), 0);
-  // equals(m.exports.and(0x7fffffff, -1), 0x7fffffff);
-  // equals(m.exports.and(0xf0f0ffff, 0xfffff0f0), 0xf0f0f0f0);
-  // equals(m.exports.and(0xffffffff, 0xffffffff), 0xffffffff);
+  equals(m.exports.and(1, 0), 0);
+  equals(m.exports.and(0, 1), 0);
+  equals(m.exports.and(1, 1), 1);
+  equals(m.exports.and(0, 0), 0);
+  equals(m.exports.and(0x7fffffff, 0x80000000), 0);
+  equals(m.exports.and(0x7fffffff, -1), 0x7fffffff);
+  equals(m.exports.and(0xf0f0ffff, 0xfffff0f0), 0xf0f0f0f0);
+  equals(m.exports.and(0xffffffff, 0xffffffff), 0xffffffff);
 
   equals(m.exports.or(1, 0), 1);
   equals(m.exports.or(0, 1), 1);

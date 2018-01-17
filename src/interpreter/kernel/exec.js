@@ -679,7 +679,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       case "max":
       case "copysign":
       case "or":
-      case "xor": {
+      case "xor":
+      case "and": {
         let binopFn;
         switch (instruction.object) {
           case "i32":
