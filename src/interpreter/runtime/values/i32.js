@@ -56,6 +56,22 @@ export class i32 implements Number<i32> {
     return new i32(toUnsigned(this._value) / toUnsigned(operand._value));
   }
 
+  rem_s(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-irem-s
+    if (operand._value == 0) {
+      throw new RuntimeError("integer divide by zero");
+    }
+    return new i32(this._value % operand._value);
+  }
+
+  rem_u(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-irem-u
+    if (operand._value == 0) {
+      throw new RuntimeError("integer divide by zero");
+    }
+    return new i32(toUnsigned(this._value) % toUnsigned(operand._value));
+  }
+
   div(): i32 {
     throw new RuntimeError("Unsupported operation");
   }

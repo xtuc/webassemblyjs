@@ -42,6 +42,12 @@ function binop(
     case "div_u":
       return createValue(c1.div_u(c2));
 
+    case "rem_s":
+      return createValue(c1.rem_s(c2));
+
+    case "rem_u":
+      return createValue(c1.rem_u(c2));
+
     case "div":
       return createValue(c1.div(c2));
 

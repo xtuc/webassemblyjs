@@ -81,6 +81,8 @@ interface NumberInterface<T> {
   mul(operand: T): T;
   div_s(operand: T): T;
   div_u(operand: T): T;
+  rem_s(operand: T): T;
+  rem_u(operand: T): T;
   div(operand: T): T;
   and(operand: T): T;
   or(operand: T): T;

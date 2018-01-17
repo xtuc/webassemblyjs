@@ -674,6 +674,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
        */
       case "div_s":
       case "div_u":
+      case "rem_s":
+      case "rem_u":
       case "div":
       case "min":
       case "max":
