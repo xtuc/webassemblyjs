@@ -83,6 +83,9 @@ interface NumberInterface<T> {
   div_u(operand: T): T;
   rem_s(operand: T): T;
   rem_u(operand: T): T;
+  shl(operand: T): T;
+  shr_s(operand: T): T;
+  shr_u(operand: T): T;
   div(operand: T): T;
   and(operand: T): T;
   or(operand: T): T;

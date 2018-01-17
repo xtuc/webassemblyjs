@@ -72,6 +72,21 @@ export class i32 implements Number<i32> {
     return new i32(toUnsigned(this._value) % toUnsigned(operand._value));
   }
 
+  shl(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-shl
+    return new i32(this._value << operand._value);
+  }
+
+  shr_s(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-shr-s
+    return new i32(this._value >> operand._value);
+  }
+
+  shr_u(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-shr-u
+    return new i32(this._value >>> operand._value);
+  }
+
   div(): i32 {
     throw new RuntimeError("Unsupported operation");
   }
