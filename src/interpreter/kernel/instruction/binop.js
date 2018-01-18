@@ -21,7 +21,16 @@ type Sign =
   | "shr_u"
   | "rotl"
   | "rotr"
-  | "eq";
+  | "eq"
+  | "ne"
+  | "lt_s"
+  | "lt_u"
+  | "le_s"
+  | "le_u"
+  | "gt_s"
+  | "gt_u"
+  | "ge_s"
+  | "ge_u";
 
 const i32 = require("../../runtime/values/i32");
 const i64 = require("../../runtime/values/i64");
@@ -79,6 +88,33 @@ function binop(
 
     case "eq":
       return createValue(c1.eq(c2));
+
+    case "ne":
+      return createValue(c1.ne(c2));
+
+    case "lt_s":
+      return createValue(c1.lt_s(c2));
+
+    case "lt_u":
+      return createValue(c1.lt_u(c2));
+
+    case "le_s":
+      return createValue(c1.le_s(c2));
+
+    case "le_u":
+      return createValue(c1.le_u(c2));
+
+    case "gt_s":
+      return createValue(c1.gt_s(c2));
+
+    case "gt_u":
+      return createValue(c1.gt_u(c2));
+
+    case "ge_s":
+      return createValue(c1.ge_s(c2));
+
+    case "ge_u":
+      return createValue(c1.ge_u(c2));
 
     case "or":
       return createValue(c1.or(c2));

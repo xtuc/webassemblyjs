@@ -102,6 +102,42 @@ export class BaseNumber implements NumberInterface<BaseNumber> {
   eq(operand: BaseNumber): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
+
+  ne(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  lt_s(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  lt_u(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  le_s(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  le_u(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  gt_s(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  gt_u(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  ge_s(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
+  ge_u(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
   /*eslint-enable */
 
   clz(): BaseNumber {

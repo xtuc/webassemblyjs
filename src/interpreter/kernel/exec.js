@@ -688,7 +688,16 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       case "or":
       case "xor":
       case "and":
-      case "eq": {
+      case "eq":
+      case "ne":
+      case "lt_s":
+      case "lt_u":
+      case "le_s":
+      case "le_u":
+      case "gt_s":
+      case "gt_u":
+      case "ge_s":
+      case "ge_u": {
         let binopFn;
         switch (instruction.object) {
           case "i32":

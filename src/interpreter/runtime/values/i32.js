@@ -9,7 +9,7 @@ const type = "i32";
 // the specification describes the conversion from unsigned to signed
 // https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed
 // this function performs the inverse
-const toUnsigned = a => (a < 0 ? a + Math.pow(2, bits) : a);
+const toUnsigned = a => a >>> 0;
 
 export class i32 implements NumberInterface<i32> {
   _value: number;
@@ -171,6 +171,59 @@ export class i32 implements NumberInterface<i32> {
   eq(operand: i32): i32 {
     // https://webassembly.github.io/spec/core/exec/numerics.html#op-ieq
     return new i32(this._value == operand._value ? 1 : 0);
+  }
+
+  ne(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ieq
+    return new i32(this._value != operand._value ? 1 : 0);
+  }
+
+  lt_u(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-lt-u
+    return new i32(
+      toUnsigned(this._value) < toUnsigned(operand._value) ? 1 : 0
+    );
+  }
+
+  lt_s(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-lt-s
+    return new i32(this._value < operand._value ? 1 : 0);
+  }
+
+  le_u(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-lt-u
+    return new i32(
+      toUnsigned(this._value) <= toUnsigned(operand._value) ? 1 : 0
+    );
+  }
+
+  le_s(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-lt-s
+    return new i32(this._value <= operand._value ? 1 : 0);
+  }
+
+  gt_u(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-gt-u
+    return new i32(
+      toUnsigned(this._value) > toUnsigned(operand._value) ? 1 : 0
+    );
+  }
+
+  gt_s(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-gt-s
+    return new i32(this._value > operand._value ? 1 : 0);
+  }
+
+  ge_u(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-gt-u
+    return new i32(
+      toUnsigned(this._value) >= toUnsigned(operand._value) ? 1 : 0
+    );
+  }
+
+  ge_s(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-gt-s
+    return new i32(this._value >= operand._value ? 1 : 0);
   }
 
   equals(operand: i32): boolean {

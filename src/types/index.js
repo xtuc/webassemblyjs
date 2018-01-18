@@ -96,6 +96,15 @@ interface NumberInterface<T> {
   max(operand: T): T;
   copysign(operand: T): T;
   eq(operand: T): T;
+  ne(operand: T): T;
+  lt_s(operand: T): T;
+  lt_u(operand: T): T;
+  le_s(operand: T): T;
+  le_u(operand: T): T;
+  gt_s(operand: T): T;
+  gt_u(operand: T): T;
+  ge_s(operand: T): T;
+  ge_u(operand: T): T;
 
   neg(): T;
   abs(): T;
