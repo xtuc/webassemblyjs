@@ -335,6 +335,48 @@ describe("kernel exec - numeric instructions", () => {
     },
 
     {
+      name: "f32.sub",
+
+      args: [{ value: 232111, type: "f32", nan: true }, { value: 1.0, type: "f32" }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("sub", "f32")
+      ],
+
+      resEqual: new f32nan(232111)
+    },
+
+    {
+      name: "f32.sub",
+
+      args: [{ value: 232111, type: "f32", nan: true }, { value: 1, type: "f32", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("sub", "f32")
+      ],
+
+      resEqual: new f32nan(232111)
+    },
+
+    {
+      name: "f32.sub",
+
+      args: [{ value: 232111, type: "f32" }, { value: 1, type: "f32", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("sub", "f32")
+      ],
+
+      resEqual: new f32nan(1)
+    },
+
+    {
       name: "f32.mul",
 
       args: [{ value: 2.0, type: "f32" }, { value: 1.0, type: "f32" }],
@@ -346,6 +388,48 @@ describe("kernel exec - numeric instructions", () => {
       ],
 
       resEqual: new f32(2)
+    },
+
+    {
+      name: "f32.mul",
+
+      args: [{ value: 2, type: "f32", nan: true }, { value: 1.0, type: "f32" }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("mul", "f32")
+      ],
+
+      resEqual: new f32nan(2)
+    },
+
+    {
+      name: "f32.mul",
+
+      args: [{ value: 0, type: "f32", nan: true }, { value: 1, type: "f32", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("mul", "f32")
+      ],
+
+      resEqual: new f32nan(0)
+    },
+
+    {
+      name: "f32.mul",
+
+      args: [{ value: 0, type: "f32" }, { value: 177, type: "f32", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("mul", "f32")
+      ],
+
+      resEqual: new f32nan(177)
     },
 
     {
