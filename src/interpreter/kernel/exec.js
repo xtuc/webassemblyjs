@@ -723,7 +723,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       case "abs":
       case "neg":
       case "clz":
-      case "ctz": {
+      case "ctz":
+      case "popcnt": {
         let unopFn;
 
         switch (instruction.object) {

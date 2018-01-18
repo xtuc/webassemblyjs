@@ -106,6 +106,10 @@ export class BaseNumber implements NumberInterface<BaseNumber> {
   ctz(): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
+
+  popcnt(): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
   /*eslint-enable */
 
   copysign(operand: BaseNumber): BaseNumber {

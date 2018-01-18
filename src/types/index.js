@@ -100,6 +100,7 @@ interface NumberInterface<T> {
   abs(): T;
   clz(): T;
   ctz(): T;
+  popcnt(): T;
 
   isZero(): boolean;
 

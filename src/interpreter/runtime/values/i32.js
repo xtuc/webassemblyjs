@@ -131,6 +131,19 @@ export class i32 implements NumberInterface<i32> {
     return new i32(lead);
   }
 
+  popcnt(): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ipopcnt
+    let temp = toUnsigned(this._value);
+    let count = 0;
+    while (temp != 0) {
+      if (temp & 0x80000000) {
+        count++;
+      }
+      temp = temp << 1;
+    }
+    return new i32(count);
+  }
+
   div(): i32 {
     throw new RuntimeError("Unsupported operation");
   }

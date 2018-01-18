@@ -238,14 +238,14 @@ it("should conform to the wasm test suite", () => {
   equals(m.exports.ctz(0x80000000), 31);
   equals(m.exports.ctz(0x7fffffff), 0);
 
-  // equals(m.exports.popcnt(-1), 32);
-  // equals(m.exports.popcnt(0), 0);
-  // equals(m.exports.popcnt(0x00008000), 1);
-  // equals(m.exports.popcnt(0x80008000), 2);
-  // equals(m.exports.popcnt(0x7fffffff), 31);
-  // equals(m.exports.popcnt(0xaaaaaaaa), 16);
-  // equals(m.exports.popcnt(0x55555555), 16);
-  // equals(m.exports.popcnt(0xdeadbeef), 24);
+  equals(m.exports.popcnt(-1), 32);
+  equals(m.exports.popcnt(0), 0);
+  equals(m.exports.popcnt(0x00008000), 1);
+  equals(m.exports.popcnt(0x80008000), 2);
+  equals(m.exports.popcnt(0x7fffffff), 31);
+  equals(m.exports.popcnt(0xaaaaaaaa), 16);
+  equals(m.exports.popcnt(0x55555555), 16);
+  equals(m.exports.popcnt(0xdeadbeef), 24);
 
   // equals(m.exports.eqz(0), 1);
   // equals(m.exports.eqz(1), 0);
