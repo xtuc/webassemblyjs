@@ -163,8 +163,14 @@ export class i32 implements NumberInterface<i32> {
     return new i32(this._value ^ operand._value);
   }
 
-  isZero() {
-    return this._value == 0;
+  eqz(): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ieqz
+    return new i32(this._value == 0 ? 1 : 0);
+  }
+
+  eq(operand: i32): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ieq
+    return new i32(this._value == operand._value ? 1 : 0);
   }
 
   equals(operand: i32): boolean {
@@ -199,6 +205,10 @@ export class i32 implements NumberInterface<i32> {
 
   toNumber(): number {
     return this._value;
+  }
+
+  isTrue(): boolean {
+    return this._value == 1;
   }
 }
 

@@ -95,17 +95,18 @@ interface NumberInterface<T> {
   min(operand: T): T;
   max(operand: T): T;
   copysign(operand: T): T;
+  eq(operand: T): T;
 
   neg(): T;
   abs(): T;
   clz(): T;
   ctz(): T;
   popcnt(): T;
-
-  isZero(): boolean;
+  eqz(): T;
 
   equals(operand: T): boolean;
   toNumber(): number;
+  isTrue(): boolean;
 }
 
 type Label = {

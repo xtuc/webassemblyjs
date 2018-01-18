@@ -402,7 +402,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         // 2. Pop the value ci32.const c from the stack.
         const c = pop1("i32");
 
-        if (!c.value.isZero()) {
+        if (!c.value.eqz().isTrue()) {
           // 3. If c is non-zero, then
           // 3. a. Execute the instruction (br l).
           const res = br(label);
@@ -441,7 +441,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           return res;
         }
 
-        if (!res.value.isZero()) {
+        if (!res.value.eqz().isTrue()) {
           /**
            * Execute consequent
            */
@@ -687,7 +687,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       case "copysign":
       case "or":
       case "xor":
-      case "and": {
+      case "and":
+      case "eq": {
         let binopFn;
         switch (instruction.object) {
           case "i32":
@@ -724,7 +725,8 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
       case "neg":
       case "clz":
       case "ctz":
-      case "popcnt": {
+      case "popcnt":
+      case "eqz": {
         let unopFn;
 
         switch (instruction.object) {

@@ -20,7 +20,8 @@ type Sign =
   | "shr_s"
   | "shr_u"
   | "rotl"
-  | "rotr";
+  | "rotr"
+  | "eq";
 
 const i32 = require("../../runtime/values/i32");
 const i64 = require("../../runtime/values/i64");
@@ -75,6 +76,9 @@ function binop(
 
     case "and":
       return createValue(c1.and(c2));
+
+    case "eq":
+      return createValue(c1.eq(c2));
 
     case "or":
       return createValue(c1.or(c2));

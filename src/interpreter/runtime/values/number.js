@@ -99,6 +99,11 @@ export class BaseNumber implements NumberInterface<BaseNumber> {
     throw new RuntimeError("Unsupported operation");
   }
 
+  eq(operand: BaseNumber): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+  /*eslint-enable */
+
   clz(): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
@@ -107,10 +112,13 @@ export class BaseNumber implements NumberInterface<BaseNumber> {
     throw new RuntimeError("Unsupported operation");
   }
 
+  eqz(): BaseNumber {
+    throw new RuntimeError("Unsupported operation");
+  }
+
   popcnt(): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
-  /*eslint-enable */
 
   copysign(operand: BaseNumber): BaseNumber {
     return new BaseNumber(
@@ -122,5 +130,9 @@ export class BaseNumber implements NumberInterface<BaseNumber> {
 
   toNumber(): number {
     return this._value;
+  }
+
+  isTrue(): boolean {
+    return this._value == 1;
   }
 }

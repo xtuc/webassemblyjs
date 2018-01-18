@@ -247,26 +247,26 @@ it("should conform to the wasm test suite", () => {
   equals(m.exports.popcnt(0x55555555), 16);
   equals(m.exports.popcnt(0xdeadbeef), 24);
 
-  // equals(m.exports.eqz(0), 1);
-  // equals(m.exports.eqz(1), 0);
-  // equals(m.exports.eqz(0x80000000), 0);
-  // equals(m.exports.eqz(0x7fffffff), 0);
-  // equals(m.exports.eqz(0xffffffff), 0);
+  equals(m.exports.eqz(0), 1);
+  equals(m.exports.eqz(1), 0);
+  equals(m.exports.eqz(0x80000000), 0);
+  equals(m.exports.eqz(0x7fffffff), 0);
+  equals(m.exports.eqz(0xffffffff), 0);
 
-  // equals(m.exports.eq(0, 0), 1);
-  // equals(m.exports.eq(1, 1), 1);
-  // equals(m.exports.eq(-1, 1), 0);
-  // equals(m.exports.eq(0x80000000, 0x80000000), 1);
-  // equals(m.exports.eq(0x7fffffff, 0x7fffffff), 1);
-  // equals(m.exports.eq(-1, -1), 1);
-  // equals(m.exports.eq(1, 0), 0);
-  // equals(m.exports.eq(0, 1), 0);
-  // equals(m.exports.eq(0x80000000, 0), 0);
-  // equals(m.exports.eq(0, 0x80000000), 0);
-  // equals(m.exports.eq(0x80000000, -1), 0);
-  // equals(m.exports.eq(-1, 0x80000000), 0);
-  // equals(m.exports.eq(0x80000000, 0x7fffffff), 0);
-  // equals(m.exports.eq(0x7fffffff, 0x80000000), 0);
+  equals(m.exports.eq(0, 0), 1);
+  equals(m.exports.eq(1, 1), 1);
+  equals(m.exports.eq(-1, 1), 0);
+  equals(m.exports.eq(0x80000000, 0x80000000), 1);
+  equals(m.exports.eq(0x7fffffff, 0x7fffffff), 1);
+  equals(m.exports.eq(-1, -1), 1);
+  equals(m.exports.eq(1, 0), 0);
+  equals(m.exports.eq(0, 1), 0);
+  equals(m.exports.eq(0x80000000, 0), 0);
+  equals(m.exports.eq(0, 0x80000000), 0);
+  equals(m.exports.eq(0x80000000, -1), 0);
+  equals(m.exports.eq(-1, 0x80000000), 0);
+  equals(m.exports.eq(0x80000000, 0x7fffffff), 0);
+  equals(m.exports.eq(0x7fffffff, 0x80000000), 0);
 
   // equals(m.exports.ne(0, 0), 0);
   // equals(m.exports.ne(1, 1), 0);
