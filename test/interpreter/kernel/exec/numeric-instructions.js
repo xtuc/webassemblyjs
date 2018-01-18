@@ -337,7 +337,10 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f32.sub",
 
-      args: [{ value: 232111, type: "f32", nan: true }, { value: 1.0, type: "f32" }],
+      args: [
+        { value: 232111, type: "f32", nan: true },
+        { value: 1.0, type: "f32" }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -351,7 +354,10 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f32.sub",
 
-      args: [{ value: 232111, type: "f32", nan: true }, { value: 1, type: "f32", nan: true }],
+      args: [
+        { value: 232111, type: "f32", nan: true },
+        { value: 1, type: "f32", nan: true }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -365,7 +371,10 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f32.sub",
 
-      args: [{ value: 232111, type: "f32" }, { value: 1, type: "f32", nan: true }],
+      args: [
+        { value: 232111, type: "f32" },
+        { value: 1, type: "f32", nan: true }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
@@ -407,7 +416,10 @@ describe("kernel exec - numeric instructions", () => {
     {
       name: "f32.mul",
 
-      args: [{ value: 0, type: "f32", nan: true }, { value: 1, type: "f32", nan: true }],
+      args: [
+        { value: 0, type: "f32", nan: true },
+        { value: 1, type: "f32", nan: true }
+      ],
 
       code: [
         t.instruction("get_local", [t.numberLiteral(0)]),
