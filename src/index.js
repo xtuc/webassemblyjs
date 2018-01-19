@@ -8,10 +8,18 @@ const { createCompiledModule, Module } = require("./compiler/compile/module");
 const { Memory } = require("./interpreter/runtime/values/memory");
 const { Table } = require("./interpreter/runtime/values/table");
 const { checkEndianness } = require("./check-endianness");
+const wastSpecTest = require("./compiler/AST/transform/wast-spec-test");
 
 const _debug = {
   parseWATF(content: string, cb: (ast: Program) => void) {
     const ast = parseSource(content);
+
+    cb(ast);
+  },
+
+  parseWATFSpecTest(content: string, cb: (ast: Program) => void) {
+    const ast = parseSource(content);
+    wastSpecTest.transform(ast);
 
     cb(ast);
   },
@@ -69,6 +77,19 @@ const WebAssembly = {
     importObject: ImportObject = {}
   ): Instance {
     const ast = parseSource(content);
+    const module = createCompiledModule(ast);
+
+    return new Instance(module, importObject);
+  },
+
+  instantiateFromSpecTest(
+    content: string,
+    importObject: ImportObject = {}
+  ): Instance {
+    const ast = parseSource(content);
+
+    wastSpecTest.transform(ast);
+
     const module = createCompiledModule(ast);
 
     return new Instance(module, importObject);

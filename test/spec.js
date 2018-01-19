@@ -18,7 +18,7 @@ describe("spec", () => {
         const module = readFileSync(suite, "utf8");
 
         it("should run the test file", () => {
-          WebAssembly.instantiateFromSource(module);
+          WebAssembly.instantiateFromSpecTest(module);
         });
       });
     });
