@@ -81,6 +81,13 @@ interface NumberInterface<T> {
   mul(operand: T): T;
   div_s(operand: T): T;
   div_u(operand: T): T;
+  rem_s(operand: T): T;
+  rem_u(operand: T): T;
+  shl(operand: T): T;
+  shr_s(operand: T): T;
+  shr_u(operand: T): T;
+  rotl(operand: T): T;
+  rotr(operand: T): T;
   div(operand: T): T;
   and(operand: T): T;
   or(operand: T): T;
@@ -88,14 +95,27 @@ interface NumberInterface<T> {
   min(operand: T): T;
   max(operand: T): T;
   copysign(operand: T): T;
+  eq(operand: T): T;
+  ne(operand: T): T;
+  lt_s(operand: T): T;
+  lt_u(operand: T): T;
+  le_s(operand: T): T;
+  le_u(operand: T): T;
+  gt_s(operand: T): T;
+  gt_u(operand: T): T;
+  ge_s(operand: T): T;
+  ge_u(operand: T): T;
 
   neg(): T;
   abs(): T;
-
-  isZero(): boolean;
+  clz(): T;
+  ctz(): T;
+  popcnt(): T;
+  eqz(): T;
 
   equals(operand: T): boolean;
   toNumber(): number;
+  isTrue(): boolean;
 }
 
 type Label = {

@@ -13,7 +13,24 @@ type Sign =
   | "~"
   | "min"
   | "max"
-  | "copysign";
+  | "copysign"
+  | "rem_s"
+  | "rem_u"
+  | "shl"
+  | "shr_s"
+  | "shr_u"
+  | "rotl"
+  | "rotr"
+  | "eq"
+  | "ne"
+  | "lt_s"
+  | "lt_u"
+  | "le_s"
+  | "le_u"
+  | "gt_s"
+  | "gt_u"
+  | "ge_s"
+  | "ge_u";
 
 const i32 = require("../../runtime/values/i32");
 const i64 = require("../../runtime/values/i64");
@@ -21,87 +38,131 @@ const f32 = require("../../runtime/values/f32");
 const f64 = require("../../runtime/values/f64");
 
 function binop(
-  { value: c1 }: StackLocal,
-  { value: c2 }: StackLocal,
+  { value: value1 }: StackLocal,
+  { value: value2 }: StackLocal,
   sign: Sign,
   createValue: any => StackLocal
 ): StackLocal {
   switch (sign) {
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-iadd
     case "add":
-      return createValue(c1.add(c2));
+      return createValue(value1.add(value2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-imul
     case "sub":
-      return createValue(c1.sub(c2));
+      return createValue(value1.sub(value2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-imul
     case "mul":
-      return createValue(c1.mul(c2));
+      return createValue(value1.mul(value2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-idiv-u
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-idiv-s
     case "div_s":
+      return createValue(value1.div_s(value2));
+
     case "div_u":
+      return createValue(value1.div_u(value2));
+
+    case "rem_s":
+      return createValue(value1.rem_s(value2));
+
+    case "rem_u":
+      return createValue(value1.rem_u(value2));
+
+    case "shl":
+      return createValue(value1.shl(value2));
+
+    case "shr_s":
+      return createValue(value1.shr_s(value2));
+
+    case "shr_u":
+      return createValue(value1.shr_u(value2));
+
+    case "rotl":
+      return createValue(value1.rotl(value2));
+
+    case "rotr":
+      return createValue(value1.rotr(value2));
+
     case "div":
-      return createValue(c1.div(c2));
+      return createValue(value1.div(value2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-iand
     case "and":
-      return createValue(c1.and(c2));
+      return createValue(value1.and(value2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ior
+    case "eq":
+      return createValue(value1.eq(value2));
+
+    case "ne":
+      return createValue(value1.ne(value2));
+
+    case "lt_s":
+      return createValue(value1.lt_s(value2));
+
+    case "lt_u":
+      return createValue(value1.lt_u(value2));
+
+    case "le_s":
+      return createValue(value1.le_s(value2));
+
+    case "le_u":
+      return createValue(value1.le_u(value2));
+
+    case "gt_s":
+      return createValue(value1.gt_s(value2));
+
+    case "gt_u":
+      return createValue(value1.gt_u(value2));
+
+    case "ge_s":
+      return createValue(value1.ge_s(value2));
+
+    case "ge_u":
+      return createValue(value1.ge_u(value2));
+
     case "or":
-      return createValue(c1.or(c2));
+      return createValue(value1.or(value2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-ixor
     case "xor":
-      return createValue(c1.xor(c2));
+      return createValue(value1.xor(value2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-fmin
     case "min":
-      return createValue(c1.min(c2));
+      return createValue(value1.min(value2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-fmax
     case "max":
-      return createValue(c1.max(c2));
+      return createValue(value1.max(value2));
 
-    // https://webassembly.github.io/spec/core/exec/numerics.html#op-fcopysign
     case "copysign":
-      return createValue(c1.copysign(c2));
+      return createValue(value1.copysign(value2));
   }
 
   throw new Error("Unsupported binop: " + sign);
 }
 
 export function binopi32(
-  c1: StackLocal,
-  c2: StackLocal,
+  value1: StackLocal,
+  value2: StackLocal,
   sign: Sign
 ): StackLocal {
-  return binop(c1, c2, sign, i32.createValue);
+  return binop(value1, value2, sign, i32.createValue);
 }
 
 export function binopi64(
-  c1: StackLocal,
-  c2: StackLocal,
+  value1: StackLocal,
+  value2: StackLocal,
   sign: Sign
 ): StackLocal {
-  return binop(c1, c2, sign, i64.createValue);
+  return binop(value1, value2, sign, i64.createValue);
 }
 
 export function binopf32(
-  c1: StackLocal,
-  c2: StackLocal,
+  value1: StackLocal,
+  value2: StackLocal,
   sign: Sign
 ): StackLocal {
-  return binop(c1, c2, sign, f32.createValue);
+  return binop(value1, value2, sign, f32.createValue);
 }
 
 export function binopf64(
-  c1: StackLocal,
-  c2: StackLocal,
+  value1: StackLocal,
+  value2: StackLocal,
   sign: Sign
 ): StackLocal {
-  return binop(c1, c2, sign, f64.createValue);
+  return binop(value1, value2, sign, f64.createValue);
 }

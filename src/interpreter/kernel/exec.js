@@ -402,7 +402,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         // 2. Pop the value ci32.const c from the stack.
         const c = pop1("i32");
 
-        if (!c.value.isZero()) {
+        if (!c.value.eqz().isTrue()) {
           // 3. If c is non-zero, then
           // 3. a. Execute the instruction (br l).
           const res = br(label);
@@ -441,7 +441,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           return res;
         }
 
-        if (!res.value.isZero()) {
+        if (!res.value.eqz().isTrue()) {
           /**
            * Execute consequent
            */
@@ -674,12 +674,30 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
        */
       case "div_s":
       case "div_u":
+      case "rem_s":
+      case "rem_u":
+      case "shl":
+      case "shr_s":
+      case "shr_u":
+      case "rotl":
+      case "rotr":
       case "div":
       case "min":
       case "max":
       case "copysign":
       case "or":
-      case "xor": {
+      case "xor":
+      case "and":
+      case "eq":
+      case "ne":
+      case "lt_s":
+      case "lt_u":
+      case "le_s":
+      case "le_u":
+      case "gt_s":
+      case "gt_u":
+      case "ge_s":
+      case "ge_u": {
         let binopFn;
         switch (instruction.object) {
           case "i32":
@@ -713,7 +731,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
        * Unary operations
        */
       case "abs":
-      case "neg": {
+      case "neg":
+      case "clz":
+      case "ctz":
+      case "popcnt":
+      case "eqz": {
         let unopFn;
 
         switch (instruction.object) {
@@ -738,7 +760,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
             );
         }
 
-        const c = pop1("f32");
+        const c = pop1(instruction.object);
 
         pushResult(unopFn(c, instruction.id));
 
