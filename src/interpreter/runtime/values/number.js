@@ -70,75 +70,73 @@ export class BaseNumber implements NumberInterface<BaseNumber> {
     return new BaseNumber(-this._value);
   }
 
-  /*eslint-disable no-unused-vars*/
-  rem_s(operand: BaseNumber): BaseNumber {
+  rem_s(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  rem_u(operand: BaseNumber): BaseNumber {
+  rem_u(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  shl(operand: BaseNumber): BaseNumber {
+  shl(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  shr_s(operand: BaseNumber): BaseNumber {
+  shr_s(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  shr_u(operand: BaseNumber): BaseNumber {
+  shr_u(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  rotl(operand: BaseNumber): BaseNumber {
+  rotl(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  rotr(operand: BaseNumber): BaseNumber {
+  rotr(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  eq(operand: BaseNumber): BaseNumber {
+  eq(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  ne(operand: BaseNumber): BaseNumber {
+  ne(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  lt_s(operand: BaseNumber): BaseNumber {
+  lt_s(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  lt_u(operand: BaseNumber): BaseNumber {
+  lt_u(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  le_s(operand: BaseNumber): BaseNumber {
+  le_s(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  le_u(operand: BaseNumber): BaseNumber {
+  le_u(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  gt_s(operand: BaseNumber): BaseNumber {
+  gt_s(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  gt_u(operand: BaseNumber): BaseNumber {
+  gt_u(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  ge_s(operand: BaseNumber): BaseNumber {
+  ge_s(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
 
-  ge_u(operand: BaseNumber): BaseNumber {
+  ge_u(/* operand: BaseNumber */): BaseNumber {
     throw new RuntimeError("Unsupported operation");
   }
-  /*eslint-enable */
 
   clz(): BaseNumber {
     throw new RuntimeError("Unsupported operation");
