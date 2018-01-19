@@ -144,8 +144,7 @@ interface Func {
   type: "Func";
 
   // Only in WAST
-  // TODO(sven): rename id to name
-  id: ?Index;
+  name: ?Index;
 
   params: Array<FuncParam>;
   result: ?Valtype;

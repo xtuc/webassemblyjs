@@ -171,12 +171,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         /**
          * Register the function into the stack frame labels
          */
-        if (typeof func.id === "object") {
-          if (func.id.type === "Identifier") {
+        if (typeof func.name === "object") {
+          if (func.name.type === "Identifier") {
             frame.labels.push({
               value: func,
               arity: func.params.length,
-              id: func.id
+              id: func.name
             });
           }
         }

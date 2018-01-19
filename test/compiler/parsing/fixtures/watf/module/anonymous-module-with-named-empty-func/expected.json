@@ -7,7 +7,7 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "test"
           },
@@ -23,7 +23,7 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "TEST"
           },
@@ -39,7 +39,7 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "!"
           },
@@ -55,7 +55,7 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "$"
           },

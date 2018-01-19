@@ -54,9 +54,9 @@ export function createInstance(
 
       moduleInstance.funcaddrs.push(addr);
 
-      if (node.id != null) {
-        if (node.id.type === "Identifier") {
-          instantiatedFuncs[node.id.value] = addr;
+      if (node.name != null) {
+        if (node.name.type === "Identifier") {
+          instantiatedFuncs[node.name.value] = addr;
         }
       }
     },
