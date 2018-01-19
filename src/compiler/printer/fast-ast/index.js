@@ -22,7 +22,7 @@ export function print(ast: Node) {
   traverse(ast, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
       if (node.descr.type === "Func") {
-        out.exports[node.descr.id] = node;
+        out.exports[node.descr.id.value] = node;
       }
     },
 

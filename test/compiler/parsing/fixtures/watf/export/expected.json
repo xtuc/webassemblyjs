@@ -29,6 +29,33 @@
       "params": [],
       "result": null,
       "body": []
+    },
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "id": {
+            "type": "Identifier",
+            "value": "func_3"
+          },
+          "params": [],
+          "result": null,
+          "body": []
+        },
+        {
+          "type": "ModuleExport",
+          "name": "a",
+          "descr": {
+            "type": "Func",
+            "id": {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          }
+        }
+      ]
     }
   ]
 }

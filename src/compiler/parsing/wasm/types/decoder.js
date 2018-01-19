@@ -41,7 +41,7 @@ type DecodedElementInExportSection = {
   name: string,
   type: ExportDescr,
   signature: ?DecodedModuleType,
-  id: ?Identifier,
+  id: ?Index,
   index: number
 };
 

@@ -76,7 +76,7 @@ export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
 export function moduleExport(
   name: string,
   type: ExportDescr,
-  id: string
+  id: Index
 ): ModuleExport {
   return {
     type: "ModuleExport",

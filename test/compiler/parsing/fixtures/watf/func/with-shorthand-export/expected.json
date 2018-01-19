@@ -20,7 +20,10 @@
           "name": "a",
           "descr": {
             "type": "Func",
-            "id": "func_1"
+            "id": {
+              "type": "Identifier",
+              "value": "func_1"
+            }
           }
         },
         {
@@ -38,7 +41,10 @@
           "name": "b",
           "descr": {
             "type": "Func",
-            "id": "func_2"
+            "id": {
+              "type": "Identifier",
+              "value": "func_2"
+            }
           }
         },
         {
@@ -60,7 +66,10 @@
           "name": "c",
           "descr": {
             "type": "Func",
-            "id": "func_3"
+            "id": {
+              "type": "Identifier",
+              "value": "func_3"
+            }
           }
         }
       ]

@@ -144,7 +144,7 @@ interface Func {
   type: "Func";
 
   // Only in WAST
-  // TODO(sven): rename id to name and replace Index by Identifier
+  // TODO(sven): rename id to name
   id: ?Index;
 
   params: Array<FuncParam>;
@@ -201,7 +201,7 @@ interface ModuleExport {
   name: string;
   descr: {
     type: ExportDescr,
-    id: string
+    id: Index
   };
 }
 

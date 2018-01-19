@@ -33,7 +33,7 @@ describe("module create interface", () => {
 
       const node = t.module(null, [
         t.func(t.identifier(exportName), [], null, []),
-        t.moduleExport(exportName, "Func", exportName)
+        t.moduleExport(exportName, "Func", t.identifier(exportName))
       ]);
 
       const instance = modulevalue.createInstance(allocator, node);

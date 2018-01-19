@@ -106,12 +106,12 @@ export function createInstance(
   traverse(n, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
       if (node.descr.type === "Func") {
-        const instantiatedFuncAddr = instantiatedFuncs[node.descr.id];
+        const instantiatedFuncAddr = instantiatedFuncs[node.descr.id.value];
 
         if (typeof instantiatedFuncs === "undefined") {
           throw new Error(
             "Cannot create exportinst: function " +
-              node.descr.id +
+              node.descr.id.value +
               " was not declared or instantiated"
           );
         }
