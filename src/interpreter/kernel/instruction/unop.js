@@ -9,28 +9,28 @@ import * as f64 from "../../runtime/values/f64";
 
 // https://webassembly.github.io/spec/core/exec/instructions.html#exec-binop
 function unop(
-  { value: c }: StackLocal,
+  { value: value }: StackLocal,
   sign: Sign,
   createValue: any => StackLocal
 ): StackLocal {
   switch (sign) {
     case "abs":
-      return createValue(c.abs());
+      return createValue(value.abs());
 
     case "neg":
-      return createValue(c.neg());
+      return createValue(value.neg());
 
     case "clz":
-      return createValue(c.clz());
+      return createValue(value.clz());
 
     case "ctz":
-      return createValue(c.ctz());
+      return createValue(value.ctz());
 
     case "popcnt":
-      return createValue(c.popcnt());
+      return createValue(value.popcnt());
 
     case "eqz":
-      return createValue(c.eqz());
+      return createValue(value.eqz());
   }
 
   throw new Error("Unsupported unop: " + sign);

@@ -261,6 +261,7 @@ export class i32 implements NumberInterface<i32> {
   }
 
   isTrue(): boolean {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#boolean-interpretation
     return this._value == 1;
   }
 }
