@@ -33,10 +33,7 @@ watch:
 test-ci: test lint
 
 test: build
-	$(MOCHA) --recursive --grep spec --invert
-
-test-spec: build
-	$(MOCHA) --grep spec
+	$(MOCHA) --recursive
 
 lint:
 	$(ESLINT) src test docs benchmark

@@ -19,6 +19,7 @@ const _debug = {
 
   parseWATFSpecTest(content: string, cb: (ast: Program) => void) {
     const ast = parseSource(content);
+
     wastSpecTest.transform(ast);
 
     cb(ast);
@@ -82,10 +83,7 @@ const WebAssembly = {
     return new Instance(module, importObject);
   },
 
-  instantiateFromSpecTest(
-    content: string,
-    importObject: ImportObject = {}
-  ): Instance {
+  runSpecTest(content: string, importObject: ImportObject = {}): Instance {
     const ast = parseSource(content);
 
     wastSpecTest.transform(ast);
