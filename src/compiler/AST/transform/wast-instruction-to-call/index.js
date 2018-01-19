@@ -1,7 +1,7 @@
 // @flow
 
-const { traverse } = require("../../AST/traverse");
-const t = require("../../AST");
+const { traverse } = require("../../traverse");
+const t = require("../../index");
 
 const IMPORT_MODULE = "test";
 

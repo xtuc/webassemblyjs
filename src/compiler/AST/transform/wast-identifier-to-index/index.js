@@ -2,8 +2,8 @@
 
 // FIXME(sven): do the same with all block instructions, must be more generic here
 
-const { traverse } = require("../../AST/traverse");
-const t = require("../../AST");
+const { traverse } = require("../../traverse");
+const t = require("../../index");
 
 export function transform(ast: Program) {
   const functionsInProgram: Array<Index> = [];

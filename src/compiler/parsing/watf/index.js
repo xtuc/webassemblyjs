@@ -2,8 +2,8 @@
 
 const { parse } = require("./grammar");
 const { tokenize } = require("./tokenizer");
-const wastIdentifierToIndex = require("../../transform/wast-identifier-to-index");
-const wastInstructionToCall = require("../../transform/wast-instruction-to-call");
+const wastIdentifierToIndex = require("../../AST/transform/wast-identifier-to-index");
+const wastInstructionToCall = require("../../AST/transform/wast-instruction-to-call");
 
 export function parseSource(source: string): Program {
   const tokens = tokenize(source);
