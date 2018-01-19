@@ -3,5 +3,3 @@
 )
 
 (func (export "an"))
-
-(module (func) (export "a" (func 0)))
