@@ -1173,11 +1173,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
        */
       if (moduleExport.id != null) {
         moduleFields.push(
-          t.moduleExport(
-            moduleExport.name,
-            moduleExport.type,
-            moduleExport.id
-          )
+          t.moduleExport(moduleExport.name, moduleExport.type, moduleExport.id)
         );
       }
     }
