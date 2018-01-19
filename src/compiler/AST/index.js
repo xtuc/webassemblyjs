@@ -76,7 +76,7 @@ export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
 export function moduleExport(
   name: string,
   type: ExportDescr,
-  id: string
+  id: Index
 ): ModuleExport {
   return {
     type: "ModuleExport",
@@ -89,18 +89,18 @@ export function moduleExport(
 }
 
 export function func(
-  id: ?Index,
+  name: ?Index,
   params: Array<FuncParam>,
   result: ?Valtype,
   body: Array<Instruction>
 ): Func {
   assert(typeof params === "object" && typeof params.length !== "undefined");
   assert(typeof body === "object" && typeof body.length !== "undefined");
-  assert(typeof id !== "string");
+  assert(typeof name !== "string");
 
   return {
     type: "Func",
-    id,
+    name,
     params,
     result,
     body

@@ -15,11 +15,11 @@ export function transform(ast: Program) {
     },
 
     Func({ node }: NodePath<Func>) {
-      if (node.id == null) {
+      if (node.name == null) {
         return;
       }
 
-      functionsInProgram.push(node.id);
+      functionsInProgram.push(node.name);
     }
   });
 
@@ -86,7 +86,7 @@ function transformFuncPath(
           );
         }
 
-        const indexNode = t.numberLiteral(offsetInFunctionsInProgram, "i32");
+        const indexNode = t.indexLiteral(offsetInFunctionsInProgram);
 
         // Replace the index Identifier
         node.index = indexNode;

@@ -23,7 +23,7 @@
         },
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "main"
           },

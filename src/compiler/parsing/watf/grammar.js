@@ -427,11 +427,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       const name = token.value;
-
       eatToken();
 
       let type = "";
-      let id = "unknown";
+      let funcidx;
 
       if (token.type === tokens.openParen) {
         eatToken();
@@ -443,10 +442,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             eatToken();
 
             if (token.type === tokens.identifier) {
-              id = token.value;
+              funcidx = t.identifier(token.value);
               eatToken();
-            } else {
-              throw new Error("Exported function must have a name");
+            }
+
+            if (token.type === tokens.number) {
+              funcidx = t.indexLiteral(token.value);
+              eatToken();
             }
           }
 
@@ -458,9 +460,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error("Unknown export type");
       }
 
+      if (funcidx === undefined) {
+        throw new Error("Exported function must have a name");
+      }
+
       eatTokenOfType(tokens.closeParen);
 
-      return t.moduleExport(name, type, id);
+      return t.moduleExport(name, type, funcidx);
     }
 
     function parseModule(): Module {
@@ -891,7 +897,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        *
        * We give the anonymous function a generated name and export it.
        */
-      const id = funcId.value;
+      const id = t.identifier(funcId.value);
 
       state.registredExportedFuncs.push({
         name,

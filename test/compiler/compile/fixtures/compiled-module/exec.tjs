@@ -8,6 +8,6 @@ it("should return be a valid WebAssembly.module", () => {
     assert.lengthOf(m.exports, 1);
 
     assert.equal(m.exports[0].kind, "function");
-    assert.equal(m.exports[0].name, "func_1");
+    assert.equal(m.exports[0].name, "add");
   });
 });

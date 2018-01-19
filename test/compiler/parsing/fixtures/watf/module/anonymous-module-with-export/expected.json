@@ -10,7 +10,10 @@
           "name": "add",
           "descr": {
             "type": "Func",
-            "id": "add"
+            "id": {
+              "type": "Identifier",
+              "value": "add"
+            }
           }
         }
       ]

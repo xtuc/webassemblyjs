@@ -7,7 +7,7 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "func_2"
           },
@@ -51,7 +51,7 @@
         },
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "func_3"
           },
@@ -98,7 +98,10 @@
           "name": "addTwo",
           "descr": {
             "type": "Func",
-            "id": "func_2"
+            "id": {
+              "type": "Identifier",
+              "value": "func_2"
+            }
           }
         },
         {
@@ -106,7 +109,10 @@
           "name": "test",
           "descr": {
             "type": "Func",
-            "id": "func_3"
+            "id": {
+              "type": "Identifier",
+              "value": "func_3"
+            }
           }
         }
       ]

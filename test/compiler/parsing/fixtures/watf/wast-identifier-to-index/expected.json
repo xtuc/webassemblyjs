@@ -3,7 +3,7 @@
   "body": [
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "funca"
       },
@@ -13,7 +13,7 @@
     },
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "func_2"
       },
@@ -135,7 +135,7 @@
     },
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "funcb"
       },
