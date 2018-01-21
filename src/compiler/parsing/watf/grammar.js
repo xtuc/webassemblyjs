@@ -421,6 +421,19 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return t.loopInstruction(label, blockResult, instr);
     }
 
+    /**
+     * Parses an export instruction
+     *
+     * WATF:
+     *
+     * export:  ( export <string> <exkind> )
+     * exkind:  ( func <var> )
+     *          ( global <var> )
+     *          ( table <var> )
+     *          ( memory <var> )
+     * var:    <nat> | <name>
+     *
+     */
     function parseExport(): ModuleExport {
       if (token.type !== tokens.string) {
         throw new Error("Expected string after export, got: " + token.type);
@@ -438,6 +451,22 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         while (token.type !== tokens.closeParen) {
           if (isKeyword(token, keywords.func)) {
             type = "Func";
+
+            eatToken();
+
+            if (token.type === tokens.identifier) {
+              funcidx = t.identifier(token.value);
+              eatToken();
+            }
+
+            if (token.type === tokens.number) {
+              funcidx = t.indexLiteral(token.value);
+              eatToken();
+            }
+          }
+
+          if (isKeyword(token, keywords.global)) {
+            type = "Global";
 
             eatToken();
 
