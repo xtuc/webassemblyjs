@@ -78,7 +78,8 @@ const keywords = {
   else: "else",
   call: "call",
   import: "import",
-  memory: "memory"
+  memory: "memory",
+  table: "table"
 };
 
 const CloseParenToken = createToken(tokens.closeParen);

@@ -465,6 +465,22 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             }
           }
 
+          if (isKeyword(token, keywords.table)) {
+            type = "Table";
+
+            eatToken();
+
+            if (token.type === tokens.identifier) {
+              tableidx = t.identifier(token.value);
+              eatToken();
+            }
+
+            if (token.type === tokens.number) {
+              tableidx = t.indexLiteral(token.value);
+              eatToken();
+            }
+          }
+
           if (isKeyword(token, keywords.global)) {
             type = "Global";
 
