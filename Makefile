@@ -33,7 +33,10 @@ watch:
 test-ci: test lint
 
 test: build
-	$(MOCHA) --recursive
+	$(MOCHA) test/compiler/ test/interpreter/ test/api --recursive
+
+test-spec: build
+	$(MOCHA) test/spec --recursive
 
 lint:
 	$(ESLINT) src test docs benchmark
