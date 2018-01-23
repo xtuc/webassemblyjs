@@ -40,9 +40,14 @@ function assert_return(node) {
 
   if (action.type === "Instr" && action.id === "invoke") {
     const actualRes = invoke(action);
-    const expectedRes = partialEvaluation.evaluate(allocator, exprs).value.toNumber();
+    const expectedRes = partialEvaluation
+      .evaluate(allocator, exprs)
+      .value.toNumber();
 
-    assert(actualRes === expectedRes, `expected ${expectedRes}, ${actualRes} given`);
+    assert(
+      actualRes === expectedRes,
+      `expected ${expectedRes}, ${actualRes} given`
+    );
   } else {
     throw new Error("Unsupported action in assert_return: " + action.id);
   }
@@ -210,7 +215,7 @@ function prettyPrintInstance(instance) {
 
 if (filename === undefined) {
   const rl = readline.createInterface({
-    input: process.stdin,
+    input: process.stdin
   });
 
   process.stdout.write("wasm 1.0 JavaScript interpreter\n");
