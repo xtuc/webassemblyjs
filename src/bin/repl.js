@@ -62,7 +62,17 @@ function assert_return(node) {
 // invoke function export
 // ( invoke <name>? <string> <expr>* )
 function invoke(node) {
-  const [name, ...exprs] = node.args;
+  const [first, ...args] = node.args;
+
+  let name = first;
+
+  if (first.type === 'Identifier') {
+    // Module name
+    // TODO(sven):: ignore for now since we need to add an Identifier on the
+    // module
+
+    name = args.shift();
+  }
 
   // find export in instantiated module
   const module = instantiatedModules.find(
@@ -71,7 +81,7 @@ function invoke(node) {
 
   assert(module !== undefined, `Module with export "${name.value}" not found`);
 
-  const args = exprs.map(expr => {
+  const argValues = args.map(expr => {
     const evaluation = partialEvaluation.evaluate(allocator, [expr]);
 
     if (evaluation !== undefined) {
@@ -79,7 +89,7 @@ function invoke(node) {
     }
   });
 
-  const res = module.exports[name.value](...args);
+  const res = module.exports[name.value](...argValues);
   return res;
 }
 
