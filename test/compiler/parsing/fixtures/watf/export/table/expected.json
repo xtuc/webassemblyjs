@@ -1,0 +1,34 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Table",
+          "elementType": "anyfunc",
+          "limits": {
+            "type": "Limit",
+            "min": "0"
+          },
+          "name": {
+            "type": "Identifier",
+            "value": "temp_1"
+          }
+        },
+        {
+          "type": "ModuleExport",
+          "name": "a",
+          "descr": {
+            "type": "Table",
+            "id": {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

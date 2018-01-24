@@ -229,7 +229,8 @@ interface ModuleImport {
 type Table = Node & {
   type: "Table",
   elementType: TableElementType,
-  limits: Limit
+  limits: Limit,
+  name: ?Identifier
 };
 
 type Memory = {

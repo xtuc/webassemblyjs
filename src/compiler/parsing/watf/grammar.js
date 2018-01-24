@@ -136,7 +136,59 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     /**
-     * Parse import statement
+     * Parses a table instruction
+     *
+     * WAST:
+     *
+     * table: ( table <name>? <table_sig> )
+     *        ( table <name>? ( export <string> ) <...> )
+     *        ( table <name>? ( import <string> <string> ) <table_sig> )
+     *        ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) )
+     *
+     * table_sig:  <nat> <nat>? <elem_type>
+     */
+    function parseTable(): Table {
+      let name = t.identifier(getUniqueName());
+
+      let limit = t.limits(0);
+      const elemType = "anyfunc";
+
+      if (token.type === tokens.string) {
+        name = t.identifier(token.value);
+        eatToken();
+      }
+
+      /**
+       * Table signature
+       */
+      if (token.type === tokens.number) {
+        const min = token.value;
+        eatToken();
+
+        if (token.type === tokens.number) {
+          const max = token.value;
+          eatToken();
+
+          limit = t.limits(min, max);
+        } else {
+          limit = t.limits(min);
+        }
+
+        if (!isKeyword(token, keywords.anyfunc)) {
+          showCodeFrame(source, token.loc);
+          throw new Error(
+            "Unsupported elem_type, expected anyfunc, given " + token.type
+          );
+        }
+
+        eatToken();
+      }
+
+      return t.table(elemType, limit, name);
+    }
+
+    /**
+     * Parses an import statement
      *
      * WAST:
      *
@@ -443,7 +495,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       eatToken();
 
       let type = "";
-      let funcidx;
+      let index;
 
       if (token.type === tokens.openParen) {
         eatToken();
@@ -455,12 +507,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             eatToken();
 
             if (token.type === tokens.identifier) {
-              funcidx = t.identifier(token.value);
+              index = t.identifier(token.value);
               eatToken();
             }
 
             if (token.type === tokens.number) {
-              funcidx = t.indexLiteral(token.value);
+              index = t.indexLiteral(token.value);
               eatToken();
             }
           }
@@ -471,12 +523,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             eatToken();
 
             if (token.type === tokens.identifier) {
-              tableidx = t.identifier(token.value);
+              index = t.identifier(token.value);
               eatToken();
             }
 
             if (token.type === tokens.number) {
-              tableidx = t.indexLiteral(token.value);
+              index = t.indexLiteral(token.value);
               eatToken();
             }
           }
@@ -487,12 +539,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             eatToken();
 
             if (token.type === tokens.identifier) {
-              funcidx = t.identifier(token.value);
+              index = t.identifier(token.value);
               eatToken();
             }
 
             if (token.type === tokens.number) {
-              funcidx = t.indexLiteral(token.value);
+              index = t.indexLiteral(token.value);
               eatToken();
             }
           }
@@ -505,13 +557,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error("Unknown export type");
       }
 
-      if (funcidx === undefined) {
+      if (index === undefined) {
         throw new Error("Exported function must have a name");
       }
 
       eatTokenOfType(tokens.closeParen);
 
-      return t.moduleExport(name, type, funcidx);
+      return t.moduleExport(name, type, index);
     }
 
     function parseModule(): Module {
@@ -1064,6 +1116,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.memory)) {
         eatToken();
         const node = parseMemory();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.table)) {
+        eatToken();
+        const node = parseTable();
         eatTokenOfType(tokens.closeParen);
 
         return node;

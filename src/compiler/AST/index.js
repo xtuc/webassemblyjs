@@ -315,11 +315,12 @@ export function funcImportDescr(
   };
 }
 
-export function table(elementType: TableElementType, limits: Limit): Table {
+export function table(elementType: TableElementType, limits: Limit, name: ?Identifier): Table {
   return {
     type: "Table",
     elementType,
-    limits
+    limits,
+    name
   };
 }
 

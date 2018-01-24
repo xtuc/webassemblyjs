@@ -79,7 +79,9 @@ const keywords = {
   call: "call",
   import: "import",
   memory: "memory",
-  table: "table"
+  table: "table",
+  global: "global",
+  anyfunc: "anyfunc"
 };
 
 const CloseParenToken = createToken(tokens.closeParen);
