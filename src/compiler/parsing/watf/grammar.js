@@ -549,6 +549,22 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             }
           }
 
+          if (isKeyword(token, keywords.memory)) {
+            type = "Memory";
+
+            eatToken();
+
+            if (token.type === tokens.identifier) {
+              index = t.identifier(token.value);
+              eatToken();
+            }
+
+            if (token.type === tokens.number) {
+              index = t.indexLiteral(token.value);
+              eatToken();
+            }
+          }
+
           eatToken();
         }
       }

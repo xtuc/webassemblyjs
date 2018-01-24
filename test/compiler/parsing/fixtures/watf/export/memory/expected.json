@@ -1,0 +1,29 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Memory",
+          "limits": {
+            "type": "Limit",
+            "min": "0"
+          }
+        },
+        {
+          "type": "ModuleExport",
+          "name": "a",
+          "descr": {
+            "type": "Memory",
+            "id": {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
