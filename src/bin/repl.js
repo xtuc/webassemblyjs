@@ -40,9 +40,13 @@ function assert_return(node) {
 
   if (action.type === "Instr" && action.id === "invoke") {
     const actualRes = invoke(action);
-    const expectedRes = partialEvaluation
-      .evaluate(allocator, exprs)
-      .value.toString();
+    let expectedRes;
+
+    const expectedEvaluation = partialEvaluation.evaluate(allocator, exprs);
+
+    if (expectedEvaluation !== undefined) {
+      expectedRes = expectedEvaluation.value.toString();
+    }
 
     assert(
       actualRes === expectedRes,
@@ -67,8 +71,11 @@ function invoke(node) {
   assert(module !== undefined, `Module with export "${name.value}" not found`);
 
   const args = exprs.map(expr => {
-    const res = partialEvaluation.evaluate(allocator, [expr]);
-    return res.value.toString();
+    const evaluation = partialEvaluation.evaluate(allocator, [expr]);
+
+    if (evaluation !== undefined) {
+      return evaluation.value.toString();
+    }
   });
 
   const res = module.exports[name.value](...args);
