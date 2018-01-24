@@ -51,7 +51,7 @@ function assert_return(node) {
     }
 
     assert(
-      actualRes === expectedRes,
+      actualRes == expectedRes,
       `expected ${expectedRes}, ${actualRes} given`
     );
   } else {
@@ -65,7 +65,6 @@ function invoke(node) {
   const [name, ...exprs] = node.args;
 
   // find export in instantiated module
-
   const module = instantiatedModules.find(
     ({ exports }) => exports[name.value] !== undefined
   );
