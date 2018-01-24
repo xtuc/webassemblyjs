@@ -42,7 +42,7 @@ function assert_return(node) {
     const actualRes = invoke(action);
     const expectedRes = partialEvaluation
       .evaluate(allocator, exprs)
-      .value.toNumber();
+      .value.toString();
 
     assert(
       actualRes === expectedRes,
@@ -68,7 +68,7 @@ function invoke(node) {
 
   const args = exprs.map(expr => {
     const res = partialEvaluation.evaluate(allocator, [expr]);
-    return res.value.toNumber();
+    return res.value.toString();
   });
 
   const res = module.exports[name.value](...args);
