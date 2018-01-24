@@ -10,6 +10,8 @@ const partialEvaluation = require("../interpreter/partial-evaluation");
 const { Memory } = require("../interpreter/runtime/values/memory");
 const { createAllocator } = require("../interpreter/kernel/memory");
 
+const isVerbose = process.argv.find(x => x === "--debug") !== undefined;
+
 /**
  * Assert helpers
  */
@@ -135,6 +137,10 @@ function createInstanceFromAst(moduleNode) {
 function replEval(input) {
   const ast = _debug.parseWATFSpecTest(input);
   const [node] = ast.body;
+
+  if (isVerbose === true) {
+    console.log(input);
+  }
 
   // Empty input, skip this iteration
   if (node === undefined) {
