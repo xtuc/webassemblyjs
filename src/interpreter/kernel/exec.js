@@ -30,8 +30,20 @@ function assertStackDepth(depth: number) {
   }
 }
 
-export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
+export function executeStackFrame(
+  frame: StackFrame,
+  depth: number = 0
+): ?StackLocal {
   let pc = 0;
+
+  function createAndExecuteChildStackFrame(
+    instrs: Array<Instruction>
+  ): ?StackLocal {
+    const childStackFrame = createChildStackFrame(frame, instrs);
+    childStackFrame.trace = frame.trace;
+
+    return executeStackFrame(childStackFrame, depth + 1);
+  }
 
   function getLocalByIndex(index: number) {
     const local = frame.locals[index];
@@ -51,7 +63,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     frame.locals[index] = value;
   }
 
-  function pushResult(res: StackLocal) {
+  function pushResult(res: ?StackLocal) {
+    if (res == null) {
+      return;
+    }
+
     frame.values.push(res);
   }
 
@@ -719,6 +735,30 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
                 " on " +
                 instruction.object
             );
+        }
+
+        const [left, right] = instruction.args;
+
+        // Interpret left branch first if it's a child instruction
+        if (typeof left !== "undefined") {
+          const res = createAndExecuteChildStackFrame([left]);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
+        // Interpret right branch first if it's a child instruction
+        if (typeof right !== "undefined") {
+          const res = createAndExecuteChildStackFrame([right]);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
         }
 
         const [c1, c2] = pop2(instruction.object, instruction.object);
