@@ -1,9 +1,17 @@
 // @flow
-import { BaseNumber } from "./number";
+import { Float } from "./number";
+import { i32 } from "./i32";
 
 const type = "f32";
 
-export class f32 extends BaseNumber {
+export class f32 extends Float<i32> {
+  reinterpret(): i32 {
+    const floatArray = new Float32Array(1);
+    floatArray[0] = this._value;
+    const intArray = new Int32Array(floatArray.buffer);
+    return new i32(intArray[0]);
+  }
+
   add(operand: f32): f32 {
     // If the other operand is a nan we use its implementation, otherwise the BaseNumber one.
     return operand instanceof f32nan

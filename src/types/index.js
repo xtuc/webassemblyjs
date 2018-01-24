@@ -75,10 +75,7 @@ type StackLocal = {
   value: any
 };
 
-interface NumberInterface<T> {
-  add(operand: T): T;
-  sub(operand: T): T;
-  mul(operand: T): T;
+interface IntegerValue<T> extends NumericOperations<T> {
   div_s(operand: T): T;
   div_u(operand: T): T;
   rem_s(operand: T): T;
@@ -88,13 +85,9 @@ interface NumberInterface<T> {
   shr_u(operand: T): T;
   rotl(operand: T): T;
   rotr(operand: T): T;
-  div(operand: T): T;
   and(operand: T): T;
   or(operand: T): T;
   xor(operand: T): T;
-  min(operand: T): T;
-  max(operand: T): T;
-  copysign(operand: T): T;
   eq(operand: T): T;
   ne(operand: T): T;
   lt_s(operand: T): T;
@@ -105,18 +98,30 @@ interface NumberInterface<T> {
   gt_u(operand: T): T;
   ge_s(operand: T): T;
   ge_u(operand: T): T;
-
-  neg(): T;
-  abs(): T;
   clz(): T;
-  ctz(): T;
   popcnt(): T;
   eqz(): T;
+}
 
+interface FloatingPointValue<T, U> extends NumericOperations<T> {
+  min(operand: T): T;
+  max(operand: T): T;
+  copysign(operand: T): T;
+  neg(): T;
+  abs(): T;
+  reinterpret(): U;
+}
+
+interface NumericOperations<T> {
+  add(operand: T): T;
+  sub(operand: T): T;
+  mul(operand: T): T;
+  div(operand: T): T;
   equals(operand: T): boolean;
   toNumber(): number;
   toString(): string;
   isTrue(): boolean;
+  toString(): string;
 }
 
 type Label = {

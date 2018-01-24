@@ -1,6 +1,14 @@
 // @flow
 
-type Sign = "abs" | "neg" | "clz" | "ctz" | "popcnt" | "eqz";
+type Sign =
+  | "abs"
+  | "neg"
+  | "clz"
+  | "ctz"
+  | "popcnt"
+  | "eqz"
+  | "reinterpret/f32"
+  | "reinterpret/f64";
 
 import * as i32 from "../../runtime/values/i32";
 import * as i64 from "../../runtime/values/i64";
@@ -31,6 +39,12 @@ function unop(
 
     case "eqz":
       return createValue(value.eqz());
+
+    case "reinterpret/f32":
+      return i32.createValue(value.reinterpret());
+
+    case "reinterpret/f64":
+      return i64.createValue(value.reinterpret());
   }
 
   throw new Error("Unsupported unop: " + sign);
