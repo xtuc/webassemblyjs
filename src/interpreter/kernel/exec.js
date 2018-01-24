@@ -678,6 +678,23 @@ export function executeStackFrame(
         break;
       }
 
+      case "return": {
+        const { args } = instruction;
+
+        if (args.length > 0) {
+          const res = createAndExecuteChildStackFrame(args);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
+        // Abort execution and return the first item on the stack
+        return pop1();
+      }
+
       /**
        * Binary operations
        */
@@ -817,7 +834,7 @@ export function executeStackFrame(
 
   // Return the item on top of the values/stack;
   if (frame.values.length > 0) {
-    return frame.values.pop();
+    return pop1();
   }
 }
 
