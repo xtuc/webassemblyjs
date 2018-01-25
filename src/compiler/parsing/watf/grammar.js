@@ -38,11 +38,19 @@ function showCodeFrame(source: string, loc: SourceLocation) {
   process.stdout.write(out + "\n");
 }
 
+type ParserState = {
+  registredExportedElements: Array<{
+    type: ExportDescr,
+    name: string,
+    id: Index
+  }>
+};
+
 export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
 
-  const state = {
-    registredExportedFuncs: []
+  const state: ParserState = {
+    registredExportedElements: []
   };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
@@ -642,12 +650,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       while (token.type !== tokens.closeParen) {
         moduleFields.push(walk());
 
-        if (state.registredExportedFuncs.length > 0) {
-          state.registredExportedFuncs.forEach(decl => {
-            moduleFields.push(t.moduleExport(decl.name, "Func", decl.id));
+        if (state.registredExportedElements.length > 0) {
+          state.registredExportedElements.forEach(decl => {
+            moduleFields.push(t.moduleExport(decl.name, decl.type, decl.id));
           });
 
-          state.registredExportedFuncs = [];
+          state.registredExportedElements = [];
         }
 
         token = tokensList[current];
@@ -1012,7 +1020,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        */
       const id = t.identifier(funcId.value);
 
-      state.registredExportedFuncs.push({
+      state.registredExportedElements.push({
+        type: "Func",
         name,
         id
       });
@@ -1060,6 +1069,25 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         name = t.identifier(token.value);
         eatToken();
+      }
+
+      /**
+       * maybe export
+       */
+      if (lookaheadAndCheck(tokens.openParen, keywords.export)) {
+        eatToken(); // (
+        eatToken(); // export
+
+        const exportName = token.value;
+        eatTokenOfType(tokens.string);
+
+        state.registredExportedElements.push({
+          type: "Global",
+          name: exportName,
+          id: name
+        });
+
+        eatTokenOfType(tokens.closeParen);
       }
 
       /**
