@@ -71,7 +71,7 @@ type StackFrame = {
 };
 
 type StackLocal = {
-  type: Valtype,
+  type: Valtype | "Signal",
   value: any
 };
 

@@ -457,7 +457,7 @@ export function executeStackFrame(
           return res;
         }
 
-        if (!res.value.eqz().isTrue()) {
+        if (res != null && !res.value.eqz().isTrue()) {
           /**
            * Execute consequent
            */
@@ -559,7 +559,9 @@ export function executeStackFrame(
             return res;
           }
 
-          setLocalByIndex(index.value, res);
+          if (res != null) {
+            setLocalByIndex(index.value, res);
+          }
         } else if (index.type === "NumberLiteral") {
           // WASM
 
@@ -594,7 +596,9 @@ export function executeStackFrame(
             return res;
           }
 
-          setLocalByIndex(index.value, res);
+          if (res != null) {
+            setLocalByIndex(index.value, res);
+          }
 
           pushResult(res);
         } else if (index.type === "NumberLiteral") {

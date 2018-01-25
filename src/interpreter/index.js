@@ -129,7 +129,7 @@ function createHostfunc(
   exportinst: ExportInstance,
   allocator: Allocator
 ): Hostfunc {
-  return function hostfunc(...args) {
+  return function hostfunc(...args): ?any {
     const exportinstAddr = exportinst.value.addr;
 
     /**
@@ -210,7 +210,7 @@ function createHostfunc(
       throw new RuntimeError("Execution has been trapped");
     }
 
-    if (typeof res !== "undefined") {
+    if (res != null && res.value != null) {
       return res.value.toNumber();
     }
   };

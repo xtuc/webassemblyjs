@@ -10,7 +10,7 @@ const t = require("../compiler/AST");
 export function evaluate(
   allocator: Allocator,
   code: Array<Instruction>
-): StackLocal {
+): ?StackLocal {
   // Create an empty module instance for the context
   const moduleInstance = module.createInstance(
     allocator,
