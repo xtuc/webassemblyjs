@@ -85,11 +85,23 @@ export class Instance {
     );
 
     moduleInstance.exports.forEach(exportinst => {
-      this.exports[exportinst.name] = createHostfunc(
-        moduleInstance,
-        exportinst,
-        this._allocator
-      );
+      if (exportinst.value.type === "Func") {
+        this.exports[exportinst.name] = createHostfunc(
+          moduleInstance,
+          exportinst,
+          this._allocator
+        );
+      }
+
+      if (exportinst.value.type === "Global") {
+        const globalinst = this._allocator.get(exportinst.value.addr);
+
+        if (globalinst == null) {
+          throw new RuntimeError("Global instance has not been instantiated");
+        }
+
+        this.exports[exportinst.name] = globalinst.value.toNumber();
+      }
 
       if (this._table != undefined) {
         this._table.push(this.exports[exportinst.name]);

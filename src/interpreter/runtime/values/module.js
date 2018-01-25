@@ -4,6 +4,7 @@ const importObjectUtils = require("../../import-object");
 const { traverse } = require("../../../compiler/AST/traverse");
 const func = require("./func");
 const global = require("./global");
+const { LinkError, CompileError } = require("../../../errors");
 
 export function createInstance(
   allocator: Allocator,
@@ -27,6 +28,7 @@ export function createInstance(
    * the export wrapper
    */
   const instantiatedFuncs = {};
+  const instantiatedGlobals = {};
 
   importObjectUtils.walk(externalFunctions, (key, key2, jsfunc) => {
     const funcinstance = func.createExternalInstance(jsfunc);
@@ -64,10 +66,19 @@ export function createInstance(
     Global({ node }: NodePath<Global>) {
       const globalinstance = global.createInstance(allocator, node);
 
-      const addr = allocator.malloc(1 /* size of the funcinstance struct */);
+      const addr = allocator.malloc(1 /* size of the globalinstance struct */);
       allocator.set(addr, globalinstance);
 
       moduleInstance.globaladdrs.push(addr);
+
+      if (node.name != null) {
+        if (node.name.type === "Identifier") {
+          instantiatedGlobals[node.name.value] = {
+            addr,
+            type: node.globalType
+          };
+        }
+      }
     },
 
     ModuleImport({ node }: NodePath<ModuleImport>) {
@@ -119,6 +130,27 @@ export function createInstance(
         const externalVal = {
           type: node.descr.type,
           addr: instantiatedFuncAddr
+        };
+
+        moduleInstance.exports.push(
+          createModuleExportIntance(node.name, externalVal)
+        );
+      }
+
+      if (node.descr.type === "Global") {
+        const instantiatedGlobal = instantiatedGlobals[node.descr.id.value];
+
+        if (instantiatedGlobal.type.mutability === "var") {
+          throw new CompileError("Mutable globals cannot be exported");
+        }
+
+        if (instantiatedGlobal.type.valtype === "i64") {
+          throw new LinkError("Export of globals of type i64 is not allowed");
+        }
+
+        const externalVal = {
+          type: node.descr.type,
+          addr: instantiatedGlobal.addr
         };
 
         moduleInstance.exports.push(
