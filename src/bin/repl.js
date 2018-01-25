@@ -66,7 +66,7 @@ function invoke(node) {
 
   let name = first;
 
-  if (first.type === 'Identifier') {
+  if (first.type === "Identifier") {
     // Module name
     // TODO(sven):: ignore for now since we need to add an Identifier on the
     // module

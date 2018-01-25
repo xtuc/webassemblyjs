@@ -1066,10 +1066,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        * global_sig
        */
       if (token.type === tokens.valtype) {
-
         type = t.globalType(token.value, "const");
         eatToken();
-
       } else if (token.type === tokens.openParen) {
         eatToken(); // (
 
