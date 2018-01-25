@@ -1,6 +1,6 @@
-const m = WebAssembly.instantiateFromSource(watfmodule);
-
 it("should export the global value by index", () => {
+  const m = WebAssembly.instantiateFromSource(watfmodule);
+
   assert.typeOf(m.exports.a, "number");
-  assert.equal(m.exports.a, 1);
+  assert.equal(m.exports.a, 10);
 });
