@@ -145,7 +145,7 @@ export function createInstance(
           const globalinstaddr = moduleInstance.globaladdrs[index];
 
           if (globalinstaddr == null) {
-            throw new CompileError("Unknown global at Index: " + index);
+            throw new CompileError("Unknown global");
           }
 
           const externalVal = {

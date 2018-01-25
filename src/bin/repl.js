@@ -26,7 +26,10 @@ function assert_invalid(node) {
 
     assert(false, "module is valid, expected invalid");
   } catch (err) {
-    assert(err.message === expected);
+    assert(
+      err.message.toLowerCase() === expected.value.toLowerCase(),
+      `Expected failure of ${expected.value}, ${err.message} given`
+    );
   }
 }
 
@@ -38,17 +41,37 @@ function assert_invalid(node) {
 //   ( get <name>? <string> )                   ;; get global export
 
 function assert_return(node) {
-  const [action, ...exprs] = node.args;
+  const [action, ...args] = node.args;
+
+  let expectedRes;
+  const expectedEvaluation = partialEvaluation.evaluate(allocator, args);
+
+  if (expectedEvaluation !== undefined) {
+    expectedRes = expectedEvaluation.value.toString();
+  }
 
   if (action.type === "Instr" && action.id === "invoke") {
     const actualRes = invoke(action);
-    let expectedRes;
 
-    const expectedEvaluation = partialEvaluation.evaluate(allocator, exprs);
+    assert(
+      actualRes == expectedRes,
+      `expected ${expectedRes}, ${actualRes} given`
+    );
+  } else if (action.type === "Instr" && action.id === "get") {
+    let id;
 
-    if (expectedEvaluation !== undefined) {
-      expectedRes = expectedEvaluation.value.toString();
+    if (action.args.length === 2) {
+      id = action.args[1];
+    } else {
+      id = action.args[0];
     }
+
+    // find export in instantiated module
+    const module = instantiatedModules.find(
+      ({ exports }) => exports[id.value] !== undefined
+    );
+
+    const actualRes = module.exports[id.value];
 
     assert(
       actualRes == expectedRes,
@@ -111,6 +134,10 @@ function assert(cond, msg = "unknown") {
     if (filename !== undefined) {
       process.exit(1);
     }
+  }
+
+  if (isVerbose === true) {
+    console.log("Assertion OK");
   }
 }
 
@@ -195,7 +222,7 @@ function replEval(input) {
 
     prettyPrintInstance(instance);
 
-    instantiatedModules.push(instance);
+    instantiatedModules.unshift(instance);
   }
 }
 
