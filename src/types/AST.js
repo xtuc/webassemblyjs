@@ -254,7 +254,8 @@ type Data = {
 type Global = {
   type: "Global",
   globalType: GlobalType,
-  init: Array<Instruction>
+  init: Array<Instruction>,
+  name: ?Identifier
 };
 
 type GlobalType = {

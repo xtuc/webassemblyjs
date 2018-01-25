@@ -1042,6 +1042,67 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     /**
+     * Parses a global instruction
+     *
+     * WAST:
+     *
+     * global:  ( global <name>? <global_sig> <instr>* )
+     *          ( global <name>? ( export <string> ) <...> )
+     *          ( global <name>? ( import <string> <string> ) <global_sig> )
+     *
+     * global_sig: <type> | ( mut <type> )
+     *
+     */
+    function parseGlobal(): Global {
+      let name = t.identifier(getUniqueName("global"));
+      let type;
+
+      if (token.type === tokens.identifier) {
+        name = t.identifier(token.value);
+        eatToken();
+      }
+
+      /**
+       * global_sig
+       */
+      if (token.type === tokens.valtype) {
+
+        type = t.globalType(token.value, "const");
+        eatToken();
+
+      } else if (token.type === tokens.openParen) {
+        eatToken(); // (
+
+        if (isKeyword(token, keywords.mut) === false) {
+          showCodeFrame(source, token.loc);
+          throw new Error("Unsupported global type, expected mut");
+        }
+
+        eatToken(); // mut
+
+        type = t.globalType(token.value, "var");
+        eatToken();
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      if (type === undefined) {
+        showCodeFrame(source, token.loc);
+        throw new TypeError("Could not determine global type");
+      }
+
+      /**
+       * instr*
+       */
+      const init = [];
+      parseListOfInstructions(init);
+
+      eatTokenOfType(tokens.closeParen);
+
+      return t.global(type, init, name);
+    }
+
+    /**
      * Parses a function param
      *
      * WAST:
@@ -1140,6 +1201,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.table)) {
         eatToken();
         const node = parseTable();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.global)) {
+        eatToken();
+        const node = parseGlobal();
         eatTokenOfType(tokens.closeParen);
 
         return node;

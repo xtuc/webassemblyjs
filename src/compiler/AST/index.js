@@ -355,12 +355,14 @@ export function data(
 
 export function global(
   globalType: GlobalType,
-  init: Array<Instruction>
+  init: Array<Instruction>,
+  name: ?Identifier
 ): Global {
   return {
     type: "Global",
     globalType,
-    init
+    init,
+    name
   };
 }
 
