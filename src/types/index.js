@@ -115,6 +115,7 @@ interface NumberInterface<T> {
 
   equals(operand: T): boolean;
   toNumber(): number;
+  toString(): string;
   isTrue(): boolean;
 }
 

@@ -38,11 +38,19 @@ function showCodeFrame(source: string, loc: SourceLocation) {
   process.stdout.write(out + "\n");
 }
 
+type ParserState = {
+  registredExportedElements: Array<{
+    type: ExportDescr,
+    name: string,
+    id: Index
+  }>
+};
+
 export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
 
-  const state = {
-    registredExportedFuncs: []
+  const state: ParserState = {
+    registredExportedElements: []
   };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
@@ -136,7 +144,59 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     /**
-     * Parse import statement
+     * Parses a table instruction
+     *
+     * WAST:
+     *
+     * table: ( table <name>? <table_sig> )
+     *        ( table <name>? ( export <string> ) <...> )
+     *        ( table <name>? ( import <string> <string> ) <table_sig> )
+     *        ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) )
+     *
+     * table_sig:  <nat> <nat>? <elem_type>
+     */
+    function parseTable(): Table {
+      let name = t.identifier(getUniqueName());
+
+      let limit = t.limits(0);
+      const elemType = "anyfunc";
+
+      if (token.type === tokens.string) {
+        name = t.identifier(token.value);
+        eatToken();
+      }
+
+      /**
+       * Table signature
+       */
+      if (token.type === tokens.number) {
+        const min = token.value;
+        eatToken();
+
+        if (token.type === tokens.number) {
+          const max = token.value;
+          eatToken();
+
+          limit = t.limits(min, max);
+        } else {
+          limit = t.limits(min);
+        }
+
+        if (!isKeyword(token, keywords.anyfunc)) {
+          showCodeFrame(source, token.loc);
+          throw new Error(
+            "Unsupported elem_type, expected anyfunc, given " + token.type
+          );
+        }
+
+        eatToken();
+      }
+
+      return t.table(elemType, limit, name);
+    }
+
+    /**
+     * Parses an import statement
      *
      * WAST:
      *
@@ -421,6 +481,19 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return t.loopInstruction(label, blockResult, instr);
     }
 
+    /**
+     * Parses an export instruction
+     *
+     * WATF:
+     *
+     * export:  ( export <string> <exkind> )
+     * exkind:  ( func <var> )
+     *          ( global <var> )
+     *          ( table <var> )
+     *          ( memory <var> )
+     * var:    <nat> | <name>
+     *
+     */
     function parseExport(): ModuleExport {
       if (token.type !== tokens.string) {
         throw new Error("Expected string after export, got: " + token.type);
@@ -430,7 +503,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       eatToken();
 
       let type = "";
-      let funcidx;
+      let index;
 
       if (token.type === tokens.openParen) {
         eatToken();
@@ -442,12 +515,60 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             eatToken();
 
             if (token.type === tokens.identifier) {
-              funcidx = t.identifier(token.value);
+              index = t.identifier(token.value);
               eatToken();
             }
 
             if (token.type === tokens.number) {
-              funcidx = t.indexLiteral(token.value);
+              index = t.indexLiteral(token.value);
+              eatToken();
+            }
+          }
+
+          if (isKeyword(token, keywords.table)) {
+            type = "Table";
+
+            eatToken();
+
+            if (token.type === tokens.identifier) {
+              index = t.identifier(token.value);
+              eatToken();
+            }
+
+            if (token.type === tokens.number) {
+              index = t.indexLiteral(token.value);
+              eatToken();
+            }
+          }
+
+          if (isKeyword(token, keywords.global)) {
+            type = "Global";
+
+            eatToken();
+
+            if (token.type === tokens.identifier) {
+              index = t.identifier(token.value);
+              eatToken();
+            }
+
+            if (token.type === tokens.number) {
+              index = t.indexLiteral(token.value);
+              eatToken();
+            }
+          }
+
+          if (isKeyword(token, keywords.memory)) {
+            type = "Memory";
+
+            eatToken();
+
+            if (token.type === tokens.identifier) {
+              index = t.identifier(token.value);
+              eatToken();
+            }
+
+            if (token.type === tokens.number) {
+              index = t.indexLiteral(token.value);
               eatToken();
             }
           }
@@ -460,13 +581,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error("Unknown export type");
       }
 
-      if (funcidx === undefined) {
+      if (index === undefined) {
         throw new Error("Exported function must have a name");
       }
 
       eatTokenOfType(tokens.closeParen);
 
-      return t.moduleExport(name, type, funcidx);
+      return t.moduleExport(name, type, index);
     }
 
     function parseModule(): Module {
@@ -529,12 +650,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       while (token.type !== tokens.closeParen) {
         moduleFields.push(walk());
 
-        if (state.registredExportedFuncs.length > 0) {
-          state.registredExportedFuncs.forEach(decl => {
-            moduleFields.push(t.moduleExport(decl.name, "Func", decl.id));
+        if (state.registredExportedElements.length > 0) {
+          state.registredExportedElements.forEach(decl => {
+            moduleFields.push(t.moduleExport(decl.name, decl.type, decl.id));
           });
 
-          state.registredExportedFuncs = [];
+          state.registredExportedElements = [];
         }
 
         token = tokensList[current];
@@ -899,7 +1020,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        */
       const id = t.identifier(funcId.value);
 
-      state.registredExportedFuncs.push({
+      state.registredExportedElements.push({
+        type: "Func",
         name,
         id
       });
@@ -926,6 +1048,84 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       results.push(valtype);
 
       return results;
+    }
+
+    /**
+     * Parses a global instruction
+     *
+     * WAST:
+     *
+     * global:  ( global <name>? <global_sig> <instr>* )
+     *          ( global <name>? ( export <string> ) <...> )
+     *          ( global <name>? ( import <string> <string> ) <global_sig> )
+     *
+     * global_sig: <type> | ( mut <type> )
+     *
+     */
+    function parseGlobal(): Global {
+      let name = t.identifier(getUniqueName("global"));
+      let type;
+
+      if (token.type === tokens.identifier) {
+        name = t.identifier(token.value);
+        eatToken();
+      }
+
+      /**
+       * maybe export
+       */
+      if (lookaheadAndCheck(tokens.openParen, keywords.export)) {
+        eatToken(); // (
+        eatToken(); // export
+
+        const exportName = token.value;
+        eatTokenOfType(tokens.string);
+
+        state.registredExportedElements.push({
+          type: "Global",
+          name: exportName,
+          id: name
+        });
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      /**
+       * global_sig
+       */
+      if (token.type === tokens.valtype) {
+        type = t.globalType(token.value, "const");
+        eatToken();
+      } else if (token.type === tokens.openParen) {
+        eatToken(); // (
+
+        if (isKeyword(token, keywords.mut) === false) {
+          showCodeFrame(source, token.loc);
+          throw new Error("Unsupported global type, expected mut");
+        }
+
+        eatToken(); // mut
+
+        type = t.globalType(token.value, "var");
+        eatToken();
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      if (type === undefined) {
+        showCodeFrame(source, token.loc);
+        throw new TypeError("Could not determine global type");
+      }
+
+      /**
+       * instr*
+       */
+      const init = [];
+      parseListOfInstructions(init);
+
+      eatTokenOfType(tokens.closeParen);
+
+      return t.global(type, init, name);
     }
 
     /**
@@ -1019,6 +1219,22 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.memory)) {
         eatToken();
         const node = parseMemory();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.table)) {
+        eatToken();
+        const node = parseTable();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.global)) {
+        eatToken();
+        const node = parseGlobal();
         eatTokenOfType(tokens.closeParen);
 
         return node;

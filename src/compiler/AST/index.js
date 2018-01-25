@@ -315,11 +315,16 @@ export function funcImportDescr(
   };
 }
 
-export function table(elementType: TableElementType, limits: Limit): Table {
+export function table(
+  elementType: TableElementType,
+  limits: Limit,
+  name: ?Identifier
+): Table {
   return {
     type: "Table",
     elementType,
-    limits
+    limits,
+    name
   };
 }
 
@@ -354,12 +359,14 @@ export function data(
 
 export function global(
   globalType: GlobalType,
-  init: Array<Instruction>
+  init: Array<Instruction>,
+  name: ?Identifier
 ): Global {
   return {
     type: "Global",
     globalType,
-    init
+    init,
+    name
   };
 }
 

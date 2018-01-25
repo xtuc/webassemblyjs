@@ -16,6 +16,10 @@ const _debug = {
     cb(ast);
   },
 
+  parseWATFSpecTest(content: string): Program {
+    return parseSource(content);
+  },
+
   parseWASM(content: ArrayBuffer, cb: (ast: Program) => void) {
     const ast = parseBinary(content);
 

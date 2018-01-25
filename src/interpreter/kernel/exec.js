@@ -30,8 +30,20 @@ function assertStackDepth(depth: number) {
   }
 }
 
-export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
+export function executeStackFrame(
+  frame: StackFrame,
+  depth: number = 0
+): ?StackLocal {
   let pc = 0;
+
+  function createAndExecuteChildStackFrame(
+    instrs: Array<Instruction>
+  ): ?StackLocal {
+    const childStackFrame = createChildStackFrame(frame, instrs);
+    childStackFrame.trace = frame.trace;
+
+    return executeStackFrame(childStackFrame, depth + 1);
+  }
 
   function getLocalByIndex(index: number) {
     const local = frame.locals[index];
@@ -51,7 +63,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     frame.locals[index] = value;
   }
 
-  function pushResult(res: StackLocal) {
+  function pushResult(res: ?StackLocal) {
+    if (res == null) {
+      return;
+    }
+
     frame.values.push(res);
   }
 
@@ -662,6 +678,23 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         break;
       }
 
+      case "return": {
+        const { args } = instruction;
+
+        if (args.length > 0) {
+          const res = createAndExecuteChildStackFrame(args);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
+        // Abort execution and return the first item on the stack
+        return pop1();
+      }
+
       /**
        * Binary operations
        */
@@ -721,6 +754,30 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
             );
         }
 
+        const [left, right] = instruction.args;
+
+        // Interpret left branch first if it's a child instruction
+        if (typeof left !== "undefined") {
+          const res = createAndExecuteChildStackFrame([left]);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
+        // Interpret right branch first if it's a child instruction
+        if (typeof right !== "undefined") {
+          const res = createAndExecuteChildStackFrame([right]);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
         const [c1, c2] = pop2(instruction.object, instruction.object);
         pushResult(binopFn(c1, c2, instruction.id));
 
@@ -777,7 +834,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
   // Return the item on top of the values/stack;
   if (frame.values.length > 0) {
-    return frame.values.pop();
+    return pop1();
   }
 }
 

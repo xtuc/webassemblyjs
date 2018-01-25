@@ -33,10 +33,13 @@ watch:
 test-ci: test lint
 
 test: build
-	$(MOCHA) --recursive --grep spec --invert
+	$(MOCHA) test/ --recursive
 
-test-spec: build
-	$(MOCHA) --grep spec
+test-whitelisted-spec:
+	./lib/bin/repl.js spec/test/core/exports.wast
+
+test-spec:
+	./spec/test/core/run.py --wasm ./lib/bin/repl.js
 
 lint:
 	$(ESLINT) src test docs benchmark

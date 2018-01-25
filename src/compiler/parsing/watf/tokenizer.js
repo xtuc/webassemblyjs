@@ -78,7 +78,11 @@ const keywords = {
   else: "else",
   call: "call",
   import: "import",
-  memory: "memory"
+  memory: "memory",
+  table: "table",
+  global: "global",
+  anyfunc: "anyfunc",
+  mut: "mut"
 };
 
 const CloseParenToken = createToken(tokens.closeParen);

@@ -43,6 +43,9 @@ export function walk(
 
   if (n.type === "Instr") {
     cb(n.type, createPath(n));
+
+    // $FlowIgnore
+    n.args.forEach(x => walk(x, cb));
   }
 
   if (n.type === "CallInstruction") {

@@ -229,7 +229,8 @@ interface ModuleImport {
 type Table = Node & {
   type: "Table",
   elementType: TableElementType,
-  limits: Limit
+  limits: Limit,
+  name: ?Identifier
 };
 
 type Memory = {
@@ -253,7 +254,8 @@ type Data = {
 type Global = {
   type: "Global",
   globalType: GlobalType,
-  init: Array<Instruction>
+  init: Array<Instruction>,
+  name: ?Identifier
 };
 
 type GlobalType = {
