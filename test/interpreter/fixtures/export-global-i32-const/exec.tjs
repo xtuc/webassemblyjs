@@ -1,6 +1,6 @@
 const m = WebAssembly.instantiateFromSource(watfmodule);
 
 it("should export the global value", () => {
-  assert.typeOf(m.exports.a, 'number');
+  assert.typeOf(m.exports.a, "number");
   assert.equal(m.exports.a, 1);
 });

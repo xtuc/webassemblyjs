@@ -85,7 +85,6 @@ export class Instance {
     );
 
     moduleInstance.exports.forEach(exportinst => {
-
       if (exportinst.value.type === "Func") {
         this.exports[exportinst.name] = createHostfunc(
           moduleInstance,
