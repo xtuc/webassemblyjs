@@ -138,7 +138,6 @@ export function createInstance(
       }
 
       if (node.descr.type === "Global") {
-
         // Referenced by its index in the module.globaladdrs
         if (node.descr.id.type === "NumberLiteral") {
           const index = node.descr.id.value;
