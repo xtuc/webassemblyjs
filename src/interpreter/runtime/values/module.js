@@ -30,6 +30,16 @@ export function createInstance(
   const instantiatedFuncs = {};
   const instantiatedGlobals = {};
 
+  function assertNotAlreadyExported(str) {
+    const moduleInstanceExport = moduleInstance.exports.find(
+      ({ name }) => name === str
+    );
+
+    if (moduleInstanceExport !== undefined) {
+      throw new CompileError("Duplicate export name");
+    }
+  }
+
   importObjectUtils.walk(externalFunctions, (key, key2, jsfunc) => {
     const funcinstance = func.createExternalInstance(jsfunc);
 
@@ -132,6 +142,8 @@ export function createInstance(
           addr: instantiatedFuncAddr
         };
 
+        assertNotAlreadyExported(node.name);
+
         moduleInstance.exports.push(
           createModuleExportIntance(node.name, externalVal)
         );
@@ -152,6 +164,8 @@ export function createInstance(
             type: node.descr.type,
             addr: globalinstaddr
           };
+
+          assertNotAlreadyExported(node.name);
 
           moduleInstance.exports.push(
             createModuleExportIntance(node.name, externalVal)
@@ -174,6 +188,8 @@ export function createInstance(
             type: node.descr.type,
             addr: instantiatedGlobal.addr
           };
+
+          assertNotAlreadyExported(node.name);
 
           moduleInstance.exports.push(
             createModuleExportIntance(node.name, externalVal)

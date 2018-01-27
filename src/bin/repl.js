@@ -24,7 +24,7 @@ function assert_invalid(node) {
   try {
     createInstanceFromAst(module);
 
-    assert(false, "module is valid, expected invalid");
+    assert(false, `module is valid, expected invalid (${expected.value})`);
   } catch (err) {
     assert(
       err.message.toLowerCase() === expected.value.toLowerCase(),
