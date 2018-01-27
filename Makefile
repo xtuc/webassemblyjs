@@ -30,7 +30,7 @@ build: clean
 watch:
 	$(BABEL) --out-dir lib/ src/ --watch
 
-test-ci: test lint
+test-ci: test test-whitelisted-spec lint
 
 test: build
 	$(MOCHA) test/ --recursive
