@@ -29,6 +29,8 @@ export function createInstance(
    */
   const instantiatedFuncs = {};
   const instantiatedGlobals = {};
+  const instantiatedTables = {};
+  const instantiatedMemories = {};
 
   function assertNotAlreadyExported(str) {
     const moduleInstanceExport = moduleInstance.exports.find(
@@ -69,6 +71,38 @@ export function createInstance(
       if (node.name != null) {
         if (node.name.type === "Identifier") {
           instantiatedFuncs[node.name.value] = addr;
+        }
+      }
+    },
+
+    Table({ node }: NodePath<Table>) {
+      // TODO(sven): implement exporting a Table instance
+      const tableinstance = null;
+
+      const addr = allocator.malloc(1 /* size of the tableinstance struct */);
+      allocator.set(addr, tableinstance);
+
+      moduleInstance.tableaddrs.push(addr);
+
+      if (node.name != null) {
+        if (node.name.type === "Identifier") {
+          instantiatedTables[node.name.value] = addr;
+        }
+      }
+    },
+
+    Memory({ node }: NodePath<Memory>) {
+      // TODO(sven): implement exporting a Memory instance
+      const memoryinstance = null;
+
+      const addr = allocator.malloc(1 /* size of the memoryinstance struct */);
+      allocator.set(addr, memoryinstance);
+
+      moduleInstance.tableaddrs.push(addr);
+
+      if (node.id != null) {
+        if (node.id.type === "Identifier") {
+          instantiatedMemories[node.id.value] = addr;
         }
       }
     },
@@ -195,6 +229,36 @@ export function createInstance(
             createModuleExportIntance(node.name, externalVal)
           );
         }
+      }
+
+      if (node.descr.type === "Table") {
+        const instantiatedTable = instantiatedTables[node.descr.id.value];
+
+        const externalVal = {
+          type: node.descr.type,
+          addr: instantiatedTable
+        };
+
+        assertNotAlreadyExported(node.name);
+
+        moduleInstance.exports.push(
+          createModuleExportIntance(node.name, externalVal)
+        );
+      }
+
+      if (node.descr.type === "Memory") {
+        const instantiatedMemory = instantiatedMemories[node.descr.id.value];
+
+        const externalVal = {
+          type: node.descr.type,
+          addr: instantiatedMemory
+        };
+
+        assertNotAlreadyExported(node.name);
+
+        moduleInstance.exports.push(
+          createModuleExportIntance(node.name, externalVal)
+        );
       }
     }
   });
