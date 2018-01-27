@@ -50,6 +50,18 @@
         "type": "Identifier",
         "value": "temp_4"
       }
+    },
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": "10"
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "a"
+      }
     }
   ]
 }

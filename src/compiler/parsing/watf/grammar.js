@@ -161,7 +161,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       let limit = t.limits(0);
       const elemType = "anyfunc";
 
-      if (token.type === tokens.string) {
+      if (token.type === tokens.string || token.type === tokens.identifier) {
         name = t.identifier(token.value);
         eatToken();
       }
