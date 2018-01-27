@@ -119,10 +119,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseMemory(): Memory {
       let id = t.identifier(getUniqueName("memory"));
 
-      if (
-        token.type === tokens.string
-        || token.type === tokens.identifier
-      ) {
+      if (token.type === tokens.string || token.type === tokens.identifier) {
         id = t.identifier(token.value);
 
         eatToken();
