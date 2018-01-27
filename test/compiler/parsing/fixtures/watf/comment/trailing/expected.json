@@ -1,0 +1,48 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": []
+    },
+    {
+      "type": "LeadingComment",
+      "value": " module there"
+    },
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "a"
+          },
+          "params": [],
+          "result": null,
+          "body": []
+        },
+        {
+          "type": "LeadingComment",
+          "value": " func a there"
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "b"
+          },
+          "params": [],
+          "result": null,
+          "body": []
+        },
+        {
+          "type": "LeadingComment",
+          "value": " func b there"
+        }
+      ]
+    }
+  ]
+}
