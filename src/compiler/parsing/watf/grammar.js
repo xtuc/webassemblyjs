@@ -117,7 +117,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseMemory(): Memory {
-      let id;
+      let id = t.identifier(getUniqueName("memory"));
 
       if (token.type === tokens.string) {
         id = t.identifier(token.value);
@@ -125,6 +125,33 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
+      /**
+       * Maybe export
+       */
+      if (lookaheadAndCheck(tokens.openParen, keywords.export)) {
+        eatToken(); // (
+        eatToken(); // export
+
+        if (token.type !== tokens.string) {
+          showCodeFrame(source, token.loc);
+          throw new Error("Expected string in export, given " + token.type);
+        }
+
+        const name = token.value;
+        eatToken();
+
+        state.registredExportedElements.push({
+          type: "Memory",
+          name,
+          id
+        });
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      /**
+       * Memory signature
+       */
       if (token.type !== tokens.number) {
         showCodeFrame(source, token.loc);
         throw new Error(
