@@ -161,26 +161,51 @@ export function createInstance(
   traverse(n, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
       if (node.descr.type === "Func") {
-        const instantiatedFuncAddr = instantiatedFuncs[node.descr.id.value];
+        // Referenced by its index in the module.funcaddrs
+        if (node.descr.id.type === "NumberLiteral") {
+          const index = node.descr.id.value;
 
-        if (typeof instantiatedFuncs === "undefined") {
-          throw new Error(
-            "Cannot create exportinst: function " +
-              node.descr.id.value +
-              " was not declared or instantiated"
+          const funcinstaddr = moduleInstance.funcaddrs[index];
+
+          if (funcinstaddr === undefined) {
+            throw new CompileError("Unknown function");
+          }
+
+          const externalVal = {
+            type: node.descr.type,
+            addr: funcinstaddr
+          };
+
+          assertNotAlreadyExported(node.name);
+
+          moduleInstance.exports.push(
+            createModuleExportIntance(node.name, externalVal)
           );
         }
 
-        const externalVal = {
-          type: node.descr.type,
-          addr: instantiatedFuncAddr
-        };
+        // Referenced by its identifier
+        if (node.descr.id.type === "Identifier") {
+          const instantiatedFuncAddr = instantiatedFuncs[node.descr.id.value];
 
-        assertNotAlreadyExported(node.name);
+          if (typeof instantiatedFuncs === "undefined") {
+            throw new Error(
+              "Cannot create exportinst: function " +
+                node.descr.id.value +
+                " was not declared or instantiated"
+            );
+          }
 
-        moduleInstance.exports.push(
-          createModuleExportIntance(node.name, externalVal)
-        );
+          const externalVal = {
+            type: node.descr.type,
+            addr: instantiatedFuncAddr
+          };
+
+          assertNotAlreadyExported(node.name);
+
+          moduleInstance.exports.push(
+            createModuleExportIntance(node.name, externalVal)
+          );
+        }
       }
 
       if (node.descr.type === "Global") {
