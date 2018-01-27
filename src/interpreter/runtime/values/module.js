@@ -98,7 +98,7 @@ export function createInstance(
       const addr = allocator.malloc(1 /* size of the memoryinstance struct */);
       allocator.set(addr, memoryinstance);
 
-      moduleInstance.tableaddrs.push(addr);
+      moduleInstance.memaddrs.push(addr);
 
       if (node.id != null) {
         if (node.id.type === "Identifier") {
@@ -190,7 +190,7 @@ export function createInstance(
 
           const globalinstaddr = moduleInstance.globaladdrs[index];
 
-          if (globalinstaddr == null) {
+          if (globalinstaddr === undefined) {
             throw new CompileError("Unknown global");
           }
 
@@ -232,33 +232,83 @@ export function createInstance(
       }
 
       if (node.descr.type === "Table") {
-        const instantiatedTable = instantiatedTables[node.descr.id.value];
+        // Referenced by its identifier
+        if (node.descr.id.type === "Identifier") {
+          const instantiatedTable = instantiatedTables[node.descr.id.value];
 
-        const externalVal = {
-          type: node.descr.type,
-          addr: instantiatedTable
-        };
+          const externalVal = {
+            type: node.descr.type,
+            addr: instantiatedTable
+          };
 
-        assertNotAlreadyExported(node.name);
+          assertNotAlreadyExported(node.name);
 
-        moduleInstance.exports.push(
-          createModuleExportIntance(node.name, externalVal)
-        );
+          moduleInstance.exports.push(
+            createModuleExportIntance(node.name, externalVal)
+          );
+        }
+
+        // Referenced by its index in the module.tableaddrs
+        if (node.descr.id.type === "NumberLiteral") {
+          const index = node.descr.id.value;
+
+          const tableinstaddr = moduleInstance.tableaddrs[index];
+
+          const externalVal = {
+            type: node.descr.type,
+            addr: tableinstaddr
+          };
+
+          assertNotAlreadyExported(node.name);
+
+          if (tableinstaddr === undefined) {
+            throw new CompileError("Unknown table");
+          }
+
+          moduleInstance.exports.push(
+            createModuleExportIntance(node.name, externalVal)
+          );
+        }
       }
 
       if (node.descr.type === "Memory") {
-        const instantiatedMemory = instantiatedMemories[node.descr.id.value];
+        // Referenced by its identifier
+        if (node.descr.id.type === "Identifier") {
+          const instantiatedMemory = instantiatedMemories[node.descr.id.value];
 
-        const externalVal = {
-          type: node.descr.type,
-          addr: instantiatedMemory
-        };
+          const externalVal = {
+            type: node.descr.type,
+            addr: instantiatedMemory
+          };
 
-        assertNotAlreadyExported(node.name);
+          assertNotAlreadyExported(node.name);
 
-        moduleInstance.exports.push(
-          createModuleExportIntance(node.name, externalVal)
-        );
+          moduleInstance.exports.push(
+            createModuleExportIntance(node.name, externalVal)
+          );
+        }
+
+        // Referenced by its index in the module.memaddrs
+        if (node.descr.id.type === "NumberLiteral") {
+          const index = node.descr.id.value;
+
+          const meminstaddr = moduleInstance.memaddrs[index];
+
+          const externalVal = {
+            type: node.descr.type,
+            addr: meminstaddr
+          };
+
+          assertNotAlreadyExported(node.name);
+
+          if (meminstaddr === undefined) {
+            throw new CompileError("Unknown memory");
+          }
+
+          moduleInstance.exports.push(
+            createModuleExportIntance(node.name, externalVal)
+          );
+        }
       }
     }
   });

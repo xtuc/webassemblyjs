@@ -41,6 +41,14 @@ export function walk(
     cb(n.type, createPath(n));
   }
 
+  if (n.type === "Table") {
+    cb(n.type, createPath(n));
+  }
+
+  if (n.type === "Memory") {
+    cb(n.type, createPath(n));
+  }
+
   if (n.type === "Instr") {
     cb(n.type, createPath(n));
 
