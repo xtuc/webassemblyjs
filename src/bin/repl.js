@@ -171,12 +171,12 @@ function createInstanceFromAst(moduleNode) {
 }
 
 function replEval(input) {
-  const ast = _debug.parseWATFSpecTest(input);
-  const [node] = ast.body;
-
   if (isVerbose === true) {
     console.log(input);
   }
+
+  const ast = _debug.parseWATFSpecTest(input);
+  const [node] = ast.body;
 
   // Empty input, skip this iteration
   if (node === undefined) {
