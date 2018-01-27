@@ -161,9 +161,33 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       let limit = t.limits(0);
       const elemType = "anyfunc";
 
-      if (token.type === tokens.string) {
+      if (token.type === tokens.string || token.type === tokens.identifier) {
         name = t.identifier(token.value);
         eatToken();
+      }
+
+      /**
+       * Maybe export
+       */
+      if (lookaheadAndCheck(tokens.openParen, keywords.export)) {
+        eatToken(); // (
+        eatToken(); // export
+
+        if (token.type !== tokens.string) {
+          showCodeFrame(source, token.loc);
+          throw new Error("Expected string in export, given " + token.type);
+        }
+
+        const exportName = token.value;
+        eatToken();
+
+        state.registredExportedElements.push({
+          type: "Table",
+          name: exportName,
+          id: name
+        });
+
+        eatTokenOfType(tokens.closeParen);
       }
 
       /**
