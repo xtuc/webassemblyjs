@@ -152,6 +152,20 @@ function countChar(char) {
     }, 0);
 }
 
+function hasCommentAtStart(line) {
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === " ") {
+      continue;
+    }
+
+    if (line[i] === ";") {
+      return true;
+    }
+
+    return false;
+  }
+}
+
 const countOpeningParens = countChar("(");
 const countClosingParens = countChar(")");
 
@@ -227,12 +241,6 @@ function replEval(input) {
 }
 
 function read(input) {
-  // FIXME(sven): the parser should handle comments but let's ignore them for
-  // now
-  if (input[0] === ";") {
-    return;
-  }
-
   openParens += countOpeningParens(input);
   openParens -= countClosingParens(input);
 
