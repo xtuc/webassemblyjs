@@ -30,12 +30,12 @@ build: clean
 watch:
 	$(BABEL) --out-dir lib/ src/ --watch
 
-test-ci: test lint
+test-ci: test test-whitelisted-spec lint
 
 test: build
 	$(MOCHA) test/ --recursive
 
-test-whitelisted-spec:
+test-whitelisted-spec: make-executables
 	./lib/bin/repl.js spec/test/core/exports.wast
 
 test-spec:
