@@ -152,20 +152,6 @@ function countChar(char) {
     }, 0);
 }
 
-function hasCommentAtStart(line) {
-  for (let i = 0; i < line.length; i++) {
-    if (line[i] === " ") {
-      continue;
-    }
-
-    if (line[i] === ";") {
-      return true;
-    }
-
-    return false;
-  }
-}
-
 const countOpeningParens = countChar("(");
 const countClosingParens = countChar(")");
 
