@@ -37,6 +37,7 @@ test: build
 
 test-whitelisted-spec: make-executables
 	./lib/bin/repl.js spec/test/core/exports.wast
+	./lib/bin/repl.js spec/test/core/globals.wast
 
 test-spec:
 	./spec/test/core/run.py --wasm ./lib/bin/repl.js
