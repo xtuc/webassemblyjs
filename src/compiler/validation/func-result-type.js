@@ -14,7 +14,7 @@ function getInstructionResultType(i: Instruction | ObjectInstruction) {
   return UNKNOWN_TYPE;
 }
 
-export function validate(ast: Program) {
+export default function validate(ast: Program): Array<string> {
   const errors = [];
 
   traverse(ast, {
@@ -58,9 +58,5 @@ export function validate(ast: Program) {
     }
   });
 
-  if (errors.length !== 0) {
-    const errorMessage = "Validation errors:\n" + errors.join("\n");
-
-    throw new Error(errorMessage);
-  }
+  return errors;
 }
