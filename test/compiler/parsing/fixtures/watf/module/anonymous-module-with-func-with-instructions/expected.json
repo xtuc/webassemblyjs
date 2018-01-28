@@ -12,7 +12,7 @@
             "value": "funcfoo"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": [
             {
               "type": "Instr",

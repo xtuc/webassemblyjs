@@ -8,9 +8,9 @@ function createInstance(n: Func, fromModule: ModuleInstance): FuncInstance {
     type[0].push(param.valtype);
   });
 
-  if (n.result) {
-    type[1].push(n.result);
-  }
+  n.result.forEach(result => {
+    type[1].push(result);
+  });
 
   const code = n.body;
 

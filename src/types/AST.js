@@ -147,8 +147,10 @@ interface Func {
   name: ?Index;
 
   params: Array<FuncParam>;
-  result: ?Valtype;
+  result: Array<Valtype>;
   body: Array<Instruction>;
+
+  // Means that it has been imported from the outside js
   isExternal?: boolean;
 }
 

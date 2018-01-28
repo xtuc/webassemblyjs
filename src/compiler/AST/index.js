@@ -91,10 +91,11 @@ export function moduleExport(
 export function func(
   name: ?Index,
   params: Array<FuncParam>,
-  result: ?Valtype,
+  result: Array<Valtype>,
   body: Array<Instruction>
 ): Func {
   assert(typeof params === "object" && typeof params.length !== "undefined");
+  assert(typeof result === "object" && typeof result.length !== "undefined");
   assert(typeof body === "object" && typeof body.length !== "undefined");
   assert(typeof name !== "string");
 

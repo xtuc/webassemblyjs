@@ -8,7 +8,9 @@
         "value": "func_1"
       },
       "params": [],
-      "result": "i32",
+      "result": [
+        "i32"
+      ],
       "body": [
         {
           "type": "Instr",

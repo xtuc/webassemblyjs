@@ -13,7 +13,7 @@
           "valtype": "i32"
         }
       ],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
@@ -28,7 +28,7 @@
           "valtype": "i64"
         }
       ],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
@@ -43,7 +43,7 @@
           "valtype": "f32"
         }
       ],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
@@ -58,7 +58,7 @@
           "valtype": "f64"
         }
       ],
-      "result": null,
+      "result": [],
       "body": []
     }
   ]

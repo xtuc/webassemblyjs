@@ -8,7 +8,7 @@
         "value": "funca"
       },
       "params": [],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
@@ -31,7 +31,7 @@
           "valtype": "i64"
         }
       ],
-      "result": null,
+      "result": [],
       "body": [
         {
           "type": "Instr",
@@ -168,7 +168,7 @@
         "value": "funcb"
       },
       "params": [],
-      "result": null,
+      "result": [],
       "body": []
     }
   ]
