@@ -46,19 +46,6 @@ describe("compiler", () => {
   describe("watf", () => {
     afterEach(() => watf.resetUniqueNameGenerator());
 
-    describe("spec parsing", () => {
-      const testSuites = glob.sync(
-        "test/compiler/parsing/fixtures/spec-test/**/actual.wast"
-      );
-
-      testSuites.forEach(suite => {
-        it(suite, () => {
-          const code = readFileSync(suite, "utf8");
-          _debug.parseWATFSpecTest(code, createCheck(suite));
-        });
-      });
-    });
-
     describe("parsing", () => {
       const testSuites = glob.sync(
         "test/compiler/parsing/fixtures/watf/**/actual.wast"
