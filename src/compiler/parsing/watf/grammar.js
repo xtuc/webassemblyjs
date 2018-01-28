@@ -1017,8 +1017,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         } else if (lookaheadAndCheck(keywords.result) === true) {
           eatToken();
 
-          // FIXME(sven): func result should be an array here
-          // https://github.com/xtuc/js-webassembly-interpreter/issues/5
           fnResult.push(...parseFuncResult());
         } else if (lookaheadAndCheck(keywords.export) === true) {
           eatToken();
