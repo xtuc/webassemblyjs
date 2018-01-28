@@ -28,14 +28,14 @@ export class Module {
 }
 
 export function createCompiledModule(ast: Program): CompiledModule {
-  const exports = [];
+  const exports: Array<CompiledModuleExportDescr> = [];
   const imports = [];
 
   traverse(ast, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
       if (node.descr.type === "Func") {
         exports.push({
-          name: node.descr.id,
+          name: node.name,
           kind: "function"
         });
       }

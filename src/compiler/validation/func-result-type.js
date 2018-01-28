@@ -19,7 +19,9 @@ export function validate(ast: Program) {
 
   traverse(ast, {
     Func({ node }: NodePath<Func>) {
-      const resultType = node.result;
+      // Since only one return is allowed at the moment, we don't need to check
+      // them all.
+      const [resultType] = node.result;
       const [lastInstruction] = node.body;
 
       // Function has no result types or last instruction, we can skip it
@@ -42,8 +44,8 @@ export function validate(ast: Program) {
       if (resultType !== lastInstructionResultType) {
         let name = "anonymous";
 
-        if (node.id != null) {
-          name = node.id.value;
+        if (node.name != null) {
+          name = node.name.value;
         }
 
         errors.push(

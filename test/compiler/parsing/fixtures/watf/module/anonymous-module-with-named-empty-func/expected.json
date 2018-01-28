@@ -7,12 +7,12 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "test"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         }
       ]
@@ -23,12 +23,12 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "TEST"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         }
       ]
@@ -39,12 +39,12 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "!"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         }
       ]
@@ -55,12 +55,12 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "$"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         }
       ]

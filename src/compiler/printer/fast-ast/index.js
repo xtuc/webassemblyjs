@@ -22,16 +22,16 @@ export function print(ast: Node) {
   traverse(ast, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
       if (node.descr.type === "Func") {
-        out.exports[node.descr.id] = node;
+        out.exports[node.descr.id.value] = node;
       }
     },
 
     Func({ node }: NodePath<Func>) {
-      if (typeof node.id !== "string") {
-        node.id = t.identifier(generateUniqueId());
+      if (typeof node.name !== "string") {
+        node.name = t.identifier(generateUniqueId());
       }
 
-      out.functions[node.id.value] = node;
+      out.functions[node.name.value] = node;
     },
 
     Global({ node }: NodePath<Global>) {

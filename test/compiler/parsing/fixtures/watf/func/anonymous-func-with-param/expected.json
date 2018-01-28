@@ -3,7 +3,7 @@
   "body": [
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "func_1"
       },
@@ -13,12 +13,12 @@
           "valtype": "i32"
         }
       ],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "func_2"
       },
@@ -28,12 +28,12 @@
           "valtype": "i64"
         }
       ],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "func_3"
       },
@@ -43,12 +43,12 @@
           "valtype": "f32"
         }
       ],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "func_4"
       },
@@ -58,7 +58,7 @@
           "valtype": "f64"
         }
       ],
-      "result": null,
+      "result": [],
       "body": []
     }
   ]

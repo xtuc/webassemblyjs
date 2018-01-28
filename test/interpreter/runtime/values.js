@@ -32,8 +32,8 @@ describe("module create interface", () => {
       const exportName = "foo";
 
       const node = t.module(null, [
-        t.func(t.identifier(exportName), [], null, []),
-        t.moduleExport(exportName, "Func", exportName)
+        t.func(t.identifier(exportName), [], [], []),
+        t.moduleExport(exportName, "Func", t.identifier(exportName))
       ]);
 
       const instance = modulevalue.createInstance(allocator, node);
@@ -50,7 +50,7 @@ describe("module create interface", () => {
 
   describe("function instance", () => {
     it("return an instance", () => {
-      const node = t.func(t.identifier("test"), [], null, []);
+      const node = t.func(t.identifier("test"), [], [], []);
       const fromModule = t.module(undefined, []);
 
       const instance = funcvalue.createInstance(node, fromModule);
@@ -69,8 +69,7 @@ describe("module create interface", () => {
 
     it("return an instance with arg and result types", () => {
       const args = [{ id: "a", valtype: "i32" }, { id: "b", valtype: "i32" }];
-
-      const result = "i32";
+      const result = ["i32"];
 
       const node = t.func(t.identifier("test"), args, result, []);
       const fromModule = t.module(undefined, []);

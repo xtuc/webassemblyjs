@@ -30,8 +30,20 @@ function assertStackDepth(depth: number) {
   }
 }
 
-export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
+export function executeStackFrame(
+  frame: StackFrame,
+  depth: number = 0
+): ?StackLocal {
   let pc = 0;
+
+  function createAndExecuteChildStackFrame(
+    instrs: Array<Instruction>
+  ): ?StackLocal {
+    const childStackFrame = createChildStackFrame(frame, instrs);
+    childStackFrame.trace = frame.trace;
+
+    return executeStackFrame(childStackFrame, depth + 1);
+  }
 
   function getLocalByIndex(index: number) {
     const local = frame.locals[index];
@@ -51,7 +63,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
     frame.locals[index] = value;
   }
 
-  function pushResult(res: StackLocal) {
+  function pushResult(res: ?StackLocal) {
+    if (res == null) {
+      return;
+    }
+
     frame.values.push(res);
   }
 
@@ -171,12 +187,12 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         /**
          * Register the function into the stack frame labels
          */
-        if (typeof func.id === "object") {
-          if (func.id.type === "Identifier") {
+        if (typeof func.name === "object") {
+          if (func.name.type === "Identifier") {
             frame.labels.push({
               value: func,
               arity: func.params.length,
-              id: func.id
+              id: func.name
             });
           }
         }
@@ -406,7 +422,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         // 2. Pop the value ci32.const c from the stack.
         const c = pop1("i32");
 
-        if (!c.value.isZero()) {
+        if (!c.value.eqz().isTrue()) {
           // 3. If c is non-zero, then
           // 3. a. Execute the instruction (br l).
           const res = br(label);
@@ -445,7 +461,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
           return res;
         }
 
-        if (!res.value.isZero()) {
+        if (res != null && !res.value.eqz().isTrue()) {
           /**
            * Execute consequent
            */
@@ -547,7 +563,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
             return res;
           }
 
-          setLocalByIndex(index.value, res);
+          if (res != null) {
+            setLocalByIndex(index.value, res);
+          }
         } else if (index.type === "NumberLiteral") {
           // WASM
 
@@ -582,7 +600,9 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
             return res;
           }
 
-          setLocalByIndex(index.value, res);
+          if (res != null) {
+            setLocalByIndex(index.value, res);
+          }
 
           pushResult(res);
         } else if (index.type === "NumberLiteral") {
@@ -666,6 +686,23 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
         break;
       }
 
+      case "return": {
+        const { args } = instruction;
+
+        if (args.length > 0) {
+          const res = createAndExecuteChildStackFrame(args);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
+        // Abort execution and return the first item on the stack
+        return pop1();
+      }
+
       /**
        * Binary operations
        */
@@ -678,12 +715,30 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
        */
       case "div_s":
       case "div_u":
+      case "rem_s":
+      case "rem_u":
+      case "shl":
+      case "shr_s":
+      case "shr_u":
+      case "rotl":
+      case "rotr":
       case "div":
       case "min":
       case "max":
       case "copysign":
       case "or":
-      case "xor": {
+      case "xor":
+      case "and":
+      case "eq":
+      case "ne":
+      case "lt_s":
+      case "lt_u":
+      case "le_s":
+      case "le_u":
+      case "gt_s":
+      case "gt_u":
+      case "ge_s":
+      case "ge_u": {
         let binopFn;
         switch (instruction.object) {
           case "i32":
@@ -707,6 +762,30 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
             );
         }
 
+        const [left, right] = instruction.args;
+
+        // Interpret left branch first if it's a child instruction
+        if (typeof left !== "undefined") {
+          const res = createAndExecuteChildStackFrame([left]);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
+        // Interpret right branch first if it's a child instruction
+        if (typeof right !== "undefined") {
+          const res = createAndExecuteChildStackFrame([right]);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
         const [c1, c2] = pop2(instruction.object, instruction.object);
         pushResult(binopFn(c1, c2, instruction.id));
 
@@ -717,7 +796,11 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
        * Unary operations
        */
       case "abs":
-      case "neg": {
+      case "neg":
+      case "clz":
+      case "ctz":
+      case "popcnt":
+      case "eqz": {
         let unopFn;
 
         switch (instruction.object) {
@@ -742,7 +825,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
             );
         }
 
-        const c = pop1("f32");
+        const c = pop1(instruction.object);
 
         pushResult(unopFn(c, instruction.id));
 
@@ -759,7 +842,7 @@ export function executeStackFrame(frame: StackFrame, depth: number = 0): any {
 
   // Return the item on top of the values/stack;
   if (frame.values.length > 0) {
-    return frame.values.pop();
+    return pop1();
   }
 }
 

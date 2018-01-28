@@ -1,0 +1,7 @@
+const m = WebAssembly.instantiateFromSource(watfmodule);
+
+it("should use child instructions as arguments", () => {
+  const res = m.exports.add1(1);
+
+  assert.equal(res, 2);
+});

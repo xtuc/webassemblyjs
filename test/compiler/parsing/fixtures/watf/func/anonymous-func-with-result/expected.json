@@ -3,12 +3,14 @@
   "body": [
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "func_1"
       },
       "params": [],
-      "result": "i32",
+      "result": [
+        "i32"
+      ],
       "body": []
     }
   ]

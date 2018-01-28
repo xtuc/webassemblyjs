@@ -7,12 +7,12 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "func_1"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         },
         {
@@ -20,17 +20,22 @@
           "name": "a",
           "descr": {
             "type": "Func",
-            "id": "func_1"
+            "id": {
+              "type": "Identifier",
+              "value": "func_1"
+            }
           }
         },
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "func_2"
           },
           "params": [],
-          "result": "i32",
+          "result": [
+            "i32"
+          ],
           "body": []
         },
         {
@@ -38,12 +43,15 @@
           "name": "b",
           "descr": {
             "type": "Func",
-            "id": "func_2"
+            "id": {
+              "type": "Identifier",
+              "value": "func_2"
+            }
           }
         },
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "func_3"
           },
@@ -52,7 +60,7 @@
               "valtype": "i32"
             }
           ],
-          "result": null,
+          "result": [],
           "body": []
         },
         {
@@ -60,7 +68,10 @@
           "name": "c",
           "descr": {
             "type": "Func",
-            "id": "func_3"
+            "id": {
+              "type": "Identifier",
+              "value": "func_3"
+            }
           }
         }
       ]

@@ -1,6 +1,6 @@
 {
   "name": "webassembly-interpreter",
-  "version": "0.0.15",
+  "version": "0.0.17",
   "keywords": [
     "webassembly",
     "interpreter",
@@ -48,7 +48,8 @@
   "bin": {
     "wasmdump": "./lib/bin/wasmdump.js",
     "wasmast": "./lib/bin/wasmast.js",
-    "wasmrun": "./lib/bin/wasmrun.js"
+    "wasmrun": "./lib/bin/wasmrun.js",
+    "wasm": "./lib/bin/repl.js"
   },
   "dependencies": {
     "@babel/code-frame": "^7.0.0-beta.36",

@@ -3,17 +3,17 @@
   "body": [
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "funca"
       },
       "params": [],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "func_2"
       },
@@ -31,7 +31,7 @@
           "valtype": "i64"
         }
       ],
-      "result": null,
+      "result": [],
       "body": [
         {
           "type": "Instr",
@@ -130,17 +130,45 @@
             "type": "NumberLiteral",
             "value": 2
           }
+        },
+        {
+          "type": "Instr",
+          "id": "add",
+          "object": "i32",
+          "args": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1000
+                }
+              ]
+            }
+          ]
         }
       ]
     },
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "funcb"
       },
       "params": [],
-      "result": null,
+      "result": [],
       "body": []
     }
   ]

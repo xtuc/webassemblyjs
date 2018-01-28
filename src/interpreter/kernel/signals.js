@@ -8,10 +8,14 @@ const TRAP = 0x0;
  *
  * It triggered using the `trap` instruction
  */
-export function createTrap(): Signal {
-  return TRAP;
+export function createTrap(): StackLocal {
+  return { value: TRAP, type: "Signal" };
 }
 
-export function isTrapped(v: any): boolean {
-  return v === TRAP;
+export function isTrapped(v: ?StackLocal): boolean {
+  if (v == null) {
+    return false;
+  }
+
+  return v.value === TRAP;
 }

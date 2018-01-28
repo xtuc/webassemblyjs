@@ -25,17 +25,19 @@ debug("Compiling...");
 const buff = toArrayBuffer(fs.readFileSync(filename, null));
 
 const importObject = {
-  imports: {
+  env: {
     printf: function(...args) {
-      console.log(...args);
+      console.log("printf", ...args);
     }
   }
 };
 
 instantiate(buff, importObject)
-  .then(module => {
+  .then(({ instance }) => {
+    console.log("exports", Object.keys(instance.exports));
+
     if (typeof entrypoint !== "undefined") {
-      const startfn = module.exports[entrypoint];
+      const startfn = instance.exports[entrypoint];
 
       if (typeof startfn !== "function") {
         throw new Error("Entrypoint not found");

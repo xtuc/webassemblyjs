@@ -78,7 +78,11 @@ const keywords = {
   else: "else",
   call: "call",
   import: "import",
-  memory: "memory"
+  memory: "memory",
+  table: "table",
+  global: "global",
+  anyfunc: "anyfunc",
+  mut: "mut"
 };
 
 const CloseParenToken = createToken(tokens.closeParen);
@@ -122,6 +126,10 @@ function tokenize(input: string) {
       while (!isNewLine(char)) {
         text += char;
         char = input[++current];
+
+        if (char === undefined) {
+          break;
+        }
       }
 
       // Shift by the length of the string

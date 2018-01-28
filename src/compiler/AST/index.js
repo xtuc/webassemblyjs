@@ -78,7 +78,7 @@ export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
 export function moduleExport(
   name: string,
   type: ExportDescr,
-  id: string
+  id: Index
 ): ModuleExport {
   return {
     type: "ModuleExport",
@@ -91,18 +91,19 @@ export function moduleExport(
 }
 
 export function func(
-  id: ?Index,
+  name: ?Index,
   params: Array<FuncParam>,
-  result: ?Valtype,
+  result: Array<Valtype>,
   body: Array<Instruction>
 ): Func {
   assert(typeof params === "object" && typeof params.length !== "undefined");
+  assert(typeof result === "object" && typeof result.length !== "undefined");
   assert(typeof body === "object" && typeof body.length !== "undefined");
-  assert(typeof id !== "string");
+  assert(typeof name !== "string");
 
   return {
     type: "Func",
-    id,
+    name,
     params,
     result,
     body
@@ -338,11 +339,16 @@ export function funcImportDescr(
   };
 }
 
-export function table(elementType: TableElementType, limits: Limit): Table {
+export function table(
+  elementType: TableElementType,
+  limits: Limit,
+  name: ?Identifier
+): Table {
   return {
     type: "Table",
     elementType,
-    limits
+    limits,
+    name
   };
 }
 
@@ -377,12 +383,14 @@ export function data(
 
 export function global(
   globalType: GlobalType,
-  init: Array<Instruction>
+  init: Array<Instruction>,
+  name: ?Identifier
 ): Global {
   return {
     type: "Global",
     globalType,
-    init
+    init,
+    name
   };
 }
 

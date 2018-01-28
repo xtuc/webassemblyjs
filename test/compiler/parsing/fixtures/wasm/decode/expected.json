@@ -7,7 +7,7 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "func_2"
           },
@@ -19,7 +19,9 @@
               "valtype": "i32"
             }
           ],
-          "result": "i32",
+          "result": [
+            "i32"
+          ],
           "body": [
             {
               "type": "Instr",
@@ -51,7 +53,7 @@
         },
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "func_3"
           },
@@ -63,7 +65,9 @@
               "valtype": "i32"
             }
           ],
-          "result": "i32",
+          "result": [
+            "i32"
+          ],
           "body": [
             {
               "type": "Instr",
@@ -98,7 +102,10 @@
           "name": "addTwo",
           "descr": {
             "type": "Func",
-            "id": "func_2"
+            "id": {
+              "type": "Identifier",
+              "value": "func_2"
+            }
           }
         },
         {
@@ -106,7 +113,10 @@
           "name": "test",
           "descr": {
             "type": "Func",
-            "id": "func_3"
+            "id": {
+              "type": "Identifier",
+              "value": "func_3"
+            }
           }
         }
       ]

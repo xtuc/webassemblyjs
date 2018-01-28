@@ -136,12 +136,13 @@ interface Func {
   type: "Func";
 
   // Only in WAST
-  // TODO(sven): rename id to name and replace Index by Identifier
-  id: ?Index;
+  name: ?Index;
 
   params: Array<FuncParam>;
-  result: ?Valtype;
+  result: Array<Valtype>;
   body: Array<Instruction>;
+
+  // Means that it has been imported from the outside js
   isExternal?: boolean;
 }
 
@@ -193,7 +194,7 @@ interface ModuleExport {
   name: string;
   descr: {
     type: ExportDescr,
-    id: string
+    id: Index
   };
 }
 
@@ -222,7 +223,8 @@ interface ModuleImport {
 type Table = Node & {
   type: "Table",
   elementType: TableElementType,
-  limits: Limit
+  limits: Limit,
+  name: ?Identifier
 };
 
 type Memory = {
@@ -246,7 +248,8 @@ type Data = {
 type Global = {
   type: "Global",
   globalType: GlobalType,
-  init: Array<Instruction>
+  init: Array<Instruction>,
+  name: ?Identifier
 };
 
 type GlobalType = {

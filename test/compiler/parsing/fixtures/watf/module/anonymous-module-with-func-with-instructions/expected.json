@@ -7,12 +7,12 @@
       "fields": [
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "funcfoo"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": [
             {
               "type": "Instr",

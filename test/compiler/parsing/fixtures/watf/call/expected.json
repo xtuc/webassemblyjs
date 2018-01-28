@@ -3,32 +3,32 @@
   "body": [
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "a"
       },
       "params": [],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "test"
       },
       "params": [],
-      "result": null,
+      "result": [],
       "body": []
     },
     {
       "type": "Func",
-      "id": {
+      "name": {
         "type": "Identifier",
         "value": "func_3"
       },
       "params": [],
-      "result": null,
+      "result": [],
       "body": [
         {
           "type": "CallInstruction",

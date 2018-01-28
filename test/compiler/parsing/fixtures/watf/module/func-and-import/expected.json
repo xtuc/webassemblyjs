@@ -23,12 +23,12 @@
         },
         {
           "type": "Func",
-          "id": {
+          "name": {
             "type": "Identifier",
             "value": "main"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": [
             {
               "type": "Instr",

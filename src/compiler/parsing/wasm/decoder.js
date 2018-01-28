@@ -1143,7 +1143,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   let funcIndex = 0;
   state.functionsInModule.forEach((func: DecodedModuleFunc) => {
     const params = func.signature.params;
-    const result = func.signature.result[0];
+    const result = func.signature.result;
 
     let body = [];
 
@@ -1173,11 +1173,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
        */
       if (moduleExport.id != null) {
         moduleFields.push(
-          t.moduleExport(
-            moduleExport.name,
-            moduleExport.type,
-            moduleExport.id.value
-          )
+          t.moduleExport(moduleExport.name, moduleExport.type, moduleExport.id)
         );
       }
     }
