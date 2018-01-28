@@ -1,0 +1,30 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Global",
+      "globalType": {
+        "type": "GlobalType",
+        "valtype": "f64",
+        "mutability": "const"
+      },
+      "init": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "f64",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": -4
+            }
+          ]
+        }
+      ],
+      "name": {
+        "type": "Identifier",
+        "value": "global_1"
+      }
+    }
+  ]
+}

@@ -96,6 +96,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return true;
     }
 
+    // TODO(sven): there is probably a better way to do this
+    // can refactor it if it get out of hands
+    function maybeIgnoreComment() {
+      if (token.type === tokens.comment) {
+        eatToken();
+      }
+    }
+
     function parseListOfInstructions(acc: Array<Instruction>) {
       while (token.type === tokens.openParen) {
         eatToken();
@@ -1109,6 +1117,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseGlobal(): Global {
       let name = t.identifier(getUniqueName("global"));
       let type;
+
+      maybeIgnoreComment();
 
       if (token.type === tokens.identifier) {
         name = t.identifier(token.value);
