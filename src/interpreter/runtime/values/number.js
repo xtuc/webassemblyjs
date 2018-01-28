@@ -169,4 +169,8 @@ export class BaseNumber implements NumberInterface<BaseNumber> {
   isTrue(): boolean {
     return this._value == 1;
   }
+
+  toString(): string {
+    return this.toNumber().toString();
+  }
 }

@@ -44,6 +44,7 @@ function assert_return(node) {
   const [action, ...args] = node.args;
 
   let expectedRes;
+
   const expectedEvaluation = partialEvaluation.evaluate(allocator, args);
 
   if (expectedEvaluation !== undefined) {
