@@ -17,7 +17,9 @@
           "valtype": "i32"
         }
       ],
-      "result": "i32",
+      "result": [
+        "i32"
+      ],
       "body": []
     }
   ]

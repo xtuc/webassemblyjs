@@ -12,7 +12,7 @@
             "value": "func_1"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         },
         {
@@ -33,7 +33,9 @@
             "value": "func_2"
           },
           "params": [],
-          "result": "i32",
+          "result": [
+            "i32"
+          ],
           "body": []
         },
         {
@@ -58,7 +60,7 @@
               "valtype": "i32"
             }
           ],
-          "result": null,
+          "result": [],
           "body": []
         },
         {

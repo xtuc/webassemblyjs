@@ -12,7 +12,7 @@
             "value": "test"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         }
       ]
@@ -28,7 +28,7 @@
             "value": "TEST"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         }
       ]
@@ -44,7 +44,7 @@
             "value": "!"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         }
       ]
@@ -60,7 +60,7 @@
             "value": "$"
           },
           "params": [],
-          "result": null,
+          "result": [],
           "body": []
         }
       ]

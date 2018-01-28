@@ -8,7 +8,7 @@
         "value": "func_1"
       },
       "params": [],
-      "result": null,
+      "result": [],
       "body": [
         {
           "type": "LoopInstruction",

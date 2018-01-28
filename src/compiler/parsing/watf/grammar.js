@@ -281,7 +281,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // keyword
 
         const fnParams = [];
-        let fnResult: ?Valtype;
+        const fnResult = [];
 
         if (token.type === tokens.identifier) {
           funcName = token.value;
@@ -298,7 +298,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           } else if (lookaheadAndCheck(keywords.result) === true) {
             eatToken();
 
-            fnResult = parseFuncResult()[0];
+            fnResult.push(...parseFuncResult());
           } else {
             showCodeFrame(source, token.loc);
             throw new Error(
@@ -313,11 +313,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           throw new Error("Imported function must have a name");
         }
 
-        descr = t.funcImportDescr(
-          t.identifier(funcName),
-          fnParams,
-          fnResult ? [fnResult] : []
-        );
+        descr = t.funcImportDescr(t.identifier(funcName), fnParams, fnResult);
       } else {
         throw new Error("Unsupported import type: " + token.type);
       }
@@ -1001,10 +997,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       let fnName = t.identifier(getUniqueName("func"));
-      let fnResult: ?Valtype = null;
-
       const fnBody = [];
       const fnParams: Array<FuncParam> = [];
+      const fnResult: Array<Valtype> = [];
 
       // name
       if (token.type === tokens.identifier) {
@@ -1024,7 +1019,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           // FIXME(sven): func result should be an array here
           // https://github.com/xtuc/js-webassembly-interpreter/issues/5
-          fnResult = parseFuncResult()[0];
+          fnResult.push(...parseFuncResult());
         } else if (lookaheadAndCheck(keywords.export) === true) {
           eatToken();
           parseFuncExport(fnName);

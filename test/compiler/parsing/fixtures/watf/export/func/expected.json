@@ -8,7 +8,9 @@
         "value": "func_1"
       },
       "params": [],
-      "result": "i32",
+      "result": [
+        "i32"
+      ],
       "body": [
         {
           "type": "CallInstruction",
@@ -27,7 +29,7 @@
         "value": "func_2"
       },
       "params": [],
-      "result": null,
+      "result": [],
       "body": []
     }
   ]
