@@ -165,7 +165,13 @@ function error({ message }) {
 }
 
 function createInstanceFromAst(moduleNode) {
-  const importObject = {};
+  const internalInstanceOptions = {
+    checkForI64InSignature: false
+  };
+
+  const importObject = {
+    _internalInstanceOptions: internalInstanceOptions
+  };
   const module = createCompiledModule(moduleNode);
 
   return new Instance(module, importObject);
