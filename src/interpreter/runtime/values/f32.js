@@ -13,31 +13,31 @@ export class f32 extends Float<i32> {
   }
 
   add(operand: f32): f32 {
-    // If the other operand is a nan we use its implementation, otherwise the BaseNumber one.
+    // If the other operand is a nan we use its implementation, otherwise the Float one.
     return operand instanceof f32nan
       ? operand.add(this)
-      : BaseNumber.prototype.add.call(this, operand);
+      : Float.prototype.add.call(this, operand);
   }
 
   sub(operand: f32): f32 {
-    // If the other operand is a nan we use its implementation, otherwise the BaseNumber one.
+    // If the other operand is a nan we use its implementation, otherwise the Float one.
     return operand instanceof f32nan
       ? operand.sub(this)
-      : BaseNumber.prototype.sub.call(this, operand);
+      : Float.prototype.sub.call(this, operand);
   }
 
   mul(operand: f32): f32 {
-    // If the other operand is a nan we use its implementation, otherwise the BaseNumber one.
+    // If the other operand is a nan we use its implementation, otherwise the Float one.
     return operand instanceof f32nan
       ? operand.mul(this)
-      : BaseNumber.prototype.mul.call(this, operand);
+      : Float.prototype.mul.call(this, operand);
   }
 
   div(operand: f32): f32 {
-    // If the other operand is a nan we use its implementation, otherwise the BaseNumber one.
+    // If the other operand is a nan we use its implementation, otherwise the Float one.
     return operand instanceof f32nan
       ? operand.div(this)
-      : BaseNumber.prototype.div.call(this, operand);
+      : Float.prototype.div.call(this, operand);
   }
 }
 

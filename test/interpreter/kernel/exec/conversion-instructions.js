@@ -4,8 +4,6 @@ const { assert } = require("chai");
 
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
 const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
-const { f32 } = require("../../../../lib/interpreter/runtime/values/f32");
-const { f64 } = require("../../../../lib/interpreter/runtime/values/f64");
 const {
   castIntoStackLocalOfType
 } = require("../../../../lib/interpreter/runtime/castIntoStackLocalOfType");

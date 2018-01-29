@@ -47,7 +47,7 @@ function unop(
       return i64.createValue(value.reinterpret());
   }
 
-  throw new Error("Unsupported unop: " + sign);
+  throw new Error("Unsupported unop: " + operation);
 }
 
 export function unopi32(c: StackLocal, operation: Operation): StackLocal {

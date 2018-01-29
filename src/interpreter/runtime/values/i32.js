@@ -268,10 +268,6 @@ export class i32 implements IntegerValue<i32> {
     // https://webassembly.github.io/spec/core/exec/numerics.html#boolean-interpretation
     return this._value == 1;
   }
-
-  toString(): string {
-    return this._value.toString();
-  }
 }
 
 export function createValueFromAST(value: number): StackLocal {
