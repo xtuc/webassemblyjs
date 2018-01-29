@@ -42,26 +42,36 @@ export class f32 extends Float<i32> {
 }
 
 export class f32nan extends f32 {
+
+  /**
+   * Interprets the bit representation for this nan as an integer
+   * https://webassembly.github.io/spec/core/syntax/values.html#floating-point
+   *
+   * A 32 bit nan looks like this
+   *
+   * ------------------------------
+   * |s|1|1|1|1|1|1|1|1|m1|...|m23|
+   * ------------------------------
+   *
+   * The exponent is all 1's and the mantissa [m1,...m23] is non-zero ().
+   *
+   * We store sign and mantissa both in the _value field,
+   * which is reflected by the computation below.
+   */
   reinterpret(): i32 {
     let result = 0;
-
-    console.log(this);
-
-    // sign bit
+    
+    // sign bit of _value shifted to position 0
     if (this._value <= 0) {
       result = result | 0x80000000;
     }
 
-    // exponent
+    // 8-bit exponent shifted to position 1 through 8
     result = result | (0xff << 23);
 
-    console.log(result);
-
-    // mantissa
+    // 23-bit mantissa which is obtained by disregaring the sign of _value
     const mantissa = this._value <= 0 ? -this._value : this._value;
     result = result | mantissa;
-
-    console.log(result);
 
     return new i32(result);
   }
