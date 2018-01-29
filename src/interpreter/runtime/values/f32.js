@@ -53,10 +53,15 @@ export class f32nan extends f32 {
     }
 
     // exponent
-    result = result | 0xFF << 23
+    result = result | (0xFF << 23)
+
+    console.log(result)
 
     // mantissa
-    result = result | this._value
+    const mantissa = this._value <= 0 ? - this._value : this._value;
+    result = result | mantissa
+
+    console.log(result)
 
     return new i32(result)
   }
