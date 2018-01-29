@@ -15,7 +15,7 @@ const { Table } = require("./runtime/values/table");
 const { createAllocator } = require("./kernel/memory");
 const importObjectUtils = require("./import-object");
 
-const DEFAULT_MEMORY = new Memory({ initial: 1, maximum: 1024 });
+const ALLOCATOR_MEMORY = new Memory({ initial: 1, maximum: 1024 });
 
 export class Instance {
   exports: any;
@@ -44,7 +44,7 @@ export class Instance {
     /**
      * Create Module's default memory allocator
      */
-    this._allocator = createAllocator(DEFAULT_MEMORY);
+    this._allocator = createAllocator(ALLOCATOR_MEMORY);
 
     /**
      * importObject.
@@ -53,10 +53,6 @@ export class Instance {
       importObjectUtils.walk(importObject, (key, key2, value) => {
         if (typeof this._externalFunctions[key] !== "object") {
           this._externalFunctions[key] = {};
-        }
-
-        if (value instanceof Memory) {
-          this._allocator = createAllocator(value);
         }
 
         if (value instanceof Table) {
@@ -101,6 +97,16 @@ export class Instance {
         }
 
         this.exports[exportinst.name] = globalinst.value.toNumber();
+      }
+
+      if (exportinst.value.type === "Memory") {
+        const memoryinst = this._allocator.get(exportinst.value.addr);
+
+        if (memoryinst == null) {
+          throw new RuntimeError("Memory instance has not been instantiated");
+        }
+
+        this.exports[exportinst.name] = memoryinst;
       }
 
       if (this._table != undefined) {

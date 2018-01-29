@@ -1,10 +1,14 @@
 // @flow
+import { Memory } from "./memory";
+import { debuglog } from "util";
 
 const importObjectUtils = require("../../import-object");
 const { traverse } = require("../../../compiler/AST/traverse");
 const func = require("./func");
 const global = require("./global");
 const { LinkError, CompileError } = require("../../../errors");
+
+const DEFAULT_LINEAR_MEMORY = new Memory({ initial: 1, maximum: 1024 });
 
 export function createInstance(
   allocator: Allocator,
@@ -92,8 +96,7 @@ export function createInstance(
     },
 
     Memory({ node }: NodePath<Memory>) {
-      // TODO(sven): implement exporting a Memory instance
-      const memoryinstance = null;
+      const memoryinstance = DEFAULT_LINEAR_MEMORY;
 
       const addr = allocator.malloc(1 /* size of the memoryinstance struct */);
       allocator.set(addr, memoryinstance);
