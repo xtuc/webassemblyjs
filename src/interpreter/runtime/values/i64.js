@@ -1,11 +1,11 @@
 // @flow
-const Long = require("long");
+import Long from "long";
 
 import { RuntimeError } from "../../../errors";
 
 const type = "i64";
 
-export class i64 implements NumberInterface<i64> {
+export class i64 implements IntegerValue<i64> {
   _value: Long;
 
   constructor(value: Long) {

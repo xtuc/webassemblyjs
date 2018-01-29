@@ -3,7 +3,7 @@
 import type { i32 } from "../interpreter/runtime/values/i32";
 
 type U32Literal = NumberLiteral & {
-  value: NumberInterface<i32>
+  value: NumericOperations<i32>
 };
 
 type Typeidx = U32Literal;

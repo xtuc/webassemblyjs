@@ -26,6 +26,7 @@ describe("interpreter", () => {
         const sandbox = {
           WebAssembly,
           watfmodule: module,
+          require: require,
           console: global.console,
           assert: chai.assert,
           it,
