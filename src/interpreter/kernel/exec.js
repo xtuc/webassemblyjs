@@ -831,6 +831,19 @@ export function executeStackFrame(
             );
         }
 
+        const [operand] = instruction.args;
+
+        // Interpret argument first if it's a child instruction
+        if (typeof operand !== "undefined") {
+          const res = createAndExecuteChildStackFrame([operand]);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
         const c = pop1(opType);
 
         pushResult(unopFn(c, instruction.id));

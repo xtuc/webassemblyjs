@@ -45,6 +45,12 @@ export class i32 implements IntegerValue<i32> {
     if (operand._value == 0) {
       throw new RuntimeError("integer divide by zero");
     }
+    // as per: https://webassembly.github.io/spec/core/exec/numerics.html#op-idiv-s
+    // This operator is partial. Besides division by 0, the result of −2^(N−1) / (−1) = +2^(N−1)
+    // is not representable as an N-bit signed integer.
+    if (this._value == -0x80000000 && operand._value == -1) {
+      throw new RuntimeError("integer overflow");
+    }
     return new i32(this._value / operand._value);
   }
 
