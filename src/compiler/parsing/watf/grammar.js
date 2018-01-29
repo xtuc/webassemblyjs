@@ -746,22 +746,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
         }
 
-        // Handle -inf
-        if (token.type === tokens.minus) {
-          eatToken();
-
-          if (token.type !== tokens.identifier) {
-            throw new Error("Unexpected token after -: " + token.type);
-          }
-
-          const node = t.unaryExpression("-", t.identifier(token.value));
-
-          // FIXME(sven): will be handled by https://github.com/xtuc/js-webassembly-interpreter/pull/85
-
-          args.push(node);
-          eatToken();
-        }
-
         // Handle locals
         if (token.type === tokens.valtype) {
           args.push(t.valtype(token.value));
@@ -935,7 +919,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           index = t.identifier(token.value);
           eatToken();
         } else if (token.type === tokens.number) {
-          index = t.numberLiteral(token.value);
+          index = t.indexLiteral(token.value);
           eatToken();
         }
 

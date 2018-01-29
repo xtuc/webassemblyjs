@@ -44,7 +44,7 @@
                   "id": "br",
                   "args": [
                     {
-                      "type": "NumberLiteral",
+                      "type": "FloatLiteral",
                       "value": 1
                     },
                     {
@@ -121,7 +121,7 @@
                           "id": "br",
                           "args": [
                             {
-                              "type": "NumberLiteral",
+                              "type": "FloatLiteral",
                               "value": 1
                             },
                             {
@@ -173,7 +173,7 @@
           "id": "br_if",
           "args": [
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 0
             },
             {
@@ -192,7 +192,7 @@
               "id": "get_local",
               "args": [
                 {
-                  "type": "NumberLiteral",
+                  "type": "FloatLiteral",
                   "value": 0
                 }
               ]
@@ -204,7 +204,7 @@
           "id": "br_table",
           "args": [
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 0
             },
             {
@@ -224,7 +224,7 @@
                       "id": "br_if",
                       "args": [
                         {
-                          "type": "NumberLiteral",
+                          "type": "FloatLiteral",
                           "value": 1
                         },
                         {
@@ -243,7 +243,7 @@
                           "id": "get_local",
                           "args": [
                             {
-                              "type": "NumberLiteral",
+                              "type": "FloatLiteral",
                               "value": 0
                             }
                           ]

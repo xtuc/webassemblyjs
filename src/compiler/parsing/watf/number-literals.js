@@ -6,10 +6,32 @@ export function parse32F(sourceString: string): number {
   if (isHexLiteral(sourceString)) {
     return parseHexFloat(sourceString);
   }
+  if (isInfLiteral(sourceString)) {
+    return sourceString[0] === "-" ? -1 : 1;
+  }
+  if (isNanLiteral(sourceString)) {
+    return (
+      (sourceString[0] === "-" ? -1 : 1) *
+      (sourceString.includes(":")
+        ? parseInt(sourceString.substring(sourceString.indexOf(":") + 1), 16)
+        : 0x400000)
+    );
+  }
   return parseFloat(sourceString);
 }
 
 export function parse64F(sourceString: string): number {
+  if (isHexLiteral(sourceString)) {
+    return parseHexFloat(sourceString);
+  }
+  if (isInfLiteral(sourceString)) {
+    return 0;
+  }
+  if (isNanLiteral(sourceString)) {
+    return sourceString.length > 3
+      ? parseInt(sourceString.substring(4), 16)
+      : 0x400000;
+  }
   if (isHexLiteral(sourceString)) {
     return parseHexFloat(sourceString);
   }
@@ -43,6 +65,17 @@ export function parse64I(sourceString: string): LongNumber {
     high: long.high,
     low: long.low
   };
+}
+
+const NAN_WORD = /^\+?-?nan/;
+const INF_WORD = /^\+?-?inf/;
+
+export function isInfLiteral(sourceString: string): boolean {
+  return INF_WORD.test(sourceString.toLowerCase());
+}
+
+export function isNanLiteral(sourceString: string): boolean {
+  return NAN_WORD.test(sourceString.toLowerCase());
 }
 
 function isDecimalExponentLiteral(sourceString: string): boolean {

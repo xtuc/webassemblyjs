@@ -17,7 +17,8 @@
           "args": [
             {
               "type": "FloatLiteral",
-              "value": 8
+              "value": 4194322,
+              "nan": true
             }
           ]
         }
