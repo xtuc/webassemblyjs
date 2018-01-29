@@ -286,7 +286,6 @@ export function globalImportDescr(
 ): GlobalType {
   return {
     type: "GlobalType",
-    elementType: "anyfunc",
 
     valtype,
     mutability
