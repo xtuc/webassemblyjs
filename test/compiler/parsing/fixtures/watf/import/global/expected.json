@@ -1,0 +1,25 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "ModuleImport",
+      "module": "m",
+      "name": "a",
+      "descr": {
+        "type": "GlobalType",
+        "valtype": "i32",
+        "mutability": "var"
+      }
+    },
+    {
+      "type": "ModuleImport",
+      "module": "m",
+      "name": "a",
+      "descr": {
+        "type": "GlobalType",
+        "valtype": "i32",
+        "mutability": "const"
+      }
+    }
+  ]
+}

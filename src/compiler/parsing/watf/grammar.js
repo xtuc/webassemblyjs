@@ -38,6 +38,14 @@ function showCodeFrame(source: string, loc: SourceLocation) {
   process.stdout.write(out + "\n");
 }
 
+function tokenToString(token: Object): string {
+  if (token.type === "keyword") {
+    return token.value;
+  }
+
+  return token.type;
+}
+
 type ParserState = {
   registredExportedElements: Array<{
     type: ExportDescr,
@@ -265,6 +273,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *          ( table <name>? <table_sig> )
      *          ( memory <name>? <memory_sig> )
      *
+     * global_sig: <type> | ( mut <type> )
      */
     function parseImport(): ModuleImport {
       if (token.type !== tokens.string) {
@@ -322,8 +331,27 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
 
         descr = t.funcImportDescr(t.identifier(funcName), fnParams, fnResult);
+      } else if (isKeyword(token, keywords.global)) {
+        eatToken(); // keyword
+
+        if (token.type === tokens.openParen) {
+          eatToken(); // (
+          eatTokenOfType(tokens.keyword); // mut keyword
+
+          const valtype = token.value;
+          eatToken();
+
+          descr = t.globalImportDescr(valtype, "var");
+
+          eatTokenOfType(tokens.closeParen);
+        } else {
+          const valtype = token.value;
+          eatTokenOfType(tokens.valtype);
+
+          descr = t.globalImportDescr(valtype, "const");
+        }
       } else {
-        throw new Error("Unsupported import type: " + token.type);
+        throw new Error("Unsupported import type: " + tokenToString(token));
       }
 
       eatTokenOfType(tokens.closeParen);
@@ -1148,7 +1176,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        * global_sig
        */
       if (token.type === tokens.valtype) {
-        type = t.globalType(token.value, "const");
+        type = t.globalImportDescr(token.value, "const");
         eatToken();
       } else if (token.type === tokens.openParen) {
         eatToken(); // (
@@ -1160,7 +1188,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         eatToken(); // mut
 
-        type = t.globalType(token.value, "var");
+        type = t.globalImportDescr(token.value, "var");
         eatToken();
 
         eatTokenOfType(tokens.closeParen);
