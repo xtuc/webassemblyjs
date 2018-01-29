@@ -44,7 +44,7 @@ it("should conform to the wasm test suite", () => {
 
   assert.throws(() => m.exports.div_s(1, 0), "integer divide by zero");
   assert.throws(() => m.exports.div_s(0, 0), "integer divide by zero");
-  // assert.throws(() => m.exports.div_s(0x80000000, -1), "integer overflow");
+  assert.throws(() => m.exports.div_s(0x80000000, -1), "integer overflow");
   equals(m.exports.div_s(1, 1), 1);
   equals(m.exports.div_s(0, 1), 0);
   equals(m.exports.div_s(0, -1), 0);
