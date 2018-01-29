@@ -42,6 +42,25 @@ export class f32 extends Float<i32> {
 }
 
 export class f32nan extends f32 {
+  reinterpret(): i32 {
+    let result = 0;
+
+    console.log(this)
+
+    // sign bit
+    if( this._value <= 0 ) {
+      result = result | 0x80000000
+    }
+
+    // exponent
+    result = result | 0xFF << 23
+
+    // mantissa
+    result = result | this._value
+
+    return new i32(result)
+  }
+  
   add(): f32 {
     // nan(z1) + x = nan(z1) a is valid execution.
     return this;

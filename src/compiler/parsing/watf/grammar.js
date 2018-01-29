@@ -716,9 +716,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses the arguments of an instruction
      */
-    function parseFuncInstrArguments(object: ?Valtype): AllArgs {
+    function parseFuncInstrArguments(signature: ?Array): AllArgs {
       const args: Array<Expression> = [];
       const namedArgs = {};
+      const [ object ] = signature
 
       while (token.type === tokens.name) {
         const key = token.value;
@@ -892,7 +893,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
 
-        const { args, namedArgs } = parseFuncInstrArguments(object);
+        let signature = [ object ]
+
+        if(name === 'reinterpret/f32') {
+          signature = [ 'f32' ]
+        }
+
+        const { args, namedArgs } = parseFuncInstrArguments(signature);
 
         if (typeof object === "undefined") {
           return t.instruction(name, args, namedArgs);
