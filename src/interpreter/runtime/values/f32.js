@@ -45,27 +45,27 @@ export class f32nan extends f32 {
   reinterpret(): i32 {
     let result = 0;
 
-    console.log(this)
+    console.log(this);
 
     // sign bit
-    if( this._value <= 0 ) {
-      result = result | 0x80000000
+    if (this._value <= 0) {
+      result = result | 0x80000000;
     }
 
     // exponent
-    result = result | (0xFF << 23)
+    result = result | (0xff << 23);
 
-    console.log(result)
+    console.log(result);
 
     // mantissa
-    const mantissa = this._value <= 0 ? - this._value : this._value;
-    result = result | mantissa
+    const mantissa = this._value <= 0 ? -this._value : this._value;
+    result = result | mantissa;
 
-    console.log(result)
+    console.log(result);
 
-    return new i32(result)
+    return new i32(result);
   }
-  
+
   add(): f32 {
     // nan(z1) + x = nan(z1) a is valid execution.
     return this;

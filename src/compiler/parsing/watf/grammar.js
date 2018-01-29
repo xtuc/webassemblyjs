@@ -719,7 +719,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseFuncInstrArguments(signature: ?Array): AllArgs {
       const args: Array<Expression> = [];
       const namedArgs = {};
-      const [ object ] = signature
+      const [object] = signature;
 
       while (token.type === tokens.name) {
         const key = token.value;
@@ -893,10 +893,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
 
-        let signature = [ object ]
+        let signature = [object];
 
-        if(name === 'reinterpret/f32') {
-          signature = [ 'f32' ]
+        if (name === "reinterpret/f32") {
+          signature = ["f32"];
         }
 
         const { args, namedArgs } = parseFuncInstrArguments(signature);
