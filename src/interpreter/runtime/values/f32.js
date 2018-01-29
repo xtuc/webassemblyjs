@@ -42,7 +42,6 @@ export class f32 extends Float<i32> {
 }
 
 export class f32nan extends f32 {
-
   /**
    * Interprets the bit representation for this nan as an integer
    * https://webassembly.github.io/spec/core/syntax/values.html#floating-point
@@ -60,7 +59,7 @@ export class f32nan extends f32 {
    */
   reinterpret(): i32 {
     let result = 0;
-    
+
     // sign bit of _value shifted to position 0
     if (this._value <= 0) {
       result = result | 0x80000000;
