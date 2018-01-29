@@ -28,7 +28,7 @@ function assert_invalid(node) {
   } catch (err) {
     assert(
       new RegExp(expected.value, "ig").test(err.message),
-      `Expected failure of ${expected.value}, ${err.message} given`
+      `Expected failure of "${expected.value}", "${err.message}" given`
     );
   }
 }
@@ -56,7 +56,7 @@ function assert_return(node) {
 
     assert(
       actualRes == expectedRes,
-      `expected ${expectedRes}, ${actualRes} given`
+      `expected "${expectedRes}", "${actualRes}" given`
     );
   } else if (action.type === "Instr" && action.id === "get") {
     let id;
@@ -76,7 +76,7 @@ function assert_return(node) {
 
     assert(
       actualRes == expectedRes,
-      `expected ${expectedRes}, ${actualRes} given`
+      `expected "${expectedRes}", "${actualRes}" given`
     );
   } else {
     throw new Error("Unsupported action in assert_return: " + action.id);
