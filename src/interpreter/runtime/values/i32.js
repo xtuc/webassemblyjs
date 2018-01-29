@@ -274,6 +274,18 @@ export class i32 implements IntegerValue<i32> {
     // https://webassembly.github.io/spec/core/exec/numerics.html#boolean-interpretation
     return this._value == 1;
   }
+
+  toByteArray(): Array<number> {
+    const byteArray: Array<number> = new Array(4);
+    for (
+      let offset = 0, shift = 0;
+      offset < byteArray.length;
+      offset++, shift += 8
+    ) {
+      byteArray[offset] = (this._value >>> shift) & 0xff;
+    }
+    return byteArray;
+  }
 }
 
 export function createValueFromAST(value: number): StackLocal {

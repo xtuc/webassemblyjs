@@ -1,0 +1,10 @@
+(module
+  (memory 25)
+  (func $store (param i32) (param i32)
+   (get_local 0)
+   (get_local 1)
+   (i32.store)
+  )
+  (export "store" (func $store))
+  (export "memory" (memory 0))
+)

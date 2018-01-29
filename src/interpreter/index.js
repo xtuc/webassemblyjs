@@ -10,12 +10,9 @@ const { createStackFrame } = require("./kernel/stackframe");
 const { isTrapped } = require("./kernel/signals");
 const { RuntimeError } = require("../errors");
 const { Module } = require("../compiler/compile/module");
-const { Memory } = require("./runtime/values/memory");
 const { Table } = require("./runtime/values/table");
 const { createAllocator } = require("./kernel/memory");
 const importObjectUtils = require("./import-object");
-
-const ALLOCATOR_MEMORY = new Memory({ initial: 1, maximum: 1024 });
 
 export class Instance {
   exports: any;
@@ -44,7 +41,7 @@ export class Instance {
     /**
      * Create Module's default memory allocator
      */
-    this._allocator = createAllocator(ALLOCATOR_MEMORY);
+    this._allocator = createAllocator();
 
     /**
      * importObject.

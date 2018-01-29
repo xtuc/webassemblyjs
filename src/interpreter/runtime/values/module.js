@@ -1,14 +1,12 @@
 // @flow
 import { Memory } from "./memory";
-import { debuglog } from "util";
+import { RuntimeError } from "../../../errors";
 
 const importObjectUtils = require("../../import-object");
 const { traverse } = require("../../../compiler/AST/traverse");
 const func = require("./func");
 const global = require("./global");
 const { LinkError, CompileError } = require("../../../errors");
-
-const DEFAULT_LINEAR_MEMORY = new Memory({ initial: 1, maximum: 1024 });
 
 export function createInstance(
   allocator: Allocator,
@@ -18,12 +16,10 @@ export function createInstance(
   // Keep a ref to the module instance
   const moduleInstance = {
     types: [],
-
     funcaddrs: [],
     tableaddrs: [],
     memaddrs: [],
     globaladdrs: [],
-
     exports: []
   };
 
@@ -96,7 +92,26 @@ export function createInstance(
     },
 
     Memory({ node }: NodePath<Memory>) {
-      const memoryinstance = DEFAULT_LINEAR_MEMORY;
+      const limits = {
+        min: Number(node.limits.min),
+        max: node.limits.max ? Number(node.limits.max) : undefined
+      };
+
+      if (limits.max && limits.max < limits.min) {
+        throw new RuntimeError("size minimum must not be greater than maximum");
+      }
+
+      if (limits.min > 65536) {
+        throw new RuntimeError(
+          "memory size must be at most 65536 pages (4GiB)"
+        );
+      }
+
+      const memoryDescriptor = {
+        initial: limits.min,
+        maximum: limits.max
+      };
+      const memoryinstance = new Memory(memoryDescriptor);
 
       const addr = allocator.malloc(1 /* size of the memoryinstance struct */);
       allocator.set(addr, memoryinstance);

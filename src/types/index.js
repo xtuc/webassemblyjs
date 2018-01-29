@@ -122,6 +122,7 @@ interface NumericOperations<T> {
   toString(): string;
   isTrue(): boolean;
   toString(): string;
+  toByteArray(): Array<number>;
 }
 
 type Label = {
@@ -131,11 +132,6 @@ type Label = {
 };
 
 type Signal = number;
-
-interface MemoryInstance {
-  buffer: Array<any>;
-  offset: number;
-}
 
 interface Allocator {
   malloc(Bytes): Addr;

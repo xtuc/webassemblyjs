@@ -1,0 +1,15 @@
+it("should export the memory instance", () => {
+  const m = WebAssembly.instantiateFromSource(watfmodule);
+
+  assert.containsAllKeys(m.exports.memory, ["buffer"]);
+});
+
+it("should do stuff", () => {
+  const m = WebAssembly.instantiateFromSource(watfmodule);
+
+  m.exports.test();
+
+  const i32 = new Uint32Array(m.exports.memory.buffer);
+
+  assert.equal(i32[3], 1879048192);
+});

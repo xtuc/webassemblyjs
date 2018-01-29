@@ -1,13 +1,12 @@
 // @flow
 
-const WEBASSEMBLY_PAGE_SIZE = 2 ** 16 /* bytes */;
+const WEBASSEMBLY_PAGE_SIZE = 64 * 1024 /* 64KiB */;
 
-export class Memory {
+export class Memory implements MemoryInstance {
   _initialBytes: number;
   _maximumBytes: number;
 
-  offset: number;
-  buffer: Array<any>;
+  buffer: ArrayBuffer;
 
   constructor(descr: MemoryDescriptor) {
     if (typeof descr !== "object") {
@@ -32,7 +31,6 @@ export class Memory {
   }
 
   _allocateInitial() {
-    this.buffer = Array(this._initialBytes);
-    this.offset = 0;
+    this.buffer = new ArrayBuffer(this._initialBytes);
   }
 }
