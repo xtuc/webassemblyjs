@@ -27,7 +27,7 @@ function assert_invalid(node) {
     assert(false, `module is valid, expected invalid (${expected.value})`);
   } catch (err) {
     assert(
-      err.message.toLowerCase() === expected.value.toLowerCase(),
+      new RegExp(expected.value, "ig").test(err.message),
       `Expected failure of ${expected.value}, ${err.message} given`
     );
   }
