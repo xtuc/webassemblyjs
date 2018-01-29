@@ -31,9 +31,11 @@ type TableDescriptor = {
   maximum?: number
 };
 
-type ImportObject = Object | {
-  _internalInstanceOptions: InternalInstanceOptions
-};
+type ImportObject =
+  | Object
+  | {
+      _internalInstanceOptions: InternalInstanceOptions
+    };
 
 type InstansitatedInstanceAndModule = {
   instance: Instance,

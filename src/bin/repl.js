@@ -109,6 +109,12 @@ function invoke(node) {
     const evaluation = partialEvaluation.evaluate(allocator, [expr]);
 
     if (evaluation !== undefined) {
+      // Pass the raw value here since we need the LongNumber representation
+      // It's only meant for testing
+      if (expr.object === "i64") {
+        return evaluation.value._value;
+      }
+
       return evaluation.value.toString();
     }
   });
