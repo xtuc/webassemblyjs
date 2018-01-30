@@ -68,6 +68,18 @@ describe("kernel exec - conversion instructions", () => {
 
       resEqual: new i32(0x7fc00000)
     },
+    {
+      name: "i32.reinterpret/f32 - negative canonical nan",
+
+      args: [{ value: -0x400000, type: "f32", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.objectInstruction("reinterpret/f32", "i32")
+      ],
+
+      resEqual: new i32(0xffc00000)
+    },
 
     {
       name: "i32.reinterpret/f32 - negative nan payload",
