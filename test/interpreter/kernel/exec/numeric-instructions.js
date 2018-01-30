@@ -1,10 +1,14 @@
 // @flow
+
 const Long = require("long");
 const { assert } = require("chai");
 
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
 const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
-const { f32 } = require("../../../../lib/interpreter/runtime/values/f32");
+const {
+  f32,
+  f32nan
+} = require("../../../../lib/interpreter/runtime/values/f32");
 const { f64 } = require("../../../../lib/interpreter/runtime/values/f64");
 const {
   castIntoStackLocalOfType
@@ -16,6 +20,21 @@ const {
 const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
+
+/*::
+type TestCase = {
+  name: string,
+
+  args: Array<{
+    value: any,
+    type: string,
+    nan?: boolean
+  }>,
+
+  code: Array<Node>,
+  resEqual: any
+};
+*/
 
 describe("kernel exec - numeric instructions", () => {
   const operations = [
@@ -252,6 +271,56 @@ describe("kernel exec - numeric instructions", () => {
     },
 
     {
+      name: "f32.add",
+
+      args: [{ value: 1, type: "f32", nan: true }, { value: 1.0, type: "f32" }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("add", "f32")
+      ],
+
+      resEqual: new f32nan(1)
+    },
+
+    {
+      name: "f32.add",
+
+      args: [
+        { value: -31.4, type: "f32" },
+        { value: 4747, type: "f32", nan: true }
+      ],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("add", "f32")
+      ],
+
+      resEqual: new f32nan(4747)
+    },
+
+    {
+      name: "f32.add",
+
+      args: [
+        { value: 777, type: "f32", nan: true },
+        { value: 4747, type: "f32", nan: true }
+      ],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("add", "f32")
+      ],
+
+      // The payload is not required to be the second operands one,
+      // but for consistency we can always do so
+      resEqual: new f32nan(777)
+    },
+
+    {
       name: "f32.sub",
 
       args: [{ value: 1.0, type: "f32" }, { value: 1.0, type: "f32" }],
@@ -266,6 +335,57 @@ describe("kernel exec - numeric instructions", () => {
     },
 
     {
+      name: "f32.sub",
+
+      args: [
+        { value: 232111, type: "f32", nan: true },
+        { value: 1.0, type: "f32" }
+      ],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("sub", "f32")
+      ],
+
+      resEqual: new f32nan(232111)
+    },
+
+    {
+      name: "f32.sub",
+
+      args: [
+        { value: 232111, type: "f32", nan: true },
+        { value: 1, type: "f32", nan: true }
+      ],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("sub", "f32")
+      ],
+
+      resEqual: new f32nan(232111)
+    },
+
+    {
+      name: "f32.sub",
+
+      args: [
+        { value: 232111, type: "f32" },
+        { value: 1, type: "f32", nan: true }
+      ],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("sub", "f32")
+      ],
+
+      resEqual: new f32nan(1)
+    },
+
+    {
       name: "f32.mul",
 
       args: [{ value: 2.0, type: "f32" }, { value: 1.0, type: "f32" }],
@@ -277,6 +397,51 @@ describe("kernel exec - numeric instructions", () => {
       ],
 
       resEqual: new f32(2)
+    },
+
+    {
+      name: "f32.mul",
+
+      args: [{ value: 2, type: "f32", nan: true }, { value: 1.0, type: "f32" }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("mul", "f32")
+      ],
+
+      resEqual: new f32nan(2)
+    },
+
+    {
+      name: "f32.mul",
+
+      args: [
+        { value: 0, type: "f32", nan: true },
+        { value: 1, type: "f32", nan: true }
+      ],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("mul", "f32")
+      ],
+
+      resEqual: new f32nan(0)
+    },
+
+    {
+      name: "f32.mul",
+
+      args: [{ value: 0, type: "f32" }, { value: 177, type: "f32", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.instruction("get_local", [t.numberLiteral(1)]),
+        t.objectInstruction("mul", "f32")
+      ],
+
+      resEqual: new f32nan(177)
     },
 
     {
@@ -714,11 +879,11 @@ describe("kernel exec - numeric instructions", () => {
     }
   ];
 
-  operations.forEach(op => {
+  operations.forEach((op /*: TestCase*/) => {
     describe(op.name, () => {
       it("should get the correct result", () => {
-        const args = op.args.map(({ value, type }) =>
-          castIntoStackLocalOfType(type, value)
+        const args = op.args.map(({ value, type, nan }) =>
+          castIntoStackLocalOfType(type, value, nan)
         );
 
         const stackFrame = createStackFrame(op.code, args);

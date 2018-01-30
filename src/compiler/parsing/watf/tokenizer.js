@@ -17,7 +17,8 @@ const LETTERS = /[a-z0-9_/]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ["i32", "i64", "f32", "f64"];
 
-const NUMBERS = /[0-9|.|_+-]/;
+const NUMBERS = /[0-9|.|_]/;
+const NUMBER_KEYWORDS = /nan|inf/;
 const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
 
 function isNewLine(char: string): boolean {
@@ -60,7 +61,6 @@ const tokens = {
   dot: "dot",
   comment: "comment",
   equal: "equal",
-  minus: "minus",
 
   keyword: "keyword"
 };
@@ -96,7 +96,6 @@ const DotToken = createToken(tokens.dot);
 const StringToken = createToken(tokens.string);
 const CommentToken = createToken(tokens.comment);
 const EqualToken = createToken(tokens.equal);
-const MinusToken = createToken(tokens.minus);
 
 function tokenize(input: string) {
   let current = 0;
@@ -110,10 +109,6 @@ function tokenize(input: string) {
   function eatToken() {
     column++;
     current++;
-  }
-
-  function isInfAtOffset(a: number, b: number, c: number): boolean {
-    return input[a] === "i" && input[b] === "n" && input[c] === "f";
   }
 
   while (current < input.length) {
@@ -233,58 +228,29 @@ function tokenize(input: string) {
       continue;
     }
 
-    /**
-     * Handles 'inf' and '-inf'
-     */
-    if (
-      (char === "-" && isInfAtOffset(current + 1, current + 2, current + 3)) ||
-      isInfAtOffset(current, current + 1, current + 2)
-    ) {
-      if (char === "-") {
-        // Shift out '-'
-        eatToken();
-
-        tokens.push(MinusToken("-", line, column));
-      }
-
-      // Shift out 'inf'
-      current += 3;
-      column += 3;
-
-      tokens.push(IdentifierToken("inf", line, column));
-
-      continue;
-    }
-
     if (
       NUMBERS.test(char) ||
-      (char === "-" && NUMBERS.test(input[current + 1])) ||
-      (char === "n" && input[current + 1] === "a" && input[current + 2] === "n")
+      NUMBER_KEYWORDS.test(input.substring(current, current + 3)) ||
+      char === "-"
     ) {
       let value = "";
       if (char === "-") {
         value += char;
         char = input[++current];
       }
-      let numberLiterals = NUMBERS;
 
-      if (
-        char === "n" &&
-        input[current + 1] === "a" &&
-        input[current + 2] === "n"
-      ) {
-        // Float has nan
-
-        // Shift out 'nan'
-        current += 3;
-        column += 3;
-
-        char = input[current];
-
-        if (char === ":") {
-          eatToken();
+      if (NUMBER_KEYWORDS.test(input.substring(current, current + 3))) {
+        let tokenLength = 3;
+        if (input.substring(current, current + 4) === "nan:") {
+          tokenLength = 4;
+        } else if (input.substring(current, current + 3) === "nan") {
+          tokenLength = 3;
         }
+        value += input.substring(current, current + tokenLength);
+        char = input[(current += tokenLength)];
       }
+
+      let numberLiterals = NUMBERS;
 
       if (char === "0" && input[current + 1].toUpperCase() === "X") {
         value += "0x";
@@ -292,7 +258,10 @@ function tokenize(input: string) {
         char = input[(current += 2)];
       }
 
-      while (numberLiterals.test(char)) {
+      while (
+        numberLiterals.test(char) ||
+        (input[current - 1] === "p" && char === "+")
+      ) {
         if (char !== "_") {
           value += char;
         }

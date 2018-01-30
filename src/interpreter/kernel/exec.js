@@ -211,7 +211,11 @@ export function executeStackFrame(
           throw new RuntimeError("const requires one argument, none given.");
         }
 
-        if (n.type !== "NumberLiteral" && n.type !== "LongNumberLiteral") {
+        if (
+          n.type !== "NumberLiteral" &&
+          n.type !== "LongNumberLiteral" &&
+          n.type !== "FloatLiteral"
+        ) {
           throw new RuntimeError("const: unsupported value of type: " + n.type);
         }
 
@@ -531,7 +535,7 @@ export function executeStackFrame(
           );
         }
 
-        if (index.type === "NumberLiteral") {
+        if (index.type === "NumberLiteral" || index.type === "FloatLiteral") {
           getLocalByIndex(index.value);
         } else {
           throw new RuntimeError(
@@ -807,10 +811,19 @@ export function executeStackFrame(
       case "clz":
       case "ctz":
       case "popcnt":
-      case "eqz": {
+      case "eqz":
+      case "reinterpret/f32":
+      case "reinterpret/f64": {
         let unopFn;
 
-        switch (instruction.object) {
+        // for conversion operations, the operand type appears after the forward-slash
+        // e.g. with i32.reinterpret/f32, the oprand is f32, and the resultant is i32
+        const opType =
+          instruction.id.indexOf("/") !== -1
+            ? instruction.id.split("/")[1]
+            : instruction.object;
+
+        switch (opType) {
           case "i32":
             unopFn = unopi32;
             break;
@@ -825,14 +838,24 @@ export function executeStackFrame(
             break;
           default:
             throw new RuntimeError(
-              "Unsupported operation " +
-                instruction.id +
-                " on " +
-                instruction.object
+              "Unsupported operation " + instruction.id + " on " + opType
             );
         }
 
-        const c = pop1(instruction.object);
+        const [operand] = instruction.args;
+
+        // Interpret argument first if it's a child instruction
+        if (typeof operand !== "undefined") {
+          const res = createAndExecuteChildStackFrame([operand]);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
+
+        const c = pop1(opType);
 
         pushResult(unopFn(c, instruction.id));
 

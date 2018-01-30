@@ -16,6 +16,26 @@ const isVerbose = process.argv.find(x => x === "--debug") !== undefined;
  * Assert helpers
  */
 
+// assert module traps on instantiation
+// ( assert_trap <module> <failure> )
+function assert_trap(node) {
+  const [action, expected] = node.args;
+
+  if (action.type === "Instr" && action.id === "invoke") {
+    try {
+      invoke(action);
+      assert(false, `invoke is valid, expected trapped (${expected.value})`);
+    } catch (err) {
+      assert(
+        err.message.toLowerCase() === expected.value.toLowerCase(),
+        `Expected failure of ${expected.value}, ${err.message} given`
+      );
+    }
+  } else {
+    throw new Error("Unsupported action: " + action.id);
+  }
+}
+
 // assert module is invalid with given failure string
 // ( assert_invalid <module> <failure> )
 function assert_invalid(node) {
@@ -218,7 +238,7 @@ function replEval(input) {
     }
 
     if (node.id === "assert_trap") {
-      throw new Error("assert_trap: not implemented yet");
+      assert_trap(node);
     }
 
     if (node.id === "assert_malformed") {

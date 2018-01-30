@@ -3,7 +3,7 @@
 import type { i32 } from "../interpreter/runtime/values/i32";
 
 type U32Literal = NumberLiteral & {
-  value: NumberInterface<i32>
+  value: NumericOperations<i32>
 };
 
 type Typeidx = U32Literal;
@@ -42,8 +42,6 @@ type ControlInstruction =
 type NodePath<T> = {
   node: T
 };
-
-type UnaryExpressionOperators = "-" | "+";
 
 type Expression =
   | Identifier
@@ -105,12 +103,6 @@ interface LongNumberLiteral {
 interface Identifier {
   type: "Identifier";
   value: string;
-}
-
-interface UnaryExpression {
-  type: "UnaryExpression";
-  operator: UnaryExpressionOperators;
-  argument: Expression;
 }
 
 /**

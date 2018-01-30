@@ -7,8 +7,9 @@
       "object": "f32",
       "args": [
         {
-          "type": "Identifier",
-          "value": "inf"
+          "type": "FloatLiteral",
+          "value": 1,
+          "inf": true
         }
       ]
     },
@@ -18,12 +19,9 @@
       "object": "f32",
       "args": [
         {
-          "type": "UnaryExpression",
-          "operator": "-",
-          "argument": {
-            "type": "Identifier",
-            "value": "inf"
-          }
+          "type": "FloatLiteral",
+          "value": -1,
+          "inf": true
         }
       ]
     }
