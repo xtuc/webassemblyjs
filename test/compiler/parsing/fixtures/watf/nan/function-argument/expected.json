@@ -1,0 +1,77 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "reinterpret_f32_i32"
+          },
+          "params": [
+            {
+              "valtype": "f32"
+            }
+          ],
+          "result": [
+            "i32"
+          ],
+          "body": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "FloatLiteral",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "reinterpret/f32",
+              "object": "i32",
+              "args": []
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "invoke",
+          "args": [
+            {
+              "type": "StringLiteral",
+              "value": "reinterpret_f32_i32"
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "f32",
+              "args": [
+                {
+                  "type": "FloatLiteral",
+                  "value": 4194304,
+                  "nan": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ModuleExport",
+          "name": "reinterpret_f32_i32",
+          "descr": {
+            "type": "Func",
+            "id": {
+              "type": "Identifier",
+              "value": "reinterpret_f32_i32"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
