@@ -68,7 +68,7 @@ export class f32nan extends f32 {
     // 8-bit exponent shifted to position 1 through 8
     result = result | (0xff << 23);
 
-    // 23-bit mantissa which is obtained by disregaring the sign of _value
+    // 23-bit mantissa which is obtained by disregarding the sign of _value
     const mantissa = this._value <= 0 ? -this._value : this._value;
     result = result | mantissa;
 
