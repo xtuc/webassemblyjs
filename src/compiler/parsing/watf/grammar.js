@@ -716,9 +716,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses the arguments of an instruction
      */
-    function parseFuncInstrArguments(object: ?Valtype): AllArgs {
+    function parseFuncInstrArguments(signature: ?Array): AllArgs {
       const args: Array<Expression> = [];
       const namedArgs = {};
+      let signaturePtr = 0;
 
       while (token.type === tokens.name) {
         const key = token.value;
@@ -760,7 +761,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
 
         if (token.type === tokens.number) {
-          args.push(t.numberLiteral(token.value, object || "f64"));
+          args.push(
+            t.numberLiteral(token.value, signature[signaturePtr++] || "f64")
+          );
 
           eatToken();
         }
@@ -892,7 +895,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
 
-        const { args, namedArgs } = parseFuncInstrArguments(object);
+        const signature = t.signature(object, name);
+
+        const { args, namedArgs } = parseFuncInstrArguments(signature);
 
         if (typeof object === "undefined") {
           return t.instruction(name, args, namedArgs);
