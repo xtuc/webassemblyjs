@@ -51,6 +51,11 @@ type ParserState = {
     type: ExportDescr,
     name: string,
     id: Index
+  }>,
+  registredImportedElements: Array<{
+    module: string,
+    name: string,
+    descr: ImportDescr
   }>
 };
 
@@ -58,7 +63,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
 
   const state: ParserState = {
-    registredExportedElements: []
+    registredExportedElements: [],
+    registredImportedElements: []
   };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
@@ -741,6 +747,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           state.registredExportedElements = [];
         }
 
+        if (state.registredImportedElements.length > 0) {
+          state.registredImportedElements.forEach(decl => {
+            moduleFields.push(
+              t.moduleImport(decl.module, decl.name, decl.descr)
+            );
+          });
+
+          state.registredImportedElements = [];
+        }
+
         token = tokensList[current];
       }
 
@@ -1130,6 +1146,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       let name = t.identifier(getUniqueName("global"));
       let type;
 
+      // Keep informations in case of a shorthand import
+      let importing = null;
+
       maybeIgnoreComment();
 
       if (token.type === tokens.identifier) {
@@ -1157,6 +1176,28 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       /**
+       * maybe import
+       */
+      if (lookaheadAndCheck(tokens.openParen, keywords.import)) {
+        eatToken(); // (
+        eatToken(); // import
+
+        const moduleName = token.value;
+        eatTokenOfType(tokens.string);
+
+        const name = token.value;
+        eatTokenOfType(tokens.string);
+
+        importing = {
+          module: moduleName,
+          name,
+          descr: undefined
+        };
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      /**
        * global_sig
        */
       if (token.type === tokens.valtype) {
@@ -1172,7 +1213,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         eatToken(); // mut
 
-        type = t.globalImportDescr(token.value, "var");
+        type = t.globalType(token.value, "var");
         eatToken();
 
         eatTokenOfType(tokens.closeParen);
@@ -1190,6 +1231,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       parseListOfInstructions(init);
 
       eatTokenOfType(tokens.closeParen);
+
+      if (importing != null) {
+        importing.descr = type;
+
+        // $FlowIgnore: the type is correct but Flow doesn't like the mutation above
+        state.registredImportedElements.push(importing);
+      }
 
       return t.global(type, init, name);
     }
