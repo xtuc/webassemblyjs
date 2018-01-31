@@ -1224,20 +1224,25 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new TypeError("Could not determine global type");
       }
 
-      /**
-       * instr*
-       */
-      const init = [];
-      parseListOfInstructions(init);
-
-      eatTokenOfType(tokens.closeParen);
-
       if (importing != null) {
         importing.descr = type;
 
         // $FlowIgnore: the type is correct but Flow doesn't like the mutation above
         state.registredImportedElements.push(importing);
       }
+
+      const init = [];
+
+      if (token.type === tokens.closeParen) {
+        return t.global(type, init, name);
+      }
+
+      /**
+       * instr*
+       */
+      parseListOfInstructions(init);
+
+      eatTokenOfType(tokens.closeParen);
 
       return t.global(type, init, name);
     }

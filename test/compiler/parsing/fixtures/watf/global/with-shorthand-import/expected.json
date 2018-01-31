@@ -109,6 +109,29 @@
             "valtype": "i32",
             "mutability": "var"
           }
+        },
+        {
+          "type": "Global",
+          "globalType": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "var"
+          },
+          "init": [],
+          "name": {
+            "type": "Identifier",
+            "value": "global_4"
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "m",
+          "name": "a",
+          "descr": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "var"
+          }
         }
       ]
     }
