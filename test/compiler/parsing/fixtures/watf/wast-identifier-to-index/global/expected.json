@@ -95,7 +95,7 @@
               "object": "const",
               "args": [
                 {
-                  "type": "NumberLiteral",
+                  "type": "FloatLiteral",
                   "value": 1
                 }
               ]
