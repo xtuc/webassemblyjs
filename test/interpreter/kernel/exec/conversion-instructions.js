@@ -119,6 +119,31 @@ describe("kernel exec - conversion instructions", () => {
     },
 
     {
+      name: "i32.reinterpret/f32 - positive infinity",
+
+      args: [{ value: 1, type: "f32", inf: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.objectInstruction("reinterpret/f32", "i32")
+      ],
+
+      resEqual: new i32(0x7f800000)
+    },
+    {
+      name: "i32.reinterpret/f32 - negative infinity",
+
+      args: [{ value: -1, type: "f32", inf: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.objectInstruction("reinterpret/f32", "i32")
+      ],
+
+      resEqual: new i32(0xff800000)
+    },
+
+    {
       name: "i64.reinterpret/f64 - boundary value",
 
       args: [{ value: 0.0, type: "f64" }],
@@ -168,14 +193,38 @@ describe("kernel exec - conversion instructions", () => {
       ],
 
       resEqual: new i64(Long.fromString("8000000000000000", false, 16))
-    }
+    },
+    {
+      name: "i64.reinterpret/f64 - positive infinity",
+
+      args: [{ value: 1, type: "f64", inf: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.objectInstruction("reinterpret/f64", "i64")
+      ],
+
+      resEqual: new i64(Long.fromString("0x7ff0000000000000", false, 16))
+    },
+    {
+      name: "i64.reinterpret/f64 - negative infinity",
+
+      args: [{ value: -1, type: "f64", inf: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.objectInstruction("reinterpret/f64", "i64")
+      ],
+
+      resEqual: new i64(Long.fromString("0xfff0000000000000", false, 16))
+    },
   ];
 
   operations.forEach(op => {
     describe(op.name, () => {
       it("should get the correct result", () => {
-        const args = op.args.map(({ value, type, nan }) =>
-          castIntoStackLocalOfType(type, value, nan)
+        const args = op.args.map(({ value, type, nan, inf }) =>
+          castIntoStackLocalOfType(type, value, nan, inf)
         );
 
         const stackFrame = createStackFrame(op.code, args);
