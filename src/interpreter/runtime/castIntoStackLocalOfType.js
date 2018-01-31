@@ -15,8 +15,10 @@ export function castIntoStackLocalOfType(
   const castFn = {
     i32: i32.createValueFromAST,
     i64: i64.createValueFromAST,
-    f32: inf ? f32.createInfFromAST : (nan ? f32.createNanFromAST : f32.createValueFromAST),
-    f64: inf ? f64.createInfFromAST :f64.createValueFromAST
+    f32: inf
+      ? f32.createInfFromAST
+      : nan ? f32.createNanFromAST : f32.createValueFromAST,
+    f64: inf ? f64.createInfFromAST : f64.createValueFromAST
   };
 
   if (typeof castFn[type] === "undefined") {

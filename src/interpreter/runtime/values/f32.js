@@ -98,7 +98,7 @@ export class f32inf extends f32 {
     // Exponent is all 1's, mantissa is all zeros
     let result = 0xff << 23;
 
-    if(this._value < 0) {
+    if (this._value < 0) {
       result = result | 0x80000000;
     }
 

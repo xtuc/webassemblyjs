@@ -217,7 +217,7 @@ describe("kernel exec - conversion instructions", () => {
       ],
 
       resEqual: new i64(Long.fromString("0xfff0000000000000", false, 16))
-    },
+    }
   ];
 
   operations.forEach(op => {

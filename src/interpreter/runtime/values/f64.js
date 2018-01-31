@@ -21,7 +21,7 @@ export class f64inf extends f64 {
     // Exponent is all 1's, mantissa is all zeros
     let upper = 0x7ff << 20;
 
-    if(this._value < 0) {
+    if (this._value < 0) {
       upper = upper | 0x80000000;
     }
 
