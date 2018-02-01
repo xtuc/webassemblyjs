@@ -21,5 +21,14 @@ describe("validation", () => {
 
       assert.isFalse(isConst(exprs));
     });
+
+    it("should return false with multiple expressions", () => {
+      const exprs = [
+        t.objectInstruction("const", "i32"),
+        t.instruction("nop")
+      ];
+
+      assert.isFalse(isConst(exprs));
+    });
   });
 });
