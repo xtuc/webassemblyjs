@@ -1233,16 +1233,15 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       const init = [];
 
-      if (token.type === tokens.closeParen) {
-        return t.global(type, init, name);
-      }
-
       /**
        * instr*
        */
-      parseListOfInstructions(init);
+      while (token.type === tokens.openParen) {
+        eatToken();
 
-      eatTokenOfType(tokens.closeParen);
+        init.push(parseFuncInstr());
+        eatTokenOfType(tokens.closeParen);
+      }
 
       return t.global(type, init, name);
     }
