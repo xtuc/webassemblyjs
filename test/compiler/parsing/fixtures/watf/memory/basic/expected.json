@@ -5,7 +5,7 @@
       "type": "Memory",
       "limits": {
         "type": "Limit",
-        "min": "1"
+        "min": 1
       },
       "id": {
         "type": "Identifier",
@@ -16,8 +16,8 @@
       "type": "Memory",
       "limits": {
         "type": "Limit",
-        "min": "1",
-        "max": "2"
+        "min": 1,
+        "max": 2
       },
       "id": {
         "type": "Identifier",
@@ -28,8 +28,8 @@
       "type": "Memory",
       "limits": {
         "type": "Limit",
-        "min": "1",
-        "max": "2"
+        "min": 1,
+        "max": 2
       },
       "id": {
         "type": "Identifier",
@@ -40,7 +40,7 @@
       "type": "Memory",
       "limits": {
         "type": "Limit",
-        "min": "1"
+        "min": 1
       },
       "id": {
         "type": "Identifier",
@@ -51,11 +51,22 @@
       "type": "Memory",
       "limits": {
         "type": "Limit",
-        "min": "0"
+        "min": 0
       },
       "id": {
         "type": "Identifier",
         "value": "a"
+      }
+    },
+    {
+      "type": "Memory",
+      "limits": {
+        "type": "Limit",
+        "min": 254
+      },
+      "id": {
+        "type": "Identifier",
+        "value": "memory_6"
       }
     }
   ]

@@ -92,10 +92,7 @@ export function createInstance(
     },
 
     Memory({ node }: NodePath<Memory>) {
-      const limits = {
-        min: Number(node.limits.min),
-        max: node.limits.max ? Number(node.limits.max) : undefined
-      };
+      const limits = node.limits;
 
       if (limits.max && limits.max < limits.min) {
         throw new RuntimeError("size minimum must not be greater than maximum");
