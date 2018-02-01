@@ -20,9 +20,9 @@ export class Instance {
   _table: ?TableInstance;
 
   /**
-   * Map id to external callable functions
+   * Map id to external elements or callable functions
    */
-  _externalFunctions: any;
+  _externalElements: any;
 
   constructor(module: CompiledModule, importObject: ImportObject) {
     if (module instanceof Module === false) {
@@ -33,7 +33,7 @@ export class Instance {
       );
     }
 
-    this._externalFunctions = {};
+    this._externalElements = {};
     this.exports = {};
 
     /**
@@ -57,20 +57,16 @@ export class Instance {
      */
     if (typeof importObject === "object") {
       importObjectUtils.walk(importObject, (key, key2, value) => {
-        if (typeof this._externalFunctions[key] !== "object") {
-          this._externalFunctions[key] = {};
+        if (typeof this._externalElements[key] !== "object") {
+          this._externalElements[key] = {};
         }
 
         if (value instanceof Memory) {
           this._allocator = createAllocator(value);
-        }
-
-        if (value instanceof Table) {
+        } else if (value instanceof Table) {
           this._table = value;
-        }
-
-        if (typeof value === "function") {
-          this._externalFunctions[key][key2] = value;
+        } else {
+          this._externalElements[key][key2] = value;
         }
       });
     }
@@ -87,7 +83,7 @@ export class Instance {
       // $FlowIgnore: that's the correct type but Flow fails to get it
       moduleNode,
 
-      this._externalFunctions
+      this._externalElements
     );
 
     moduleInstance.exports.forEach(exportinst => {

@@ -9,7 +9,7 @@ const { LinkError, CompileError } = require("../../../errors");
 export function createInstance(
   allocator: Allocator,
   n: Module,
-  externalFunctions: any = {}
+  externalElements: any = {}
 ): ModuleInstance {
   // Keep a ref to the module instance
   const moduleInstance = {
@@ -32,6 +32,8 @@ export function createInstance(
   const instantiatedTables = {};
   const instantiatedMemories = {};
 
+  const instantiatedImportedElements = {};
+
   function assertNotAlreadyExported(str) {
     const moduleInstanceExport = moduleInstance.exports.find(
       ({ name }) => name === str
@@ -42,13 +44,39 @@ export function createInstance(
     }
   }
 
-  importObjectUtils.walk(externalFunctions, (key, key2, jsfunc) => {
-    const funcinstance = func.createExternalInstance(jsfunc);
+  importObjectUtils.walk(externalElements, (key, key2, element) => {
+    let addr;
 
-    const addr = allocator.malloc(1 /* size of the funcinstance struct */);
-    allocator.set(addr, funcinstance);
+    if (key === "_internalInstanceOptions") {
+      return;
+    }
 
-    instantiatedFuncs[`${key}_${key2}`] = addr;
+    if (typeof element === "function") {
+      const funcinstance = func.createExternalInstance(element);
+
+      addr = allocator.malloc(1 /* size of the funcinstance struct */);
+      allocator.set(addr, funcinstance);
+    }
+
+    if (typeof element === "number") {
+      // TODO(sven): create an i32 instance
+      const funcinstance = func.createExternalInstance(element);
+
+      addr = allocator.malloc(1 /* size of the funcinstance struct */);
+      allocator.set(addr, funcinstance);
+    }
+
+    if (addr == null) {
+      throw new Error(
+        `Unsupported import ${key}.${key2}, type of ${typeof element}`
+      );
+    }
+
+    instantiatedImportedElements[`${key}_${key2}`] = addr;
+
+    // > the indices of imports go before the first index of any definition
+    // contained in the module itself.
+    // see https://webassembly.github.io/spec/core/syntax/modules.html#imports
   });
 
   /**
@@ -127,11 +155,11 @@ export function createInstance(
 
     ModuleImport({ node }: NodePath<ModuleImport>) {
       const instantiatedFuncAddr =
-        instantiatedFuncs[`${node.module}_${node.name}`];
+        instantiatedImportedElements[`${node.module}_${node.name}`];
 
       if (node.descr.type === "FuncImportDescr") {
         if (typeof instantiatedFuncAddr === "undefined") {
-          throw new Error(
+          throw new CompileError(
             "Can not import function " +
               node.name +
               " was not declared or instantiated"
@@ -152,6 +180,13 @@ export function createInstance(
         allocator.set(func, instantiatedFuncAddr);
 
         moduleInstance.funcaddrs.push(instantiatedFuncAddr);
+      } else if (node.descr.type === "GlobalType") {
+        const isMutable = node.descr.mutability === "var";
+
+        // Validation: The mutability of globaltype must be const.
+        if (isMutable === true) {
+          throw new CompileError("Mutable globals cannot be imported");
+        }
       } else {
         throw new Error("Unsupported import of type: " + node.descr.type);
       }
@@ -217,6 +252,12 @@ export function createInstance(
 
           if (globalinstaddr === undefined) {
             throw new CompileError("Unknown global");
+          }
+
+          const globalinst = allocator.get(globalinstaddr);
+
+          if (globalinst.mutability === "var") {
+            throw new CompileError("Mutable globals cannot be exported");
           }
 
           const externalVal = {
