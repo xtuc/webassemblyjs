@@ -192,7 +192,7 @@
               "id": "get_local",
               "args": [
                 {
-                  "type": "FloatLiteral",
+                  "type": "NumberLiteral",
                   "value": 0
                 }
               ]
@@ -243,7 +243,7 @@
                           "id": "get_local",
                           "args": [
                             {
-                              "type": "FloatLiteral",
+                              "type": "NumberLiteral",
                               "value": 0
                             }
                           ]

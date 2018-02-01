@@ -5,6 +5,7 @@ const {
   parse64F,
   parse32I,
   parse64I,
+  parseU32,
   isNanLiteral,
   isInfLiteral
 } = require("../parsing/watf/number-literals");
@@ -17,7 +18,8 @@ function assert(cond: boolean) {
 
 export function signature(object: string, name: string): Array {
   const signatures = {
-    "reinterpret/f32": ["f32"]
+    "reinterpret/f32": ["f32"],
+    get_local: ["u32"]
   };
   return signatures[name] || [object, object];
 }
@@ -212,6 +214,10 @@ export function numberLiteral(
     switch (instructionType) {
       case "i32": {
         value = parse32I(rawValue);
+        break;
+      }
+      case "u32": {
+        value = parseU32(rawValue);
         break;
       }
       case "i64": {
@@ -434,5 +440,5 @@ export function blockComment(value: string): BlockComment {
 }
 
 export function indexLiteral(value: number | string): Index {
-  return numberLiteral(value, "i32");
+  return numberLiteral(value, "u32");
 }
