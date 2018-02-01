@@ -10,6 +10,8 @@ const {
   isInfLiteral
 } = require("../parsing/watf/number-literals");
 
+const { Signatures } = require("./signatures");
+
 function assert(cond: boolean) {
   if (!cond) {
     throw new Error("assertion error");
@@ -17,11 +19,17 @@ function assert(cond: boolean) {
 }
 
 export function signature(object: string, name: string): Array {
-  const signatures = {
-    "reinterpret/f32": ["f32"],
-    get_local: ["u32"]
-  };
-  return signatures[name] || [object, object];
+  let opcodeName = name;
+  if (object !== undefined) {
+    opcodeName = object + "." + name;
+  }
+  const sign = Signatures[opcodeName];
+  if (sign == undefined) {
+    // TODO: Uncomment this when br_table and others has been done
+    //throw new Error("Invalid opcode: "+opcodeName);
+    return [object, object];
+  }
+  return sign;
 }
 
 export function identifier(value: string): Identifier {
