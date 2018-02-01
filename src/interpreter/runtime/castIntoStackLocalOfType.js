@@ -15,11 +15,19 @@ export function castIntoStackLocalOfType(
   const castFn = {
     i32: i32.createValueFromAST,
     i64: i64.createValueFromAST,
-    f32: inf
-      ? f32.createInfFromAST
-      : nan ? f32.createNanFromAST : f32.createValueFromAST,
-    f64: inf ? f64.createInfFromAST : f64.createValueFromAST
+    f32: f32.createValueFromAST,
+    f64: f64.createValueFromAST
   };
+
+  if (nan) {
+    castFn.f32 = f32.createNanFromAST;
+    castFn.f64 = f64.createNanFromAST;
+  }
+
+  if (inf) {
+    castFn.f32 = f32.createInfFromAST;
+    castFn.f64 = f64.createInfFromAST;
+  }
 
   if (typeof castFn[type] === "undefined") {
     throw new RuntimeError("Cannot cast: unsupported type " + type);
