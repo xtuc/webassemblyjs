@@ -1,4 +1,5 @@
 // @flow
+import { parse32I } from "./number-literals";
 
 const { tokens, keywords } = require("./tokenizer");
 const t = require("../../AST");
@@ -159,11 +160,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         );
       }
 
-      const limits = t.limits(token.value);
+      const limits = t.limits(parse32I(token.value));
       eatToken();
 
       if (token.type === tokens.number) {
-        limits.max = token.value;
+        limits.max = parse32I(token.value);
         eatToken();
       }
 

@@ -93,4 +93,8 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
   toString(): string {
     return this._value.toString();
   }
+
+  toByteArray(): Array<number> {
+    throw new RuntimeError("unsupported operation");
+  }
 }

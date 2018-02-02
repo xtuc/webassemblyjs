@@ -1,9 +1,10 @@
+import { Memory } from "../runtime/values/memory";
+
 // @flow
 
 const {
   binopi32,
   binopi64,
-
   binopf32,
   binopf64
 } = require("./instruction/binop");
@@ -111,10 +112,10 @@ export function executeStackFrame(
       );
     }
 
-    if (c1.type !== type2) {
+    if (c1.type !== type1) {
       throw new RuntimeError(
         "Internal failure: expected c1 value of type " +
-          type2 +
+          type1 +
           " on top of the stack, give type: " +
           c1.type
       );
@@ -701,6 +702,49 @@ export function executeStackFrame(
 
         // Abort execution and return the first item on the stack
         return pop1();
+      }
+
+      /**
+       * Memory operations
+       */
+
+      // https://webassembly.github.io/spec/core/exec/instructions.html#exec-storen
+      case "store": {
+        if (frame.originatingModule.memaddrs.length != 1) {
+          throw new RuntimeError("unknown memory");
+        }
+
+        const memAddr = frame.originatingModule.memaddrs[0];
+        const memory = (frame.allocator.get(memAddr): Memory);
+
+        const [c1, c2] = pop2("i32", instruction.object);
+        let ptr = c1.value.toNumber();
+        const valueBuffer = c2.value.toByteArray();
+
+        if (instruction.namedArgs && instruction.namedArgs.offset) {
+          const offset = instruction.namedArgs.offset;
+          if (offset < 0) {
+            throw new RuntimeError("offset must be positive");
+          }
+          if (offset > 0xffffffff) {
+            throw new RuntimeError(
+              "offset must be less than or equal to 0xffffffff"
+            );
+          }
+          ptr += offset;
+        }
+
+        if (ptr + valueBuffer.length > memory.buffer.byteLength) {
+          throw new RuntimeError("memory access out of bounds");
+        }
+
+        const memoryBuffer = new Uint8Array(memory.buffer);
+
+        // load / store use little-endian order
+        for (let ptrOffset = 0; ptrOffset < valueBuffer.length; ptrOffset++) {
+          memoryBuffer[ptr + ptrOffset] = valueBuffer[ptrOffset];
+        }
+        break;
       }
 
       /**
