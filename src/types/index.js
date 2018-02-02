@@ -122,6 +122,9 @@ interface NumericOperations<T> {
   toString(): string;
   isTrue(): boolean;
   toString(): string;
+
+  // converts the number into an array of bytes - for integers
+  // this is in little-endian order
   toByteArray(): Array<number>;
 }
 

@@ -709,7 +709,10 @@ export function executeStackFrame(
        */
 
       // https://webassembly.github.io/spec/core/exec/instructions.html#exec-storen
-      case "store": {
+      case "store":
+      case "store8":
+      case "store16":
+      case "store32": {
         if (frame.originatingModule.memaddrs.length != 1) {
           throw new RuntimeError("unknown memory");
         }
@@ -719,7 +722,7 @@ export function executeStackFrame(
 
         const [c1, c2] = pop2("i32", instruction.object);
         let ptr = c1.value.toNumber();
-        const valueBuffer = c2.value.toByteArray();
+        let valueBuffer = c2.value.toByteArray();
 
         if (instruction.namedArgs && instruction.namedArgs.offset) {
           const offset = instruction.namedArgs.offset;
@@ -732,6 +735,18 @@ export function executeStackFrame(
             );
           }
           ptr += offset;
+        }
+
+        switch (instruction.id) {
+          case "store8":
+            valueBuffer = valueBuffer.slice(0, 1);
+            break;
+          case "store16":
+            valueBuffer = valueBuffer.slice(0, 2);
+            break;
+          case "store32":
+            valueBuffer = valueBuffer.slice(0, 4);
+            break;
         }
 
         if (ptr + valueBuffer.length > memory.buffer.byteLength) {

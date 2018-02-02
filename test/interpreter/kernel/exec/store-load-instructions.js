@@ -54,6 +54,54 @@ describe("kernel exec - store / load instructions", () => {
     assert.equal(i32Array[3], 1879048192);
   });
 
+  it("should support wrapping store operations", () => {
+    const code = [
+      t.objectInstruction("const", "i32", [t.numberLiteral(12)]),
+      t.objectInstruction("const", "i32", [t.numberLiteral(0x12345678)]),
+      t.objectInstruction("store8", "i32")
+    ];
+
+    const args = [];
+
+    const stackFrame = createStackFrame(
+      code,
+      args,
+      originatingModule,
+      allocator
+    );
+    executeStackFrame(stackFrame);
+
+    const i32Array = new Uint32Array(linearMemory.buffer);
+    assert.equal(i32Array[3], 0x78);
+  });
+
+  it("should not over-write neighbouring bytes when wrapping", () => {
+    const code = [
+      t.objectInstruction("const", "i32", [t.numberLiteral(12)]),
+      t.objectInstruction("const", "i32", [t.numberLiteral(0x01020304)]), // writes 0x04
+      t.objectInstruction("store8", "i32"),
+      t.objectInstruction("const", "i32", [t.numberLiteral(13)]),
+      t.objectInstruction("const", "i32", [t.numberLiteral(0x01020203)]), // writes 0x0302 (little-endian)
+      t.objectInstruction("store16", "i32"),
+      t.objectInstruction("const", "i32", [t.numberLiteral(15)]),
+      t.objectInstruction("const", "i32", [t.numberLiteral(0x01020101)]), // writes 0x01
+      t.objectInstruction("store8", "i32")
+    ];
+
+    const args = [];
+
+    const stackFrame = createStackFrame(
+      code,
+      args,
+      originatingModule,
+      allocator
+    );
+    executeStackFrame(stackFrame);
+
+    const i32Array = new Uint32Array(linearMemory.buffer);
+    assert.equal(i32Array[3], 0x01020304);
+  });
+
   it("should correctly store i64 values", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteral(8)]),
