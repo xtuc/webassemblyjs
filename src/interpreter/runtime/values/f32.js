@@ -1,5 +1,5 @@
 // @flow
-import { Float } from "./number";
+import { Float, typedArrayToArray } from "./number";
 import { i32 } from "./i32";
 
 const type = "f32";
@@ -38,6 +38,12 @@ export class f32 extends Float<i32> {
     return operand instanceof f32nan
       ? operand.div(this)
       : Float.prototype.div.call(this, operand);
+  }
+
+  toByteArray(): Array<number> {
+    const floatArray = new Float32Array(1);
+    floatArray[0] = this._value;
+    return typedArrayToArray(new Int8Array(floatArray.buffer));
   }
 }
 

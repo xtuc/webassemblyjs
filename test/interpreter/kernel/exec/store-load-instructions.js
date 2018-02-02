@@ -54,6 +54,48 @@ describe("kernel exec - store / load instructions", () => {
     assert.equal(i32Array[3], 1879048192);
   });
 
+  it("should correctly store f32 values", () => {
+    const code = [
+      t.objectInstruction("const", "i32", [t.numberLiteral(12)]),
+      t.objectInstruction("const", "f32", [t.numberLiteral(123.456)]),
+      t.objectInstruction("store", "f32")
+    ];
+
+    const args = [];
+
+    const stackFrame = createStackFrame(
+      code,
+      args,
+      originatingModule,
+      allocator
+    );
+    executeStackFrame(stackFrame);
+
+    const f32Array = new Float32Array(linearMemory.buffer);
+    assert.equal(f32Array[3], 123.45600128173828);
+  });
+
+  it("should correctly store f64 values", () => {
+    const code = [
+      t.objectInstruction("const", "i32", [t.numberLiteral(16)]),
+      t.objectInstruction("const", "f64", [t.numberLiteral(123.456)]),
+      t.objectInstruction("store", "f64")
+    ];
+
+    const args = [];
+
+    const stackFrame = createStackFrame(
+      code,
+      args,
+      originatingModule,
+      allocator
+    );
+    executeStackFrame(stackFrame);
+
+    const f32Array = new Float64Array(linearMemory.buffer);
+    assert.equal(f32Array[2], 123.456);
+  });
+
   it("should support wrapping store operations", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteral(12)]),

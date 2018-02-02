@@ -93,8 +93,12 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
   toString(): string {
     return this._value.toString();
   }
+}
 
-  toByteArray(): Array<number> {
-    throw new RuntimeError("unsupported operation");
+export function typedArrayToArray(typedArray) {
+  const byteArray = new Array(typedArray.byteLength);
+  for (let i = 0; i < byteArray.length; i++) {
+    byteArray[i] = typedArray[i];
   }
+  return byteArray;
 }
