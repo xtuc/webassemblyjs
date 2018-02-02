@@ -1,7 +1,6 @@
 // @flow
 
 export function isConst(instrs: Array<Instruction>): boolean {
-
   if (instrs.length === 0) {
     return false;
   }

@@ -1,4 +1,4 @@
 it("should throw type mismatch", () => {
   const fn = () => WebAssembly.instantiateFromSource(watfmodule);
-  assert.throws(fn, 'type mismatch');
+  assert.throws(fn, "type mismatch");
 });
