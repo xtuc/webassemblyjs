@@ -187,6 +187,23 @@ export class i64 implements IntegerValue<i64> {
     }
     return byteArray;
   }
+
+  static fromArrayBuffer(
+    buffer: ArrayBuffer,
+    ptr: number,
+    extend: number,
+    signed: number
+  ): i64 {
+    const slice = buffer.slice(ptr, ptr + 8);
+    const value = new Int32Array(slice);
+    let longVal = new Long(value[0], value[1]);
+    // shift left, then shift right by the same number of bits, using
+    // signed or unsigned shifts
+    longVal = longVal.shiftLeft(extend);
+    return new i64(
+      signed ? longVal.shiftRight(extend) : longVal.shiftRightUnsigned(extend)
+    );
+  }
 }
 
 export function createValueFromAST(value: LongNumber): StackLocal {

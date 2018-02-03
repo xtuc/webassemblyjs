@@ -1,7 +1,5 @@
-import { Memory } from "../runtime/values/memory";
-
 // @flow
-
+import { Memory } from "../runtime/values/memory";
 const {
   binopi32,
   binopi64,
@@ -12,6 +10,10 @@ const { unopi32, unopi64, unopf32, unopf64 } = require("./instruction/unop");
 const {
   castIntoStackLocalOfType
 } = require("../runtime/castIntoStackLocalOfType");
+const { i32 } = require("../runtime/values/i32");
+const { i64 } = require("../runtime/values/i64");
+const { f32 } = require("../runtime/values/f32");
+const { f64 } = require("../runtime/values/f64");
 const label = require("../runtime/values/label");
 const { createChildStackFrame } = require("./stackframe");
 const { createTrap, isTrapped } = require("./signals");
@@ -168,6 +170,32 @@ export function executeStackFrame(
     const res = executeStackFrame(childStackFrame, depth + 1);
 
     return res;
+  }
+
+  function getMemoryOffset(instruction) {
+    if (instruction.namedArgs && instruction.namedArgs.offset) {
+      const offset = instruction.namedArgs.offset;
+      if (offset < 0) {
+        throw new RuntimeError("offset must be positive");
+      }
+      if (offset > 0xffffffff) {
+        throw new RuntimeError(
+          "offset must be less than or equal to 0xffffffff"
+        );
+      }
+      return offset;
+    } else {
+      return 0;
+    }
+  }
+
+  function getMemory(): Memory {
+    if (frame.originatingModule.memaddrs.length != 1) {
+      throw new RuntimeError("unknown memory");
+    }
+
+    const memAddr = frame.originatingModule.memaddrs[0];
+    return frame.allocator.get(memAddr);
   }
 
   assertStackDepth(depth);
@@ -713,29 +741,11 @@ export function executeStackFrame(
       case "store8":
       case "store16":
       case "store32": {
-        if (frame.originatingModule.memaddrs.length != 1) {
-          throw new RuntimeError("unknown memory");
-        }
-
-        const memAddr = frame.originatingModule.memaddrs[0];
-        const memory = (frame.allocator.get(memAddr): Memory);
+        const memory = getMemory();
 
         const [c1, c2] = pop2("i32", instruction.object);
-        let ptr = c1.value.toNumber();
+        const ptr = c1.value.toNumber() + getMemoryOffset(instruction);
         let valueBuffer = c2.value.toByteArray();
-
-        if (instruction.namedArgs && instruction.namedArgs.offset) {
-          const offset = instruction.namedArgs.offset;
-          if (offset < 0) {
-            throw new RuntimeError("offset must be positive");
-          }
-          if (offset > 0xffffffff) {
-            throw new RuntimeError(
-              "offset must be less than or equal to 0xffffffff"
-            );
-          }
-          ptr += offset;
-        }
 
         switch (instruction.id) {
           case "store8":
@@ -758,6 +768,83 @@ export function executeStackFrame(
         // load / store use little-endian order
         for (let ptrOffset = 0; ptrOffset < valueBuffer.length; ptrOffset++) {
           memoryBuffer[ptr + ptrOffset] = valueBuffer[ptrOffset];
+        }
+        break;
+      }
+
+      // https://webassembly.github.io/spec/core/exec/instructions.html#and
+      case "load":
+      case "load16_s":
+      case "load16_u":
+      case "load8_s":
+      case "load8_u":
+      case "load32_s":
+      case "load32_u": {
+        const memory = getMemory();
+
+        const ptr = pop1("i32").value.toNumber() + getMemoryOffset(instruction);
+
+        // for i32 / i64 ops, handle extended load
+        let extend = 0;
+        // for i64 values, increase the bitshift by 4 bytes
+        const extendOffset = instruction.object === "i32" ? 0 : 32;
+        let signed = false;
+        switch (instruction.id) {
+          case "load16_s":
+            extend = 16 + extendOffset;
+            signed = true;
+            break;
+          case "load16_u":
+            extend = 16 + extendOffset;
+            signed = false;
+            break;
+          case "load8_s":
+            extend = 24 + extendOffset;
+            signed = true;
+            break;
+          case "load8_u":
+            extend = 24 + extendOffset;
+            signed = false;
+            break;
+          case "load32_u":
+            extend = 0 + extendOffset;
+            signed = false;
+            break;
+          case "load32_s":
+            extend = 0 + extendOffset;
+            signed = true;
+            break;
+        }
+
+        // check for memory access out of bounds
+        switch (instruction.object) {
+          case "i32":
+          case "f32":
+            if (ptr + 4 > memory.buffer.byteLength) {
+              throw new RuntimeError("memory access out of bounds");
+            }
+            break;
+          case "i64":
+          case "f64":
+            if (ptr + 8 > memory.buffer.byteLength) {
+              throw new RuntimeError("memory access out of bounds");
+            }
+            break;
+        }
+
+        switch (instruction.object) {
+          case "i32":
+            pushResult(i32.fromArrayBuffer(memory.buffer, ptr, extend, signed));
+            break;
+          case "i64":
+            pushResult(i64.fromArrayBuffer(memory.buffer, ptr, extend, signed));
+            break;
+          case "f32":
+            pushResult(f32.fromArrayBuffer(memory.buffer, ptr));
+            break;
+          case "f64":
+            pushResult(f64.fromArrayBuffer(memory.buffer, ptr));
+            break;
         }
         break;
       }
