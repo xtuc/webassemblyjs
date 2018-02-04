@@ -55,7 +55,6 @@ function instantiateImports(
   }
 
   function handleGlobalImport(node: ModuleImport, descr: GlobalType) {
-
     // Validation: The mutability of globaltype must be const.
     if (descr.mutability === "var") {
       throw new CompileError("Mutable globals cannot be imported");

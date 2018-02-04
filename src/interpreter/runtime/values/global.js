@@ -12,8 +12,14 @@ export function createInstance(
   let value;
   const { valtype, mutability } = node.globalType;
 
-  if (isConst(node.init) === false) {
+  if (node.init.length > 0 && isConst(node.init) === false) {
     throw new CompileError("constant expression required");
+  }
+
+  // None or multiple constant expressions in the initializer seems not possible
+  // TODO(sven): find a specification reference for that
+  if (node.init.length > 1 || node.init.length === 0) {
+    throw new CompileError("type mismatch");
   }
 
   // Validate the type

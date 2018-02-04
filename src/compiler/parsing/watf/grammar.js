@@ -1237,6 +1237,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         state.registredImportedElements.push(importing);
       }
 
+      maybeIgnoreComment();
+
       const init = [];
 
       /**

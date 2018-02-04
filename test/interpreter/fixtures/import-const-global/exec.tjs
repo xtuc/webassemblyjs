@@ -7,6 +7,6 @@ const importObject = {
 it("should import the global value", () => {
   const m = WebAssembly.instantiateFromSource(watfmodule, importObject);
 
-  assert.typeOf(m.exports.get(), 'number');
+  assert.typeOf(m.exports.get(), "number");
   assert.equal(m.exports.get(), 1);
 });
