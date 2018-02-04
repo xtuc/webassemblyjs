@@ -717,6 +717,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         while (token.type === tokens.string) {
           blob.push(token.value);
           eatToken();
+
+          maybeIgnoreComment();
         }
 
         eatTokenOfType(tokens.closeParen);
