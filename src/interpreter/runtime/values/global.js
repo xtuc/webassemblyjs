@@ -32,3 +32,11 @@ export function createInstance(allocator: Allocator, node: Global) {
     value
   };
 }
+
+export function createExternalInstance(node: Global) {
+  return {
+    type: node.globalType.valtype,
+    mutability: node.globalType.mutability,
+    value: undefined
+  };
+}
