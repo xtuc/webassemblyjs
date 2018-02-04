@@ -43,7 +43,7 @@ function assert_invalid(node) {
   const [module, expected] = node.args;
 
   try {
-    createInstanceFromAst(module);
+    createModuleInstanceFromAst(module);
 
     assert(false, `module is valid, expected invalid (${expected.value})`);
   } catch (err) {
@@ -196,7 +196,7 @@ function error({ message }) {
   console.log("Error: " + message);
 }
 
-function createInstanceFromAst(moduleNode) {
+function createModuleInstanceFromAst(moduleNode) {
   const internalInstanceOptions = {
     checkForI64InSignature: false
   };
@@ -255,13 +255,13 @@ function replEval(input) {
       throw new Error("assert_unlinkable: not implemented yet");
     }
   } else if (node.type === "Module") {
-    const instance = createInstanceFromAst(node);
+    const instance = createModuleInstanceFromAst(node);
     prettyPrintInstance(instance);
 
     instantiatedModules.unshift(instance);
   } else {
     // else wrap the instruction it into a module and interpret it
-    const instance = createInstanceFromAst(wrapInModule(node));
+    const instance = createModuleInstanceFromAst(wrapInModule(node));
     prettyPrintInstance(instance);
   }
 }
