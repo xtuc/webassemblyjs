@@ -270,7 +270,7 @@ function read(input) {
   openParens += countOpeningParens(input);
   openParens -= countClosingParens(input);
 
-  buffer += input;
+  buffer += input + "\n";
 
   if (openParens === 0) {
     try {
