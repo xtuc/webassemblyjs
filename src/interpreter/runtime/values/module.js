@@ -7,6 +7,7 @@ const func = require("./func");
 const externvalue = require("./extern");
 const global = require("./global");
 const { LinkError, CompileError } = require("../../../errors");
+const { i32 } = require("./i32");
 
 /**
  * Create Module's import instances
@@ -33,9 +34,8 @@ function instantiateImports(
     return externalElements[key][key2];
   }
 
-  function handleFuncImport(node: ModuleImport) {
+  function handleFuncImport(node: ModuleImport, descr: FuncImportDescr) {
     const element = getExternalElementOrThrow(node.module, node.name);
-    const descr: FuncImportDescr = node.descr;
 
     const params = descr.params != null ? descr.params : [];
     const results = descr.results != null ? descr.results : [];
@@ -54,9 +54,8 @@ function instantiateImports(
     moduleInstance.funcaddrs.push(externFuncinstanceAddr);
   }
 
-  function handleGlobalImport(node: ModuleImport) {
+  function handleGlobalImport(node: ModuleImport, descr: GlobalType) {
     const element = getExternalElementOrThrow(node.module, node.name);
-    const descr: GlobalType = node.descr;
     const isMutable = descr.mutability === "var";
 
     // Validation: The mutability of globaltype must be const.
@@ -65,7 +64,7 @@ function instantiateImports(
     }
 
     const externglobalinstance = externvalue.createGlobalInstance(
-      element,
+      new i32(element),
       descr.valtype,
       descr.mutability
     );
@@ -80,9 +79,9 @@ function instantiateImports(
     ModuleImport({ node }: NodePath<ModuleImport>) {
       switch (node.descr.type) {
         case "FuncImportDescr":
-          return handleFuncImport(node);
+          return handleFuncImport(node, node.descr);
         case "GlobalType":
-          return handleGlobalImport(node);
+          return handleGlobalImport(node, node.descr);
         default:
           throw new Error("Unsupported import of type: " + node.descr.type);
       }

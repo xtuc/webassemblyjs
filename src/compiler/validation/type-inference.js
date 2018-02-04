@@ -11,7 +11,7 @@ export function getType(instrs: Array<Instruction>): ?string {
     return last.object;
   }
 
-  if (last.id === "Loop" && typeof last.resulttype != null) {
+  if (last.id === "Loop" && last.resulttype != null) {
     return last.resulttype;
   }
 }

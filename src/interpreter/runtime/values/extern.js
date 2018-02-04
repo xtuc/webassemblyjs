@@ -16,7 +16,7 @@ export function createFuncInstance(
 }
 
 export function createGlobalInstance(
-  value: number,
+  value: NumericOperations<*>,
   type: Valtype,
   mutability: Mutability
 ): GlobalInstance {

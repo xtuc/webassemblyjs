@@ -213,7 +213,7 @@ type FuncImportDescr = {
 
 type ImportDescr = FuncImportDescr | GlobalType;
 
-interface ModuleImport {
+type ModuleImport = {
   type: "ModuleImport";
   module: string;
   name: string;

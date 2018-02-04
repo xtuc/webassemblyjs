@@ -44,8 +44,8 @@ type FuncInstance = {
 type GlobalInstance = {
   type: Valtype,
   mutability: Mutability,
-  value: ?number
-}
+  value: ?NumericOperations<*>
+};
 
 type ModuleInstance = {
   types: any,
