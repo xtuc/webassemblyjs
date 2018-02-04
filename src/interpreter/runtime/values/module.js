@@ -2,13 +2,19 @@
 import { Memory } from "./memory";
 import { RuntimeError } from "../../../errors";
 
-const importObjectUtils = require("../../import-object");
 const { traverse } = require("../../../compiler/AST/traverse");
-const t = require("../../../compiler/AST");
 const func = require("./func");
+const externvalue = require("./extern");
 const global = require("./global");
 const { LinkError, CompileError } = require("../../../errors");
 
+/**
+ * Create Module's import instances
+ *
+ * > the indices of imports go before the first index of any definition
+ * > contained in the module itself.
+ * see https://webassembly.github.io/spec/core/syntax/modules.html#imports
+ */
 function instantiateImports(
   n: Module,
   allocator: Allocator,
@@ -16,93 +22,69 @@ function instantiateImports(
   internals: Object,
   moduleInstance: ModuleInstance
 ) {
-  const instantiatedImportedElements = {};
-
-  // FIXME(sven):
-  // Refactor this, add it when we are actually importing that stuff,
-  // otherwise we don't have the correct type information.
-  importObjectUtils.walk(externalElements, (key, key2, element) => {
-    let addr;
-
-    if (key === "_internalInstanceOptions") {
-      return;
+  function getExternalElementOrThrow(key: string, key2: string): any {
+    if (
+      typeof externalElements[key] === "undefined" ||
+      typeof externalElements[key][key2] === "undefined"
+    ) {
+      throw new CompileError(`Unknown import ${key}.${key2}`);
     }
 
-    if (typeof element === "function") {
-      const funcinstance = func.createExternalInstance(element);
+    return externalElements[key][key2];
+  }
 
-      addr = allocator.malloc(1 /* size of the funcinstance struct */);
-      allocator.set(addr, funcinstance);
+  function handleFuncImport(node: ModuleImport) {
+    const element = getExternalElementOrThrow(node.module, node.name);
+    const descr: FuncImportDescr = node.descr;
+
+    const params = descr.params != null ? descr.params : [];
+    const results = descr.results != null ? descr.results : [];
+
+    const externFuncinstance = externvalue.createFuncInstance(
+      element,
+      params,
+      results
+    );
+
+    const externFuncinstanceAddr = allocator.malloc(
+      1 /* sizeof externFuncinstance */
+    );
+    allocator.set(externFuncinstanceAddr, externFuncinstance);
+
+    moduleInstance.funcaddrs.push(externFuncinstanceAddr);
+  }
+
+  function handleGlobalImport(node: ModuleImport) {
+    const element = getExternalElementOrThrow(node.module, node.name);
+    const descr: GlobalType = node.descr;
+    const isMutable = descr.mutability === "var";
+
+    // Validation: The mutability of globaltype must be const.
+    if (isMutable === true) {
+      throw new CompileError("Mutable globals cannot be imported");
     }
 
-    if (typeof element === "number") {
-      // TODO(sven): create an i32 instance
-      const funcinstance = func.createExternalInstance(element);
+    const externglobalinstance = externvalue.createGlobalInstance(
+      element,
+      descr.valtype,
+      descr.mutability
+    );
 
-      addr = allocator.malloc(1 /* size of the funcinstance struct */);
-      allocator.set(addr, funcinstance);
-    }
+    const addr = allocator.malloc(1 /* size of the globalinstance struct */);
+    allocator.set(addr, externglobalinstance);
 
-    if (addr == null) {
-      throw new Error(
-        `Unsupported import ${key}.${key2}, type of ${typeof element}`
-      );
-    }
-
-    instantiatedImportedElements[`${key}_${key2}`] = addr;
-
-    // > the indices of imports go before the first index of any definition
-    // contained in the module itself.
-    // see https://webassembly.github.io/spec/core/syntax/modules.html#imports
-  });
+    moduleInstance.globaladdrs.push(addr);
+  }
 
   traverse(n, {
     ModuleImport({ node }: NodePath<ModuleImport>) {
-      const instantiatedFuncAddr =
-        instantiatedImportedElements[`${node.module}_${node.name}`];
-
-      if (node.descr.type === "FuncImportDescr") {
-        if (typeof instantiatedFuncAddr === "undefined") {
-          throw new CompileError(
-            "Can not import function " +
-              node.name +
-              " was not declared or instantiated"
-          );
-        }
-
-        /**
-         * Add missing type informations:
-         * - params
-         * - results
-         */
-        const func = allocator.get(instantiatedFuncAddr);
-
-        if (node.descr.params != null && node.descr.results != null) {
-          func.type = [node.descr.params, node.descr.results];
-        }
-
-        allocator.set(func, instantiatedFuncAddr);
-
-        moduleInstance.funcaddrs.push(instantiatedFuncAddr);
-      } else if (node.descr.type === "GlobalType") {
-        const isMutable = node.descr.mutability === "var";
-
-        // Validation: The mutability of globaltype must be const.
-        if (isMutable === true) {
-          throw new CompileError("Mutable globals cannot be imported");
-        }
-
-        const globalNode = t.global(node.descr, []);
-        const globalinstance = global.createExternalInstance(globalNode);
-
-        const addr = allocator.malloc(
-          1 /* size of the globalinstance struct */
-        );
-        allocator.set(addr, globalinstance);
-
-        moduleInstance.globaladdrs.push(addr);
-      } else {
-        throw new Error("Unsupported import of type: " + node.descr.type);
+      switch (node.descr.type) {
+        case "FuncImportDescr":
+          return handleFuncImport(node);
+        case "GlobalType":
+          return handleGlobalImport(node);
+        default:
+          throw new Error("Unsupported import of type: " + node.descr.type);
       }
     }
   });

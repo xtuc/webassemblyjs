@@ -5,7 +5,10 @@ const { isConst } = require("../../../compiler/validation/is-const");
 const { getType } = require("../../../compiler/validation/type-inference");
 const { CompileError } = require("../../../errors");
 
-export function createInstance(allocator: Allocator, node: Global) {
+export function createInstance(
+  allocator: Allocator,
+  node: Global
+): GlobalInstance {
   let value;
   const { valtype, mutability } = node.globalType;
 
@@ -30,13 +33,5 @@ export function createInstance(allocator: Allocator, node: Global) {
     type: valtype,
     mutability,
     value
-  };
-}
-
-export function createExternalInstance(node: Global) {
-  return {
-    type: node.globalType.valtype,
-    mutability: node.globalType.mutability,
-    value: undefined
   };
 }
