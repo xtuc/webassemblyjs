@@ -1,43 +1,37 @@
 // @flow
-
 export const NULL = 0x0;
 
-// It's an index not an actual pointer
-// FIXME(sven): remove this ^
-export const ptrsize = 1;
-
-export function createAllocator(memory: MemoryInstance): Allocator {
-  const heap = memory.buffer;
-
-  if (heap === null) {
-    throw new Error("heap is not initalized");
-  }
+// Allocates memory addresses within the store
+// https://webassembly.github.io/spec/core/exec/modules.html#alloc
+export function createAllocator(): Allocator {
+  // https://webassembly.github.io/spec/core/exec/runtime.html#store
+  const store = [];
+  let offset = 0;
 
   function malloc(size: Bytes): Addr {
-    memory.offset += size;
+    offset += size;
 
     return {
-      index: memory.offset,
+      index: offset,
       size
     };
   }
 
   function get(p: Addr): any {
-    return heap[p.index];
+    return store[p.index];
   }
 
   function set(p: Addr, value: any) {
-    heap[p.index] = value;
+    store[p.index] = value;
   }
 
   function free(p: Addr) {
-    heap[p.index] = NULL;
+    store[p.index] = NULL;
   }
 
   return {
     malloc,
     free,
-
     get,
     set
   };

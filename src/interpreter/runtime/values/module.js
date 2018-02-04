@@ -1,4 +1,6 @@
 // @flow
+import { Memory } from "./memory";
+import { RuntimeError } from "../../../errors";
 
 const importObjectUtils = require("../../import-object");
 const { traverse } = require("../../../compiler/AST/traverse");
@@ -14,12 +16,10 @@ export function createInstance(
   // Keep a ref to the module instance
   const moduleInstance = {
     types: [],
-
     funcaddrs: [],
     tableaddrs: [],
     memaddrs: [],
     globaladdrs: [],
-
     exports: []
   };
 
@@ -120,8 +120,23 @@ export function createInstance(
     },
 
     Memory({ node }: NodePath<Memory>) {
-      // TODO(sven): implement exporting a Memory instance
-      const memoryinstance = null;
+      const limits = node.limits;
+
+      if (limits.max && limits.max < limits.min) {
+        throw new RuntimeError("size minimum must not be greater than maximum");
+      }
+
+      if (limits.min > 65536) {
+        throw new RuntimeError(
+          "memory size must be at most 65536 pages (4GiB)"
+        );
+      }
+
+      const memoryDescriptor = {
+        initial: limits.min,
+        maximum: limits.max
+      };
+      const memoryinstance = new Memory(memoryDescriptor);
 
       const addr = allocator.malloc(1 /* size of the memoryinstance struct */);
       allocator.set(addr, memoryinstance);

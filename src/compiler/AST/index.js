@@ -15,6 +15,13 @@ function assert(cond: boolean) {
   }
 }
 
+export function signature(object: string, name: string): Array {
+  const signatures = {
+    "reinterpret/f32": ["f32"]
+  };
+  return signatures[name] || [object, object];
+}
+
 export function identifier(value: string): Identifier {
   return {
     type: "Identifier",

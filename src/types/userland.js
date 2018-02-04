@@ -25,6 +25,10 @@ type MemoryDescriptor = {
   maximum?: number
 };
 
+interface MemoryInstance {
+  buffer: ArrayBuffer;
+}
+
 type TableDescriptor = {
   element: string,
   initial: number,

@@ -4,13 +4,10 @@ const { traverse } = require("../compiler/AST/traverse");
 const modulevalue = require("./runtime/values/module");
 const { RuntimeError } = require("../errors");
 const { Module } = require("../compiler/compile/module");
-const { Memory } = require("./runtime/values/memory");
 const { Table } = require("./runtime/values/table");
 const { createAllocator } = require("./kernel/memory");
 const importObjectUtils = require("./import-object");
 import { createHostfunc } from "./host-func";
-
-const DEFAULT_MEMORY = new Memory({ initial: 1, maximum: 1024 });
 
 export class Instance {
   exports: any;
@@ -39,7 +36,7 @@ export class Instance {
     /**
      * Create Module's default memory allocator
      */
-    this._allocator = createAllocator(DEFAULT_MEMORY);
+    this._allocator = createAllocator();
 
     /**
      * Pass internal options
@@ -61,9 +58,7 @@ export class Instance {
           this._externalElements[key] = {};
         }
 
-        if (value instanceof Memory) {
-          this._allocator = createAllocator(value);
-        } else if (value instanceof Table) {
+        if (value instanceof Table) {
           this._table = value;
         } else {
           this._externalElements[key][key2] = value;
@@ -104,6 +99,16 @@ export class Instance {
         }
 
         this.exports[exportinst.name] = globalinst.value.toNumber();
+      }
+
+      if (exportinst.value.type === "Memory") {
+        const memoryinst = this._allocator.get(exportinst.value.addr);
+
+        if (memoryinst == null) {
+          throw new RuntimeError("Memory instance has not been instantiated");
+        }
+
+        this.exports[exportinst.name] = memoryinst;
       }
 
       if (this._table != undefined) {
