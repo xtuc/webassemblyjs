@@ -55,13 +55,13 @@ function instantiateImports(
   }
 
   function handleGlobalImport(node: ModuleImport, descr: GlobalType) {
-    const element = getExternalElementOrThrow(node.module, node.name);
-    const isMutable = descr.mutability === "var";
 
     // Validation: The mutability of globaltype must be const.
-    if (isMutable === true) {
+    if (descr.mutability === "var") {
       throw new CompileError("Mutable globals cannot be imported");
     }
+
+    const element = getExternalElementOrThrow(node.module, node.name);
 
     const externglobalinstance = externvalue.createGlobalInstance(
       new i32(element),
