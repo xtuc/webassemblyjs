@@ -1,6 +1,11 @@
-==========================
-Notice for brodybits/leb
-==========================
+---
+title: Thirdparty licences
+id: contrib-thirdparty-licenses
+---
+
+## Notice for brodybits/leb
+
+```
 
 Copyright 2012 The Obvious Corporation.
 http://obvious.com/
@@ -197,10 +202,11 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
 END OF TERMS AND CONDITIONS
 
+```
 
-==========================
-Notice for feross/ieee754
-==========================
+## Notice for feross/ieee754
+
+```
 
 Copyright (c) 2008, Fair Oaks Labs, Inc.
 All rights reserved.
@@ -231,9 +237,11 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-==========================
-Notice for maurobringolf/webassembly-floating-point-hex-parser
-==========================
+```
+
+## Notice for maurobringolf/webassembly-floating-point-hex-parser
+
+```
 
 MIT License
 
@@ -256,3 +264,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+```

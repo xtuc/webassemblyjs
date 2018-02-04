@@ -1,4 +1,7 @@
-# WAST vs WATF
+---
+title: WAST vs WATF
+id: contrib-watf-vs-wast
+---
 
 ## `.wat`
 
