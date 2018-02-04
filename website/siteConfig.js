@@ -1,7 +1,7 @@
 const siteConfig = {
   title: "WebAssembly interpreter",
   tagline: "WebAssembly interpreter",
-  cname: "https://webassembly.js.org/",
+  cname: "webassembly.js.org",
   copyright: "Sven Sauleau",
   url: "https://webassembly.js.org/",
   baseUrl: "/",
