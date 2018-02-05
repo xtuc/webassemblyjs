@@ -682,7 +682,7 @@ export function executeStackFrame(
         const globaladdr = frame.originatingModule.globaladdrs[index.value];
 
         if (typeof globaladdr === "undefined") {
-          throw new RuntimeError(`Global address ${index.value} not found`);
+          throw new RuntimeError(`Unknown global at index: ${index.value}`);
         }
 
         // 4. Assert: due to validation, S.globals[a] exists.

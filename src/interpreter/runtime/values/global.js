@@ -25,7 +25,10 @@ export function createInstance(
   // Validate the type
   const resultInferedType = getType(node.init);
 
-  if (node.globalType.valtype !== resultInferedType) {
+  if (
+    resultInferedType !== undefined &&
+    node.globalType.valtype !== resultInferedType
+  ) {
     throw new CompileError("type mismatch");
   }
 

@@ -11,6 +11,11 @@ export function getType(instrs: Array<Instruction>): ?string {
     return last.object;
   }
 
+  // Can't infer it, need to interpreter it
+  if (last.id === "get_global") {
+    return;
+  }
+
   if (last.id === "Loop" && last.resulttype != null) {
     return last.resulttype;
   }
