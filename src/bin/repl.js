@@ -10,14 +10,35 @@ const { Instance } = require("../interpreter");
 const partialEvaluation = require("../interpreter/partial-evaluation");
 const { Memory } = require("../interpreter/runtime/values/memory");
 const { createAllocator } = require("../interpreter/kernel/memory");
+const { decode } = require("../compiler/parsing/wasm/decoder");
 
 const isVerbose = process.argv.find(x => x === "--debug") !== undefined;
 
-function binaryModuleToModule(node /*: BinaryModule */) {
-  const raw = node.blob.join('');
-  const chars = raw.split('');
+function decodeBinaryModule(node /*: BinaryModule */) {
+  const raw = node.blob.join("");
+  const chars = raw.split("");
 
-  console.log(chars);
+  const out = [];
+
+  for (let i = 0; i < chars.length; i++) {
+    const e = chars[i];
+
+    if (e === "\\") {
+      // Start espace sequence
+      const byte = chars[i + 1] + chars[i + 2];
+      const hexInNumber = parseInt(byte, 16);
+
+      out.push(hexInNumber);
+
+      i = i + 2;
+    } else {
+      // ASCII
+      const hexInNumber = Number(chars[i].charCodeAt(0));
+      out.push(hexInNumber);
+    }
+  }
+
+  decode(out);
 }
 
 /**
@@ -30,7 +51,15 @@ function assert_malformed(node) {
   const [module, expected] = node.args;
 
   if (module.type === "BinaryModule") {
-    binaryModuleToModule(module);
+    try {
+      decodeBinaryModule(module);
+      assert(false, `module is valid, expected malformed (${expected.value})`);
+    } catch (err) {
+      assert(
+        new RegExp(expected.value, "ig").test(err.message),
+        `Expected failure of "${expected.value}", "${err.message}" given`
+      );
+    }
   } else {
     throw new Error("Unsupported module type: " + module.type);
   }
