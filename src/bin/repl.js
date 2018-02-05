@@ -13,9 +13,28 @@ const { createAllocator } = require("../interpreter/kernel/memory");
 
 const isVerbose = process.argv.find(x => x === "--debug") !== undefined;
 
+function binaryModuleToModule(node /*: BinaryModule */) {
+  const raw = node.blob.join('');
+  const chars = raw.split('');
+
+  console.log(chars);
+}
+
 /**
  * Assert helpers
  */
+
+// ;; assert module cannot be decoded with given failure string
+// ( assert_malformed <module> <failure> )
+function assert_malformed(node) {
+  const [module, expected] = node.args;
+
+  if (module.type === "BinaryModule") {
+    binaryModuleToModule(module);
+  } else {
+    throw new Error("Unsupported module type: " + module.type);
+  }
+}
 
 // assert module traps on instantiation
 // ( assert_trap <module> <failure> )
@@ -244,11 +263,11 @@ function replEval(input) {
     }
 
     if (node.id === "assert_trap") {
-      assert_trap(node);
+      return assert_trap(node);
     }
 
     if (node.id === "assert_malformed") {
-      throw new Error("assert_malformed: not implemented yet");
+      return assert_malformed(node);
     }
 
     if (node.id === "assert_malformed") {
