@@ -14,12 +14,13 @@ const siteConfig = {
     }
   ],
   colors: {
-    primaryColor: '#2E8555',
-    secondaryColor: '#205C3B',
+    primaryColor: "#2E8555",
+    secondaryColor: "#205C3B"
   },
   highlight: {
     theme: "default"
-  }
+  },
+  stylesheets: ["/css/custom.css"]
 };
 
 module.exports = siteConfig;
