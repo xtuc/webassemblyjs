@@ -4,10 +4,7 @@
 
 This is meant to be a polyfill entirely written in JavaScript.
 
-## Examples
-
-- [add WebAssembly Text Format](https://webassembly.js.org/examples/add-watf.html)
-- [add WebAssembly Binary Format](https://webassembly.js.org/examples/add-wasm.html)
+See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 
 ## Licence
 
