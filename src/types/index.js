@@ -41,6 +41,12 @@ type FuncInstance = {
   isExternal: boolean
 };
 
+type GlobalInstance = {
+  type: Valtype,
+  mutability: Mutability,
+  value: ?NumericOperations<*>
+};
+
 type ModuleInstance = {
   types: any,
 

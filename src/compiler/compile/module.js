@@ -1,11 +1,7 @@
 // @flow
 
 const { traverse } = require("../AST/traverse");
-const funcResultTypeValidation = require("../validation/func-result-type");
-
-function validateAST(ast: Program) {
-  funcResultTypeValidation.validate(ast);
-}
+import validateAST from "../validation";
 
 export class Module {
   _ast: Program;

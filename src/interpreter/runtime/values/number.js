@@ -91,7 +91,7 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
   }
 
   toString(): string {
-    return this._value.toString();
+    return this.toNumber().toString();
   }
 
   toByteArray(): Array<number> {

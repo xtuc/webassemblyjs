@@ -213,12 +213,12 @@ type FuncImportDescr = {
 
 type ImportDescr = FuncImportDescr | GlobalType;
 
-interface ModuleImport {
-  type: "ModuleImport";
-  module: string;
-  name: string;
-  descr: ImportDescr;
-}
+type ModuleImport = {
+  type: "ModuleImport",
+  module: string,
+  name: string,
+  descr: ImportDescr
+};
 
 type Table = Node & {
   type: "Table",

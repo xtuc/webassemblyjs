@@ -636,13 +636,24 @@ export function executeStackFrame(
 
       case "set_global": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-set-global
-        const index = instruction.args[0];
+        const [index, right] = instruction.args;
+
+        // Interpret right branch first if it's a child instruction
+        if (typeof right !== "undefined") {
+          const res = createAndExecuteChildStackFrame([right]);
+
+          if (isTrapped(res)) {
+            return res;
+          }
+
+          pushResult(res);
+        }
 
         // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
-        const globaladdr = frame.originatingModule.globaladdrs[index];
+        const globaladdr = frame.originatingModule.globaladdrs[index.value];
 
         if (typeof globaladdr === "undefined") {
-          throw new RuntimeError(`Global address ${index} not found`);
+          throw new RuntimeError(`Global address ${index.value} not found`);
         }
 
         // 4. Assert: due to validation, S.globals[a] exists.
@@ -668,10 +679,10 @@ export function executeStackFrame(
         const index = instruction.args[0];
 
         // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
-        const globaladdr = frame.originatingModule.globaladdrs[index];
+        const globaladdr = frame.originatingModule.globaladdrs[index.value];
 
         if (typeof globaladdr === "undefined") {
-          throw new RuntimeError(`Global address ${index} not found`);
+          throw new RuntimeError(`Unknown global at index: ${index.value}`);
         }
 
         // 4. Assert: due to validation, S.globals[a] exists.

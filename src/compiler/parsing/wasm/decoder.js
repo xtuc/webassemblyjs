@@ -828,7 +828,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     dump([globalTypeByte], "global type");
 
     if (typeof globalType === "undefined") {
-      throw new CompileError("Unknown global type: " + toHex(globalTypeByte));
+      throw new CompileError("Invalid mutability: " + toHex(globalTypeByte));
     }
 
     return t.globalType(type, globalType);

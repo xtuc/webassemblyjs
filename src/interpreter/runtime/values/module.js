@@ -2,58 +2,101 @@
 import { Memory } from "./memory";
 import { RuntimeError } from "../../../errors";
 
-const importObjectUtils = require("../../import-object");
 const { traverse } = require("../../../compiler/AST/traverse");
 const func = require("./func");
+const externvalue = require("./extern");
 const global = require("./global");
 const { LinkError, CompileError } = require("../../../errors");
+const { i32 } = require("./i32");
 
-export function createInstance(
-  allocator: Allocator,
+/**
+ * Create Module's import instances
+ *
+ * > the indices of imports go before the first index of any definition
+ * > contained in the module itself.
+ * see https://webassembly.github.io/spec/core/syntax/modules.html#imports
+ */
+function instantiateImports(
   n: Module,
-  externalFunctions: any = {}
-): ModuleInstance {
-  // Keep a ref to the module instance
-  const moduleInstance = {
-    types: [],
-    funcaddrs: [],
-    tableaddrs: [],
-    memaddrs: [],
-    globaladdrs: [],
-    exports: []
-  };
-
-  /**
-   * Keep the function that were instantiated and re-use their addr in
-   * the export wrapper
-   */
-  const instantiatedFuncs = {};
-  const instantiatedGlobals = {};
-  const instantiatedTables = {};
-  const instantiatedMemories = {};
-
-  function assertNotAlreadyExported(str) {
-    const moduleInstanceExport = moduleInstance.exports.find(
-      ({ name }) => name === str
-    );
-
-    if (moduleInstanceExport !== undefined) {
-      throw new CompileError("Duplicate export name");
+  allocator: Allocator,
+  externalElements: Object,
+  internals: Object,
+  moduleInstance: ModuleInstance
+) {
+  function getExternalElementOrThrow(key: string, key2: string): any {
+    if (
+      typeof externalElements[key] === "undefined" ||
+      typeof externalElements[key][key2] === "undefined"
+    ) {
+      throw new CompileError(`Unknown import ${key}.${key2}`);
     }
+
+    return externalElements[key][key2];
   }
 
-  importObjectUtils.walk(externalFunctions, (key, key2, jsfunc) => {
-    const funcinstance = func.createExternalInstance(jsfunc);
+  function handleFuncImport(node: ModuleImport, descr: FuncImportDescr) {
+    const element = getExternalElementOrThrow(node.module, node.name);
 
-    const addr = allocator.malloc(1 /* size of the funcinstance struct */);
-    allocator.set(addr, funcinstance);
+    const params = descr.params != null ? descr.params : [];
+    const results = descr.results != null ? descr.results : [];
 
-    instantiatedFuncs[`${key}_${key2}`] = addr;
+    const externFuncinstance = externvalue.createFuncInstance(
+      element,
+      params,
+      results
+    );
+
+    const externFuncinstanceAddr = allocator.malloc(
+      1 /* sizeof externFuncinstance */
+    );
+    allocator.set(externFuncinstanceAddr, externFuncinstance);
+
+    moduleInstance.funcaddrs.push(externFuncinstanceAddr);
+  }
+
+  function handleGlobalImport(node: ModuleImport, descr: GlobalType) {
+    // Validation: The mutability of globaltype must be const.
+    if (descr.mutability === "var") {
+      throw new CompileError("Mutable globals cannot be imported");
+    }
+
+    const element = getExternalElementOrThrow(node.module, node.name);
+
+    const externglobalinstance = externvalue.createGlobalInstance(
+      new i32(element),
+      descr.valtype,
+      descr.mutability
+    );
+
+    const addr = allocator.malloc(1 /* size of the globalinstance struct */);
+    allocator.set(addr, externglobalinstance);
+
+    moduleInstance.globaladdrs.push(addr);
+  }
+
+  traverse(n, {
+    ModuleImport({ node }: NodePath<ModuleImport>) {
+      switch (node.descr.type) {
+        case "FuncImportDescr":
+          return handleFuncImport(node, node.descr);
+        case "GlobalType":
+          return handleGlobalImport(node, node.descr);
+        default:
+          throw new Error("Unsupported import of type: " + node.descr.type);
+      }
+    }
   });
+}
 
-  /**
-   * Instantiate the function in the module
-   */
+/**
+ * Create Module's internal elements instances
+ */
+function instantiateInternals(
+  n: Module,
+  allocator: Allocator,
+  internals: Object,
+  moduleInstance: ModuleInstance
+) {
   traverse(n, {
     Func({ node }: NodePath<Func>) {
       // Only instantiate/allocate our own functions
@@ -70,7 +113,7 @@ export function createInstance(
 
       if (node.name != null) {
         if (node.name.type === "Identifier") {
-          instantiatedFuncs[node.name.value] = addr;
+          internals.instantiatedFuncs[node.name.value] = addr;
         }
       }
     },
@@ -86,7 +129,7 @@ export function createInstance(
 
       if (node.name != null) {
         if (node.name.type === "Identifier") {
-          instantiatedTables[node.name.value] = addr;
+          internals.instantiatedTables[node.name.value] = addr;
         }
       }
     },
@@ -117,7 +160,7 @@ export function createInstance(
 
       if (node.id != null) {
         if (node.id.type === "Identifier") {
-          instantiatedMemories[node.id.value] = addr;
+          internals.instantiatedMemories[node.id.value] = addr;
         }
       }
     },
@@ -132,46 +175,36 @@ export function createInstance(
 
       if (node.name != null) {
         if (node.name.type === "Identifier") {
-          instantiatedGlobals[node.name.value] = {
+          internals.instantiatedGlobals[node.name.value] = {
             addr,
             type: node.globalType
           };
         }
       }
-    },
-
-    ModuleImport({ node }: NodePath<ModuleImport>) {
-      const instantiatedFuncAddr =
-        instantiatedFuncs[`${node.module}_${node.name}`];
-
-      if (node.descr.type === "FuncImportDescr") {
-        if (typeof instantiatedFuncAddr === "undefined") {
-          throw new Error(
-            "Can not import function " +
-              node.name +
-              " was not declared or instantiated"
-          );
-        }
-
-        /**
-         * Add missing type informations:
-         * - params
-         * - results
-         */
-        const func = allocator.get(instantiatedFuncAddr);
-
-        if (node.descr.params != null && node.descr.results != null) {
-          func.type = [node.descr.params, node.descr.results];
-        }
-
-        allocator.set(func, instantiatedFuncAddr);
-
-        moduleInstance.funcaddrs.push(instantiatedFuncAddr);
-      } else {
-        throw new Error("Unsupported import of type: " + node.descr.type);
-      }
     }
   });
+}
+
+/**
+ * Create Module's exports instances
+ *
+ * The `internals` argument reference already instantiated elements
+ */
+function instantiateExports(
+  n: Module,
+  allocator: Allocator,
+  internals: Object,
+  moduleInstance: ModuleInstance
+) {
+  function assertNotAlreadyExported(str) {
+    const moduleInstanceExport = moduleInstance.exports.find(
+      ({ name }) => name === str
+    );
+
+    if (moduleInstanceExport !== undefined) {
+      throw new CompileError("Duplicate export name");
+    }
+  }
 
   traverse(n, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
@@ -200,9 +233,10 @@ export function createInstance(
 
         // Referenced by its identifier
         if (node.descr.id.type === "Identifier") {
-          const instantiatedFuncAddr = instantiatedFuncs[node.descr.id.value];
+          const instantiatedFuncAddr =
+            internals.instantiatedFuncs[node.descr.id.value];
 
-          if (typeof instantiatedFuncs === "undefined") {
+          if (typeof instantiatedFuncAddr === "undefined") {
             throw new Error(
               "Cannot create exportinst: function " +
                 node.descr.id.value +
@@ -234,6 +268,12 @@ export function createInstance(
             throw new CompileError("Unknown global");
           }
 
+          const globalinst = allocator.get(globalinstaddr);
+
+          if (globalinst.mutability === "var") {
+            throw new CompileError("Mutable globals cannot be exported");
+          }
+
           const externalVal = {
             type: node.descr.type,
             addr: globalinstaddr
@@ -248,7 +288,8 @@ export function createInstance(
 
         // Referenced by its identifier
         if (node.descr.id.type === "Identifier") {
-          const instantiatedGlobal = instantiatedGlobals[node.descr.id.value];
+          const instantiatedGlobal =
+            internals.instantiatedGlobals[node.descr.id.value];
 
           if (instantiatedGlobal.type.mutability === "var") {
             throw new CompileError("Mutable globals cannot be exported");
@@ -274,7 +315,8 @@ export function createInstance(
       if (node.descr.type === "Table") {
         // Referenced by its identifier
         if (node.descr.id.type === "Identifier") {
-          const instantiatedTable = instantiatedTables[node.descr.id.value];
+          const instantiatedTable =
+            internals.instantiatedTables[node.descr.id.value];
 
           const externalVal = {
             type: node.descr.type,
@@ -314,7 +356,8 @@ export function createInstance(
       if (node.descr.type === "Memory") {
         // Referenced by its identifier
         if (node.descr.id.type === "Identifier") {
-          const instantiatedMemory = instantiatedMemories[node.descr.id.value];
+          const instantiatedMemory =
+            internals.instantiatedMemories[node.descr.id.value];
 
           const externalVal = {
             type: node.descr.type,
@@ -352,6 +395,45 @@ export function createInstance(
       }
     }
   });
+}
+
+export function createInstance(
+  allocator: Allocator,
+  n: Module,
+  externalElements: any = {}
+): ModuleInstance {
+  // Keep a ref to the module instance
+  const moduleInstance = {
+    types: [],
+    funcaddrs: [],
+    tableaddrs: [],
+    memaddrs: [],
+    globaladdrs: [],
+    exports: []
+  };
+
+  /**
+   * Keep the function that were instantiated and re-use their addr in
+   * the export wrapper
+   */
+  const instantiatedInternals = {
+    instantiatedFuncs: {},
+    instantiatedGlobals: {},
+    instantiatedTables: {},
+    instantiatedMemories: {}
+  };
+
+  instantiateImports(
+    n,
+    allocator,
+    externalElements,
+    instantiatedInternals,
+    moduleInstance
+  );
+
+  instantiateInternals(n, allocator, instantiatedInternals, moduleInstance);
+
+  instantiateExports(n, allocator, instantiatedInternals, moduleInstance);
 
   return moduleInstance;
 }
