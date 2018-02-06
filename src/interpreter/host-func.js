@@ -5,8 +5,8 @@ const {
 } = require("./runtime/castIntoStackLocalOfType");
 const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");
-const { isTrapped } = require("./kernel/signals");
 const { RuntimeError } = require("../errors");
+const { ExecutionHasBeenTrapped } = require("./kernel/signals");
 
 export function createHostfunc(
   moduleinst: ModuleInstance,
@@ -92,14 +92,18 @@ export function createHostfunc(
     //   'v:' + i.id,
     // );
 
-    const res = executeStackFrame(stackFrame);
+    try {
+      const res = executeStackFrame(stackFrame);
 
-    if (isTrapped(res)) {
-      throw new RuntimeError("Execution has been trapped");
-    }
-
-    if (res != null && res.value != null) {
-      return res.value.toNumber();
+      if (res != null && res.value != null) {
+        return res.value.toNumber();
+      }
+    } catch (e) {
+      if (e instanceof ExecutionHasBeenTrapped) {
+        throw e;
+      } else {
+        throw new RuntimeError(e.message);
+      }
     }
   };
 }

@@ -1,6 +1,6 @@
 // @flow
 
-const TRAP = 0x0;
+export class ExecutionHasBeenTrapped extends Error {}
 
 /**
  * Trap: signalling abrupt termination
@@ -8,14 +8,8 @@ const TRAP = 0x0;
  *
  * It triggered using the `trap` instruction
  */
-export function createTrap(): StackLocal {
-  return { value: TRAP, type: "Signal" };
-}
-
-export function isTrapped(v: ?StackLocal): boolean {
-  if (v == null) {
-    return false;
-  }
-
-  return v.value === TRAP;
+export function createTrap(
+  reason?: string = "Execution has been trapped"
+): StackLocal {
+  throw new ExecutionHasBeenTrapped(reason);
 }

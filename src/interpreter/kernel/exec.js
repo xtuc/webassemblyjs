@@ -16,7 +16,7 @@ const f32 = require("../runtime/values/f32");
 const f64 = require("../runtime/values/f64");
 const label = require("../runtime/values/label");
 const { createChildStackFrame } = require("./stackframe");
-const { createTrap, isTrapped } = require("./signals");
+const { createTrap } = require("./signals");
 const { RuntimeError } = require("../../errors");
 const t = require("../../compiler/AST");
 
@@ -292,10 +292,6 @@ export function executeStackFrame(
 
           const res = executeStackFrame(childStackFrame, depth + 1);
 
-          if (isTrapped(res)) {
-            return res;
-          }
-
           if (typeof res !== "undefined") {
             pushResult(res);
           }
@@ -371,10 +367,6 @@ export function executeStackFrame(
 
             const res = executeStackFrame(childStackFrame, depth + 1);
 
-            if (isTrapped(res)) {
-              return res;
-            }
-
             if (typeof res !== "undefined") {
               pushResult(res);
             }
@@ -414,10 +406,6 @@ export function executeStackFrame(
           childStackFrame.trace = frame.trace;
 
           const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (isTrapped(res)) {
-            return res;
-          }
 
           if (typeof res !== "undefined") {
             pushResult(res);
@@ -462,10 +450,6 @@ export function executeStackFrame(
           // 3. a. Execute the instruction (br l).
           const res = br(label);
 
-          if (isTrapped(res)) {
-            return res;
-          }
-
           if (typeof res !== "undefined") {
             pushResult(res);
           }
@@ -492,10 +476,6 @@ export function executeStackFrame(
 
         const res = executeStackFrame(childStackFrame, depth + 1);
 
-        if (isTrapped(res)) {
-          return res;
-        }
-
         if (res != null && !res.value.eqz().isTrue()) {
           /**
            * Execute consequent
@@ -507,10 +487,6 @@ export function executeStackFrame(
           childStackFrame.trace = frame.trace;
 
           const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (isTrapped(res)) {
-            return res;
-          }
 
           if (typeof res !== "undefined") {
             pushResult(res);
@@ -529,10 +505,6 @@ export function executeStackFrame(
           childStackFrame.trace = frame.trace;
 
           const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (isTrapped(res)) {
-            return res;
-          }
 
           if (typeof res !== "undefined") {
             pushResult(res);
@@ -594,10 +566,6 @@ export function executeStackFrame(
 
           const res = executeStackFrame(childStackFrame, depth + 1);
 
-          if (isTrapped(res)) {
-            return res;
-          }
-
           if (res != null) {
             setLocalByIndex(index.value, res);
           }
@@ -630,10 +598,6 @@ export function executeStackFrame(
           childStackFrame.trace = frame.trace;
 
           const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (isTrapped(res)) {
-            return res;
-          }
 
           if (res != null) {
             setLocalByIndex(index.value, res);
@@ -675,10 +639,6 @@ export function executeStackFrame(
         // Interpret right branch first if it's a child instruction
         if (typeof right !== "undefined") {
           const res = createAndExecuteChildStackFrame([right]);
-
-          if (isTrapped(res)) {
-            return res;
-          }
 
           pushResult(res);
         }
@@ -737,10 +697,6 @@ export function executeStackFrame(
 
         if (args.length > 0) {
           const res = createAndExecuteChildStackFrame(args);
-
-          if (isTrapped(res)) {
-            return res;
-          }
 
           pushResult(res);
         }
@@ -936,20 +892,12 @@ export function executeStackFrame(
         if (typeof left !== "undefined") {
           const res = createAndExecuteChildStackFrame([left]);
 
-          if (isTrapped(res)) {
-            return res;
-          }
-
           pushResult(res);
         }
 
         // Interpret right branch first if it's a child instruction
         if (typeof right !== "undefined") {
           const res = createAndExecuteChildStackFrame([right]);
-
-          if (isTrapped(res)) {
-            return res;
-          }
 
           pushResult(res);
         }
@@ -1004,10 +952,6 @@ export function executeStackFrame(
         // Interpret argument first if it's a child instruction
         if (typeof operand !== "undefined") {
           const res = createAndExecuteChildStackFrame([operand]);
-
-          if (isTrapped(res)) {
-            return res;
-          }
 
           pushResult(res);
         }
