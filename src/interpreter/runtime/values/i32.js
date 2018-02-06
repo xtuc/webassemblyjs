@@ -286,6 +286,20 @@ export class i32 implements IntegerValue<i32> {
     }
     return byteArray;
   }
+
+  static fromArrayBuffer(
+    buffer: ArrayBuffer,
+    ptr: number,
+    extend: number,
+    signed: number
+  ): i32 {
+    const slice = buffer.slice(ptr, ptr + 4);
+    let asInt32 = new Int32Array(slice)[0];
+    // shift left, then shift right by the same number of bits, using
+    // signed or unsigned shifts
+    asInt32 <<= extend;
+    return new i32(signed ? asInt32 >> extend : asInt32 >>> extend);
+  }
 }
 
 export function createValueFromAST(value: number): StackLocal {
@@ -299,5 +313,17 @@ export function createValue(value: i32): StackLocal {
   return {
     type,
     value
+  };
+}
+
+export function createValueFromArrayBuffer(
+  buffer: ArrayBuffer,
+  ptr: number,
+  extend: number,
+  signed: number
+): StackLocal {
+  return {
+    type,
+    value: i32.fromArrayBuffer(buffer, ptr, extend, signed)
   };
 }
