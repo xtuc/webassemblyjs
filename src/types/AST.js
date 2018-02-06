@@ -1,10 +1,6 @@
 // @flow
 
-import type { i32 } from "../interpreter/runtime/values/i32";
-
-type U32Literal = NumberLiteral & {
-  value: NumericOperations<i32>
-};
+type U32Literal = NumberLiteral;
 
 type Typeidx = U32Literal;
 type Funcidx = U32Literal;
