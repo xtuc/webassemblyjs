@@ -45,7 +45,8 @@ export function executeStackFrame(
     const childStackFrame = createChildStackFrame(frame, instrs);
     childStackFrame.trace = frame.trace;
 
-    return executeStackFrame(childStackFrame, depth + 1);
+    const res = executeStackFrame(childStackFrame, depth + 1);
+    pushResult(res);
   }
 
   function getLocalByIndex(index: number) {
@@ -67,7 +68,7 @@ export function executeStackFrame(
   }
 
   function pushResult(res: ?StackLocal) {
-    if (res == null) {
+    if (typeof res === "undefined") {
       return;
     }
 
@@ -287,14 +288,7 @@ export function executeStackFrame(
         });
 
         if (loop.instr.length > 0) {
-          const childStackFrame = createChildStackFrame(frame, loop.instr);
-          childStackFrame.trace = frame.trace;
-
-          const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (typeof res !== "undefined") {
-            pushResult(res);
-          }
+          createAndExecuteChildStackFrame(loop.instr);
         }
 
         break;
@@ -359,17 +353,7 @@ export function executeStackFrame(
           const args = popArrayOfValTypes(argTypes);
 
           if (subroutine.isExternal === false) {
-            const childStackFrame = createChildStackFrame(
-              frame,
-              subroutine.code
-            );
-            childStackFrame.values = args.map(arg => arg.value);
-
-            const res = executeStackFrame(childStackFrame, depth + 1);
-
-            if (typeof res !== "undefined") {
-              pushResult(res);
-            }
+            createAndExecuteChildStackFrame(subroutine.code);
           } else {
             const res = subroutine.code(args.map(arg => arg.value));
 
@@ -402,15 +386,11 @@ export function executeStackFrame(
         );
 
         if (block.instr.length > 0) {
-          const childStackFrame = createChildStackFrame(frame, block.instr);
-          childStackFrame.trace = frame.trace;
+          const oldStackSize = frame.values.length;
+          createAndExecuteChildStackFrame(block.instr);
 
-          const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (typeof res !== "undefined") {
-            pushResult(res);
-            numberOfValuesAddedOnTopOfTheStack++;
-          }
+          numberOfValuesAddedOnTopOfTheStack =
+            frame.values.length - oldStackSize;
         }
 
         /**
@@ -450,9 +430,7 @@ export function executeStackFrame(
           // 3. a. Execute the instruction (br l).
           const res = br(label);
 
-          if (typeof res !== "undefined") {
-            pushResult(res);
-          }
+          pushResult(res);
         } else {
           // 4. Else:
           // 4. a. Do nothing.
@@ -471,26 +449,15 @@ export function executeStackFrame(
           throw new RuntimeError("IfInstruction: Label doesn't exist");
         }
 
-        const childStackFrame = createChildStackFrame(frame, code.body);
-        childStackFrame.trace = frame.trace;
+        createAndExecuteChildStackFrame(code.body);
 
-        const res = executeStackFrame(childStackFrame, depth + 1);
+        const res = pop1();
 
-        if (res != null && !res.value.eqz().isTrue()) {
+        if (!res.value.eqz().isTrue()) {
           /**
            * Execute consequent
            */
-          const childStackFrame = createChildStackFrame(
-            frame,
-            instruction.consequent
-          );
-          childStackFrame.trace = frame.trace;
-
-          const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (typeof res !== "undefined") {
-            pushResult(res);
-          }
+          createAndExecuteChildStackFrame(instruction.consequent);
         } else if (
           typeof instruction.alternate !== "undefined" &&
           instruction.alternate.length > 0
@@ -498,17 +465,7 @@ export function executeStackFrame(
           /**
            * Execute alternate
            */
-          const childStackFrame = createChildStackFrame(
-            frame,
-            instruction.alternate
-          );
-          childStackFrame.trace = frame.trace;
-
-          const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (typeof res !== "undefined") {
-            pushResult(res);
-          }
+          createAndExecuteChildStackFrame(instruction.alternate);
         }
 
         break;
@@ -561,14 +518,10 @@ export function executeStackFrame(
         if (typeof init !== "undefined" && init.type === "Instr") {
           // WAST
 
-          const childStackFrame = createChildStackFrame(frame, [init]);
-          childStackFrame.trace = frame.trace;
+          createAndExecuteChildStackFrame([init]);
 
-          const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (res != null) {
-            setLocalByIndex(index.value, res);
-          }
+          const res = pop1();
+          setLocalByIndex(index.value, res);
         } else if (index.type === "NumberLiteral") {
           // WASM
 
@@ -594,14 +547,10 @@ export function executeStackFrame(
         if (typeof init !== "undefined" && init.type === "Instr") {
           // WAST
 
-          const childStackFrame = createChildStackFrame(frame, [init]);
-          childStackFrame.trace = frame.trace;
+          createAndExecuteChildStackFrame([init]);
 
-          const res = executeStackFrame(childStackFrame, depth + 1);
-
-          if (res != null) {
-            setLocalByIndex(index.value, res);
-          }
+          const res = pop1();
+          setLocalByIndex(index.value, res);
 
           pushResult(res);
         } else if (index.type === "NumberLiteral") {
@@ -638,9 +587,7 @@ export function executeStackFrame(
 
         // Interpret right branch first if it's a child instruction
         if (typeof right !== "undefined") {
-          const res = createAndExecuteChildStackFrame([right]);
-
-          pushResult(res);
+          createAndExecuteChildStackFrame([right]);
         }
 
         // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
@@ -696,9 +643,7 @@ export function executeStackFrame(
         const { args } = instruction;
 
         if (args.length > 0) {
-          const res = createAndExecuteChildStackFrame(args);
-
-          pushResult(res);
+          createAndExecuteChildStackFrame(args);
         }
 
         // Abort execution and return the first item on the stack
@@ -890,16 +835,12 @@ export function executeStackFrame(
 
         // Interpret left branch first if it's a child instruction
         if (typeof left !== "undefined") {
-          const res = createAndExecuteChildStackFrame([left]);
-
-          pushResult(res);
+          createAndExecuteChildStackFrame([left]);
         }
 
         // Interpret right branch first if it's a child instruction
         if (typeof right !== "undefined") {
-          const res = createAndExecuteChildStackFrame([right]);
-
-          pushResult(res);
+          createAndExecuteChildStackFrame([right]);
         }
 
         const [c1, c2] = pop2(instruction.object, instruction.object);
@@ -951,9 +892,7 @@ export function executeStackFrame(
 
         // Interpret argument first if it's a child instruction
         if (typeof operand !== "undefined") {
-          const res = createAndExecuteChildStackFrame([operand]);
-
-          pushResult(res);
+          createAndExecuteChildStackFrame([operand]);
         }
 
         const c = pop1OfType(opType);
