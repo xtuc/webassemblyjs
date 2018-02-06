@@ -148,3 +148,5 @@ interface TableInstance {
   get(number): ?Hostfunc;
   push(Hostfunc): void;
 }
+
+type SignatureMap = { [string]: string } | [string, string];

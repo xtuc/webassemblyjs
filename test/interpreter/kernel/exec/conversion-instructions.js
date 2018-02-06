@@ -15,6 +15,22 @@ const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
 
+/*::
+type TestCase = {
+  name: string,
+
+  args: Array<{
+    value: any,
+    type: string,
+    nan?: boolean,
+    inf?: boolean
+  }>,
+
+  code: Array<Node>,
+  resEqual: any
+};
+*/
+
 describe("kernel exec - conversion instructions", () => {
   const operations = [
     {
@@ -220,7 +236,7 @@ describe("kernel exec - conversion instructions", () => {
     }
   ];
 
-  operations.forEach(op => {
+  operations.forEach((op /*: TestCase */) => {
     describe(op.name, () => {
       it("should get the correct result", () => {
         const args = op.args.map(({ value, type, nan, inf }) =>

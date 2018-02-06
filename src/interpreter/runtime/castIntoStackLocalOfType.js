@@ -19,12 +19,12 @@ export function castIntoStackLocalOfType(
     f64: f64.createValueFromAST
   };
 
-  if (nan) {
+  if (nan === true) {
     castFn.f32 = f32.createNanFromAST;
     castFn.f64 = f64.createNanFromAST;
   }
 
-  if (inf) {
+  if (inf === true) {
     castFn.f32 = f32.createInfFromAST;
     castFn.f64 = f64.createInfFromAST;
   }
