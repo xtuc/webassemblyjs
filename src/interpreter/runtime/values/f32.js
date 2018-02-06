@@ -101,3 +101,13 @@ export function createValue(value: f32): StackLocal {
     value
   };
 }
+
+export function createValueFromArrayBuffer(
+  buffer: ArrayBuffer,
+  ptr: number
+): StackLocal {
+  return {
+    type,
+    value: f32.fromArrayBuffer(buffer, ptr)
+  };
+}

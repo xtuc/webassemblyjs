@@ -140,7 +140,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
 
-    assert.equal(res, 0x01020304);
+    assert.equal(res.value, 0x01020304);
   });
 
   it("should support i32.load16_s operations", () => {
@@ -164,7 +164,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
 
-    assert.equal(res, -0x0304);
+    assert.equal(res.value, -0x0304);
   });
 
   it("should support i32.load16_u operations", () => {
@@ -188,7 +188,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
 
-    assert.equal(res, 0xfcfc);
+    assert.equal(res.value, 0xfcfc);
   });
 
   it("should support i64.load16_s operations", () => {
@@ -214,7 +214,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
     const expected = new i64(Long.fromString("-0x0708", false, 16));
-    assert.isTrue(res.equals(expected));
+    assert.isTrue(res.value.equals(expected));
   });
 
   it("should support i64.load8_s operations", () => {
@@ -240,7 +240,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
     const expected = new i64(Long.fromString("-0x08", false, 16));
-    assert.isTrue(res.equals(expected));
+    assert.isTrue(res.value.equals(expected));
   });
 
   it("should support i64.load32_s operations", () => {
@@ -266,7 +266,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
     const expected = new i64(Long.fromString("-0x05060708", false, 16));
-    assert.isTrue(res.equals(expected));
+    assert.isTrue(res.value.equals(expected));
   });
 
   it("should support i32.load8_u operations", () => {
@@ -290,7 +290,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
 
-    assert.equal(res, 0xfc);
+    assert.equal(res.value, 0xfc);
   });
 
   it("should support i32.load8_s operations", () => {
@@ -314,7 +314,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
 
-    assert.equal(res, -0x04);
+    assert.equal(res.value, -0x04);
   });
 
   it("should support i64.load operations", () => {
@@ -341,7 +341,7 @@ describe("kernel exec - store / load instructions", () => {
     const res = executeStackFrame(stackFrame);
 
     assert.isTrue(
-      res.equals(new i64(Long.fromString("0102030405060708", false, 16)))
+      res.value.equals(new i64(Long.fromString("0102030405060708", false, 16)))
     );
   });
 
@@ -366,7 +366,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
 
-    assert.equal(res._value, 123.45600128173828);
+    assert.equal(res.value._value, 123.45600128173828);
   });
 
   it("should support f64.load operations", () => {
@@ -390,7 +390,7 @@ describe("kernel exec - store / load instructions", () => {
 
     const res = executeStackFrame(stackFrame);
 
-    assert.equal(res._value, 123.456);
+    assert.equal(res.value._value, 123.456);
   });
 
   it("should not over-write neighbouring bytes when wrapping", () => {
@@ -522,7 +522,7 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
       t.objectInstruction("const", "i32", [t.numberLiteral(25)]),
       t.objectInstruction("store", "i32", [], {
-        offset: 0x4
+        offset: t.numberLiteral(0x4)
       })
     ];
 
@@ -547,7 +547,7 @@ describe("kernel exec - store / load instructions", () => {
         t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
         t.objectInstruction("const", "i32", [t.numberLiteral(25)]),
         t.objectInstruction("store", "i32", [], {
-          offset
+          offset: t.numberLiteral(offset)
         })
       ];
 

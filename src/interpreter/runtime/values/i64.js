@@ -219,3 +219,15 @@ export function createValue(value: i64): StackLocal {
     value
   };
 }
+
+export function createValueFromArrayBuffer(
+  buffer: ArrayBuffer,
+  ptr: number,
+  extend: number,
+  signed: number
+): StackLocal {
+  return {
+    type,
+    value: i64.fromArrayBuffer(buffer, ptr, extend, signed)
+  };
+}

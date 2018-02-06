@@ -10,10 +10,10 @@ const { unopi32, unopi64, unopf32, unopf64 } = require("./instruction/unop");
 const {
   castIntoStackLocalOfType
 } = require("../runtime/castIntoStackLocalOfType");
-const { i32 } = require("../runtime/values/i32");
-const { i64 } = require("../runtime/values/i64");
-const { f32 } = require("../runtime/values/f32");
-const { f64 } = require("../runtime/values/f64");
+const i32 = require("../runtime/values/i32");
+const i64 = require("../runtime/values/i64");
+const f32 = require("../runtime/values/f32");
+const f64 = require("../runtime/values/f64");
 const label = require("../runtime/values/label");
 const { createChildStackFrame } = require("./stackframe");
 const { createTrap, isTrapped } = require("./signals");
@@ -174,7 +174,7 @@ export function executeStackFrame(
 
   function getMemoryOffset(instruction) {
     if (instruction.namedArgs && instruction.namedArgs.offset) {
-      const offset = instruction.namedArgs.offset;
+      const offset = instruction.namedArgs.offset.value;
       if (offset < 0) {
         throw new RuntimeError("offset must be positive");
       }
@@ -834,16 +834,20 @@ export function executeStackFrame(
 
         switch (instruction.object) {
           case "i32":
-            pushResult(i32.fromArrayBuffer(memory.buffer, ptr, extend, signed));
+            pushResult(
+              i32.createValueFromArrayBuffer(memory.buffer, ptr, extend, signed)
+            );
             break;
           case "i64":
-            pushResult(i64.fromArrayBuffer(memory.buffer, ptr, extend, signed));
+            pushResult(
+              i64.createValueFromArrayBuffer(memory.buffer, ptr, extend, signed)
+            );
             break;
           case "f32":
-            pushResult(f32.fromArrayBuffer(memory.buffer, ptr));
+            pushResult(f32.createValueFromArrayBuffer(memory.buffer, ptr));
             break;
           case "f64":
-            pushResult(f64.fromArrayBuffer(memory.buffer, ptr));
+            pushResult(f64.createValueFromArrayBuffer(memory.buffer, ptr));
             break;
         }
         break;

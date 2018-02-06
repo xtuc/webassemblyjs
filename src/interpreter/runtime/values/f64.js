@@ -41,3 +41,13 @@ export function createValue(value: f64): StackLocal {
     value
   };
 }
+
+export function createValueFromArrayBuffer(
+  buffer: ArrayBuffer,
+  ptr: number
+): StackLocal {
+  return {
+    type,
+    value: f64.fromArrayBuffer(buffer, ptr)
+  };
+}
