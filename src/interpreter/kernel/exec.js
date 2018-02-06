@@ -78,11 +78,11 @@ export function executeStackFrame(
     assertNItemsOnStack(frame.values, types.length);
 
     return types.map(type => {
-      return pop1(type);
+      return pop1OfType(type);
     });
   }
 
-  function pop1(type: ?Valtype): any {
+  function pop1OfType(type: Valtype): any {
     assertNItemsOnStack(frame.values, 1);
 
     const v = frame.values.pop();
@@ -97,6 +97,12 @@ export function executeStackFrame(
     }
 
     return v;
+  }
+
+  function pop1(): any {
+    assertNItemsOnStack(frame.values, 1);
+
+    return frame.values.pop();
   }
 
   function pop2(type1: Valtype, type2: Valtype): [any, any] {
@@ -437,7 +443,7 @@ export function executeStackFrame(
           frame.values.length - numberOfValuesAddedOnTopOfTheStack
         );
 
-        pop1("label");
+        pop1OfType("label");
 
         frame.values = [...frame.values, ...topOfTheStack];
 
@@ -449,7 +455,7 @@ export function executeStackFrame(
 
         // 1. Assert: due to validation, a value of type i32 is on the top of the stack.
         // 2. Pop the value ci32.const c from the stack.
-        const c = pop1("i32");
+        const c = pop1OfType("i32");
 
         if (!c.value.eqz().isTrue()) {
           // 3. If c is non-zero, then
@@ -793,7 +799,8 @@ export function executeStackFrame(
       case "load32_u": {
         const memory = getMemory();
 
-        const ptr = pop1("i32").value.toNumber() + getMemoryOffset(instruction);
+        const ptr =
+          pop1OfType("i32").value.toNumber() + getMemoryOffset(instruction);
 
         // for i32 / i64 ops, handle extended load
         let extend = 0;
@@ -1005,7 +1012,7 @@ export function executeStackFrame(
           pushResult(res);
         }
 
-        const c = pop1(opType);
+        const c = pop1OfType(opType);
 
         pushResult(unopFn(c, instruction.id));
 

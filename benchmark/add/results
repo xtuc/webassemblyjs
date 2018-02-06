@@ -1,11 +1,11 @@
 
 Testing interpreted
-total 5384.4593270000 ms
-mean 538.4459327000 ns
+total 4523.7855560000 ms
+mean 452.3785556000 ns
 
 Testing native
-total 219.6237810000 ms
-mean 21.9623781000 ns
+total 216.9711070000 ms
+mean 21.6971107000 ns
 
 Interations: 10000000
 Date: 2018-2-6
