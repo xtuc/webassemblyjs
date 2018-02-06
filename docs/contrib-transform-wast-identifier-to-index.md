@@ -1,4 +1,7 @@
-# wast-identifer-to-index
+---
+title: wast-identifer-to-index transformation
+id: contrib-transform-wast-identifier-to-index
+---
 
 Transforms some WAST semantics into WAT or WASM (actually specs semantics).
 

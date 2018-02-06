@@ -6,7 +6,7 @@ Contributions are always welcome, no matter how large or small.
 
 Feel free to open an issue and/or reach out @xtuc.
 
-## Developing
+## Developing on the interpreter
 
 ### Setup
 
@@ -43,3 +43,22 @@ You can run tests via:
 make test
 ```
 
+## Developing on the website
+
+The website is located in the directory: `website` and uses [docusaurus](https://docusaurus.io).
+
+The following commands will assume that you already are in the directory.
+
+### Setup
+
+```sh
+yarn install
+```
+
+### Start
+
+```sh
+yarn run start
+```
+
+The website will be available at [localhost:3000](http://localhost:3000).
