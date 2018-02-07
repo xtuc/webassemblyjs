@@ -11,4 +11,3 @@ it("should have callable exports", () => {
 
   m.exports.an();
 });
-

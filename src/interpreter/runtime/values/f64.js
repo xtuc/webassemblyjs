@@ -37,11 +37,31 @@ export class f64inf extends f64 {
       upper = upper | 0x80000000;
     }
 
-    return new i64(Long.fromBits(0, upper));
+    return new i64(Long.fromBits(0, upper).toSigned());
   }
 }
 
-export class f64nan extends f64 {}
+export class f64nan extends f64 {
+  reinterpret(): i64 {
+    let lower = 0;
+    let upper = 0;
+
+    // sign bit of _value shifted to position 0
+    if (this._value <= 0) {
+      upper = upper | 0x80000000;
+    }
+
+    // 11-bit exponent shifted to position 1 through 11
+    upper = upper | (0x7ff << 20);
+
+    // 52-bit mantissa which is obtained by disregarding the sign of _value
+    const mantissa = this._value <= 0 ? -this._value : this._value;
+    lower = lower | (mantissa % 2 ** 32);
+    upper = upper | Math.floor(mantissa / 2 ** 32);
+
+    return new i64(Long.fromBits(lower, upper));
+  }
+}
 
 export function createInfFromAST(sign: number): StackLocal {
   return {
