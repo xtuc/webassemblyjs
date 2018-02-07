@@ -29,10 +29,19 @@ export class f64inf extends f64 {
   }
 }
 
+export class f64nan extends f64 {}
+
 export function createInfFromAST(sign: number): StackLocal {
   return {
     type,
     value: new f64inf(sign)
+  };
+}
+
+export function createNanFromAST(payload: number): StackLocal {
+  return {
+    type,
+    value: new f64nan(payload)
   };
 }
 
