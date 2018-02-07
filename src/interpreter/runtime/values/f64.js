@@ -28,6 +28,35 @@ export class f64 extends Float<i64> {
   }
 }
 
+export class f64inf extends f64 {
+  reinterpret(): i64 {
+    // Exponent is all 1's, mantissa is all zeros
+    let upper = 0x7ff << 20;
+
+    if (this._value < 0) {
+      upper = upper | 0x80000000;
+    }
+
+    return new i64(Long.fromBits(0, upper));
+  }
+}
+
+export class f64nan extends f64 {}
+
+export function createInfFromAST(sign: number): StackLocal {
+  return {
+    type,
+    value: new f64inf(sign)
+  };
+}
+
+export function createNanFromAST(payload: number): StackLocal {
+  return {
+    type,
+    value: new f64nan(payload)
+  };
+}
+
 export function createValueFromAST(value: number): StackLocal {
   return {
     type,

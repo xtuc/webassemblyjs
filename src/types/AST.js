@@ -2,6 +2,13 @@
 
 type U32Literal = NumberLiteral;
 
+type FloatLiteral = {
+  type: "FloatLiteral",
+  value: number,
+  nan?: boolean,
+  inf?: boolean
+};
+
 type Typeidx = U32Literal;
 type Funcidx = U32Literal;
 type Tableidx = U32Literal;

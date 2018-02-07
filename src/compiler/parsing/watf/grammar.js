@@ -771,7 +771,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses the arguments of an instruction
      */
-    function parseFuncInstrArguments(signature: ?Array): AllArgs {
+    function parseFuncInstrArguments(signature: ?SignatureMap): AllArgs {
       const args: Array<Expression> = [];
       const namedArgs = {};
       let signaturePtr = 0;
@@ -950,7 +950,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
 
-        const signature = t.signature(object, name);
+        const signature = t.signature(object || "", name);
 
         const { args, namedArgs } = parseFuncInstrArguments(signature);
 

@@ -15,7 +15,7 @@ function assert(cond: boolean) {
   }
 }
 
-export function signature(object: string, name: string): Array {
+export function signature(object: string, name: string): SignatureMap {
   const signatures = {
     "reinterpret/f32": ["f32"]
   };
@@ -243,11 +243,13 @@ export function numberLiteral(
     value
   };
 
-  if (nan) {
+  if (nan === true) {
+    // $FlowIgnore
     x.nan = true;
   }
 
-  if (inf) {
+  if (inf === true) {
+    // $FlowIgnore
     x.inf = true;
   }
 
