@@ -79,7 +79,7 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
     );
   }
 
-  reinterpret(): U {
+  reinterpret(): any {
     throw new RuntimeError("unsupported operation");
   }
 

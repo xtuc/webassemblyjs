@@ -43,6 +43,7 @@ function instantiateImports(
 
     const externFuncinstance = externvalue.createFuncInstance(
       element,
+      // $FlowIgnore
       params,
       results
     );

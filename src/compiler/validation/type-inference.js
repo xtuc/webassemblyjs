@@ -16,7 +16,12 @@ export function getType(instrs: Array<Instruction>): ?string {
     return;
   }
 
-  if (last.id === "Loop" && last.resulttype != null) {
-    return last.resulttype;
+  if (last.id === "Loop") {
+    // $FlowIgnore: if id is `loop` we can assume it's a LoopInstruction
+    const loop: LoopInstruction = last;
+
+    if (loop.resulttype != null) {
+      return loop.resulttype;
+    }
   }
 }
