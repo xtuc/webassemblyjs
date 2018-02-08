@@ -1,8 +1,10 @@
 // @flow
+
 import Long from "long";
 
 import { Float, typedArrayToArray } from "./number";
 import { i64 } from "./i64";
+import type { f32 } from "./f32";
 
 const type = "f64";
 

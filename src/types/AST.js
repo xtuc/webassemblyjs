@@ -2,6 +2,11 @@
 
 type U32Literal = NumberLiteral;
 
+type NumericLiteral =
+  | FloatLiteral
+  | NumberLiteral
+  | LongNumberLiteral
+
 type FloatLiteral = {
   type: "FloatLiteral",
   value: number,
@@ -152,7 +157,15 @@ interface Func {
 /**
  * Instructions
  */
-interface Instruction {
+type Instruction =
+  | LoopInstruction
+  | BlockInstruction
+  | IfInstruction
+  | CallInstruction
+  | GenericInstruction
+  | ObjectInstruction
+
+type GenericInstruction = {
   type: InstructionType;
   id: string;
   args: Array<Expression>;
@@ -161,25 +174,25 @@ interface Instruction {
   namedArgs?: Object;
 }
 
-type ObjectInstruction = Instruction & {
+type ObjectInstruction = GenericInstruction & {
   object: Valtype
 };
 
-type LoopInstruction = Instruction & {
+type LoopInstruction = {
   type: "LoopInstruction",
   label: ?Identifier,
   resulttype: ?Valtype,
   instr: Array<Instruction>
 };
 
-type BlockInstruction = Instruction & {
+type BlockInstruction = {
   type: "BlockInstruction",
   label: ?Identifier,
   instr: Array<Instruction>,
   result: ?Valtype
 };
 
-type IfInstruction = Instruction & {
+type IfInstruction = {
   type: "IfInstruction",
   testLabel: Identifier, // only for WAST
   result: ?Valtype,
@@ -187,7 +200,7 @@ type IfInstruction = Instruction & {
   alternate: Array<Instruction>
 };
 
-type CallInstruction = Instruction & {
+type CallInstruction = {
   type: "CallInstruction",
   index: Index
 };
@@ -244,7 +257,7 @@ type ByteArray = {
 type Data = {
   type: "Data",
   memoryIndex: Index,
-  offset: Array<Node>,
+  offset: Array<Instruction>,
   init: ByteArray
 };
 
