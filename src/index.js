@@ -2,6 +2,7 @@
 
 const { parseSource } = require("./compiler/parsing/watf");
 const { parseBinary } = require("./compiler/parsing/wasm");
+const { printWAST } = require("./compiler/printer/wast");
 const { Instance } = require("./interpreter");
 const { RuntimeError, CompileError, LinkError } = require("./errors");
 const { createCompiledModule, Module } = require("./compiler/compile/module");
@@ -12,6 +13,10 @@ const { traverse } = require("./compiler/AST/traverse");
 const t = require("./compiler/AST/index");
 
 const _debug = {
+  printWAST(ast: Program): string {
+    return printWAST(ast);
+  },
+
   parseWATF(content: string, cb: (ast: Program) => void) {
     const ast = parseSource(content);
 
