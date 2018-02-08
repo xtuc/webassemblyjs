@@ -17,7 +17,7 @@ export const Signatures = {
   drop: [],
   select: [],
 
-  // Variaable Instructions
+  // Variable Instructions
   get_local: ["u32"],
   set_local: ["u32"],
   tee_local: ["u32"],
@@ -57,7 +57,6 @@ export const Signatures = {
   "f32.const": ["f32"],
   "f64.const": ["f64"],
 
-  // Oh boy
   "i32.eqz": [],
   "i32.eq": [],
   "i32.ne": [],
