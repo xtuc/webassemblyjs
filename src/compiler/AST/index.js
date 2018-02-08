@@ -142,7 +142,7 @@ export function objectInstruction(
 
 export function instruction(
   id: string,
-  args: Array<any> = [],
+  args: Array<Expression> = [],
   namedArgs: Object = {}
 ): GenericInstruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
@@ -238,6 +238,7 @@ export function numberLiteral(
   }
 
   // This is a hack to avoid rewriting all tests to have a "isnan: false" field
+  // $FlowIgnore: this is correct, but flow doesn't like mutations like this
   const x: NumericLiteral = {
     type,
     value

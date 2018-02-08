@@ -4,7 +4,6 @@ import Long from "long";
 
 import { Float, typedArrayToArray } from "./number";
 import { i64 } from "./i64";
-import type { f32 } from "./f32";
 
 const type = "f64";
 
@@ -23,7 +22,7 @@ export class f64 extends Float<i64> {
     return typedArrayToArray(new Int8Array(floatArray.buffer));
   }
 
-  static fromArrayBuffer(buffer: ArrayBuffer, ptr: number): f32 {
+  static fromArrayBuffer(buffer: ArrayBuffer, ptr: number): f64 {
     const slice = buffer.slice(ptr, ptr + 8);
     const value = new Float64Array(slice);
     return new f64(value[0]);

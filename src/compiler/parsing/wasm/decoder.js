@@ -745,6 +745,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       if (instructionAlreadyCreated === false) {
         if (typeof instruction.object === "string") {
           code.push(
+            // $FlowIgnore
             t.objectInstruction(instruction.name, instruction.object, args)
           );
         } else {

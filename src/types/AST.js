@@ -53,8 +53,7 @@ type NodePath<T> = {
 
 type Expression =
   | Identifier
-  | NumberLiteral
-  | LongNumberLiteral
+  | NumericLiteral
   | ValtypeLiteral
   | Instruction
   | StringLiteral;
