@@ -15,7 +15,7 @@
           "id": "set_local",
           "args": [
             {
-              "type": "NumberLiteral",
+              "type": "FloatLiteral",
               "value": 0
             },
             {
