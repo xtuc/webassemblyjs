@@ -7,11 +7,18 @@ const t = require("../../index");
 
 export function transform(ast: Program) {
   const functionsInProgram: Array<Index> = [];
+  const globalsInProgram: Array<Index> = [];
 
   // First collect the indices of all the functions in the Program
   traverse(ast, {
     ModuleImport({ node }: NodePath<ModuleImport>) {
       functionsInProgram.push(t.identifier(node.name));
+    },
+
+    Global({ node }: NodePath<Global>) {
+      if (node.name != null) {
+        globalsInProgram.push(node.name);
+      }
     },
 
     Func({ node }: NodePath<Func>) {
@@ -26,20 +33,21 @@ export function transform(ast: Program) {
   // Transform the actual instruction in function bodies
   traverse(ast, {
     Func(path: NodePath<Func>) {
-      transformFuncPath(path, functionsInProgram);
+      transformFuncPath(path, functionsInProgram, globalsInProgram);
     }
   });
 }
 
 function transformFuncPath(
   funcPath: NodePath<Func>,
-  functionsInProgram: Array<Index>
+  functionsInProgram: Array<Index>,
+  globalsInProgram: Array<Index>
 ) {
   const funcNode = funcPath.node;
   const { params } = funcNode;
 
   traverse(funcNode, {
-    Instr(instrPath: NodePath<Instruction>) {
+    Instr(instrPath: NodePath<GenericInstruction>) {
       const instrNode = instrPath.node;
 
       if (
@@ -62,7 +70,26 @@ function transformFuncPath(
             );
           }
 
-          const indexNode = t.numberLiteral(offsetInParams);
+          const indexNode = t.indexLiteral(offsetInParams);
+
+          // Replace the Identifer node by our new NumberLiteral node
+          instrNode.args[0] = indexNode;
+        }
+      }
+
+      if (instrNode.id === "get_global" || instrNode.id === "set_global") {
+        const [firstArg] = instrNode.args;
+
+        if (firstArg.type === "Identifier") {
+          const offsetInGlobalsInProgram = globalsInProgram.findIndex(
+            ({ value }) => value === firstArg.value
+          );
+
+          if (offsetInGlobalsInProgram === -1) {
+            throw new Error(`global ${firstArg.value} not found in module`);
+          }
+
+          const indexNode = t.indexLiteral(offsetInGlobalsInProgram);
 
           // Replace the Identifer node by our new NumberLiteral node
           instrNode.args[0] = indexNode;

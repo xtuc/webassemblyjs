@@ -7,6 +7,7 @@ const modulevalue = require("../../../lib/interpreter/runtime/values/module");
 const globalvalue = require("../../../lib/interpreter/runtime/values/global");
 const tablevalue = require("../../../lib/interpreter/runtime/values/table");
 const funcvalue = require("../../../lib/interpreter/runtime/values/func");
+const externalvalue = require("../../../lib/interpreter/runtime/values/extern");
 const i32 = require("../../../lib/interpreter/runtime/values/i32");
 const i64 = require("../../../lib/interpreter/runtime/values/i64");
 const f32 = require("../../../lib/interpreter/runtime/values/f32");
@@ -82,7 +83,7 @@ describe("module create interface", () => {
 
     it("return an instance for external function", () => {
       const func = () => {};
-      const instance = funcvalue.createExternalInstance(func);
+      const instance = externalvalue.createFuncInstance(func);
 
       assert.typeOf(instance, "object");
       assert.isTrue(instance.isExternal);

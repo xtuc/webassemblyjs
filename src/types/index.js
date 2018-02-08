@@ -41,6 +41,12 @@ type FuncInstance = {
   isExternal: boolean
 };
 
+type GlobalInstance = {
+  type: Valtype,
+  mutability: Mutability,
+  value: ?NumericOperations<*>
+};
+
 type ModuleInstance = {
   types: any,
 
@@ -122,6 +128,10 @@ interface NumericOperations<T> {
   toString(): string;
   isTrue(): boolean;
   toString(): string;
+
+  // converts the number into an array of bytes - for integers
+  // this is in little-endian order
+  toByteArray(): Array<number>;
 }
 
 type Label = {
@@ -131,11 +141,6 @@ type Label = {
 };
 
 type Signal = number;
-
-interface MemoryInstance {
-  buffer: Array<any>;
-  offset: number;
-}
 
 interface Allocator {
   malloc(Bytes): Addr;
@@ -148,3 +153,5 @@ interface TableInstance {
   get(number): ?Hostfunc;
   push(Hostfunc): void;
 }
+
+type SignatureMap = { [string]: string } | [string, string];

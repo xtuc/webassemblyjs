@@ -19,8 +19,7 @@ module.exports = {
     "mocha/no-skipped-tests": "warn",
     "prettier/prettier": "error",
 
-    // Temporary, until our code type checks
-    'flowtype-errors/show-errors': "warn",
+    'flowtype-errors/show-errors': "error",
 
     camelcase: 'off',
     'comma-dangle': 'off',

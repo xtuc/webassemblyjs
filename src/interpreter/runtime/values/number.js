@@ -1,6 +1,7 @@
+// @flow
+
 import { RuntimeError } from "../../../errors";
 
-// @flow
 export class Float<U> implements FloatingPointValue<Float<U>, U> {
   _value: number;
 
@@ -78,7 +79,11 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
     );
   }
 
-  reinterpret(): U {
+  reinterpret(): any {
+    throw new RuntimeError("unsupported operation");
+  }
+
+  toByteArray(): Array<number> {
     throw new RuntimeError("unsupported operation");
   }
 
@@ -91,6 +96,14 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
   }
 
   toString(): string {
-    return this._value.toString();
+    return this.toNumber().toString();
   }
+}
+
+export function typedArrayToArray(typedArray: Object) {
+  const byteArray = new Array(typedArray.byteLength);
+  for (let i = 0; i < byteArray.length; i++) {
+    byteArray[i] = typedArray[i];
+  }
+  return byteArray;
 }

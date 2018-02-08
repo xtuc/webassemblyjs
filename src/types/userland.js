@@ -25,15 +25,27 @@ type MemoryDescriptor = {
   maximum?: number
 };
 
+interface MemoryInstance {
+  buffer: ArrayBuffer;
+}
+
 type TableDescriptor = {
   element: string,
   initial: number,
   maximum?: number
 };
 
-type ImportObject = any;
+type ImportObject =
+  | Object
+  | {
+      _internalInstanceOptions: InternalInstanceOptions
+    };
 
 type InstansitatedInstanceAndModule = {
   instance: Instance,
   module: CompiledModule
+};
+
+type InternalInstanceOptions = {
+  checkForI64InSignature: boolean
 };

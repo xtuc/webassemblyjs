@@ -9,7 +9,7 @@
           "type": "Memory",
           "limits": {
             "type": "Limit",
-            "min": "0"
+            "min": 0
           },
           "id": {
             "type": "Identifier",

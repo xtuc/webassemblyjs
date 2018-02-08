@@ -1,4 +1,5 @@
 // @flow
+import { parse32I } from "./number-literals";
 
 const { tokens, keywords } = require("./tokenizer");
 const t = require("../../AST");
@@ -38,11 +39,24 @@ function showCodeFrame(source: string, loc: SourceLocation) {
   process.stdout.write(out + "\n");
 }
 
+function tokenToString(token: Object): string {
+  if (token.type === "keyword") {
+    return token.value;
+  }
+
+  return token.type;
+}
+
 type ParserState = {
   registredExportedElements: Array<{
     type: ExportDescr,
     name: string,
     id: Index
+  }>,
+  registredImportedElements: Array<{
+    module: string,
+    name: string,
+    descr: ImportDescr
   }>
 };
 
@@ -50,7 +64,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
 
   const state: ParserState = {
-    registredExportedElements: []
+    registredExportedElements: [],
+    registredImportedElements: []
   };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
@@ -94,6 +109,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       return true;
+    }
+
+    // TODO(sven): there is probably a better way to do this
+    // can refactor it if it get out of hands
+    function maybeIgnoreComment() {
+      if (token.type === tokens.comment) {
+        eatToken();
+      }
     }
 
     function parseListOfInstructions(acc: Array<Instruction>) {
@@ -159,11 +182,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         );
       }
 
-      const limits = t.limits(token.value);
+      const limits = t.limits(parse32I(token.value));
       eatToken();
 
       if (token.type === tokens.number) {
-        limits.max = token.value;
+        limits.max = parse32I(token.value);
         eatToken();
       }
 
@@ -257,6 +280,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *          ( table <name>? <table_sig> )
      *          ( memory <name>? <memory_sig> )
      *
+     * global_sig: <type> | ( mut <type> )
      */
     function parseImport(): ModuleImport {
       if (token.type !== tokens.string) {
@@ -314,8 +338,27 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
 
         descr = t.funcImportDescr(t.identifier(funcName), fnParams, fnResult);
+      } else if (isKeyword(token, keywords.global)) {
+        eatToken(); // keyword
+
+        if (token.type === tokens.openParen) {
+          eatToken(); // (
+          eatTokenOfType(tokens.keyword); // mut keyword
+
+          const valtype = token.value;
+          eatToken();
+
+          descr = t.globalImportDescr(valtype, "var");
+
+          eatTokenOfType(tokens.closeParen);
+        } else {
+          const valtype = token.value;
+          eatTokenOfType(tokens.valtype);
+
+          descr = t.globalImportDescr(valtype, "const");
+        }
       } else {
-        throw new Error("Unsupported import type: " + token.type);
+        throw new Error("Unsupported import type: " + tokenToString(token));
       }
 
       eatTokenOfType(tokens.closeParen);
@@ -674,6 +717,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         while (token.type === tokens.string) {
           blob.push(token.value);
           eatToken();
+
+          maybeIgnoreComment();
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -705,6 +750,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           state.registredExportedElements = [];
         }
 
+        if (state.registredImportedElements.length > 0) {
+          state.registredImportedElements.forEach(decl => {
+            moduleFields.push(
+              t.moduleImport(decl.module, decl.name, decl.descr)
+            );
+          });
+
+          state.registredImportedElements = [];
+        }
+
         token = tokensList[current];
       }
 
@@ -716,7 +771,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses the arguments of an instruction
      */
-    function parseFuncInstrArguments(signature: ?Array): AllArgs {
+    function parseFuncInstrArguments(signature: ?SignatureMap): AllArgs {
       const args: Array<Expression> = [];
       const namedArgs = {};
       let signaturePtr = 0;
@@ -762,6 +817,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (token.type === tokens.number) {
           args.push(
+            // TODO(sven): refactor the type signature handling
+            // https://github.com/xtuc/js-webassembly-interpreter/pull/129 is a good start
+            // $FlowIgnore
             t.numberLiteral(token.value, signature[signaturePtr++] || "f64")
           );
 
@@ -895,7 +953,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
 
-        const signature = t.signature(object, name);
+        const signature = t.signature(object || "", name);
 
         const { args, namedArgs } = parseFuncInstrArguments(signature);
 
@@ -951,7 +1009,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       } else if (isKeyword(token, keywords.module) && hasPlugin("wast")) {
         eatToken();
 
-        return parseModule();
+        // In WAST you can have a module as an instruction's argument
+        // we will cast it into a instruction to not break the flow
+        // $FlowIgnore
+        const module: Instruction = parseModule();
+
+        return module;
       } else {
         showCodeFrame(source, token.loc);
         throw new Error(
@@ -1099,6 +1162,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       let name = t.identifier(getUniqueName("global"));
       let type;
 
+      // Keep informations in case of a shorthand import
+      let importing = null;
+
+      maybeIgnoreComment();
+
       if (token.type === tokens.identifier) {
         name = t.identifier(token.value);
         eatToken();
@@ -1124,10 +1192,32 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       /**
+       * maybe import
+       */
+      if (lookaheadAndCheck(tokens.openParen, keywords.import)) {
+        eatToken(); // (
+        eatToken(); // import
+
+        const moduleName = token.value;
+        eatTokenOfType(tokens.string);
+
+        const name = token.value;
+        eatTokenOfType(tokens.string);
+
+        importing = {
+          module: moduleName,
+          name,
+          descr: undefined
+        };
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      /**
        * global_sig
        */
       if (token.type === tokens.valtype) {
-        type = t.globalType(token.value, "const");
+        type = t.globalImportDescr(token.value, "const");
         eatToken();
       } else if (token.type === tokens.openParen) {
         eatToken(); // (
@@ -1150,13 +1240,26 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new TypeError("Could not determine global type");
       }
 
+      if (importing != null) {
+        importing.descr = type;
+
+        // $FlowIgnore: the type is correct but Flow doesn't like the mutation above
+        state.registredImportedElements.push(importing);
+      }
+
+      maybeIgnoreComment();
+
+      const init = [];
+
       /**
        * instr*
        */
-      const init = [];
-      parseListOfInstructions(init);
+      while (token.type === tokens.openParen) {
+        eatToken();
 
-      eatTokenOfType(tokens.closeParen);
+        init.push(parseFuncInstr());
+        eatTokenOfType(tokens.closeParen);
+      }
 
       return t.global(type, init, name);
     }

@@ -9,14 +9,25 @@ const f64 = require("./values/f64");
 export function castIntoStackLocalOfType(
   type: string,
   v: any,
-  nan: boolean = false
+  nan: boolean = false,
+  inf: boolean = false
 ): StackLocal {
   const castFn = {
     i32: i32.createValueFromAST,
     i64: i64.createValueFromAST,
-    f32: nan ? f32.createNanFromAST : f32.createValueFromAST,
+    f32: f32.createValueFromAST,
     f64: f64.createValueFromAST
   };
+
+  if (nan === true) {
+    castFn.f32 = f32.createNanFromAST;
+    castFn.f64 = f64.createNanFromAST;
+  }
+
+  if (inf === true) {
+    castFn.f32 = f32.createInfFromAST;
+    castFn.f64 = f64.createInfFromAST;
+  }
 
   if (typeof castFn[type] === "undefined") {
     throw new RuntimeError("Cannot cast: unsupported type " + type);

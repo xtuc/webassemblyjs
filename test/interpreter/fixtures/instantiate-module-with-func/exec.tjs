@@ -8,6 +8,7 @@ it("should be an object", () => {
 it("should have callable exports", () => {
   assert.typeOf(m.exports.add, "function");
   assert.typeOf(m.exports.an, "function");
+
+  m.exports.an();
 });
 
-m.exports.an();

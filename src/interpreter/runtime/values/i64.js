@@ -172,6 +172,38 @@ export class i64 implements IntegerValue<i64> {
     // https://webassembly.github.io/spec/core/exec/numerics.html#boolean-interpretation
     return this.toNumber() == 1;
   }
+
+  toByteArray(): Array<number> {
+    const byteArray: Array<number> = new Array(8);
+    for (
+      let offset = 0, shift = 0;
+      offset < byteArray.length;
+      offset++, shift += 8
+    ) {
+      byteArray[offset] = this._value
+        .shru(shift)
+        .and(0xff)
+        .toNumber();
+    }
+    return byteArray;
+  }
+
+  static fromArrayBuffer(
+    buffer: ArrayBuffer,
+    ptr: number,
+    extend: number,
+    signed: boolean
+  ): i64 {
+    const slice = buffer.slice(ptr, ptr + 8);
+    const value = new Int32Array(slice);
+    let longVal = new Long(value[0], value[1]);
+    // shift left, then shift right by the same number of bits, using
+    // signed or unsigned shifts
+    longVal = longVal.shiftLeft(extend);
+    return new i64(
+      signed ? longVal.shiftRight(extend) : longVal.shiftRightUnsigned(extend)
+    );
+  }
 }
 
 export function createValueFromAST(value: LongNumber): StackLocal {
@@ -185,5 +217,17 @@ export function createValue(value: i64): StackLocal {
   return {
     type,
     value
+  };
+}
+
+export function createValueFromArrayBuffer(
+  buffer: ArrayBuffer,
+  ptr: number,
+  extend: number,
+  signed: boolean
+): StackLocal {
+  return {
+    type,
+    value: i64.fromArrayBuffer(buffer, ptr, extend, signed)
   };
 }

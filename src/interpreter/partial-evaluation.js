@@ -1,7 +1,5 @@
 // @flow
 
-const { RuntimeError } = require("../errors");
-const { isTrapped } = require("./kernel/signals");
 const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");
 const module = require("./runtime/values/module");
@@ -20,10 +18,6 @@ export function evaluate(
   const stackFrame = createStackFrame(code, [], moduleInstance, allocator);
 
   const res = executeStackFrame(stackFrame);
-
-  if (isTrapped(res)) {
-    throw new RuntimeError("Execution has been trapped");
-  }
 
   return res;
 }

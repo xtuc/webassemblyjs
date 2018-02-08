@@ -1,0 +1,19 @@
+{
+  "docs": {
+    "Documentation": [
+      "index",
+      "usage"
+    ],
+    "Examples": [
+      "example-add-watf",
+      "example-add-wasm",
+      "example-benchmark"
+    ],
+    "Contrib": [
+      "contrib-architecture",
+      "contrib-watf-vs-wast",
+      "contrib-transform-wast-identifier-to-index",
+      "contrib-thirdparty-licenses"
+    ]
+  }
+}

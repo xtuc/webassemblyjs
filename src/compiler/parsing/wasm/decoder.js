@@ -745,6 +745,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       if (instructionAlreadyCreated === false) {
         if (typeof instruction.object === "string") {
           code.push(
+            // $FlowIgnore
             t.objectInstruction(instruction.name, instruction.object, args)
           );
         } else {
@@ -828,7 +829,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     dump([globalTypeByte], "global type");
 
     if (typeof globalType === "undefined") {
-      throw new CompileError("Unknown global type: " + toHex(globalTypeByte));
+      throw new CompileError("Invalid mutability: " + toHex(globalTypeByte));
     }
 
     return t.globalType(type, globalType);

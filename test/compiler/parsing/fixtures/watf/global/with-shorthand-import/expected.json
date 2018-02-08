@@ -1,0 +1,139 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Global",
+          "globalType": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "const"
+          },
+          "init": [
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
+              ]
+            }
+          ],
+          "name": {
+            "type": "Identifier",
+            "value": "test"
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "env",
+          "name": "a",
+          "descr": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "const"
+          }
+        },
+        {
+          "type": "Global",
+          "globalType": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "const"
+          },
+          "init": [
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "name": {
+            "type": "Identifier",
+            "value": "global_2"
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "env",
+          "name": "b",
+          "descr": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "const"
+          }
+        },
+        {
+          "type": "Global",
+          "globalType": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "var"
+          },
+          "init": [
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "name": {
+            "type": "Identifier",
+            "value": "global_3"
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "env",
+          "name": "c",
+          "descr": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "var"
+          }
+        },
+        {
+          "type": "Global",
+          "globalType": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "var"
+          },
+          "init": [],
+          "name": {
+            "type": "Identifier",
+            "value": "global_4"
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "m",
+          "name": "a",
+          "descr": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "var"
+          }
+        }
+      ]
+    }
+  ]
+}

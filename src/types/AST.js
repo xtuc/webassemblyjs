@@ -1,9 +1,17 @@
 // @flow
 
-import type { i32 } from "../interpreter/runtime/values/i32";
+type U32Literal = NumberLiteral;
 
-type U32Literal = NumberLiteral & {
-  value: NumericOperations<i32>
+type NumericLiteral =
+  | FloatLiteral
+  | NumberLiteral
+  | LongNumberLiteral
+
+type FloatLiteral = {
+  type: "FloatLiteral",
+  value: number,
+  nan?: boolean,
+  inf?: boolean
 };
 
 type Typeidx = U32Literal;
@@ -45,8 +53,7 @@ type NodePath<T> = {
 
 type Expression =
   | Identifier
-  | NumberLiteral
-  | LongNumberLiteral
+  | NumericLiteral
   | ValtypeLiteral
   | Instruction
   | StringLiteral;
@@ -149,7 +156,15 @@ interface Func {
 /**
  * Instructions
  */
-interface Instruction {
+type Instruction =
+  | LoopInstruction
+  | BlockInstruction
+  | IfInstruction
+  | CallInstruction
+  | GenericInstruction
+  | ObjectInstruction
+
+type GenericInstruction = {
   type: InstructionType;
   id: string;
   args: Array<Expression>;
@@ -158,25 +173,25 @@ interface Instruction {
   namedArgs?: Object;
 }
 
-type ObjectInstruction = Instruction & {
+type ObjectInstruction = GenericInstruction & {
   object: Valtype
 };
 
-type LoopInstruction = Instruction & {
+type LoopInstruction = {
   type: "LoopInstruction",
   label: ?Identifier,
   resulttype: ?Valtype,
   instr: Array<Instruction>
 };
 
-type BlockInstruction = Instruction & {
+type BlockInstruction = {
   type: "BlockInstruction",
   label: ?Identifier,
   instr: Array<Instruction>,
   result: ?Valtype
 };
 
-type IfInstruction = Instruction & {
+type IfInstruction = {
   type: "IfInstruction",
   testLabel: Identifier, // only for WAST
   result: ?Valtype,
@@ -184,7 +199,7 @@ type IfInstruction = Instruction & {
   alternate: Array<Instruction>
 };
 
-type CallInstruction = Instruction & {
+type CallInstruction = {
   type: "CallInstruction",
   index: Index
 };
@@ -213,12 +228,12 @@ type FuncImportDescr = {
 
 type ImportDescr = FuncImportDescr | GlobalType;
 
-interface ModuleImport {
-  type: "ModuleImport";
-  module: string;
-  name: string;
-  descr: ImportDescr;
-}
+type ModuleImport = {
+  type: "ModuleImport",
+  module: string,
+  name: string,
+  descr: ImportDescr
+};
 
 type Table = Node & {
   type: "Table",
@@ -241,7 +256,7 @@ type ByteArray = {
 type Data = {
   type: "Data",
   memoryIndex: Index,
-  offset: Array<Node>,
+  offset: Array<Instruction>,
   init: ByteArray
 };
 

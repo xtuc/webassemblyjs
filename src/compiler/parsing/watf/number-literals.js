@@ -63,7 +63,7 @@ export function parseU32(sourceString: string): number {
 export function parse64I(sourceString: string): LongNumber {
   let long: Long;
   if (isHexLiteral(sourceString)) {
-    long = Long.fromString(sourceString.substr(2), false, 16);
+    long = Long.fromString(sourceString, false, 16);
   } else if (isDecimalExponentLiteral(sourceString)) {
     throw new Error("This number literal format is yet to be implemented.");
   } else {

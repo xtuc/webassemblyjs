@@ -1,10 +1,11 @@
 // @flow
-import { Float } from "./number";
+
+import { Float, typedArrayToArray } from "./number";
 import { i32 } from "./i32";
 
 const type = "f32";
 
-export class f32 extends Float<i32> {
+export class f32 extends Float<f32> {
   reinterpret(): i32 {
     const floatArray = new Float32Array(1);
     floatArray[0] = this._value;
@@ -12,32 +13,48 @@ export class f32 extends Float<i32> {
     return new i32(intArray[0]);
   }
 
-  add(operand: f32): f32 {
+  add(operand: Float<f32>): Float<f32> {
     // If the other operand is a nan we use its implementation, otherwise the Float one.
     return operand instanceof f32nan
-      ? operand.add(this)
+      ? // $FlowIgnore
+        operand.add(this)
       : Float.prototype.add.call(this, operand);
   }
 
-  sub(operand: f32): f32 {
+  sub(operand: Float<f32>): Float<f32> {
     // If the other operand is a nan we use its implementation, otherwise the Float one.
     return operand instanceof f32nan
-      ? operand.sub(this)
+      ? // $FlowIgnore
+        operand.sub(this)
       : Float.prototype.sub.call(this, operand);
   }
 
-  mul(operand: f32): f32 {
+  mul(operand: Float<f32>): Float<f32> {
     // If the other operand is a nan we use its implementation, otherwise the Float one.
     return operand instanceof f32nan
-      ? operand.mul(this)
+      ? // $FlowIgnore
+        operand.mul(this)
       : Float.prototype.mul.call(this, operand);
   }
 
-  div(operand: f32): f32 {
+  div(operand: Float<f32>): Float<f32> {
     // If the other operand is a nan we use its implementation, otherwise the Float one.
     return operand instanceof f32nan
-      ? operand.div(this)
+      ? // $FlowIgnore
+        operand.div(this)
       : Float.prototype.div.call(this, operand);
+  }
+
+  toByteArray(): Array<number> {
+    const floatArray = new Float32Array(1);
+    floatArray[0] = this._value;
+    return typedArrayToArray(new Int8Array(floatArray.buffer));
+  }
+
+  static fromArrayBuffer(buffer: ArrayBuffer, ptr: number): f32 {
+    const slice = buffer.slice(ptr, ptr + 4);
+    const value = new Float32Array(slice);
+    return new f32(value[0]);
   }
 }
 
@@ -93,7 +110,18 @@ export class f32nan extends f32 {
   }
 }
 
-export class f32inf extends f32 {}
+export class f32inf extends f32 {
+  reinterpret(): i32 {
+    // Exponent is all 1's, mantissa is all zeros
+    let result = 0xff << 23;
+
+    if (this._value < 0) {
+      result = result | 0x80000000;
+    }
+
+    return new i32(result);
+  }
+}
 
 export function createInfFromAST(sign: number): StackLocal {
   return {
@@ -120,5 +148,15 @@ export function createValue(value: f32): StackLocal {
   return {
     type,
     value
+  };
+}
+
+export function createValueFromArrayBuffer(
+  buffer: ArrayBuffer,
+  ptr: number
+): StackLocal {
+  return {
+    type,
+    value: f32.fromArrayBuffer(buffer, ptr)
   };
 }

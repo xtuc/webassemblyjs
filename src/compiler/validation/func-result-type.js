@@ -1,20 +1,9 @@
 // @flow
 
 const { traverse } = require("../AST/traverse");
+const { getType } = require("./type-inference");
 
-const UNKNOWN_TYPE = "unknown";
-
-function getInstructionResultType(i: Instruction | ObjectInstruction) {
-  // For example: i32.const, results in a i32
-  // This obviously doesn't cover all the cases
-  if (typeof i.object === "string") {
-    return i.object;
-  }
-
-  return UNKNOWN_TYPE;
-}
-
-export function validate(ast: Program) {
+export default function validate(ast: Program): Array<string> {
   const errors = [];
 
   traverse(ast, {
@@ -22,22 +11,16 @@ export function validate(ast: Program) {
       // Since only one return is allowed at the moment, we don't need to check
       // them all.
       const [resultType] = node.result;
-      const [lastInstruction] = node.body;
 
       // Function has no result types or last instruction, we can skip it
-      if (
-        typeof resultType !== "string" ||
-        typeof lastInstruction === "undefined"
-      ) {
+      if (typeof resultType !== "string") {
         return;
       }
 
-      const lastInstructionResultType = getInstructionResultType(
-        lastInstruction
-      );
+      const lastInstructionResultType = getType(node.body);
 
       // Type is unknown, we can not verify the result type
-      if (lastInstructionResultType === UNKNOWN_TYPE) {
+      if (!lastInstructionResultType) {
         return;
       }
 
@@ -58,9 +41,5 @@ export function validate(ast: Program) {
     }
   });
 
-  if (errors.length !== 0) {
-    const errorMessage = "Validation errors:\n" + errors.join("\n");
-
-    throw new Error(errorMessage);
-  }
+  return errors;
 }

@@ -274,6 +274,32 @@ export class i32 implements IntegerValue<i32> {
     // https://webassembly.github.io/spec/core/exec/numerics.html#boolean-interpretation
     return this._value == 1;
   }
+
+  toByteArray(): Array<number> {
+    const byteArray: Array<number> = new Array(4);
+    for (
+      let offset = 0, shift = 0;
+      offset < byteArray.length;
+      offset++, shift += 8
+    ) {
+      byteArray[offset] = (this._value >>> shift) & 0xff;
+    }
+    return byteArray;
+  }
+
+  static fromArrayBuffer(
+    buffer: ArrayBuffer,
+    ptr: number,
+    extend: number,
+    signed: boolean
+  ): i32 {
+    const slice = buffer.slice(ptr, ptr + 4);
+    let asInt32 = new Int32Array(slice)[0];
+    // shift left, then shift right by the same number of bits, using
+    // signed or unsigned shifts
+    asInt32 <<= extend;
+    return new i32(signed ? asInt32 >> extend : asInt32 >>> extend);
+  }
 }
 
 export function createValueFromAST(value: number): StackLocal {
@@ -287,5 +313,17 @@ export function createValue(value: i32): StackLocal {
   return {
     type,
     value
+  };
+}
+
+export function createValueFromArrayBuffer(
+  buffer: ArrayBuffer,
+  ptr: number,
+  extend: number,
+  signed: boolean
+): StackLocal {
+  return {
+    type,
+    value: i32.fromArrayBuffer(buffer, ptr, extend, signed)
   };
 }
