@@ -13,7 +13,7 @@ export default function validate(ast: Program): Array<string> {
   });
 
   traverse(ast, {
-    Instr({ node }: NodePath<Instruction>) {
+    Instr({ node }: NodePath<GenericInstruction>) {
       if (node.id === "set_global") {
         const [index] = node.args;
         // $FlowIgnore: it's a NumberLiteral because of set_global

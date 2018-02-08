@@ -817,6 +817,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (token.type === tokens.number) {
           args.push(
+            // TODO(sven): refactor the type signature handling
+            // https://github.com/xtuc/js-webassembly-interpreter/pull/129 is a good start
+            // $FlowIgnore
             t.numberLiteral(token.value, signature[signaturePtr++] || "f64")
           );
 
@@ -1006,7 +1009,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       } else if (isKeyword(token, keywords.module) && hasPlugin("wast")) {
         eatToken();
 
-        return parseModule();
+        // In WAST you can have a module as an instruction's argument
+        // we will cast it into a instruction to not break the flow
+        // $FlowIgnore
+        const module: Instruction = parseModule();
+
+        return module;
       } else {
         showCodeFrame(source, token.loc);
         throw new Error(

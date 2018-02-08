@@ -142,15 +142,15 @@ export function objectInstruction(
 
 export function instruction(
   id: string,
-  args: Array<any> = [],
+  args: Array<Expression> = [],
   namedArgs: Object = {}
-): Instruction {
+): GenericInstruction {
   assert(typeof args === "object" && typeof args.length !== "undefined");
   assert(id !== "block");
   assert(id !== "if");
   assert(id !== "loop");
 
-  const n: Instruction = {
+  const n: GenericInstruction = {
     type: "Instr",
     id,
     args
@@ -200,7 +200,7 @@ export function blockInstruction(
 export function numberLiteral(
   rawValue: number | string,
   instructionType: Valtype = "i32"
-): NumberLiteral | LongNumberLiteral | FloatLiteral {
+): NumericLiteral {
   let value;
   let nan = false;
   let inf = false;
@@ -238,7 +238,8 @@ export function numberLiteral(
   }
 
   // This is a hack to avoid rewriting all tests to have a "isnan: false" field
-  const x = {
+  // $FlowIgnore: this is correct, but flow doesn't like mutations like this
+  const x: NumericLiteral = {
     type,
     value
   };
@@ -435,5 +436,8 @@ export function blockComment(value: string): BlockComment {
 }
 
 export function indexLiteral(value: number | string): Index {
-  return numberLiteral(value, "i32");
+  // $FlowIgnore
+  const x: NumberLiteral = numberLiteral(value, "i32");
+
+  return x;
 }

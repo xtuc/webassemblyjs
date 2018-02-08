@@ -192,7 +192,7 @@ export class i64 implements IntegerValue<i64> {
     buffer: ArrayBuffer,
     ptr: number,
     extend: number,
-    signed: number
+    signed: boolean
   ): i64 {
     const slice = buffer.slice(ptr, ptr + 8);
     const value = new Int32Array(slice);
@@ -224,7 +224,7 @@ export function createValueFromArrayBuffer(
   buffer: ArrayBuffer,
   ptr: number,
   extend: number,
-  signed: number
+  signed: boolean
 ): StackLocal {
   return {
     type,

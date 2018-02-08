@@ -47,7 +47,7 @@ function transformFuncPath(
   const { params } = funcNode;
 
   traverse(funcNode, {
-    Instr(instrPath: NodePath<Instruction>) {
+    Instr(instrPath: NodePath<GenericInstruction>) {
       const instrNode = instrPath.node;
 
       if (

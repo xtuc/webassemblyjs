@@ -291,7 +291,7 @@ export class i32 implements IntegerValue<i32> {
     buffer: ArrayBuffer,
     ptr: number,
     extend: number,
-    signed: number
+    signed: boolean
   ): i32 {
     const slice = buffer.slice(ptr, ptr + 4);
     let asInt32 = new Int32Array(slice)[0];
@@ -320,7 +320,7 @@ export function createValueFromArrayBuffer(
   buffer: ArrayBuffer,
   ptr: number,
   extend: number,
-  signed: number
+  signed: boolean
 ): StackLocal {
   return {
     type,

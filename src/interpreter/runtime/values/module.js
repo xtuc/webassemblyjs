@@ -1,4 +1,5 @@
 // @flow
+
 import { Memory } from "./memory";
 import { RuntimeError } from "../../../errors";
 
@@ -42,6 +43,7 @@ function instantiateImports(
 
     const externFuncinstance = externvalue.createFuncInstance(
       element,
+      // $FlowIgnore
       params,
       results
     );
@@ -135,6 +137,7 @@ function instantiateInternals(
     },
 
     Memory({ node }: NodePath<Memory>) {
+      // $FlowIgnore: see type Memory in src/types/AST.js
       const limits = node.limits;
 
       if (limits.max && limits.max < limits.min) {
@@ -160,6 +163,7 @@ function instantiateInternals(
 
       if (node.id != null) {
         if (node.id.type === "Identifier") {
+          // $FlowIgnore
           internals.instantiatedMemories[node.id.value] = addr;
         }
       }
