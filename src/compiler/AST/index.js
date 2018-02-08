@@ -20,7 +20,7 @@ function assert(cond: boolean) {
 
 export function signature(object: string, name: string): SignatureMap {
   let opcodeName = name;
-  if (object !== undefined) {
+  if (object !== undefined && object !== '') {
     opcodeName = object + "." + name;
   }
   const sign = Signatures[opcodeName];
