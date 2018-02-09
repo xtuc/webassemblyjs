@@ -5,9 +5,12 @@ const {
   parse64F,
   parse32I,
   parse64I,
+  parseU32,
   isNanLiteral,
   isInfLiteral
 } = require("../parsing/watf/number-literals");
+
+const { Signatures } = require("./signatures");
 
 function assert(cond: boolean) {
   if (!cond) {
@@ -16,10 +19,17 @@ function assert(cond: boolean) {
 }
 
 export function signature(object: string, name: string): SignatureMap {
-  const signatures = {
-    "reinterpret/f32": ["f32"]
-  };
-  return signatures[name] || [object, object];
+  let opcodeName = name;
+  if (object !== undefined && object !== "") {
+    opcodeName = object + "." + name;
+  }
+  const sign = Signatures[opcodeName];
+  if (sign == undefined) {
+    // TODO: Uncomment this when br_table and others has been done
+    //throw new Error("Invalid opcode: "+opcodeName);
+    return [object, object];
+  }
+  return sign;
 }
 
 export function identifier(value: string): Identifier {
@@ -212,6 +222,10 @@ export function numberLiteral(
     switch (instructionType) {
       case "i32": {
         value = parse32I(rawValue);
+        break;
+      }
+      case "u32": {
+        value = parseU32(rawValue);
         break;
       }
       case "i64": {
@@ -437,7 +451,7 @@ export function blockComment(value: string): BlockComment {
 
 export function indexLiteral(value: number | string): Index {
   // $FlowIgnore
-  const x: NumberLiteral = numberLiteral(value, "i32");
+  const x: NumberLiteral = numberLiteral(value, "u32");
 
   return x;
 }

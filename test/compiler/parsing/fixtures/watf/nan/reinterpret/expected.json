@@ -16,9 +16,16 @@
           "object": "i32",
           "args": [
             {
-              "type": "FloatLiteral",
-              "value": 4194304,
-              "nan": true
+              "type": "Instr",
+              "id": "const",
+              "object": "f32",
+              "args": [
+                {
+                  "type": "FloatLiteral",
+                  "value": 4194304,
+                  "nan": true
+                }
+              ]
             }
           ]
         }

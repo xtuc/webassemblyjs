@@ -37,7 +37,7 @@ type Index =
   | Labelidx
   | Identifier; // WAST shorthand
 
-type Valtype = "i32" | "i64" | "f32" | "f64" | "label";
+type Valtype = "i32" | "i64" | "f32" | "f64" | "u32" | "label";
 type ExportDescr = "Func" | "Table" | "Memory" | "Global";
 type Mutability = "const" | "var";
 type InstructionType = "Instr" | ControlInstruction;

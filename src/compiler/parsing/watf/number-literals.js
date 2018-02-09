@@ -1,6 +1,7 @@
 // @flow
 const Long = require("long");
 const parseHexFloat = require("webassembly-floating-point-hex-parser");
+const { CompileError } = require("../../../errors");
 
 export function parse32F(sourceString: string): number {
   if (isHexLiteral(sourceString)) {
@@ -48,6 +49,14 @@ export function parse32I(sourceString: string): number {
     value = parseInt(sourceString, 10);
   }
 
+  return value;
+}
+
+export function parseU32(sourceString: string): number {
+  const value = parse32I(sourceString);
+  if (value < 0) {
+    throw new CompileError("Illegal value for u32: " + sourceString);
+  }
   return value;
 }
 
