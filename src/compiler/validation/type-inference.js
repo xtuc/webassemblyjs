@@ -2,6 +2,21 @@
 
 const { signatures } = require("../AST/signatures");
 
+export function typeEq(l: Array<Valtype>, r: Array<Valtype>): boolean {
+  if (l.length !== r.length) {
+    return false;
+  }
+
+  for (let i = 0; i < l.length; i++) {
+    if (l[i] != r[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
 export function getType(instrs: Array<Instruction>): ?Array<Valtype> {
   if (instrs.length === 0) {
     return;
@@ -39,10 +54,21 @@ export function getType(instrs: Array<Instruction>): ?Array<Valtype> {
     // $FlowIgnore: if id is `loop` we can assume it's a LoopInstruction
     const ifInstruction: IfInstruction = last;
 
+    let res = [];
+
+    // The type is known
     if (typeof ifInstruction.result === "string") {
-      return [ifInstruction.result];
-    } else {
-      return [];
+      res = [ifInstruction.result];
     }
+
+    // Continue on the branches
+    const leftType = getType(ifInstruction.consequent) || [];
+    const rightType = getType(ifInstruction.alternate) || [];
+
+    if (typeEq(leftType, res) === false || typeEq(rightType, res) === false) {
+      throw new Error("type mismatch in if branches");
+    }
+
+    return res;
   }
 }
