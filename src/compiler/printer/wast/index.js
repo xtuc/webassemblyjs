@@ -2,25 +2,30 @@
 
 const compact = false;
 const space = " ";
-const tab = space + space;
 const quote = str => `"${str}"`;
+
+function indent(nb: number): string {
+  return Array(nb)
+    .fill(space + space)
+    .join("");
+}
 
 export function printWAST(n: Node): string {
   if (n.type === "Program") {
-    return printProgram(n);
+    return printProgram(n, 0);
   }
 
   return "()";
 }
 
-function printProgram(n: Program): string {
+function printProgram(n: Program, depth: number): string {
   return n.body.reduce((acc, child) => {
     if (child.type === "Module") {
-      acc += printModule(child);
+      acc += printModule(child, depth + 1);
     }
 
     if (child.type === "Func") {
-      acc += printFunc(child);
+      acc += printFunc(child, depth + 1);
     }
 
     if (compact === false) {
@@ -31,7 +36,7 @@ function printProgram(n: Program): string {
   }, "");
 }
 
-function printModule(n: Module): string {
+function printModule(n: Module, depth: number): string {
   let out = "(";
   out += "module";
 
@@ -48,11 +53,11 @@ function printModule(n: Module): string {
 
   n.fields.forEach(field => {
     if (compact === false) {
-      out += tab;
+      out += indent(depth);
     }
 
     if (field.type === "Func") {
-      out += printFunc(field);
+      out += printFunc(field, depth + 1);
     }
 
     if (field.type === "ModuleExport") {
@@ -73,7 +78,7 @@ function printModule(n: Module): string {
   return out;
 }
 
-function printFunc(n: Func): string {
+function printFunc(n: Func, depth: number): string {
   let out = "";
 
   out += "(";
@@ -118,20 +123,19 @@ function printFunc(n: Func): string {
   }
 
   n.body.forEach(i => {
-    out += tab;
-    out += printInstruction(i);
+    out += indent(depth) + printInstruction(i, depth + 1);
 
     if (compact === false) {
       out += "\n";
     }
   });
 
-  out += ")";
+  out += indent(depth - 1) + ")";
 
   return out;
 }
 
-function printInstruction(n: Instruction): string {
+function printInstruction(n: Instruction, depth: number): string {
   let out = "";
 
   out += "(";
