@@ -168,6 +168,7 @@ describe("kernel exec - control instruction", () => {
 
         t.ifInstruction(
           t.identifier("test"),
+          []
           [t.objectInstruction("const", "i32", [t.numberLiteral(10)])],
           []
         )
@@ -188,7 +189,7 @@ describe("kernel exec - control instruction", () => {
           [t.objectInstruction("const", "i32", [t.numberLiteral(0)])]
         ),
 
-        t.ifInstruction(t.identifier("test"), null, [
+        t.ifInstruction(t.identifier("test"), [], null, [
           t.objectInstruction("const", "i32", [t.numberLiteral(10)])
         ])
       ];
@@ -208,7 +209,7 @@ describe("kernel exec - control instruction", () => {
           [t.objectInstruction("const", "i32", [t.numberLiteral(1)])]
         ),
 
-        t.ifInstruction(t.identifier("test"), null, [
+        t.ifInstruction(t.identifier("test"), [], null, [
           t.objectInstruction("const", "i32", [t.numberLiteral(10)])
         ])
       ];

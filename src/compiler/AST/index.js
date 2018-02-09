@@ -284,6 +284,7 @@ export function callInstruction(index: Index): CallInstruction {
 export function ifInstruction(
   testLabel: Identifier,
   result: ?Valtype,
+  test: Array<Instruction>,
   consequent: Array<Instruction>,
   alternate: Array<Instruction>
 ): IfInstruction {
@@ -293,6 +294,7 @@ export function ifInstruction(
     type: "IfInstruction",
     id: "if",
     testLabel,
+    test,
     result,
     consequent,
     alternate

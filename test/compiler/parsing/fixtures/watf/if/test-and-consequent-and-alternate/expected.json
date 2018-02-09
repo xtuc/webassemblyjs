@@ -17,6 +17,7 @@
             "type": "Identifier",
             "value": "label"
           },
+          "test": [],
           "consequent": [
             {
               "type": "Instr",

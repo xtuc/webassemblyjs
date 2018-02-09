@@ -195,6 +195,7 @@ type IfInstruction = {
   type: "IfInstruction",
   testLabel: Identifier, // only for WAST
   result: ?Valtype,
+  test: Array<Instruction>,
   consequent: Array<Instruction>,
   alternate: Array<Instruction>
 };
