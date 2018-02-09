@@ -26,7 +26,7 @@ export function getType(instrs: Array<Instruction>): ?Array<Valtype> {
     return;
   }
 
-  if (last.id === "Loop") {
+  if (last.type === "LoopInstruction") {
     // $FlowIgnore: if id is `loop` we can assume it's a LoopInstruction
     const loop: LoopInstruction = last;
 
@@ -35,12 +35,14 @@ export function getType(instrs: Array<Instruction>): ?Array<Valtype> {
     }
   }
 
-  if (last.id === "If") {
+  if (last.type === "IfInstruction") {
     // $FlowIgnore: if id is `loop` we can assume it's a LoopInstruction
     const ifInstruction: IfInstruction = last;
 
-    if (ifInstruction.result != null) {
+    if (typeof ifInstruction.result === "string") {
       return [ifInstruction.result];
+    } else {
+      return [];
     }
   }
 }

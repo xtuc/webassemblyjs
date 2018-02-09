@@ -47,7 +47,7 @@ export default function validate(ast: Program): Array<string> {
         }
 
         errors.push(
-          `- function '${name}' expected result type ${JSON.stringify(
+          `- Type mismatch: function '${name}' expected result type ${JSON.stringify(
             resultType
           )},` + ` but ${JSON.stringify(inferedResultType)} given.`
         );
