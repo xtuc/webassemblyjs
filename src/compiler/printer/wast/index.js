@@ -60,8 +60,20 @@ function printModule(n: Module, depth: number): string {
       out += printFunc(field, depth + 1);
     }
 
+    if (field.type === "Table") {
+      out += printTable(field, depth + 1);
+    }
+
+    if (field.type === "Global") {
+      out += printGlobal(field, depth + 1);
+    }
+
     if (field.type === "ModuleExport") {
       out += printModuleExport(field);
+    }
+
+    if (field.type === "ModuleImport") {
+      out += printModuleImport(field);
     }
 
     if (field.type === "Memory") {
@@ -74,6 +86,146 @@ function printModule(n: Module, depth: number): string {
   });
 
   out += ")";
+
+  return out;
+}
+
+function printModuleImportDescr(n: ImportDescr, depth: number): string {
+  let out = "";
+
+  if (n.type === "FuncImportDescr") {
+    out += "(";
+    out += "func";
+    out += space;
+
+    out += printIndex(n.value);
+
+    n.params.forEach(param => {
+      out += space;
+      out += "(";
+      out += "param";
+      out += space;
+
+      out += printFuncParam(param, depth);
+      out += ")";
+    });
+
+    n.results.forEach(result => {
+      out += space;
+      out += "(";
+      out += "result";
+      out += space;
+
+      out += result;
+      out += ")";
+    });
+
+    out += ")";
+  }
+
+  if (n.type === "GlobalType") {
+    out += "(";
+    out += "global";
+    out += space;
+
+    out += printGlobalType(n, depth);
+    out += ")";
+  }
+
+  return out;
+}
+
+function printModuleImport(n: ModuleImport, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "import";
+
+  out += space;
+
+  out += quote(n.module);
+  out += space;
+  out += quote(n.name);
+
+  out += space;
+  out += printModuleImportDescr(n.descr);
+
+  out += ")";
+
+  return out;
+}
+
+function printGlobalType(n: GlobalType, depth: number): string {
+  let out = "";
+
+  if (n.mutability === "var") {
+    out += "(";
+    out += "mut";
+    out += space;
+    out += n.valtype;
+    out += ")";
+  } else {
+    out += n.valtype;
+  }
+
+  return out;
+}
+
+function printGlobal(n: Global, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "global";
+
+  if (n.name != null) {
+    out += space;
+    out += printIdentifier(n.name);
+    out += space;
+  }
+
+  out += printGlobalType(n.globalType);
+  out += space;
+
+  n.init.forEach(i => {
+    out += printInstruction(i);
+  });
+
+  out += ")";
+
+  return out;
+}
+
+function printTable(n: Table, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "table";
+
+  if (n.name != null) {
+    out += space;
+    out += printIdentifier(n.name);
+    out += space;
+  }
+
+  out += printLimit(n.limits);
+  out += space;
+
+  out += n.elementType;
+
+  out += ")";
+
+  return out;
+}
+
+function printFuncParam(n: FuncParam, depth: number): string {
+  let out = "";
+
+  if (typeof n.id === "string") {
+    out += "$" + n.id;
+    out += space;
+  }
+
+  out += n.valtype;
 
   return out;
 }
@@ -97,12 +249,7 @@ function printFunc(n: Func, depth: number): string {
     out += "param";
     out += space;
 
-    if (typeof param.id === "string") {
-      out += "$" + param.id;
-    }
-
-    out += space;
-    out += param.valtype;
+    out += printFuncParam(param, depth);
 
     out += ")";
   });
@@ -123,7 +270,8 @@ function printFunc(n: Func, depth: number): string {
   }
 
   n.body.forEach(i => {
-    out += indent(depth) + printInstruction(i, depth + 1);
+    out += indent(depth);
+    out += printInstruction(i, depth);
 
     if (compact === false) {
       out += "\n";
@@ -136,6 +284,54 @@ function printFunc(n: Func, depth: number): string {
 }
 
 function printInstruction(n: Instruction, depth: number): string {
+  let out = "";
+
+  if (n.type === "Instr") {
+    out += printGenericInstruction(n, depth + 1);
+  }
+
+  if (n.type === "BlockInstruction") {
+    out += printBlockInstruction(n, depth + 1);
+  }
+
+  return out;
+}
+
+function printBlockInstruction(n: BlockInstruction, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "block";
+
+  if (n.label != null) {
+    out += space;
+    out += printIdentifier(n.label);
+  }
+
+  if (n.instr.length > 0) {
+    n.instr.forEach(i => {
+      if (compact === false) {
+        out += "\n";
+      }
+
+      out += indent(depth);
+      out += printInstruction(i, depth + 1);
+    });
+
+    if (compact === false) {
+      out += "\n";
+    }
+
+    out += indent(depth - 1);
+    out += ")";
+  } else {
+    out += ")";
+  }
+
+  return out;
+}
+
+function printGenericInstruction(n: GenericInstruction, depth: number): string {
   let out = "";
 
   out += "(";
@@ -152,6 +348,18 @@ function printInstruction(n: Instruction, depth: number): string {
 
     if (arg.type === "NumberLiteral") {
       out += printNumberLiteral(arg);
+    }
+
+    if (arg.type === "Identifier") {
+      out += printIdentifier(arg);
+    }
+
+    if (arg.type === "ValtypeLiteral") {
+      out += arg.name;
+    }
+
+    if (arg.type === "Instr") {
+      out += printGenericInstruction(arg);
     }
   });
 
@@ -222,7 +430,7 @@ function printLimit(n: Limit): string {
 
   out += n.min + "";
 
-  if (typeof n.max === "number") {
+  if (n.max != null) {
     out += space;
     out += n.max;
   }
