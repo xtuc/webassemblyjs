@@ -1,4 +1,5 @@
 // @flow
+/* eslint flowtype-errors/show-errors: warn */
 
 const compact = false;
 const space = " ";
@@ -135,7 +136,7 @@ function printModuleImportDescr(n: ImportDescr, depth: number): string {
   return out;
 }
 
-function printModuleImport(n: ModuleImport, depth: number): string {
+function printModuleImport(n: ModuleImport /*, depth: number*/): string {
   let out = "";
 
   out += "(";
@@ -155,7 +156,7 @@ function printModuleImport(n: ModuleImport, depth: number): string {
   return out;
 }
 
-function printGlobalType(n: GlobalType, depth: number): string {
+function printGlobalType(n: GlobalType /*, depth: number*/): string {
   let out = "";
 
   if (n.mutability === "var") {
@@ -171,7 +172,7 @@ function printGlobalType(n: GlobalType, depth: number): string {
   return out;
 }
 
-function printGlobal(n: Global, depth: number): string {
+function printGlobal(n: Global /*, depth: number*/): string {
   let out = "";
 
   out += "(";
@@ -195,7 +196,7 @@ function printGlobal(n: Global, depth: number): string {
   return out;
 }
 
-function printTable(n: Table, depth: number): string {
+function printTable(n: Table /*, depth: number*/): string {
   let out = "";
 
   out += "(";
@@ -217,7 +218,7 @@ function printTable(n: Table, depth: number): string {
   return out;
 }
 
-function printFuncParam(n: FuncParam, depth: number): string {
+function printFuncParam(n: FuncParam /*, depth: number*/): string {
   let out = "";
 
   if (typeof n.id === "string") {
@@ -331,7 +332,9 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
   return out;
 }
 
-function printGenericInstruction(n: GenericInstruction, depth: number): string {
+function printGenericInstruction(
+  n: GenericInstruction /*, depth: number*/
+): string {
   let out = "";
 
   out += "(";
