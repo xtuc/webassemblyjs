@@ -24,7 +24,7 @@ export default function validate(ast: Program): Array<string> {
         return;
       }
 
-      if (resultType !== lastInstructionResultType) {
+      if (resultType != lastInstructionResultType) {
         let name = "anonymous";
 
         if (node.name != null) {

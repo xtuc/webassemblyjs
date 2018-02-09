@@ -10,7 +10,7 @@ const {
   isInfLiteral
 } = require("../parsing/watf/number-literals");
 
-const { Signatures } = require("./signatures");
+const { signatures } = require("./signatures");
 
 function assert(cond: boolean) {
   if (!cond) {
@@ -23,13 +23,14 @@ export function signature(object: string, name: string): SignatureMap {
   if (object !== undefined && object !== "") {
     opcodeName = object + "." + name;
   }
-  const sign = Signatures[opcodeName];
+  const sign = signatures[opcodeName];
   if (sign == undefined) {
     // TODO: Uncomment this when br_table and others has been done
     //throw new Error("Invalid opcode: "+opcodeName);
     return [object, object];
   }
-  return sign;
+
+  return sign[0];
 }
 
 export function identifier(value: string): Identifier {

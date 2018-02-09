@@ -27,7 +27,7 @@ export function createInstance(
 
   if (
     resultInferedType !== undefined &&
-    node.globalType.valtype !== resultInferedType
+    node.globalType.valtype != resultInferedType
   ) {
     throw new CompileError("type mismatch");
   }
