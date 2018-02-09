@@ -233,6 +233,42 @@ describe("kernel exec - conversion instructions", () => {
       ],
 
       resEqual: new i64(Long.fromString("0xfff0000000000000", false, 16))
+    },
+    {
+      name: "i64.reinterpret/f64 - negative nan payload",
+
+      args: [{ value: -0xfffffffffffff, type: "f64", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.objectInstruction("reinterpret/f64", "i64")
+      ],
+
+      resEqual: new i64(Long.NEG_ONE)
+    },
+    {
+      name: "i64.reinterpret/f64 - canonical nan",
+
+      args: [{ value: 0x4000000000000, type: "f64", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.objectInstruction("reinterpret/f64", "i64")
+      ],
+
+      resEqual: new i64(Long.fromString("0x7ff4000000000000", false, 16))
+    },
+    {
+      name: "i64.reinterpret/f64 - negative canonical nan",
+
+      args: [{ value: -0x4000000000000, type: "f64", nan: true }],
+
+      code: [
+        t.instruction("get_local", [t.numberLiteral(0)]),
+        t.objectInstruction("reinterpret/f64", "i64")
+      ],
+
+      resEqual: new i64(Long.fromString("0xfff4000000000000", false, 16))
     }
   ];
 
