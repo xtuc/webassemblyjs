@@ -3,7 +3,7 @@
 const readline = require("readline");
 const { createReadStream } = require("fs");
 
-const { _debug } = require("../index");
+const { parsers } = require("../tools");
 const { createCompiledModule } = require("../compiler/compile/module");
 const t = require("../compiler/AST");
 const { Instance } = require("../interpreter");
@@ -262,7 +262,7 @@ function replEval(input) {
     console.log(input);
   }
 
-  const ast = _debug.parseWATFSpecTest(input);
+  const ast = parsers.parseWATFSpecTest(input);
   const [node] = ast.body;
 
   // Empty input, skip this iteration

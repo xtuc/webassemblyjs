@@ -7,7 +7,7 @@ const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 const { writeFileSync, readFileSync } = require("fs");
 const path = require("path");
 
-const { _debug } = require("../../../lib");
+const { parsers, printers } = require("../../../lib/tools");
 
 describe("printer", () => {
   describe("wast", () => {
@@ -19,9 +19,9 @@ describe("printer", () => {
       it(suite, () => {
         const input = readFileSync(suite, "utf8");
 
-        _debug.parseWATF(input, ast => {
+        parsers.parseWATF(input, ast => {
           const expectedFile = path.join(path.dirname(suite), "expected.wast");
-          const code = _debug.printWAST(ast);
+          const code = printers.printWAST(ast);
 
           let expected;
           try {

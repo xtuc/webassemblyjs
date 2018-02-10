@@ -6,7 +6,7 @@ const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 const { writeFileSync, readFileSync } = require("fs");
 const path = require("path");
 
-const { _debug } = require("../../../lib");
+const { parsers } = require("../../../lib/tools");
 const watf = require("../../../lib/compiler/parsing/watf/grammar");
 
 function toArrayBuffer(buf) {
@@ -54,7 +54,7 @@ describe("compiler", () => {
       testSuites.forEach(suite => {
         it(suite, () => {
           const code = readFileSync(suite, "utf8");
-          _debug.parseWATF(code, createCheck(suite));
+          parsers.parseWATF(code, createCheck(suite));
         });
       });
     });
@@ -68,7 +68,7 @@ describe("compiler", () => {
     testSuites.forEach(suite => {
       it(suite, () => {
         const bin = toArrayBuffer(readFileSync(suite, null));
-        _debug.parseWASM(bin, createCheck(suite));
+        parsers.parseWASM(bin, createCheck(suite));
       });
     });
   });
