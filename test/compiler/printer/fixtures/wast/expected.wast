@@ -33,4 +33,6 @@
   (table $temp_14 10 anyfunc)
   (table $temp_15 0 10 anyfunc)
   (table $a 10 anyfunc)
+  (func $func_17)
+  (func $test)
 )

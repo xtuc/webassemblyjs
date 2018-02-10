@@ -266,20 +266,25 @@ function printFunc(n: Func, depth: number): string {
     out += ")";
   });
 
-  if (compact === false) {
-    out += "\n";
-  }
 
-  n.body.forEach(i => {
-    out += indent(depth);
-    out += printInstruction(i, depth);
-
+  if (n.body.length > 0) {
     if (compact === false) {
       out += "\n";
     }
-  });
 
-  out += indent(depth - 1) + ")";
+    n.body.forEach(i => {
+      out += indent(depth);
+      out += printInstruction(i, depth);
+
+      if (compact === false) {
+        out += "\n";
+      }
+    });
+
+    out += indent(depth - 1) + ")";
+  } else {
+    out += ")";
+  }
 
   return out;
 }
