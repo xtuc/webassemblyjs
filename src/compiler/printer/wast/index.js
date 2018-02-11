@@ -312,8 +312,6 @@ function printCallInstruction(n: CallInstruction /*, depth: number*/): string {
 
   out += space;
 
-  console.log(n.index);
-
   out += printIndex(n.index);
 
   out += ")";
