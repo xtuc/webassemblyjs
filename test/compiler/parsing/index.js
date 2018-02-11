@@ -7,6 +7,7 @@ const { writeFileSync, readFileSync } = require("fs");
 const path = require("path");
 
 const { parsers } = require("../../../lib/tools");
+const wastIdentifierToIndex = require("../../../lib/compiler/AST/transform/wast-identifier-to-index");
 const watf = require("../../../lib/compiler/parsing/watf/grammar");
 
 function toArrayBuffer(buf) {
@@ -53,6 +54,11 @@ describe("compiler", () => {
         it(suite, () => {
           const code = readFileSync(suite, "utf8");
           const ast = parsers.parseWATF(code);
+
+          if (/wast-identifier-to-index/.test(suite) === true) {
+            wastIdentifierToIndex.transform(ast);
+          }
+
           createCheck(suite, ast);
         });
       });
