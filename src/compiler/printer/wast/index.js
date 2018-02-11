@@ -266,7 +266,6 @@ function printFunc(n: Func, depth: number): string {
     out += ")";
   });
 
-
   if (n.body.length > 0) {
     if (compact === false) {
       out += "\n";

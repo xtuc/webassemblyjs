@@ -11,20 +11,16 @@ export const printers = {
 };
 
 export const parsers = {
-  parseWATF(content: string, cb: (ast: Program) => void) {
-    const ast = parseSource(content);
-
-    cb(ast);
+  parseWATF(content: string): Program {
+    return parseSource(content);
   },
 
   parseWATFSpecTest(content: string): Program {
     return parseSource(content);
   },
 
-  parseWASM(content: ArrayBuffer, cb: (ast: Program) => void) {
-    const ast = parseBinary(content);
-
-    cb(ast);
+  parseWASM(content: ArrayBuffer): Program {
+    return parseBinary(content);
   }
 };
 
