@@ -19,6 +19,12 @@ class Share extends React.Component {
           href="https://www.xtuc.fr/editor.css"
         />
 
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="/css/share.css"
+        />
+
         <div style={{marginTop: "30px", textAlign: "center"}}>
           <input type="file" id="upload" />
           <button id="download">download module.wasm</button>
@@ -30,7 +36,7 @@ class Share extends React.Component {
 
             <span className="language">WAST</span>
           </div>
-          <div className="window-body" style={{ height: "50%" }}>
+          <div className="window-body" id="editor">
             <pre className="code-output" id="output"></pre>
           </div>
         </div>
