@@ -40,7 +40,7 @@ export function createCompiledModule(ast: Program): CompiledModule {
   });
 
   // Do compile-time ast manipulation in order to remove WAST
-  // semantics
+  // semantics during execution
   wastIdentifierToIndex.transform(ast);
 
   return new Module(ast, exports, imports);
