@@ -1,6 +1,7 @@
 (function() {
   const input = document.getElementById("upload");
   const output = document.getElementById("output");
+  const editor = document.getElementById("editor");
   const downloadBtn = document.getElementById("download");
 
   if (typeof webassemblyInterpreter === "undefined") {
@@ -35,6 +36,11 @@
   }
 
   function showOutput(out) {
+    const lineCount = out.split("\n").length;
+    const sizePerLine = 20;
+
+    editor.style.height = lineCount * sizePerLine;
+
     output.innerHTML = '<code className="language-wast">' + out + "</code>";
   }
 
