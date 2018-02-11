@@ -32,6 +32,9 @@
     (block
       (nop)
     )
+
+    (call $a)
+    (call 1)
   )
 
   (export "add" (func $add))

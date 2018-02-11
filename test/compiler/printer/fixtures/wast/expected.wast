@@ -26,6 +26,8 @@
     (block $block_11
       (nop)
     )
+    (call 1)
+    (call 1)
   )
   (export "add" (func $add))
   (table $a 10 anyfunc)
