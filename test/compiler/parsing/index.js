@@ -8,7 +8,6 @@ const path = require("path");
 
 const { parsers } = require("../../../lib/tools");
 const wastIdentifierToIndex = require("../../../lib/compiler/AST/transform/wast-identifier-to-index");
-const watf = require("../../../lib/compiler/parsing/watf/grammar");
 
 function toArrayBuffer(buf) {
   return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
