@@ -43,8 +43,6 @@ function createCheck(suite, ast) {
 
 describe("compiler", () => {
   describe("watf", () => {
-    afterEach(() => watf.resetUniqueNameGenerator());
-
     describe("parsing", () => {
       const testSuites = glob.sync(
         "test/compiler/parsing/fixtures/watf/**/actual.wast"
