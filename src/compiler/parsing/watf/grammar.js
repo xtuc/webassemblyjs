@@ -10,23 +10,10 @@ type AllArgs = {
   namedArgs: Object
 };
 
-let inc = 0;
-
 function hasPlugin(name: string): boolean {
   if (name !== "wast") throw new Error("unknow plugin");
 
   return true;
-}
-
-// Used to have consistent tests
-export function resetUniqueNameGenerator() {
-  inc = 0;
-}
-
-function getUniqueName(prefix: string = "temp"): string {
-  inc++;
-
-  return prefix + "_" + inc;
 }
 
 function isKeyword(token: Object, id: string): boolean {
@@ -62,6 +49,13 @@ type ParserState = {
 
 export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
+  let inc = 0;
+
+  function getUniqueName(prefix: string = "temp"): string {
+    inc++;
+
+    return prefix + "_" + inc;
+  }
 
   const state: ParserState = {
     registredExportedElements: [],
