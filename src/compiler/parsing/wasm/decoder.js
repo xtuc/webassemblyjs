@@ -979,6 +979,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       const instrs: Array<Instruction> = [];
       parseInstructionBlock(instrs);
 
+      if (instrs.length !== 1) {
+        throw new CompileError(
+          "data section offset must be a single instruction"
+        );
+      }
+
       let bytes: Array<Byte> = parseVec(b => b);
 
       // FIXME(sven): the Go binary can store > 100kb of data here
@@ -989,7 +995,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       dump([], "init");
 
       dataEntries.push(
-        t.data(t.indexLiteral(memoryIndex), instrs, t.byteArray(bytes))
+        t.data(t.indexLiteral(memoryIndex), instrs[0], t.byteArray(bytes))
       );
     }
 

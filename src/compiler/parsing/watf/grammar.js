@@ -1,5 +1,6 @@
 // @flow
 import { parse32I } from "./number-literals";
+import { parseString } from "./string-literals";
 
 const { tokens, keywords } = require("./tokenizer");
 const t = require("../../AST");
@@ -191,6 +192,55 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       return t.memory(limits, id);
+    }
+
+    /**
+     * Parses a data section
+     * https://webassembly.github.io/spec/core/text/modules.html#data-segments
+     *
+     * WAST:
+     *
+     * data:  ( data <index>? <offset> <string> )
+     */
+    function parseData(): Data {
+      // optional memory index
+      let memidx = 0;
+      if (token.type === tokens.number) {
+        memidx = token.value;
+        eatTokenOfType(tokens.number); // .
+      }
+
+      eatTokenOfType(tokens.openParen);
+
+      let offset: Instruction;
+      if (token.type === tokens.valtype) {
+        eatTokenOfType(tokens.valtype); // i32
+        eatTokenOfType(tokens.dot); // .
+
+        if (token.value !== "const") {
+          throw new Error("constant expression required");
+        }
+        eatTokenOfType(tokens.name); // const
+
+        const numberLiteral = t.numberLiteral(token.value, "i32");
+        offset = t.instruction("const", [numberLiteral]);
+        eatToken();
+
+        eatTokenOfType(tokens.closeParen);
+      } else {
+        eatTokenOfType(tokens.name); // get_global
+
+        const numberLiteral = t.numberLiteral(token.value, "i32");
+        offset = t.instruction("get_global", [numberLiteral]);
+        eatToken();
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      const byteArray = parseString(token.value);
+      eatToken(); // "string"
+
+      return t.data(t.indexLiteral(memidx), offset, t.byteArray(byteArray));
     }
 
     /**
@@ -1355,6 +1405,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.memory)) {
         eatToken();
         const node = parseMemory();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.data)) {
+        eatToken();
+        const node = parseData();
         eatTokenOfType(tokens.closeParen);
 
         return node;

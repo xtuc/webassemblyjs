@@ -393,7 +393,7 @@ export function memory(limits: Limit, id: ?Index): Memory {
 
 export function data(
   memoryIndex: Index,
-  offset: Array<Instruction>,
+  offset: Instruction,
   init: ByteArray
 ): Data {
   return {

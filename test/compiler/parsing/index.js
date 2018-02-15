@@ -21,6 +21,7 @@ function createCheck(suite, ast) {
   let expected;
   try {
     expected = readFileSync(expectedFile, "utf8");
+    expected = JSON.stringify(JSON.parse(expected), null, 2);
   } catch (e) {
     expected = code;
 

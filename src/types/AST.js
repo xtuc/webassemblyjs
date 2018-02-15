@@ -1,6 +1,7 @@
 // @flow
 
 type U32Literal = NumberLiteral;
+type Byte = Number;
 
 type NumericLiteral = FloatLiteral | NumberLiteral | LongNumberLiteral;
 
@@ -253,7 +254,7 @@ type ByteArray = {
 type Data = {
   type: "Data",
   memoryIndex: Index,
-  offset: Array<Instruction>,
+  offset: Instruction,
   init: ByteArray
 };
 
