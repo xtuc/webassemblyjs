@@ -7,6 +7,7 @@ const siteConfig = {
   baseUrl: "/",
   projectName: "js-webassembly-interpreter",
   headerLinks: [
+    { page: "share", label: "Share" },
     { doc: "index", label: "Documentation" },
     {
       href: "https://github.com/xtuc/js-webassembly-interpreter",

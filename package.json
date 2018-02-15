@@ -1,6 +1,6 @@
 {
   "name": "webassembly-interpreter",
-  "version": "0.0.17",
+  "version": "0.0.25",
   "keywords": [
     "webassembly",
     "interpreter",

@@ -2,40 +2,12 @@
 
 const { parseSource } = require("./compiler/parsing/watf");
 const { parseBinary } = require("./compiler/parsing/wasm");
-const { printWAST } = require("./compiler/printer/wast");
 const { Instance } = require("./interpreter");
 const { RuntimeError, CompileError, LinkError } = require("./errors");
 const { createCompiledModule, Module } = require("./compiler/compile/module");
 const { Memory } = require("./interpreter/runtime/values/memory");
 const { Table } = require("./interpreter/runtime/values/table");
 const { checkEndianness } = require("./check-endianness");
-const { traverse } = require("./compiler/AST/traverse");
-const t = require("./compiler/AST/index");
-
-const _debug = {
-  printWAST(ast: Program): string {
-    return printWAST(ast);
-  },
-
-  parseWATF(content: string, cb: (ast: Program) => void) {
-    const ast = parseSource(content);
-
-    cb(ast);
-  },
-
-  parseWATFSpecTest(content: string): Program {
-    return parseSource(content);
-  },
-
-  parseWASM(content: ArrayBuffer, cb: (ast: Program) => void) {
-    const ast = parseBinary(content);
-
-    cb(ast);
-  },
-
-  traverse,
-  t
-};
 
 const WebAssembly = {
   instantiate(
@@ -94,9 +66,7 @@ const WebAssembly = {
   Table,
   RuntimeError,
   LinkError,
-  CompileError,
-
-  _debug
+  CompileError
 };
 
 module.exports = WebAssembly;

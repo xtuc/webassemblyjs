@@ -24,8 +24,8 @@
           "type": "CallInstruction",
           "id": "call",
           "index": {
-            "type": "NumberLiteral",
-            "value": 0
+            "type": "Identifier",
+            "value": "name"
           }
         }
       ]

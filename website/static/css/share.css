@@ -1,0 +1,8 @@
+code {
+  background: none;
+  box-shadow: none;
+}
+
+pre code {
+  border-left: none;
+}

@@ -12,6 +12,7 @@
     "docusaurus": "^1.0.5"
   },
   "dependencies": {
-    "dedent": "^0.7.0"
+    "dedent": "^0.7.0",
+    "webassembly-interpreter": "^0.0.20"
   }
 }

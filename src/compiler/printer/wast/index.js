@@ -266,20 +266,24 @@ function printFunc(n: Func, depth: number): string {
     out += ")";
   });
 
-  if (compact === false) {
-    out += "\n";
-  }
-
-  n.body.forEach(i => {
-    out += indent(depth);
-    out += printInstruction(i, depth);
-
+  if (n.body.length > 0) {
     if (compact === false) {
       out += "\n";
     }
-  });
 
-  out += indent(depth - 1) + ")";
+    n.body.forEach(i => {
+      out += indent(depth);
+      out += printInstruction(i, depth);
+
+      if (compact === false) {
+        out += "\n";
+      }
+    });
+
+    out += indent(depth - 1) + ")";
+  } else {
+    out += ")";
+  }
 
   return out;
 }
@@ -289,11 +293,28 @@ function printInstruction(n: Instruction, depth: number): string {
 
   if (n.type === "Instr") {
     out += printGenericInstruction(n, depth + 1);
+  } else if (n.type === "BlockInstruction") {
+    out += printBlockInstruction(n, depth + 1);
+  } else if (n.type === "CallInstruction") {
+    out += printCallInstruction(n, depth + 1);
+  } else {
+    throw new Error("Unsupported instruction: " + n.type);
   }
 
-  if (n.type === "BlockInstruction") {
-    out += printBlockInstruction(n, depth + 1);
-  }
+  return out;
+}
+
+function printCallInstruction(n: CallInstruction /*, depth: number*/): string {
+  let out = "";
+
+  out += "(";
+  out += "call";
+
+  out += space;
+
+  out += printIndex(n.index);
+
+  out += ")";
 
   return out;
 }
@@ -348,25 +369,32 @@ function printGenericInstruction(
 
   n.args.forEach(arg => {
     out += space;
-
-    if (arg.type === "NumberLiteral") {
-      out += printNumberLiteral(arg);
-    }
-
-    if (arg.type === "Identifier") {
-      out += printIdentifier(arg);
-    }
-
-    if (arg.type === "ValtypeLiteral") {
-      out += arg.name;
-    }
-
-    if (arg.type === "Instr") {
-      out += printGenericInstruction(arg);
-    }
+    out += printFuncInstructionArg(arg);
   });
 
   out += ")";
+
+  return out;
+}
+
+function printFuncInstructionArg(n: Object): string {
+  let out = "";
+
+  if (n.type === "NumberLiteral") {
+    out += printNumberLiteral(n);
+  }
+
+  if (n.type === "Identifier") {
+    out += printIdentifier(n);
+  }
+
+  if (n.type === "ValtypeLiteral") {
+    out += n.name;
+  }
+
+  if (n.type === "Instr") {
+    out += printGenericInstruction(n);
+  }
 
   return out;
 }
@@ -407,6 +435,10 @@ function printIdentifier(n: Identifier): string {
 function printIndex(n: Index): string {
   if (n.type === "Identifier") {
     return printIdentifier(n);
+  } else if (n.type === "NumberLiteral") {
+    return printNumberLiteral(n);
+  } else {
+    throw new Error("Unsupported index: " + n.type);
   }
 }
 

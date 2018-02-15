@@ -30,6 +30,10 @@ export function walk(
     cb(n.type, createPath(n));
   }
 
+  if (n.type === "Identifier") {
+    cb(n.type, createPath(n));
+  }
+
   if (n.type === "ModuleImport") {
     cb(n.type, createPath(n));
 
@@ -39,10 +43,20 @@ export function walk(
 
   if (n.type === "Global") {
     cb(n.type, createPath(n));
+
+    if (n.name != null) {
+      // $FlowIgnore
+      walk(n.name, cb);
+    }
   }
 
   if (n.type === "Table") {
     cb(n.type, createPath(n));
+
+    if (n.name != null) {
+      // $FlowIgnore
+      walk(n.name, cb);
+    }
   }
 
   if (n.type === "IfInstruction") {
@@ -71,6 +85,34 @@ export function walk(
 
   if (n.type === "CallInstruction") {
     cb(n.type, createPath(n));
+
+    // $FlowIgnore
+    walk(n.index, cb);
+  }
+
+  if (n.type === "LoopInstruction") {
+    cb(n.type, createPath(n));
+
+    if (n.label != null) {
+      // $FlowIgnore
+      walk(n.label, cb);
+    }
+  }
+
+  if (n.type === "BlockInstruction") {
+    cb(n.type, createPath(n));
+
+    if (n.label != null) {
+      // $FlowIgnore
+      walk(n.label, cb);
+    }
+  }
+
+  if (n.type === "IfInstruction") {
+    cb(n.type, createPath(n));
+
+    // $FlowIgnore
+    walk(n.testLabel, cb);
   }
 
   if (n.type === "Func") {
@@ -78,6 +120,11 @@ export function walk(
 
     // $FlowIgnore
     n.body.forEach(x => walk(x, cb));
+
+    if (n.name != null) {
+      // $FlowIgnore
+      walk(n.name, cb);
+    }
   }
 }
 

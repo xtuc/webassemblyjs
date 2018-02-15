@@ -2,6 +2,7 @@
 
 const { traverse } = require("../AST/traverse");
 import validateAST from "../validation";
+const wastIdentifierToIndex = require("../AST/transform/wast-identifier-to-index");
 
 export class Module {
   _ast: Program;
@@ -37,6 +38,10 @@ export function createCompiledModule(ast: Program): CompiledModule {
       }
     }
   });
+
+  // Do compile-time ast manipulation in order to remove WAST
+  // semantics during execution
+  wastIdentifierToIndex.transform(ast);
 
   return new Module(ast, exports, imports);
 }

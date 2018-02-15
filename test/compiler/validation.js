@@ -4,6 +4,10 @@ const { assert } = require("chai");
 const { isConst } = require("../../lib/compiler/validation/is-const");
 const t = require("../../lib/compiler/AST");
 
+function i32ConstOf(v) {
+  return t.objectInstruction("const", "i32", [t.numberLiteral(v)]);
+}
+
 describe("validation", () => {
   describe("is const", () => {
     it("should return true for a const expression", () => {
@@ -12,20 +16,26 @@ describe("validation", () => {
       assert.isTrue(isConst(exprs));
     });
 
-    it("should return false", () => {
-      const exprs = [
-        t.objectInstruction("neg", "i32", [
-          t.objectInstruction("const", "i32", [t.numberLiteral(1)])
-        ])
-      ];
+    it("should return false if not constant", () => {
+      const exprs = [t.objectInstruction("neg", "i32", [i32ConstOf(1)])];
 
       assert.isFalse(isConst(exprs));
     });
 
-    it("should return false with multiple expressions", () => {
-      const exprs = [t.objectInstruction("const", "i32"), t.instruction("nop")];
+    it("should return false if empty", () => {
+      assert.isFalse(isConst([]));
+    });
+
+    it("should return false with multiple non const expressions", () => {
+      const exprs = [i32ConstOf(1), t.instruction("nop")];
 
       assert.isFalse(isConst(exprs));
+    });
+
+    it("should return true with multiple const expressions", () => {
+      const exprs = [i32ConstOf(1), i32ConstOf(2)];
+
+      assert.isTrue(isConst(exprs));
     });
   });
 });

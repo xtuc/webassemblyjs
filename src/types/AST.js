@@ -2,10 +2,7 @@
 
 type U32Literal = NumberLiteral;
 
-type NumericLiteral =
-  | FloatLiteral
-  | NumberLiteral
-  | LongNumberLiteral
+type NumericLiteral = FloatLiteral | NumberLiteral | LongNumberLiteral;
 
 type FloatLiteral = {
   type: "FloatLiteral",
@@ -162,16 +159,16 @@ type Instruction =
   | IfInstruction
   | CallInstruction
   | GenericInstruction
-  | ObjectInstruction
+  | ObjectInstruction;
 
 type GenericInstruction = {
-  type: InstructionType;
-  id: string;
-  args: Array<Expression>;
+  type: InstructionType,
+  id: string,
+  args: Array<Expression>,
 
   // key=value for special instruction arguments
-  namedArgs?: Object;
-}
+  namedArgs?: Object
+};
 
 type ObjectInstruction = GenericInstruction & {
   object: Valtype
