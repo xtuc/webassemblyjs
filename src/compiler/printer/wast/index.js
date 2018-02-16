@@ -201,6 +201,7 @@ function printTable(n: Table /*, depth: number*/): string {
 
   out += "(";
   out += "table";
+  out += space;
 
   if (n.name != null) {
     out += space;
@@ -420,6 +421,15 @@ function printModuleExport(n: ModuleExport): string {
 
     out += printIndex(n.descr.id);
 
+    out += ")";
+  }
+
+  if (n.descr.type === "Mem") {
+    out += space;
+    out += "(";
+    out += "memory";
+    out += space;
+    out += printIndex(n.descr.id);
     out += ")";
   }
 
