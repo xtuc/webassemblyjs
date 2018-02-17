@@ -205,9 +205,9 @@ function printTable(n: Table /*, depth: number*/): string {
   if (n.name != null) {
     out += space;
     out += printIdentifier(n.name);
-    out += space;
   }
 
+  out += space;
   out += printLimit(n.limits);
   out += space;
 
