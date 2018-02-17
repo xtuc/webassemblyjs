@@ -201,7 +201,6 @@ function printTable(n: Table /*, depth: number*/): string {
 
   out += "(";
   out += "table";
-  out += space;
 
   if (n.name != null) {
     out += space;
