@@ -392,7 +392,7 @@ export function memory(limits: Limit, id: ?Index): Memory {
 }
 
 export function data(
-  memoryIndex: Index,
+  memoryIndex: Memidx,
   offset: Instruction,
   init: ByteArray
 ): Data {
@@ -453,5 +453,11 @@ export function indexLiteral(value: number | string): Index {
   // $FlowIgnore
   const x: NumberLiteral = numberLiteral(value, "u32");
 
+  return x;
+}
+
+export function memIndexLiteral(value: number): Memidx {
+  // $FlowIgnore
+  const x: U32Literal = numberLiteral(value, "u32");
   return x;
 }

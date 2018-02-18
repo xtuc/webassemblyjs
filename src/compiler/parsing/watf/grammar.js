@@ -240,7 +240,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const byteArray = parseString(token.value);
       eatToken(); // "string"
 
-      return t.data(t.indexLiteral(memidx), offset, t.byteArray(byteArray));
+      return t.data(t.memIndexLiteral(memidx), offset, t.byteArray(byteArray));
     }
 
     /**

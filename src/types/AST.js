@@ -253,7 +253,7 @@ type ByteArray = {
 
 type Data = {
   type: "Data",
-  memoryIndex: Index,
+  memoryIndex: Memidx,
   offset: Instruction,
   init: ByteArray
 };

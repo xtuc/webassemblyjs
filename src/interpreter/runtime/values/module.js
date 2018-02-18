@@ -100,23 +100,20 @@ function instantiateDataSections(
 ) {
   traverse(n, {
     Data({ node }: NodePath<Data>) {
-      const offsetInstruction: any = node.offset;
+      const memIndex = node.memoryIndex.value;
+      const memoryAddr = moduleInstance.memaddrs[memIndex];
+      const memory: Memory = allocator.get(memoryAddr);
+      const buffer = new Uint8Array(memory.buffer);
 
-      if (typeof node.memoryIndex.value === "number") {
-        const memIndex = node.memoryIndex.value;
-        const memoryAddr = moduleInstance.memaddrs[memIndex];
-        const memory: Memory = allocator.get(memoryAddr);
-        const buffer = new Uint8Array(memory.buffer);
+      let offset: number;
+      if (node.offset.id === "const") {
+        const offsetInstruction: any = node.offset;
+        const arg = (offsetInstruction.args[0]: any);
+        offset = arg.value;
+      }
 
-        let offset: number;
-        if (node.offset.id === "const") {
-          const arg = (offsetInstruction.args[0]: any);
-          offset = arg.value;
-        }
-
-        for (let i = 0; i < node.init.values.length; i++) {
-          buffer[i + offset] = node.init.values[i];
-        }
+      for (let i = 0; i < node.init.values.length; i++) {
+        buffer[i + offset] = node.init.values[i];
       }
     }
   });

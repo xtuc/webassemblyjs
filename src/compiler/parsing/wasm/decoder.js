@@ -995,7 +995,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       dump([], "init");
 
       dataEntries.push(
-        t.data(t.indexLiteral(memoryIndex), instrs[0], t.byteArray(bytes))
+        t.data(t.memIndexLiteral(memoryIndex), instrs[0], t.byteArray(bytes))
       );
     }
 
