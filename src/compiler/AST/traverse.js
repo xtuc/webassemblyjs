@@ -30,6 +30,10 @@ export function walk(
     cb(n.type, createPath(n));
   }
 
+  if (n.type === "Data") {
+    cb(n.type, createPath(n));
+  }
+
   if (n.type === "Identifier") {
     cb(n.type, createPath(n));
   }

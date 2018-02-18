@@ -91,6 +91,38 @@ function instantiateImports(
 }
 
 /**
+ * write data segments to linear memory
+ */
+function instantiateDataSections(
+  n: Module,
+  allocator: Allocator,
+  moduleInstance: ModuleInstance
+) {
+  traverse(n, {
+    Data({ node }: NodePath<Data>) {
+      const offsetInstruction: any = node.offset;
+
+      if (typeof node.memoryIndex.value === "number") {
+        const memIndex = node.memoryIndex.value;
+        const memoryAddr = moduleInstance.memaddrs[memIndex];
+        const memory: Memory = allocator.get(memoryAddr);
+        const buffer = new Uint8Array(memory.buffer);
+
+        let offset: number;
+        if (node.offset.id === "const") {
+          const arg = (offsetInstruction.args[0]: any);
+          offset = arg.value;
+        }
+
+        for (let i = 0; i < node.init.values.length; i++) {
+          buffer[i + offset] = node.init.values[i];
+        }
+      }
+    }
+  });
+}
+
+/**
  * Create Module's internal elements instances
  */
 function instantiateInternals(
@@ -436,6 +468,8 @@ export function createInstance(
   );
 
   instantiateInternals(n, allocator, instantiatedInternals, moduleInstance);
+
+  instantiateDataSections(n, allocator, moduleInstance);
 
   instantiateExports(n, allocator, instantiatedInternals, moduleInstance);
 
