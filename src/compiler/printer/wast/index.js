@@ -227,8 +227,9 @@ function printGlobal(n: Global /*, depth: number*/): string {
   out += "(";
   out += "global";
 
+  out += space;
+
   if (n.name != null) {
-    out += space;
     out += printIdentifier(n.name);
     out += space;
   }
