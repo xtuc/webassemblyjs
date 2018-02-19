@@ -419,11 +419,113 @@ function printIfInstruction(n: IfInstruction, depth: number): string {
   let out = "";
 
   out += "(";
-  out += "block";
+  out += "if";
 
-  if (n.label != null) {
+  if (n.testLabel != null) {
     out += space;
-    out += printIdentifier(n.label);
+    out += printIdentifier(n.testLabel);
+  }
+
+  if (typeof n.result === "string") {
+    out += space;
+
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += n.result;
+    out += ")";
+  }
+
+  if (n.test.length > 0) {
+    out += space;
+
+    n.test.forEach(i => {
+      out += printInstruction(i, depth + 1);
+    });
+  }
+
+  if (n.consequent.length > 0) {
+    if (compact === false) {
+      out += "\n";
+    }
+
+    out += indent(depth);
+    out += "(";
+    out += "then";
+
+    depth++;
+
+    n.consequent.forEach(i => {
+      if (compact === false) {
+        out += "\n";
+      }
+
+      out += indent(depth);
+      out += printInstruction(i, depth + 1);
+    });
+
+    depth--;
+
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth);
+    }
+
+    out += ")";
+  } else {
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth);
+    }
+
+    out += "(";
+    out += "then";
+    out += ")";
+  }
+
+  if (n.alternate.length > 0) {
+    if (compact === false) {
+      out += "\n";
+    }
+
+    out += indent(depth);
+    out += "(";
+    out += "else";
+
+    depth++;
+
+    n.alternate.forEach(i => {
+      if (compact === false) {
+        out += "\n";
+      }
+
+      out += indent(depth);
+      out += printInstruction(i, depth + 1);
+    });
+
+    depth--;
+
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth);
+    }
+
+    out += ")";
+  } else {
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth);
+    }
+
+    out += "(";
+    out += "else";
+    out += ")";
+  }
+
+  if (compact === false) {
+    out += "\n";
+    out += indent(depth - 1);
   }
 
   out += ")";
