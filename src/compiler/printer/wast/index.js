@@ -29,6 +29,14 @@ function printProgram(n: Program, depth: number): string {
       acc += printFunc(child, depth + 1);
     }
 
+    if (child.type === "BlockComment") {
+      acc += printBlockComment(child, depth + 1);
+    }
+
+    if (child.type === "LeadingComment") {
+      acc += printLeadingComment(child, depth + 1);
+    }
+
     if (compact === false) {
       acc += "\n";
     }
@@ -81,12 +89,53 @@ function printModule(n: Module, depth: number): string {
       out += printMemory(field);
     }
 
+    if (field.type === "BlockComment") {
+      out += printBlockComment(field, depth + 1);
+    }
+
+    if (field.type === "LeadingComment") {
+      out += printLeadingComment(field, depth + 1);
+    }
+
     if (compact === false) {
       out += "\n";
     }
   });
 
   out += ")";
+
+  return out;
+}
+
+function printLeadingComment(n: LeadingComment /*, depth: number*/): string {
+  // Don't print leading comments in compact mode
+  if (compact === true) {
+    return "";
+  }
+
+  let out = "";
+
+  out += ";;";
+  out += n.value;
+
+  out += "\n";
+
+  return out;
+}
+
+function printBlockComment(n: BlockComment /*, depth: number*/): string {
+  // Don't print block comments in compact mode
+  if (compact === true) {
+    return "";
+  }
+
+  let out = "";
+
+  out += "(;";
+  out += n.value;
+  out += ";)";
+
+  out += "\n";
 
   return out;
 }
@@ -297,9 +346,54 @@ function printInstruction(n: Instruction, depth: number): string {
     out += printBlockInstruction(n, depth + 1);
   } else if (n.type === "CallInstruction") {
     out += printCallInstruction(n, depth + 1);
+  } else if (n.type === "LoopInstruction") {
+    out += printLoopInstruction(n, depth + 1);
   } else {
     throw new Error("Unsupported instruction: " + n.type);
   }
+
+  return out;
+}
+
+function printLoopInstruction(n: LoopInstruction, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "loop";
+
+  if (n.label != null) {
+    out += space;
+    out += printIdentifier(n.label);
+  }
+
+  if (typeof n.resulttype === "string") {
+    out += space;
+
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += n.resulttype;
+    out += ")";
+  }
+
+  if (n.instr.length > 0) {
+    n.instr.forEach(e => {
+      if (compact === false) {
+        out += "\n";
+      }
+
+      out += indent(depth);
+      out += printInstruction(e, depth + 1);
+    });
+
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth - 1);
+    }
+  }
+
+  out += ")";
 
   return out;
 }

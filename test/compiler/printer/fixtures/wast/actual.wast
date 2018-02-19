@@ -35,7 +35,20 @@
 
     (call $a)
     (call 1)
+
+    (loop)
+    (loop $l)
+    (loop
+      (nop)
+    )
+    (loop (result i32)
+      (nop)
+      (nop)
+    )
   )
+
+  ;; a
+  (; b ;)
 
   (export "add" (func $add))
 
