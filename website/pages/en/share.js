@@ -39,7 +39,7 @@ class Share extends React.Component {
           </div>
         </div>
 
-        <script src="https://bundle.run/webassembly-interpreter@0.0.20/lib/tools.js" />
+        <script src="https://bundle.run/webassembly-interpreter@0.0.29/lib/tools.js" />
         <script src="/js/share.js" />
 
         <p style={{textAlign: 'center'}}>
