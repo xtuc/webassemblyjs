@@ -297,9 +297,56 @@ function printInstruction(n: Instruction, depth: number): string {
     out += printBlockInstruction(n, depth + 1);
   } else if (n.type === "CallInstruction") {
     out += printCallInstruction(n, depth + 1);
+  } else if (n.type === "LoopInstruction") {
+    out += printLoopInstruction(n, depth + 1);
   } else {
     throw new Error("Unsupported instruction: " + n.type);
   }
+
+  return out;
+}
+
+function printLoopInstruction(n: LoopInstruction, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "loop";
+
+  if (n.label != null) {
+    out += space;
+    out += printIdentifier(n.label);
+  }
+
+  console.log(n);
+
+  if (typeof n.resulttype === "string") {
+    out += space;
+
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += n.resulttype;
+    out += ")";
+  }
+
+  if (n.instr.length > 0) {
+    n.instr.forEach(e => {
+      if (compact === false) {
+        out += "\n";
+      }
+
+      out += indent(depth);
+      out += printInstruction(e, depth + 1);
+    });
+
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth - 1);
+    }
+  }
+
+  out += ")";
 
   return out;
 }
