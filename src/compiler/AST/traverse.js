@@ -59,6 +59,19 @@ export function walk(
     }
   }
 
+  if (n.type === "IfInstruction") {
+    cb(n.type, createPath(n));
+
+    // $FlowIgnore
+    n.test.forEach(x => walk(x, cb));
+    // $FlowIgnore
+    walk(n.testLabel, cb);
+    // $FlowIgnore
+    n.consequent.forEach(x => walk(x, cb));
+    // $FlowIgnore
+    n.alternate.forEach(x => walk(x, cb));
+  }
+
   if (n.type === "Memory") {
     cb(n.type, createPath(n));
   }

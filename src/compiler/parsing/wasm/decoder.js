@@ -608,10 +608,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         // FIXME(sven): where is that stored?
         const testIndex = t.identifier(getUniqueName("ifindex"));
+        const testInstrs = [];
 
         const ifNode = t.ifInstruction(
           testIndex,
           blocktype,
+          testInstrs,
           consequentInstr,
           alternate
         );

@@ -440,20 +440,15 @@ export function executeStackFrame(
       }
 
       case "if": {
-        /**
-         * Execute test
-         */
-        const code = getLabel(instruction.testLabel);
-
-        if (typeof code === "undefined") {
-          throw new RuntimeError("IfInstruction: Label doesn't exist");
+        if (instruction.test.length > 0) {
+          createAndExecuteChildStackFrame(instruction.test);
         }
 
-        createAndExecuteChildStackFrame(code.body);
+        // 1. Assert: due to validation, a value of value type i32 is on the top of the stack.
+        // 2. Pop the value i32.const from the stack.
+        const c = pop1OfType("i32");
 
-        const res = pop1();
-
-        if (!res.value.eqz().isTrue()) {
+        if (c.value.eqz().isTrue() === false) {
           /**
            * Execute consequent
            */
