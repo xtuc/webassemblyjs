@@ -344,6 +344,8 @@ function printInstruction(n: Instruction, depth: number): string {
     out += printGenericInstruction(n, depth + 1);
   } else if (n.type === "BlockInstruction") {
     out += printBlockInstruction(n, depth + 1);
+  } else if (n.type === "IfInstruction") {
+    out += printIfInstruction(n, depth + 1);
   } else if (n.type === "CallInstruction") {
     out += printCallInstruction(n, depth + 1);
   } else if (n.type === "LoopInstruction") {
@@ -407,6 +409,22 @@ function printCallInstruction(n: CallInstruction /*, depth: number*/): string {
   out += space;
 
   out += printIndex(n.index);
+
+  out += ")";
+
+  return out;
+}
+
+function printIfInstruction(n: IfInstruction, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "block";
+
+  if (n.label != null) {
+    out += space;
+    out += printIdentifier(n.label);
+  }
 
   out += ")";
 
