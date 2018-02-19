@@ -47,6 +47,9 @@
     )
   )
 
+  ;; a
+  (; b ;)
+
   (export "add" (func $add))
 
   (table "a" 10 anyfunc)

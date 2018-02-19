@@ -38,6 +38,10 @@
       (nop)
     )
   )
+  ;; a
+
+  (; b ;)
+
   (export "add" (func $add))
   (table $a 10 anyfunc)
   (table $b 0 10 anyfunc)

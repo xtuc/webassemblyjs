@@ -29,6 +29,14 @@ function printProgram(n: Program, depth: number): string {
       acc += printFunc(child, depth + 1);
     }
 
+    if (child.type === "BlockComment") {
+      acc += printBlockComment(child, depth + 1);
+    }
+
+    if (child.type === "LeadingComment") {
+      acc += printLeadingComment(child, depth + 1);
+    }
+
     if (compact === false) {
       acc += "\n";
     }
@@ -81,12 +89,53 @@ function printModule(n: Module, depth: number): string {
       out += printMemory(field);
     }
 
+    if (field.type === "BlockComment") {
+      out += printBlockComment(field, depth + 1);
+    }
+
+    if (field.type === "LeadingComment") {
+      out += printLeadingComment(field, depth + 1);
+    }
+
     if (compact === false) {
       out += "\n";
     }
   });
 
   out += ")";
+
+  return out;
+}
+
+function printLeadingComment(n: LeadingComment /*, depth: number*/): string {
+  // Don't print leading comments in compact mode
+  if (compact === true) {
+    return "";
+  }
+
+  let out = "";
+
+  out += ";;";
+  out += n.value;
+
+  out += "\n";
+
+  return out;
+}
+
+function printBlockComment(n: BlockComment /*, depth: number*/): string {
+  // Don't print block comments in compact mode
+  if (compact === true) {
+    return "";
+  }
+
+  let out = "";
+
+  out += "(;";
+  out += n.value;
+  out += ";)";
+
+  out += "\n";
 
   return out;
 }
@@ -316,8 +365,6 @@ function printLoopInstruction(n: LoopInstruction, depth: number): string {
     out += space;
     out += printIdentifier(n.label);
   }
-
-  console.log(n);
 
   if (typeof n.resulttype === "string") {
     out += space;
