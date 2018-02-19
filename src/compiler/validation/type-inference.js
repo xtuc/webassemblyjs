@@ -16,7 +16,6 @@ export function typeEq(l: Array<Valtype>, r: Array<Valtype>): boolean {
   return true;
 }
 
-
 export function getType(instrs: Array<Instruction>): ?Array<Valtype> {
   if (instrs.length === 0) {
     return;
@@ -26,6 +25,7 @@ export function getType(instrs: Array<Instruction>): ?Array<Valtype> {
 
   // It's a ObjectInstruction
   if (typeof last.object === "string") {
+    // $FlowIgnore
     const opName = `${last.object}.${last.id}`;
     const signature = signatures[opName];
 

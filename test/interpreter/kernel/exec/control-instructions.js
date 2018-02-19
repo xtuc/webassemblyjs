@@ -168,8 +168,7 @@ describe("kernel exec - control instruction", () => {
 
         t.ifInstruction(
           t.identifier("test"),
-          []
-          [t.objectInstruction("const", "i32", [t.numberLiteral(10)])],
+          [][t.objectInstruction("const", "i32", [t.numberLiteral(10)])],
           []
         )
       ];
