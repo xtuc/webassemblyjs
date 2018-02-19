@@ -156,7 +156,7 @@ describe("kernel exec - control instruction", () => {
     });
   });
 
-  describe.skip("if", () => {
+  describe("if", () => {
     it("should NOT execute consequent when test is zero", () => {
       const code = [
         t.func(
