@@ -45,6 +45,38 @@
       (nop)
       (nop)
     )
+
+    (if (get_local 0)
+      (then)
+    )
+    (if (get_local 0)
+      (then)
+      (else)
+    )
+    (if $l (get_local 0)
+      (then)
+    )
+    (if $l (get_local 0)
+      (then)
+      (else)
+    )
+    (if (get_local 0)
+      (then
+        (nop)
+      )
+      (else
+        (nop)
+      )
+    )
+
+    (if (result i32) (get_local 0)
+      (then
+        (i32.const 7)
+      )
+      (else
+        (i32.const 8)
+      )
+    )
   )
 
   ;; a
