@@ -1,0 +1,45 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": 0
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "temp_1"
+      },
+      "elements": [
+        {
+          "type": "Identifier",
+          "value": "f"
+        }
+      ]
+    },
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": 0
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "temp_2"
+      },
+      "elements": [
+        {
+          "type": "Identifier",
+          "value": "a"
+        },
+        {
+          "type": "Identifier",
+          "value": "b"
+        }
+      ]
+    }
+  ]
+}

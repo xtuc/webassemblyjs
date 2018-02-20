@@ -29,7 +29,7 @@ function showCodeFrame(source: string, loc: SourceLocation) {
 
 function tokenToString(token: Object): string {
   if (token.type === "keyword") {
-    return token.value;
+    return `keyword (${token.value})`;
   }
 
   return token.type;
@@ -80,7 +80,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           "Assertion error: expected token of type " +
             type +
             ", given " +
-            token.type
+            tokenToString(token)
         );
       }
 
@@ -257,6 +257,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       let name = t.identifier(getUniqueName());
 
       let limit = t.limits(0);
+      const elemIndices = [];
       const elemType = "anyfunc";
 
       if (token.type === tokens.string || token.type === tokens.identifier) {
@@ -264,57 +265,70 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
-      /**
-       * Maybe export
-       */
-      if (lookaheadAndCheck(tokens.openParen, keywords.export)) {
-        eatToken(); // (
-        eatToken(); // export
+      while (token.type !== tokens.closeParen) {
+        /**
+         * Maybe export
+         */
+        if (lookaheadAndCheck(tokens.openParen, keywords.elem)) {
+          eatToken(); // (
+          eatToken(); // elem
 
-        if (token.type !== tokens.string) {
-          showCodeFrame(source, token.loc);
-          throw new Error("Expected string in export, given " + token.type);
-        }
+          while (token.type === tokens.identifier) {
+            elemIndices.push(t.identifier(token.value));
+            eatToken();
+          }
 
-        const exportName = token.value;
-        eatToken();
+          eatTokenOfType(tokens.closeParen);
+        } else if (lookaheadAndCheck(tokens.openParen, keywords.export)) {
+          eatToken(); // (
+          eatToken(); // export
 
-        state.registredExportedElements.push({
-          type: "Table",
-          name: exportName,
-          id: name
-        });
+          if (token.type !== tokens.string) {
+            showCodeFrame(source, token.loc);
+            throw new Error("Expected string in export, given " + token.type);
+          }
 
-        eatTokenOfType(tokens.closeParen);
-      }
-
-      /**
-       * Table type
-       */
-      if (token.type === tokens.number) {
-        const min = token.value;
-        eatToken();
-
-        if (token.type === tokens.number) {
-          const max = token.value;
+          const exportName = token.value;
           eatToken();
 
-          limit = t.limits(min, max);
+          state.registredExportedElements.push({
+            type: "Table",
+            name: exportName,
+            id: name
+          });
+
+          eatTokenOfType(tokens.closeParen);
+        } else if (isKeyword(token, keywords.anyfunc)) {
+          // It's the default value, we can ignore it
+          eatToken(); // anyfunc
+        } else if (token.type === tokens.number) {
+          /**
+           * Table type
+           */
+          const min = token.value;
+          eatToken();
+
+          if (token.type === tokens.number) {
+            const max = token.value;
+            eatToken();
+
+            limit = t.limits(min, max);
+          } else {
+            limit = t.limits(min);
+          }
+
+          eatToken();
         } else {
-          limit = t.limits(min);
-        }
-
-        if (!isKeyword(token, keywords.anyfunc)) {
           showCodeFrame(source, token.loc);
-          throw new Error(
-            "Unsupported elem_type, expected anyfunc, given " + token.type
-          );
+          throw new Error("Unexpected token of type " + tokenToString(token));
         }
-
-        eatToken();
       }
 
-      return t.table(elemType, limit, name);
+      if (elemIndices.length > 0) {
+        return t.table(elemType, limit, name, elemIndices);
+      } else {
+        return t.table(elemType, limit, name);
+      }
     }
 
     /**

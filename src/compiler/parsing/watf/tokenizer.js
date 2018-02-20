@@ -83,7 +83,8 @@ const keywords = {
   global: "global",
   anyfunc: "anyfunc",
   mut: "mut",
-  data: "data"
+  data: "data",
+  elem: "elem"
 };
 
 const CloseParenToken = createToken(tokens.closeParen);

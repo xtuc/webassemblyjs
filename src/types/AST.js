@@ -237,6 +237,7 @@ type ModuleImport = {
 type Table = Node & {
   type: "Table",
   elementType: TableElementType,
+  elements?: Array<Index>,
   limits: Limit,
   name: ?Identifier
 };
