@@ -56,6 +56,57 @@ export class f32 extends Float<f32> {
     const value = new Float32Array(slice);
     return new f32(value[0]);
   }
+
+  gt(operand: Float<f32>): i32 {
+    const one = new i32(1);
+    const zero = new i32(0);
+
+    const z1 = this;
+    const z2 = operand;
+
+    // If either z1 or z2 is a NaN, then return 0.
+    if (isNaN(z1._value) === true || isNaN(z2._value) === true) {
+      return zero;
+    }
+
+    // Else if z1 and z2 are the same value, then return 0.
+    if (z1.equals(z2) === true) {
+      return zero;
+    }
+
+    // Else if z1 is positive infinity, then return 1.
+    if (Math.sign(z1._value) === 1 && z1 instanceof f32inf) {
+      return one;
+    }
+
+    // Else if z1 is negative infinity, then return 0.
+    if (Math.sign(z1._value) === -1 && z1 instanceof f32inf) {
+      return one;
+    }
+
+    // Else if z2 is positive infinity, then return 0.
+    if (Math.sign(z2._value) === 1 && z2 instanceof f32inf) {
+      return zero;
+    }
+
+    // Else if z2 is negative infinity, then return 1.
+    if (Math.sign(z2._value) === -1 && z2 instanceof f32inf) {
+      return one;
+    }
+
+    // Else if both z1 and z2 are zeroes, then return 0.
+    if (z1._value === 0 && z2._value === 0) {
+      return zero;
+    }
+
+    // Else if z1 is larger than z2, then return 1.
+    if (z1._value > z2._value) {
+      return one;
+    }
+
+    // Else return 0.
+    return zero;
+  }
 }
 
 export class f32nan extends f32 {
