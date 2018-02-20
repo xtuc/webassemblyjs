@@ -27,6 +27,7 @@ type Sign =
   | "lt_u"
   | "le_s"
   | "le_u"
+  | "gt"
   | "gt_s"
   | "gt_u"
   | "ge_s"
@@ -103,6 +104,9 @@ function binop(
 
     case "le_u":
       return createValue(value1.le_u(value2));
+
+    case "gt":
+      return createValue(value1.gt(value2));
 
     case "gt_s":
       return createValue(value1.gt_s(value2));

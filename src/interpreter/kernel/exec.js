@@ -799,6 +799,7 @@ export function executeStackFrame(
       case "lt_u":
       case "le_s":
       case "le_u":
+      case "gt":
       case "gt_s":
       case "gt_u":
       case "ge_s":
