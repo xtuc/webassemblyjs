@@ -209,9 +209,8 @@ type CallIndirectInstruction = {
   type: "CallIndirectInstruction",
   params: Array<FuncParam>,
   results: Array<Valtype>,
-  intrs: Array<Expression>,
+  intrs: Array<Expression>
 };
-
 
 interface ModuleExport {
   type: "ModuleExport";

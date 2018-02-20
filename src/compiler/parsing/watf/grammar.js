@@ -1074,38 +1074,42 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const instrs = [];
 
         while (token.type !== tokens.closeParen) {
-          if (lookaheadAndCheck(token.openParen, keywords.type)) {
+          if (lookaheadAndCheck(tokens.openParen, keywords.type)) {
             eatToken(); // (
             eatToken(); // type
 
             // TODO(sven): replace this with parseType in https://github.com/xtuc/js-webassembly-interpreter/pull/158
             eatToken(); // whatever
-
-            eatTokenOfType(tokens.closeParen);
           } else if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
             eatToken(); // (
             eatToken(); // param
 
-            params.push(...parseFuncParam());
-
-            eatTokenOfType(tokens.closeParen);
+            /**
+             * Params can be empty:
+             * (params)`
+             */
+            if (token.type !== tokens.closeParen) {
+              params.push(...parseFuncParam());
+            }
           } else if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
             eatToken(); // (
             eatToken(); // result
 
-            results.push(...parseFuncResult());
-
-            eatTokenOfType(tokens.closeParen);
+            /**
+             * Results can be empty:
+             * (result)`
+             */
+            if (token.type !== tokens.closeParen) {
+              results.push(...parseFuncResult());
+            }
           } else {
             eatTokenOfType(tokens.openParen);
 
             instrs.push(parseFuncInstr());
-
-            eatTokenOfType(tokens.closeParen);
           }
-        }
 
-        eatTokenOfType(tokens.closeParen);
+          eatTokenOfType(tokens.closeParen);
+        }
 
         return t.callIndirectInstruction(params, results, instrs);
       } else if (isKeyword(token, keywords.call)) {
@@ -1153,7 +1157,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       } else {
         showCodeFrame(source, token.loc);
         throw new Error(
-          "Unexpected instruction in function body: " + token.type
+          "Unexpected instruction in function body: " + tokenToString(token)
         );
       }
     }

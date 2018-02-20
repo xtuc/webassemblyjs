@@ -1,0 +1,422 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "CallIndirectInstruction",
+      "params": [],
+      "results": [],
+      "intrs": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "CallIndirectInstruction",
+      "params": [
+        {
+          "valtype": "i64"
+        }
+      ],
+      "results": [],
+      "intrs": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i64",
+          "args": [
+            {
+              "type": "LongNumberLiteral",
+              "value": {
+                "high": 0,
+                "low": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "CallIndirectInstruction",
+      "params": [
+        {
+          "valtype": "i64"
+        },
+        {
+          "valtype": "f64"
+        },
+        {
+          "valtype": "i32"
+        },
+        {
+          "valtype": "i64"
+        }
+      ],
+      "results": [],
+      "intrs": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i64",
+          "args": [
+            {
+              "type": "LongNumberLiteral",
+              "value": {
+                "high": 0,
+                "low": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "f64",
+          "args": [
+            {
+              "type": "FloatLiteral",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i64",
+          "args": [
+            {
+              "type": "LongNumberLiteral",
+              "value": {
+                "high": 0,
+                "low": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "CallIndirectInstruction",
+      "params": [],
+      "results": [],
+      "intrs": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Instr",
+      "id": "drop",
+      "args": [
+        {
+          "type": "Instr",
+          "id": "eqz",
+          "object": "i32",
+          "args": [
+            {
+              "type": "CallIndirectInstruction",
+              "params": [],
+              "results": [
+                "i32"
+              ],
+              "intrs": [
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Instr",
+      "id": "drop",
+      "args": [
+        {
+          "type": "Instr",
+          "id": "eqz",
+          "object": "i32",
+          "args": [
+            {
+              "type": "CallIndirectInstruction",
+              "params": [],
+              "results": [
+                "i32"
+              ],
+              "intrs": [
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Instr",
+      "id": "drop",
+      "args": [
+        {
+          "type": "Instr",
+          "id": "eqz",
+          "object": "i32",
+          "args": [
+            {
+              "type": "CallIndirectInstruction",
+              "params": [
+                {
+                  "valtype": "i64"
+                }
+              ],
+              "results": [
+                "i32"
+              ],
+              "intrs": [
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i64",
+                  "args": [
+                    {
+                      "type": "LongNumberLiteral",
+                      "value": {
+                        "high": 0,
+                        "low": 0
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Instr",
+      "id": "drop",
+      "args": [
+        {
+          "type": "Instr",
+          "id": "eqz",
+          "object": "i32",
+          "args": [
+            {
+              "type": "CallIndirectInstruction",
+              "params": [
+                {
+                  "valtype": "i64"
+                },
+                {
+                  "valtype": "f64"
+                },
+                {
+                  "valtype": "i32"
+                },
+                {
+                  "valtype": "i64"
+                }
+              ],
+              "results": [
+                "i32"
+              ],
+              "intrs": [
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i64",
+                  "args": [
+                    {
+                      "type": "LongNumberLiteral",
+                      "value": {
+                        "high": 0,
+                        "low": 0
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "f64",
+                  "args": [
+                    {
+                      "type": "FloatLiteral",
+                      "value": 0
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 0
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i64",
+                  "args": [
+                    {
+                      "type": "LongNumberLiteral",
+                      "value": {
+                        "high": 0,
+                        "low": 0
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Instr",
+      "id": "drop",
+      "args": [
+        {
+          "type": "Instr",
+          "id": "eqz",
+          "object": "i64",
+          "args": [
+            {
+              "type": "CallIndirectInstruction",
+              "params": [
+                {
+                  "valtype": "i64"
+                }
+              ],
+              "results": [
+                "i64"
+              ],
+              "intrs": [
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i64",
+                  "args": [
+                    {
+                      "type": "LongNumberLiteral",
+                      "value": {
+                        "high": 0,
+                        "low": 0
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
