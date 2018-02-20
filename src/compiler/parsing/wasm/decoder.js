@@ -29,14 +29,6 @@ const {
 const ieee754 = require("./ieee754");
 const { utf8ArrayToStr } = require("./utf8");
 
-let inc = 0;
-
-function getUniqueName(prefix: string = "temp"): string {
-  inc++;
-
-  return prefix + "_" + inc;
-}
-
 function toHex(n: number): string {
   return "0x" + Number(n).toString(16);
 }
@@ -57,6 +49,14 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
 
 export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   const buf = new Uint8Array(ab);
+
+  let inc = 0;
+
+  function getUniqueName(prefix: string = "temp"): string {
+    inc++;
+
+    return prefix + "_" + inc;
+  }
 
   let offset = 0;
 
@@ -608,10 +608,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         // FIXME(sven): where is that stored?
         const testIndex = t.identifier(getUniqueName("ifindex"));
+        const testInstrs = [];
 
         const ifNode = t.ifInstruction(
           testIndex,
           blocktype,
+          testInstrs,
           consequentInstr,
           alternate
         );

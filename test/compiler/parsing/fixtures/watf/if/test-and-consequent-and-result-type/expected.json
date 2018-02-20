@@ -17,6 +17,7 @@
             "type": "Identifier",
             "value": "label"
           },
+          "test": [],
           "result": "i32",
           "consequent": [
             {

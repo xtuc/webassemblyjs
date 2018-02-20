@@ -11,23 +11,10 @@ type AllArgs = {
   namedArgs: Object
 };
 
-let inc = 0;
-
 function hasPlugin(name: string): boolean {
   if (name !== "wast") throw new Error("unknow plugin");
 
   return true;
-}
-
-// Used to have consistent tests
-export function resetUniqueNameGenerator() {
-  inc = 0;
-}
-
-function getUniqueName(prefix: string = "temp"): string {
-  inc++;
-
-  return prefix + "_" + inc;
 }
 
 function isKeyword(token: Object, id: string): boolean {
@@ -63,6 +50,13 @@ type ParserState = {
 
 export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
+  let inc = 0;
+
+  function getUniqueName(prefix: string = "temp"): string {
+    inc++;
+
+    return prefix + "_" + inc;
+  }
 
   const state: ParserState = {
     registredExportedElements: [],
@@ -485,6 +479,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       let blockResult;
       let label = t.identifier(getUniqueName("if"));
 
+      const testInstrs = [];
       const consequent = [];
       const alternate = [];
 
@@ -493,50 +488,59 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
-      eatTokenOfType(tokens.openParen);
+      while (token.type === tokens.openParen) {
+        eatToken(); // (
 
-      if (isKeyword(token, keywords.result) === true) {
-        eatToken();
-
-        blockResult = token.value;
-        eatTokenOfType(tokens.valtype);
-
-        eatTokenOfType(tokens.closeParen);
-
-        eatTokenOfType(tokens.openParen);
-      }
-
-      if (isKeyword(token, keywords.then) === true) {
-        eatToken();
-
-        while (token.type === tokens.openParen) {
+        /**
+         * Block signature
+         */
+        if (isKeyword(token, keywords.result) === true) {
           eatToken();
 
-          // Instruction
-          if (
-            lookaheadAndCheck(tokens.name) === true ||
-            lookaheadAndCheck(tokens.valtype) === true ||
-            token.type === "keyword" // is any keyword
-          ) {
-            consequent.push(parseFuncInstr());
-          } else {
-            showCodeFrame(source, token.loc);
-            throw new Error(
-              "Unexpected token in consequent body of type: " + token.type
-            );
+          blockResult = token.value;
+          eatTokenOfType(tokens.valtype);
+
+          eatTokenOfType(tokens.closeParen);
+
+          continue;
+        }
+
+        /**
+         * Then
+         */
+        if (isKeyword(token, keywords.then) === true) {
+          eatToken(); // then
+
+          while (token.type === tokens.openParen) {
+            eatToken();
+
+            // Instruction
+            if (
+              lookaheadAndCheck(tokens.name) === true ||
+              lookaheadAndCheck(tokens.valtype) === true ||
+              token.type === "keyword" // is any keyword
+            ) {
+              consequent.push(parseFuncInstr());
+            } else {
+              showCodeFrame(source, token.loc);
+              throw new Error(
+                "Unexpected token in consequent body of type: " + token.type
+              );
+            }
+
+            eatTokenOfType(tokens.closeParen);
           }
 
           eatTokenOfType(tokens.closeParen);
+
+          continue;
         }
 
-        eatTokenOfType(tokens.closeParen);
-      }
-
-      if (token.type === tokens.openParen) {
-        eatToken();
-
+        /**
+         * Alternate
+         */
         if (isKeyword(token, keywords.else)) {
-          eatToken();
+          eatToken(); // else
 
           while (token.type === tokens.openParen) {
             eatToken();
@@ -557,16 +561,35 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
             eatTokenOfType(tokens.closeParen);
           }
+
+          eatTokenOfType(tokens.closeParen);
+
+          continue;
         }
 
-        eatTokenOfType(tokens.closeParen);
+        /**
+         * Test instruction
+         */
+        if (
+          lookaheadAndCheck(tokens.name) === true ||
+          lookaheadAndCheck(tokens.valtype) === true ||
+          token.type === "keyword" // is any keyword
+        ) {
+          testInstrs.push(parseFuncInstr());
+
+          eatTokenOfType(tokens.closeParen);
+
+          continue;
+        }
       }
 
-      if (token.type === tokens.openParen) {
-        throw "f";
-      }
-
-      return t.ifInstruction(label, blockResult, consequent, alternate);
+      return t.ifInstruction(
+        label,
+        blockResult,
+        testInstrs,
+        consequent,
+        alternate
+      );
     }
 
     /**

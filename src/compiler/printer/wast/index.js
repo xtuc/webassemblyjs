@@ -29,6 +29,14 @@ function printProgram(n: Program, depth: number): string {
       acc += printFunc(child, depth + 1);
     }
 
+    if (child.type === "BlockComment") {
+      acc += printBlockComment(child, depth + 1);
+    }
+
+    if (child.type === "LeadingComment") {
+      acc += printLeadingComment(child, depth + 1);
+    }
+
     if (compact === false) {
       acc += "\n";
     }
@@ -81,12 +89,53 @@ function printModule(n: Module, depth: number): string {
       out += printMemory(field);
     }
 
+    if (field.type === "BlockComment") {
+      out += printBlockComment(field, depth + 1);
+    }
+
+    if (field.type === "LeadingComment") {
+      out += printLeadingComment(field, depth + 1);
+    }
+
     if (compact === false) {
       out += "\n";
     }
   });
 
   out += ")";
+
+  return out;
+}
+
+function printLeadingComment(n: LeadingComment /*, depth: number*/): string {
+  // Don't print leading comments in compact mode
+  if (compact === true) {
+    return "";
+  }
+
+  let out = "";
+
+  out += ";;";
+  out += n.value;
+
+  out += "\n";
+
+  return out;
+}
+
+function printBlockComment(n: BlockComment /*, depth: number*/): string {
+  // Don't print block comments in compact mode
+  if (compact === true) {
+    return "";
+  }
+
+  let out = "";
+
+  out += "(;";
+  out += n.value;
+  out += ";)";
+
+  out += "\n";
 
   return out;
 }
@@ -178,8 +227,9 @@ function printGlobal(n: Global /*, depth: number*/): string {
   out += "(";
   out += "global";
 
+  out += space;
+
   if (n.name != null) {
-    out += space;
     out += printIdentifier(n.name);
     out += space;
   }
@@ -205,9 +255,9 @@ function printTable(n: Table /*, depth: number*/): string {
   if (n.name != null) {
     out += space;
     out += printIdentifier(n.name);
-    out += space;
   }
 
+  out += space;
   out += printLimit(n.limits);
   out += space;
 
@@ -295,11 +345,58 @@ function printInstruction(n: Instruction, depth: number): string {
     out += printGenericInstruction(n, depth + 1);
   } else if (n.type === "BlockInstruction") {
     out += printBlockInstruction(n, depth + 1);
+  } else if (n.type === "IfInstruction") {
+    out += printIfInstruction(n, depth + 1);
   } else if (n.type === "CallInstruction") {
     out += printCallInstruction(n, depth + 1);
+  } else if (n.type === "LoopInstruction") {
+    out += printLoopInstruction(n, depth + 1);
   } else {
     throw new Error("Unsupported instruction: " + n.type);
   }
+
+  return out;
+}
+
+function printLoopInstruction(n: LoopInstruction, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "loop";
+
+  if (n.label != null) {
+    out += space;
+    out += printIdentifier(n.label);
+  }
+
+  if (typeof n.resulttype === "string") {
+    out += space;
+
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += n.resulttype;
+    out += ")";
+  }
+
+  if (n.instr.length > 0) {
+    n.instr.forEach(e => {
+      if (compact === false) {
+        out += "\n";
+      }
+
+      out += indent(depth);
+      out += printInstruction(e, depth + 1);
+    });
+
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth - 1);
+    }
+  }
+
+  out += ")";
 
   return out;
 }
@@ -313,6 +410,124 @@ function printCallInstruction(n: CallInstruction /*, depth: number*/): string {
   out += space;
 
   out += printIndex(n.index);
+
+  out += ")";
+
+  return out;
+}
+
+function printIfInstruction(n: IfInstruction, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "if";
+
+  if (n.testLabel != null) {
+    out += space;
+    out += printIdentifier(n.testLabel);
+  }
+
+  if (typeof n.result === "string") {
+    out += space;
+
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += n.result;
+    out += ")";
+  }
+
+  if (n.test.length > 0) {
+    out += space;
+
+    n.test.forEach(i => {
+      out += printInstruction(i, depth + 1);
+    });
+  }
+
+  if (n.consequent.length > 0) {
+    if (compact === false) {
+      out += "\n";
+    }
+
+    out += indent(depth);
+    out += "(";
+    out += "then";
+
+    depth++;
+
+    n.consequent.forEach(i => {
+      if (compact === false) {
+        out += "\n";
+      }
+
+      out += indent(depth);
+      out += printInstruction(i, depth + 1);
+    });
+
+    depth--;
+
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth);
+    }
+
+    out += ")";
+  } else {
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth);
+    }
+
+    out += "(";
+    out += "then";
+    out += ")";
+  }
+
+  if (n.alternate.length > 0) {
+    if (compact === false) {
+      out += "\n";
+    }
+
+    out += indent(depth);
+    out += "(";
+    out += "else";
+
+    depth++;
+
+    n.alternate.forEach(i => {
+      if (compact === false) {
+        out += "\n";
+      }
+
+      out += indent(depth);
+      out += printInstruction(i, depth + 1);
+    });
+
+    depth--;
+
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth);
+    }
+
+    out += ")";
+  } else {
+    if (compact === false) {
+      out += "\n";
+      out += indent(depth);
+    }
+
+    out += "(";
+    out += "else";
+    out += ")";
+  }
+
+  if (compact === false) {
+    out += "\n";
+    out += indent(depth - 1);
+  }
 
   out += ")";
 
@@ -420,6 +635,15 @@ function printModuleExport(n: ModuleExport): string {
 
     out += printIndex(n.descr.id);
 
+    out += ")";
+  }
+
+  if (n.descr.type === "Mem") {
+    out += space;
+    out += "(";
+    out += "memory";
+    out += space;
+    out += printIndex(n.descr.id);
     out += ")";
   }
 

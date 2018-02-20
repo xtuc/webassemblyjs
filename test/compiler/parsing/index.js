@@ -8,7 +8,6 @@ const path = require("path");
 
 const { parsers } = require("../../../lib/tools");
 const wastIdentifierToIndex = require("../../../lib/compiler/AST/transform/wast-identifier-to-index");
-const watf = require("../../../lib/compiler/parsing/watf/grammar");
 
 function toArrayBuffer(buf) {
   return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
@@ -44,8 +43,6 @@ function createCheck(suite, ast) {
 
 describe("compiler", () => {
   describe("watf", () => {
-    afterEach(() => watf.resetUniqueNameGenerator());
-
     describe("parsing", () => {
       const testSuites = glob.sync(
         "test/compiler/parsing/fixtures/watf/**/actual.wast"

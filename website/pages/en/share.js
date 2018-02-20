@@ -5,9 +5,7 @@
 const React = require("react");
 
 const CompLibrary = require("../../core/CompLibrary.js");
-const MarkdownBlock = CompLibrary.MarkdownBlock;
 const Container = CompLibrary.Container;
-const GridBlock = CompLibrary.GridBlock;
 
 class Share extends React.Component {
   render() {
@@ -34,15 +32,19 @@ class Share extends React.Component {
           <div className="window-header">
             <div className="action-buttons" />
 
-            <span className="language">WAST</span>
+            <span className="language">wasm2wast</span>
           </div>
           <div className="window-body" id="editor">
             <pre className="code-output" id="output"></pre>
           </div>
         </div>
 
-        <script src="https://bundle.run/webassembly-interpreter@0.0.20/lib/tools.js" />
+        <script src="https://bundle.run/webassembly-interpreter@0.0.29/lib/tools.js" />
         <script src="/js/share.js" />
+
+        <p style={{textAlign: 'center'}}>
+          You can find more information about these tools <a href="/docs/usage.html">here</a>.
+        </p>
       </Container>
     );
   }

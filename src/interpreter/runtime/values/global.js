@@ -2,7 +2,10 @@
 
 const { evaluate } = require("../../partial-evaluation");
 const { isConst } = require("../../../compiler/validation/is-const");
-const { getType } = require("../../../compiler/validation/type-inference");
+const {
+  getType,
+  typeEq
+} = require("../../../compiler/validation/type-inference");
 const { CompileError } = require("../../../errors");
 
 export function createInstance(
@@ -26,8 +29,8 @@ export function createInstance(
   const resultInferedType = getType(node.init);
 
   if (
-    resultInferedType !== undefined &&
-    node.globalType.valtype !== resultInferedType
+    resultInferedType != null &&
+    typeEq([node.globalType.valtype], resultInferedType) === false
   ) {
     throw new CompileError("type mismatch");
   }
