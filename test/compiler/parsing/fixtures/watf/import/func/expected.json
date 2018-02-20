@@ -7,7 +7,7 @@
       "name": "name",
       "descr": {
         "type": "FuncImportDescr",
-        "value": {
+        "id": {
           "type": "Identifier",
           "value": "name"
         },

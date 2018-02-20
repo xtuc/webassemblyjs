@@ -243,7 +243,7 @@ describe("module create interface", () => {
       t.moduleImport(
         "env",
         "test",
-        t.funcImportDescr(t.numberLiteral(0), ["i32", "i32"], [])
+        t.funcImportDescr(t.identifier("foo"), ["i32", "i32"], [])
       )
     ]);
 
