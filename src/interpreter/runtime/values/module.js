@@ -110,6 +110,16 @@ function instantiateDataSections(
         const offsetInstruction: any = node.offset;
         const arg = (offsetInstruction.args[0]: any);
         offset = arg.value;
+      } else if (node.offset.id === "get_global") {
+        const offsetInstruction: any = node.offset;
+        const globalIndex = (offsetInstruction.args[0]: any).value;
+        const globalAddr = moduleInstance.globaladdrs[globalIndex];
+        const globalInstance = allocator.get(globalAddr);
+        offset = globalInstance.value.toNumber();
+      } else {
+        throw new RuntimeError(
+          "data segment offsets can only be specified as constants or globals"
+        );
       }
 
       for (let i = 0; i < node.init.values.length; i++) {
