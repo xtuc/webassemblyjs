@@ -471,3 +471,16 @@ export function memIndexLiteral(value: number): Memidx {
   const x: U32Literal = numberLiteral(value, "u32");
   return x;
 }
+
+export function callIndirectInstruction(
+  params: Array<FuncParam>,
+  results: Array<Valtype>,
+  intrs: Array<Expression>
+): CallIndirectInstruction {
+  return {
+    type: "CallIndirectInstruction",
+    params,
+    results,
+    intrs
+  };
+}
