@@ -494,7 +494,7 @@ export function executeStackFrame(
           );
         }
 
-        if (index.type === "NumberLiteral" || index.type === "FloatLiteral") {
+        if (index.type === "NumberLiteral") {
           getLocalByIndex(index.value);
         } else {
           throw new RuntimeError(
