@@ -495,3 +495,16 @@ export function typeInstructionFunc(
     }
   };
 }
+
+export function callIndirectInstruction(
+  params: Array<FuncParam>,
+  results: Array<Valtype>,
+  intrs: Array<Expression>
+): CallIndirectInstruction {
+  return {
+    type: "CallIndirectInstruction",
+    params,
+    results,
+    intrs
+  };
+}

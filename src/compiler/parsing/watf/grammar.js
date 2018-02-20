@@ -1011,6 +1011,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *   <type>.<testop>
      *   <type>.<relop>
      *   <type>.<cvtop>/<type>
+     *
+     * func_type:   ( type <var> )? <param>* <result>*
      */
     function parseFuncInstr(): Instruction {
       /**
@@ -1064,6 +1066,52 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // keyword
 
         return parseBlock();
+      } else if (isKeyword(token, keywords.call_indirect)) {
+        eatToken(); // keyword
+
+        const params = [];
+        const results = [];
+        const instrs = [];
+
+        while (token.type !== tokens.closeParen) {
+          if (lookaheadAndCheck(tokens.openParen, keywords.type)) {
+            eatToken(); // (
+            eatToken(); // type
+
+            // TODO(sven): replace this with parseType in https://github.com/xtuc/js-webassembly-interpreter/pull/158
+            eatToken(); // whatever
+          } else if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
+            eatToken(); // (
+            eatToken(); // param
+
+            /**
+             * Params can be empty:
+             * (params)`
+             */
+            if (token.type !== tokens.closeParen) {
+              params.push(...parseFuncParam());
+            }
+          } else if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
+            eatToken(); // (
+            eatToken(); // result
+
+            /**
+             * Results can be empty:
+             * (result)`
+             */
+            if (token.type !== tokens.closeParen) {
+              results.push(...parseFuncResult());
+            }
+          } else {
+            eatTokenOfType(tokens.openParen);
+
+            instrs.push(parseFuncInstr());
+          }
+
+          eatTokenOfType(tokens.closeParen);
+        }
+
+        return t.callIndirectInstruction(params, results, instrs);
       } else if (isKeyword(token, keywords.call)) {
         eatToken(); // keyword
 
@@ -1112,7 +1160,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       } else {
         showCodeFrame(source, token.loc);
         throw new Error(
-          "Unexpected instruction in function body: " + token.type
+          "Unexpected instruction in function body: " + tokenToString(token)
         );
       }
     }

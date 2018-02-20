@@ -77,6 +77,7 @@ const keywords = {
   then: "then",
   else: "else",
   call: "call",
+  call_indirect: "call_indirect",
   import: "import",
   memory: "memory",
   table: "table",

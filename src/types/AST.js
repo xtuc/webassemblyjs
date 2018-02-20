@@ -41,6 +41,7 @@ type Mutability = "const" | "var";
 type InstructionType = "Instr" | ControlInstruction;
 type ControlInstruction =
   | "CallInstruction"
+  | "CallIndirectInstruction"
   | "BlockInstruction"
   | "LoopInstruction"
   | "IfInstruction";
@@ -159,6 +160,7 @@ type Instruction =
   | BlockInstruction
   | IfInstruction
   | CallInstruction
+  | CallIndirectInstruction
   | GenericInstruction
   | ObjectInstruction;
 
@@ -202,6 +204,13 @@ type CallInstruction = {
   type: "CallInstruction",
   index: Index,
   instrArgs?: Array<Expression> // only for WAST
+};
+
+type CallIndirectInstruction = {
+  type: "CallIndirectInstruction",
+  params: Array<FuncParam>,
+  results: Array<Valtype>,
+  intrs: Array<Expression>
 };
 
 interface ModuleExport {
