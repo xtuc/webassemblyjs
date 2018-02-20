@@ -1,0 +1,79 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "ModuleImport",
+          "module": "./module",
+          "name": "getNumber",
+          "descr": {
+            "type": "FuncImportDescr",
+            "id": {
+              "type": "Identifier",
+              "value": "./module.getNumber"
+            },
+            "params": [],
+            "results": [
+              "i32"
+            ]
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_1"
+          },
+          "params": [
+            {
+              "valtype": "i32"
+            }
+          ],
+          "result": [
+            "i32"
+          ],
+          "body": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "add",
+              "object": "i32",
+              "args": []
+            }
+          ]
+        },
+        {
+          "type": "ModuleExport",
+          "name": "addNumber",
+          "descr": {
+            "type": "Func",
+            "id": {
+              "type": "Identifier",
+              "value": "func_1"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -220,7 +220,7 @@ type Limit = {
 
 type FuncImportDescr = {
   type: "FuncImportDescr",
-  value: Index,
+  id: Identifier,
   params: Array<FuncParam>,
   results: Array<Valtype>
 };

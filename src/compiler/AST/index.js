@@ -350,7 +350,7 @@ export function funcParam(valtype: Valtype, id: ?string): FuncParam {
 }
 
 export function funcImportDescr(
-  value: Index,
+  id: Identifier,
   params: Array<FuncParam> = [],
   results: Array<Valtype> = []
 ): FuncImportDescr {
@@ -359,7 +359,7 @@ export function funcImportDescr(
 
   return {
     type: "FuncImportDescr",
-    value,
+    id,
     params,
     results
   };
