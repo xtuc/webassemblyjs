@@ -290,9 +290,9 @@ type ValtypeLiteral = {
 
 type TypeInstruction = {
   type: "TypeInstruction",
-  id: ?Index;
+  id: ?Index,
   functype: {
-    params: Array<FuncParam>;
-    result: Array<Valtype>;
+    params: Array<FuncParam>,
+    result: Array<Valtype>
   }
 };
