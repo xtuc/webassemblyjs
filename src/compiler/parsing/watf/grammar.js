@@ -242,12 +242,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      * WAST:
      *
-     * table: ( table <name>? <table_sig> )
-     *        ( table <name>? ( export <string> ) <...> )
-     *        ( table <name>? ( import <string> <string> ) <table_sig> )
-     *        ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) )
+     * table:   ( table <name>? <table_type> )
+     *          ( table <name>? ( export <string> ) <...> )
+     *          ( table <name>? ( import <string> <string> ) <table_type> )
+     *          ( table <name>? ( export <string> )* <elem_type> ( elem <var>* ) )
      *
-     * table_sig:  <nat> <nat>? <elem_type>
+     * table_type:  <nat> <nat>? <elem_type>
+     * elem_type: anyfunc
+     *
+     * elem:    ( elem <var>? (offset <instr>* ) <var>* )
+     *          ( elem <var>? <expr> <var>* )
      */
     function parseTable(): Table {
       let name = t.identifier(getUniqueName());
@@ -285,7 +289,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       /**
-       * Table signature
+       * Table type
        */
       if (token.type === tokens.number) {
         const min = token.value;
