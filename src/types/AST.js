@@ -200,7 +200,8 @@ type IfInstruction = {
 
 type CallInstruction = {
   type: "CallInstruction",
-  index: Index
+  index: Index,
+  instrArgs?: Array<Expression> // only for WAST
 };
 
 interface ModuleExport {

@@ -272,14 +272,23 @@ export function numberLiteral(
   return x;
 }
 
-export function callInstruction(index: Index): CallInstruction {
+export function callInstruction(
+  index: Index,
+  instrArgs?: Array<Expression>
+): CallInstruction {
   assert(typeof index.type === "string");
 
-  return {
+  const n: CallInstruction = {
     type: "CallInstruction",
     id: "call",
     index
   };
+
+  if (typeof instrArgs === "object") {
+    n.instrArgs = instrArgs;
+  }
+
+  return n;
 }
 
 export function ifInstruction(

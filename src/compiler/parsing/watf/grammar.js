@@ -1059,14 +1059,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
         }
 
+        const instrArgs = [];
+
         // Nested instruction
-        if (token.type === tokens.openParen) {
-          const callBody = [];
+        while (token.type === tokens.openParen) {
+          eatToken();
 
-          parseListOfInstructions(callBody);
-
-          // Ignore call body for now since it's just in the WAST format and
-          // not in the WASM production format.
+          instrArgs.push(parseFuncInstr());
           eatTokenOfType(tokens.closeParen);
         }
 
@@ -1074,7 +1073,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           throw new Error("Missing argument in call instruciton");
         }
 
-        return t.callInstruction(index);
+        if (instrArgs.length > 0) {
+          return t.callInstruction(index, instrArgs);
+        } else {
+          return t.callInstruction(index);
+        }
       } else if (isKeyword(token, keywords.if)) {
         eatToken(); // Keyword
 
