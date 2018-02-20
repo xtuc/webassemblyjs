@@ -148,7 +148,7 @@ function printModuleImportDescr(n: ImportDescr, depth: number): string {
     out += "func";
     out += space;
 
-    out += printIndex(n.value);
+    out += printIdentifier(n.id);
 
     n.params.forEach(param => {
       out += space;

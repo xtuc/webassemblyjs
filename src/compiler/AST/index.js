@@ -359,7 +359,7 @@ export function funcParam(valtype: Valtype, id: ?string): FuncParam {
 }
 
 export function funcImportDescr(
-  value: Index,
+  id: Identifier,
   params: Array<FuncParam> = [],
   results: Array<Valtype> = []
 ): FuncImportDescr {
@@ -368,7 +368,7 @@ export function funcImportDescr(
 
   return {
     type: "FuncImportDescr",
-    value,
+    id,
     params,
     results
   };
@@ -377,14 +377,21 @@ export function funcImportDescr(
 export function table(
   elementType: TableElementType,
   limits: Limit,
-  name: ?Identifier
+  name: ?Identifier,
+  elements?: Array<Index>
 ): Table {
-  return {
+  const n: Table = {
     type: "Table",
     elementType,
     limits,
     name
   };
+
+  if (typeof elements === "object") {
+    n.elements = elements;
+  }
+
+  return n;
 }
 
 export function limits(min: number, max?: number): Limit {

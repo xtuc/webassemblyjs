@@ -344,16 +344,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
           );
         }
 
-        importDescr = t.funcImportDescr(
-          t.indexLiteral(typeindex),
-          signature.params,
-          signature.result
-        );
+        const id = t.identifier(`${moduleName.value}.${name.value}`);
 
-        const id = t.identifier(name.value);
+        importDescr = t.funcImportDescr(id, signature.params, signature.result);
 
         state.functionsInModule.push({
-          id,
+          id: t.identifier(name.value),
           signature,
           isExternal: true
         });
@@ -1157,13 +1153,14 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     let body = [];
 
     // External functions doesn't provide any code, can skip it here
-    if (func.isExternal === false) {
-      const decodedElementInCodeSection =
-        state.elementsInCodeSection[funcIndex];
-      body = decodedElementInCodeSection.code;
-
-      funcIndex++;
+    if (func.isExternal === true) {
+      return;
     }
+
+    const decodedElementInCodeSection = state.elementsInCodeSection[funcIndex];
+    body = decodedElementInCodeSection.code;
+
+    funcIndex++;
 
     const funcNode = t.func(func.id, params, result, body);
 
