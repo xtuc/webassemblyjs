@@ -473,3 +473,18 @@ export function memIndexLiteral(value: number): Memidx {
   const x: U32Literal = numberLiteral(value, "u32");
   return x;
 }
+
+export function typeInstructionFunc(
+  params: Array<FuncParam> = [],
+  result: Array<Valtype> = [],
+  id: ?Index
+): TypeInstruction {
+  return {
+    type: "TypeInstruction",
+    id,
+    functype: {
+      params,
+      result
+    }
+  };
+}

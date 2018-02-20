@@ -1200,6 +1200,57 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     /**
+     * Parses a type instruction
+     *
+     * WAST:
+     *
+     * typedef: ( type <name>? ( func <param>* <result>* ) )
+     */
+    function parseType(): TypeInstruction {
+      let id;
+      let params = [];
+      let result = [];
+
+      if (token.type === tokens.identifier) {
+        id = t.identifier(token.value);
+        eatToken();
+      }
+
+      if (lookaheadAndCheck(tokens.openParen, keywords.func)) {
+        eatToken(); // (
+        eatToken(); // func
+
+        if (token.type === tokens.closeParen) {
+          eatToken();
+          // function with an empty signature, we can abort here
+          return t.typeInstructionFunc([], [], id);
+        }
+
+        if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
+          eatToken(); // (
+          eatToken(); // param
+
+          params = parseFuncParam();
+
+          eatTokenOfType(tokens.closeParen);
+        }
+
+        if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
+          eatToken(); // (
+          eatToken(); // param
+
+          result = parseFuncResult();
+
+          eatTokenOfType(tokens.closeParen);
+        }
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      return t.typeInstructionFunc(params, result, id);
+    }
+
+    /**
      * Parses a function result
      *
      * WAST:
@@ -1455,6 +1506,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.global)) {
         eatToken();
         const node = parseGlobal();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.type)) {
+        eatToken();
+        const node = parseType();
         eatTokenOfType(tokens.closeParen);
 
         return node;
