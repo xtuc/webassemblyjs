@@ -1011,6 +1011,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *   <type>.<testop>
      *   <type>.<relop>
      *   <type>.<cvtop>/<type>
+     *
+     * func_type:   ( type <var> )? <param>* <result>*
      */
     function parseFuncInstr(): Instruction {
       /**
@@ -1064,6 +1066,48 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // keyword
 
         return parseBlock();
+      } else if (isKeyword(token, keywords.call_indirect)) {
+        eatToken(); // keyword
+
+        const params = [];
+        const results = [];
+        const instrs = [];
+
+        while (token.type !== tokens.closeParen) {
+          if (lookaheadAndCheck(token.openParen, keywords.type)) {
+            eatToken(); // (
+            eatToken(); // type
+
+            // TODO(sven): replace this with parseType in https://github.com/xtuc/js-webassembly-interpreter/pull/158
+            eatToken(); // whatever
+
+            eatTokenOfType(tokens.closeParen);
+          } else if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
+            eatToken(); // (
+            eatToken(); // param
+
+            params.push(...parseFuncParam());
+
+            eatTokenOfType(tokens.closeParen);
+          } else if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
+            eatToken(); // (
+            eatToken(); // result
+
+            results.push(...parseFuncResult());
+
+            eatTokenOfType(tokens.closeParen);
+          } else {
+            eatTokenOfType(tokens.openParen);
+
+            instrs.push(parseFuncInstr());
+
+            eatTokenOfType(tokens.closeParen);
+          }
+        }
+
+        eatTokenOfType(tokens.closeParen);
+
+        return t.callIndirectInstruction(params, results, instrs);
       } else if (isKeyword(token, keywords.call)) {
         eatToken(); // keyword
 
