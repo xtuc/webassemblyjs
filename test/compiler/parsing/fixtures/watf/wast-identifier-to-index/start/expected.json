@@ -1,0 +1,38 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "a"
+          },
+          "params": [],
+          "result": [],
+          "body": []
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "fn"
+          },
+          "params": [],
+          "result": [],
+          "body": []
+        },
+        {
+          "type": "Start",
+          "index": {
+            "type": "NumberLiteral",
+            "value": 1
+          }
+        }
+      ]
+    }
+  ]
+}

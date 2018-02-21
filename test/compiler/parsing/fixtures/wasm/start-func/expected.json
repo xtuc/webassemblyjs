@@ -1,0 +1,46 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "ModuleImport",
+          "module": "./tracker",
+          "name": "trackWasm",
+          "descr": {
+            "type": "FuncImportDescr",
+            "id": {
+              "type": "Identifier",
+              "value": "./tracker.trackWasm"
+            },
+            "params": [
+              {
+                "valtype": "i32"
+              }
+            ],
+            "results": []
+          }
+        },
+        {
+          "type": "ModuleImport",
+          "module": "./c.js",
+          "name": "magicNumber",
+          "descr": {
+            "type": "GlobalType",
+            "valtype": "i32",
+            "mutability": "const"
+          }
+        },
+        {
+          "type": "Start",
+          "index": {
+            "type": "NumberLiteral",
+            "value": 1
+          }
+        }
+      ]
+    }
+  ]
+}

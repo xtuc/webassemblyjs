@@ -357,7 +357,9 @@ export function executeStackFrame(
           } else {
             const res = subroutine.code(args.map(arg => arg.value));
 
-            pushResult(castIntoStackLocalOfType(resultType, res));
+            if (typeof res !== "undefined") {
+              pushResult(castIntoStackLocalOfType(resultType, res));
+            }
           }
         }
 
@@ -656,13 +658,21 @@ export function executeStackFrame(
       case "store8":
       case "store16":
       case "store32": {
+        const { id, object, args } = instruction;
+
+        // Interpret children first
+        // only WAST
+        if (typeof args !== "undefined" && args.length > 0) {
+          createAndExecuteChildStackFrame(args);
+        }
+
         const memory = getMemory();
 
-        const [c1, c2] = pop2("i32", instruction.object);
+        const [c1, c2] = pop2("i32", object);
         const ptr = c1.value.toNumber() + getMemoryOffset(instruction);
         let valueBuffer = c2.value.toByteArray();
 
-        switch (instruction.id) {
+        switch (id) {
           case "store8":
             valueBuffer = valueBuffer.slice(0, 1);
             break;
@@ -695,6 +705,14 @@ export function executeStackFrame(
       case "load8_u":
       case "load32_s":
       case "load32_u": {
+        const { id, object, args } = instruction;
+
+        // Interpret children first
+        // only WAST
+        if (typeof args !== "undefined" && args.length > 0) {
+          createAndExecuteChildStackFrame(args);
+        }
+
         const memory = getMemory();
 
         const ptr =
@@ -703,9 +721,9 @@ export function executeStackFrame(
         // for i32 / i64 ops, handle extended load
         let extend = 0;
         // for i64 values, increase the bitshift by 4 bytes
-        const extendOffset = instruction.object === "i32" ? 0 : 32;
+        const extendOffset = object === "i32" ? 0 : 32;
         let signed = false;
-        switch (instruction.id) {
+        switch (id) {
           case "load16_s":
             extend = 16 + extendOffset;
             signed = true;
@@ -733,7 +751,7 @@ export function executeStackFrame(
         }
 
         // check for memory access out of bounds
-        switch (instruction.object) {
+        switch (object) {
           case "i32":
           case "f32":
             if (ptr + 4 > memory.buffer.byteLength) {
@@ -748,7 +766,7 @@ export function executeStackFrame(
             break;
         }
 
-        switch (instruction.object) {
+        switch (object) {
           case "i32":
             pushResult(
               i32.createValueFromArrayBuffer(memory.buffer, ptr, extend, signed)
@@ -766,6 +784,7 @@ export function executeStackFrame(
             pushResult(f64.createValueFromArrayBuffer(memory.buffer, ptr));
             break;
         }
+
         break;
       }
 

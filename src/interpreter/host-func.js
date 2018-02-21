@@ -92,18 +92,22 @@ export function createHostfunc(
     //   'v:' + i.id,
     // );
 
-    try {
-      const res = executeStackFrame(stackFrame);
-
-      if (res != null && res.value != null) {
-        return res.value.toNumber();
-      }
-    } catch (e) {
-      if (e instanceof ExecutionHasBeenTrapped) {
-        throw e;
-      } else {
-        throw new RuntimeError(e.message);
-      }
-    }
+    return executeStackFrameAndGetResult(stackFrame);
   };
+}
+
+export function executeStackFrameAndGetResult(stackFrame: StackFrame): any {
+  try {
+    const res = executeStackFrame(stackFrame);
+
+    if (res != null && res.value != null) {
+      return res.value.toNumber();
+    }
+  } catch (e) {
+    if (e instanceof ExecutionHasBeenTrapped) {
+      throw e;
+    } else {
+      throw new RuntimeError(e.message);
+    }
+  }
 }
