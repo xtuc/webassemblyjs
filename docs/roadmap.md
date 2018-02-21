@@ -10,9 +10,10 @@ It's important that the features used in Webpack are working, and thus the follo
   - [ ] Decode data sections
   - [ ] Decode custom sections
   - [ ] Add more invalid modules coverage from spec tests
-  - [ ] Decode the start section
-    - [ ] Start the execution from the start function
-
+  - [x] Decode the start section (https://github.com/xtuc/js-webassembly-interpreter/pull/164)
+    - [ ] WASM - Start the execution from the start function
+    - [x] WAST - Start the execution from the start function
+    
 ## Version 1.1.0
 
 The second important feature for Webpack is [wasm-dce](https://github.com/xtuc/wasm-dce).
