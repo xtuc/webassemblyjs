@@ -110,6 +110,9 @@ export function walk(
       // $FlowIgnore
       walk(n.label, cb);
     }
+
+    // $FlowIgnore
+    n.instr.forEach(x => walk(x, cb));
   }
 
   if (n.type === "IfInstruction") {
