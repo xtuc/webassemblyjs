@@ -152,7 +152,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // data
 
         // TODO(sven): do something with the data collected here
+        const stringInitializer = token.value;
         eatTokenOfType(tokens.string);
+
+        // Update limits accordingly
+        limits = t.limits(stringInitializer.length);
 
         eatTokenOfType(tokens.closeParen);
       }
