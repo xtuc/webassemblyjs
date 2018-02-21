@@ -950,11 +950,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
     dump([startFuncIndex], "index");
 
-    const func = state.functionsInModule[startFuncIndex];
-
-    if (typeof func === "undefined") {
-      throw new CompileError("Unknown start function");
-    }
+    return t.start(t.indexLiteral(startFuncIndex));
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#data-section
@@ -1071,8 +1067,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         dump([sectionId], "section code");
         dump([0x0], "section size (ignore)");
 
-        parseStartSection();
-        break;
+        return [parseStartSection()];
       }
 
       case sections.elemSection: {
