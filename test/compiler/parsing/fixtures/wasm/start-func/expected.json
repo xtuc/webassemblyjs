@@ -32,6 +32,13 @@
             "valtype": "i32",
             "mutability": "const"
           }
+        },
+        {
+          "type": "Start",
+          "index": {
+            "type": "NumberLiteral",
+            "value": 1
+          }
         }
       ]
     }
