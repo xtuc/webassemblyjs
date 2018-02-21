@@ -138,7 +138,7 @@ export class Instance {
     // The type of C.funcs[x] must be []→[].
     const [params, results] = funcinst.type;
 
-    if (params.length !== 0 && results.length !== 0) {
+    if (params.length !== 0 || results.length !== 0) {
       throw new RuntimeError(
         "Start function can not have arguments or results"
       );

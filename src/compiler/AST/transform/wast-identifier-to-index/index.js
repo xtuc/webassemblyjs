@@ -44,9 +44,7 @@ export function transform(ast: Program) {
       );
 
       if (offsetInFunctionsInProgram === -1) {
-        throw new Error(
-          `${index.value} not found in start: not declared in Program`
-        );
+        throw new Error("unknown function");
       }
 
       const indexNode = t.indexLiteral(offsetInFunctionsInProgram);
