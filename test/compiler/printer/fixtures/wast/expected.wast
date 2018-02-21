@@ -83,4 +83,6 @@
   (table $a 10 anyfunc)
   (func $func_28)
   (func $test)
+  (start $test)
+  (start 0)
 )

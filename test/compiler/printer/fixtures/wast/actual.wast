@@ -93,4 +93,7 @@
 
   (func)
   (func $test)
+
+  (start $test)
+  (start 0)
 )

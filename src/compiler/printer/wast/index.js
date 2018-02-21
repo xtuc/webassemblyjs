@@ -97,11 +97,27 @@ function printModule(n: Module, depth: number): string {
       out += printLeadingComment(field, depth + 1);
     }
 
+    if (field.type === "Start") {
+      out += printStart(field, depth + 1);
+    }
+
     if (compact === false) {
       out += "\n";
     }
   });
 
+  out += ")";
+
+  return out;
+}
+
+function printStart(n: Start /*, depth: number*/): string {
+  let out = "";
+
+  out += "(";
+  out += "start";
+  out += space;
+  out += printIndex(n.index);
   out += ")";
 
   return out;
