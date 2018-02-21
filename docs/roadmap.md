@@ -2,10 +2,10 @@
 
 ## Version 1.0.0
 
-There is are a few PRs against Webpack to use directly or indirectly this project.
+There are a few PRs against Webpack to use directly or indirectly this project.
 
-It's important that the features used in Webpack, and thus the following work is priority:
-- Making sure we can parse WASM binaries
+It's important that the features used in Webpack are working, and thus the following work is priority:
+- Making sure that we can parse WASM binaries
   - [ ] Ability to import memory (https://github.com/xtuc/js-webassembly-interpreter/issues/137)
   - [ ] Implement data sections
   - [ ] Implement custom sections
