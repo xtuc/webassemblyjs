@@ -2,5 +2,8 @@
 (func $b)
 
 (func
-  (block (call $a) (call $b))
+  (block
+    (call $a)
+    (call $b)
+  )
 )
