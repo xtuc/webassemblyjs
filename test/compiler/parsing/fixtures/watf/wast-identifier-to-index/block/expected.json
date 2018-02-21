@@ -1,0 +1,62 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "a"
+      },
+      "params": [],
+      "result": [],
+      "body": []
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "b"
+      },
+      "params": [],
+      "result": [],
+      "body": []
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_3"
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "BlockInstruction",
+          "id": "block",
+          "label": {
+            "type": "Identifier",
+            "value": "block_4"
+          },
+          "instr": [
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0
+              }
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
