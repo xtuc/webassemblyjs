@@ -1452,6 +1452,35 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return params;
     }
 
+    /**
+     * Parses the start instruction in a module
+     *
+     * WAST:
+     *
+     * start:   ( start <var> )
+     * var:    <nat> | <name>
+     *
+     * WAT:
+     * start ::= ‘(’ ‘start’  x:funcidx ‘)’
+     */
+    function parseStart(): Start {
+      if (token.type === tokens.identifier) {
+        const index = t.identifier(token.value);
+        eatToken();
+
+        return t.start(index);
+      }
+
+      if (token.type === tokens.number) {
+        const index = t.indexLiteral(token.value);
+        eatToken();
+
+        return t.start(index);
+      }
+
+      throw new Error("Unknown start, token: " + tokenToString(token));
+    }
+
     if (token.type === tokens.openParen) {
       eatToken();
 
@@ -1518,6 +1547,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.global)) {
         eatToken();
         const node = parseGlobal();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.start)) {
+        eatToken();
+        const node = parseStart();
         eatTokenOfType(tokens.closeParen);
 
         return node;

@@ -484,3 +484,10 @@ export function callIndirectInstruction(
     intrs
   };
 }
+
+export function start(index: Index): Start {
+  return {
+    type: "Start",
+    index
+  };
+}

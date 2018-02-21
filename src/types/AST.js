@@ -296,3 +296,8 @@ type ValtypeLiteral = {
   type: "ValtypeLiteral",
   name: Valtype
 };
+
+type Start = {
+  type: "Start",
+  index: Index
+};

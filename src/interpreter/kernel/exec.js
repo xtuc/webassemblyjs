@@ -357,7 +357,9 @@ export function executeStackFrame(
           } else {
             const res = subroutine.code(args.map(arg => arg.value));
 
-            pushResult(castIntoStackLocalOfType(resultType, res));
+            if (typeof res !== "undefined") {
+              pushResult(castIntoStackLocalOfType(resultType, res));
+            }
           }
         }
 
