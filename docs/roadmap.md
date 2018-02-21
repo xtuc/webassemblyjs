@@ -10,6 +10,8 @@ It's important that the features used in Webpack are working, and thus the follo
   - [ ] Decode data sections
   - [ ] Decode custom sections
   - [ ] Add more invalid modules coverage from spec tests
+  - [ ] Decode the start section
+    - [ ] Start the execution from the start function
 
 ## Version 1.1.0
 
