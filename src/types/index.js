@@ -73,7 +73,7 @@ type StackFrame = {
   originatingModule: ModuleInstance,
   allocator: Allocator,
 
-  trace?: (number, number, Instruction) => void
+  trace?: (number, number, Instruction, StackFrame) => void
 };
 
 type StackLocal = {

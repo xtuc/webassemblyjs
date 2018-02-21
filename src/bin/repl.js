@@ -240,8 +240,12 @@ const countClosingParens = countChar(")");
 let buffer = "";
 let openParens = 0;
 
-function error({ message }) {
+function error({ message, stack }) {
   console.log("Error: " + message);
+
+  if (isVerbose === true) {
+    console.log(stack);
+  }
 }
 
 function createModuleInstanceFromAst(moduleNode) {

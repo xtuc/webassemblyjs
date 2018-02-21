@@ -6,7 +6,9 @@ const {
 const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");
 const { RuntimeError } = require("../errors");
+const label = require("./runtime/values/label");
 const { ExecutionHasBeenTrapped } = require("./kernel/signals");
+const t = require("../compiler/AST");
 
 export function createHostfunc(
   moduleinst: ModuleInstance,
@@ -84,13 +86,55 @@ export function createHostfunc(
       allocator
     );
 
-    // stackFrame.trace = (depth, pc, i) => console.log(
-    //   'trace exec',
-    //   'depth:' + depth,
-    //   'pc:' + pc,
-    //   'instruction:' + i.type,
-    //   'v:' + i.id,
-    // );
+    // 2. Enter the block instr∗ with label
+    stackFrame.values.push(label.createValue(exportinst.name));
+
+    stackFrame.labels.push({
+      value: funcinst,
+      arity: funcinstArgs.length,
+      id: t.identifier(exportinst.name)
+    });
+
+    // function trace(depth, pc, i, frame) {
+    //   function ident() {
+    //     let out = "";
+
+    //     for (let i = 0; i < depth; i++) {
+    //       out += "|||";
+    //     }
+
+    //     return out;
+    //   }
+
+    //   console.log(
+    //     ident(),
+    //     `-------------- pc: ${pc} - depth: ${depth} --------------`
+    //   );
+
+    //   console.log(ident(), "instruction:", i.id);
+
+    //   console.log(ident(), "values:");
+    //   frame.values.forEach((stackLocal: StackLocal) => {
+    //     console.log(
+    //       ident(),
+    //       `\t- type: ${stackLocal.type}, value: ${stackLocal.value}`
+    //     );
+    //   });
+
+    //   console.log(ident(), "");
+
+    //   console.log(ident(), "labels:");
+    //   frame.labels.forEach((label, k) => {
+    //     console.log(ident(), `\t- ${k} id: ${label.id.value}`);
+    //   });
+
+    //   console.log(
+    //     ident(),
+    //     "--------------------------------------------------\n"
+    //   );
+    // }
+
+    // stackFrame.trace = trace;
 
     try {
       const res = executeStackFrame(stackFrame);
@@ -102,7 +146,10 @@ export function createHostfunc(
       if (e instanceof ExecutionHasBeenTrapped) {
         throw e;
       } else {
-        throw new RuntimeError(e.message);
+        const newError = new RuntimeError(e.message);
+        newError.stack = e.stack;
+
+        throw newError;
       }
     }
   };

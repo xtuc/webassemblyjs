@@ -33,6 +33,14 @@ function assertStackDepth(depth: number) {
   }
 }
 
+type createChildStackFrameOptions = {
+  // Pass the current stack to the child frame
+  passCurrentContext?: boolean,
+
+  // Starts the evaluation from a given pc
+  startsAtPc?: number
+};
+
 export function executeStackFrame(
   frame: StackFrame,
   depth: number = 0
@@ -40,10 +48,21 @@ export function executeStackFrame(
   let pc = 0;
 
   function createAndExecuteChildStackFrame(
-    instrs: Array<Instruction>
+    instrs: Array<Instruction>,
+    { passCurrentContext, startsAtPc }: createChildStackFrameOptions = {}
   ): ?StackLocal {
+    if (typeof startsAtPc === "number") {
+      // Since the pc is incremental we can cut out the previous instructions
+      instrs = instrs.slice(startsAtPc + 1);
+    }
+
     const childStackFrame = createChildStackFrame(frame, instrs);
     childStackFrame.trace = frame.trace;
+
+    if (passCurrentContext === true) {
+      childStackFrame.values = frame.values;
+      childStackFrame.labels = frame.labels;
+    }
 
     const res = executeStackFrame(childStackFrame, depth + 1);
     pushResult(res);
@@ -174,9 +193,7 @@ export function executeStackFrame(
     );
     childStackFrame.trace = frame.trace;
 
-    const res = executeStackFrame(childStackFrame, depth + 1);
-
-    return res;
+    return executeStackFrame(childStackFrame, depth + 1);
   }
 
   function getMemoryOffset(instruction) {
@@ -209,6 +226,10 @@ export function executeStackFrame(
 
   while (pc < frame.code.length) {
     const instruction = frame.code[pc];
+
+    if (typeof frame.trace === "function") {
+      frame.trace(depth, pc, instruction, frame);
+    }
 
     switch (instruction.type) {
       /**
@@ -389,7 +410,10 @@ export function executeStackFrame(
 
         if (block.instr.length > 0) {
           const oldStackSize = frame.values.length;
-          createAndExecuteChildStackFrame(block.instr);
+
+          createAndExecuteChildStackFrame(block.instr, {
+            passCurrentContext: true
+          });
 
           numberOfValuesAddedOnTopOfTheStack =
             frame.values.length - oldStackSize;
@@ -418,6 +442,77 @@ export function executeStackFrame(
         frame.values = [...frame.values, ...topOfTheStack];
 
         break;
+      }
+
+      case "br": {
+        // https://webassembly.github.io/spec/core/exec/instructions.html#exec-br
+
+        const [label, ...children] = instruction.args;
+
+        if (label.type === "Identifier") {
+          throw new RuntimeError(
+            "Internal compiler error: Identifier argument in br must be " +
+              "transformed to a NumberLiteral node"
+          );
+        }
+
+        const l = label.value;
+
+        // 1. Assert: due to validation, the stack contains at least l+1 labels.
+        assertNItemsOnStack(frame.values, l + 1);
+
+        // 2. Let L be the l-th label appearing on the stack, starting from the top and counting from zero.
+        const labelidx = frame.values[l];
+
+        const L = frame.labels.find(x => x.id.value === labelidx.value);
+
+        if (typeof L === "undefined") {
+          throw new RuntimeError(`br: unknown label ${labelidx.value}`);
+        }
+
+        // 3. Let n be the arity of L.
+        const n = L.arity;
+
+        // 4. Assert: due to validation, there are at least nn values on the top of the stack.
+        assertNItemsOnStack(frame.values, n);
+
+        // 5. Pop the values valn from the stack
+        const val = frame.values[n];
+
+        const bottomOfTheStack = frame.values.slice(0, n);
+        const topOfTheStack = frame.values.slice(n + 1);
+
+        frame.values = [...bottomOfTheStack, ...topOfTheStack];
+
+        // 6. Repeat l+1 times:
+        for (let i = 0; i < l + 1; i++) {
+          // a. While the top of the stack is a value, do:
+          // i. Pop the value from the stack
+          const value = frame.values[frame.values.length - 1];
+
+          if (value.type !== "label") {
+            pop1();
+          }
+        }
+
+        // b. Assert: due to validation, the top of the stack now is a label.
+        // c. Pop the label from the stack.
+        pop1OfType("label");
+
+        // 7. Push the values valn to the stack.
+        pushResult(val);
+
+        // WAST semantics
+        if (typeof children !== "undefined" && children.length > 0) {
+          // Jump to the children
+          return createAndExecuteChildStackFrame(children);
+        } else {
+          // 8. Jump to the continuation of L
+          return createAndExecuteChildStackFrame(L.value.code, {
+            passCurrentContext: true,
+            startsAtPc: pc
+          });
+        }
       }
 
       case "br_if": {
@@ -890,7 +985,9 @@ export function executeStackFrame(
 
         // Interpret argument first if it's a child instruction
         if (typeof operand !== "undefined") {
-          createAndExecuteChildStackFrame([operand]);
+          createAndExecuteChildStackFrame([operand], {
+            passCurrentContext: true
+          });
         }
 
         const c = pop1OfType(opType);
@@ -899,10 +996,6 @@ export function executeStackFrame(
 
         break;
       }
-    }
-
-    if (typeof frame.trace === "function") {
-      frame.trace(depth, pc, instruction);
     }
 
     pc++;
