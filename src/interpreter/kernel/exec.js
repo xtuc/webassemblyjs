@@ -365,6 +365,8 @@ export function executeStackFrame(
       }
 
       case "block": {
+        // https://webassembly.github.io/spec/core/exec/instructions.html#blocks
+
         const block = instruction;
 
         /**
