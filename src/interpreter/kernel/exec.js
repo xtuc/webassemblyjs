@@ -66,12 +66,7 @@ export function executeStackFrame(
     }
 
     const res = executeStackFrame(childStackFrame, depth + 1);
-
-    if (childStackFrame._unwindReason === 0) {
-      pushResult(res);
-    }
-
-    return childStackFrame._unwindReason;
+    pushResult(res);
   }
 
   function getLocalByIndex(index: number) {
@@ -247,6 +242,8 @@ export function executeStackFrame(
        *
        * FIXME(sven): seems unspecified in the spec but it's required for the `call`
        * instruction.
+       *
+       * TODO(sven): clarify this, a func is a block
        */
       case "Func": {
         const func = instruction;
@@ -315,11 +312,13 @@ export function executeStackFrame(
         frame.labels.push({
           value: loop,
           arity: 0,
-          id: t.identifier("loop" + pc) // random
+          id: loop.label
         });
 
         if (loop.instr.length > 0) {
-          createAndExecuteChildStackFrame(loop.instr);
+          createAndExecuteChildStackFrame(loop.instr, {
+            passCurrentContext: true
+          });
           if (frame._unwindReason !== 0) {
             break;
           }
@@ -414,9 +413,13 @@ export function executeStackFrame(
          */
         let numberOfValuesAddedOnTopOfTheStack = 0;
 
-        /**
-         * When entering block push the label onto the stack
-         */
+        // 2. Enter the block instr∗ with label
+        frame.labels.push({
+          value: block,
+          arity: 0,
+          id: block.label
+        });
+
         if (block.label.type === "Identifier") {
           pushResult(label.createValue(block.label.value));
         }
@@ -538,14 +541,16 @@ export function executeStackFrame(
           f = f.parent;
         }
 
+        const code = (L.value.code || L.value.instr);
+
         // WAST semantics
         if (typeof children !== "undefined" && children.length > 0) {
           // Jump to the children
-          L.value.code.push(...children);
+          code.push(...children);
         }
 
         // 8. Jump to the continuation of L
-        createAndExecuteChildStackFrame(L.value.code, {
+        createAndExecuteChildStackFrame(code, {
           passCurrentContext: true,
           startsAtPc: pc
         });
@@ -1099,7 +1104,11 @@ export function executeStackFrame(
 
   // Return the item on top of the values/stack;
   if (frame.values.length > 0) {
-    return pop1();
+    const res = pop1();
+
+    if (res.type !== "label") {
+      return res;
+    }
   }
 }
 
