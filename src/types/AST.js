@@ -306,3 +306,8 @@ type TypeInstruction = {
     result: Array<Valtype>
   }
 };
+
+type Start = {
+  type: "Start",
+  index: Index
+};

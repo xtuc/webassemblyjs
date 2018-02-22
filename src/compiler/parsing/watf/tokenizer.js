@@ -86,7 +86,8 @@ const keywords = {
   mut: "mut",
   data: "data",
   type: "type",
-  elem: "elem"
+  elem: "elem",
+  start: "start"
 };
 
 const CloseParenToken = createToken(tokens.closeParen);

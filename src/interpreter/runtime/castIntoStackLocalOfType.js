@@ -30,7 +30,9 @@ export function castIntoStackLocalOfType(
   }
 
   if (typeof castFn[type] === "undefined") {
-    throw new RuntimeError("Cannot cast: unsupported type " + type);
+    throw new RuntimeError(
+      "Cannot cast: unsupported type " + JSON.stringify(type)
+    );
   }
 
   return castFn[type](v);

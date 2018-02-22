@@ -34,6 +34,23 @@ export function transform(ast: Program) {
   traverse(ast, {
     Func(path: NodePath<Func>) {
       transformFuncPath(path, functionsInProgram, globalsInProgram);
+    },
+
+    Start(path: NodePath<Start>) {
+      const index = path.node.index;
+
+      const offsetInFunctionsInProgram = functionsInProgram.findIndex(
+        ({ value }) => value === index.value
+      );
+
+      if (offsetInFunctionsInProgram === -1) {
+        throw new Error("unknown function");
+      }
+
+      const indexNode = t.indexLiteral(offsetInFunctionsInProgram);
+
+      // Replace the index Identifier
+      path.node.index = indexNode;
     }
   });
 }

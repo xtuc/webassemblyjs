@@ -136,11 +136,29 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseMemory(): Memory {
       let id = t.identifier(getUniqueName("memory"));
+      let limits = t.limits(0);
 
       if (token.type === tokens.string || token.type === tokens.identifier) {
         id = t.identifier(token.value);
 
         eatToken();
+      }
+
+      /**
+       * Maybe data
+       */
+      if (lookaheadAndCheck(tokens.openParen, keywords.data)) {
+        eatToken(); // (
+        eatToken(); // data
+
+        // TODO(sven): do something with the data collected here
+        const stringInitializer = token.value;
+        eatTokenOfType(tokens.string);
+
+        // Update limits accordingly
+        limits = t.limits(stringInitializer.length);
+
+        eatTokenOfType(tokens.closeParen);
       }
 
       /**
@@ -170,19 +188,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       /**
        * Memory signature
        */
-      if (token.type !== tokens.number) {
-        showCodeFrame(source, token.loc);
-        throw new Error(
-          "Unexpected token in memory instruction: " + token.type
-        );
-      }
-
-      const limits = t.limits(parse32I(token.value));
-      eatToken();
-
       if (token.type === tokens.number) {
-        limits.max = parse32I(token.value);
+        limits = t.limits(parse32I(token.value));
         eatToken();
+
+        if (token.type === tokens.number) {
+          limits.max = parse32I(token.value);
+          eatToken();
+        }
       }
 
       return t.memory(limits, id);
@@ -1506,6 +1519,35 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return params;
     }
 
+    /**
+     * Parses the start instruction in a module
+     *
+     * WAST:
+     *
+     * start:   ( start <var> )
+     * var:    <nat> | <name>
+     *
+     * WAT:
+     * start ::= ‘(’ ‘start’  x:funcidx ‘)’
+     */
+    function parseStart(): Start {
+      if (token.type === tokens.identifier) {
+        const index = t.identifier(token.value);
+        eatToken();
+
+        return t.start(index);
+      }
+
+      if (token.type === tokens.number) {
+        const index = t.indexLiteral(token.value);
+        eatToken();
+
+        return t.start(index);
+      }
+
+      throw new Error("Unknown start, token: " + tokenToString(token));
+    }
+
     if (token.type === tokens.openParen) {
       eatToken();
 
@@ -1580,6 +1622,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.type)) {
         eatToken();
         const node = parseType();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.start)) {
+        eatToken();
+        const node = parseStart();
         eatTokenOfType(tokens.closeParen);
 
         return node;

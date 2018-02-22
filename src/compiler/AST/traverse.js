@@ -30,6 +30,13 @@ export function walk(
     cb(n.type, createPath(n));
   }
 
+  if (n.type === "Start") {
+    cb(n.type, createPath(n));
+
+    // $FlowIgnore
+    walk(n.index, cb);
+  }
+
   if (n.type === "Data") {
     cb(n.type, createPath(n));
   }
