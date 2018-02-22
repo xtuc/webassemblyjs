@@ -1,8 +1,11 @@
 # Roadmap
 
-## Version 1.0.0
+There are a few PRs against Webpack to use directly or indirectly this project:
+- https://github.com/webpack/webpack/pull/6533
+- https://github.com/webpack/webpack/pull/6531
+- https://github.com/ballercat/wasm-loader/pull/7
 
-There are a few PRs against Webpack to use directly or indirectly this project.
+## Version 1.0.0
 
 It's important that the features used in Webpack are working, and thus the following work is priority:
 - Making sure that we can decode WASM binaries
