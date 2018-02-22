@@ -435,9 +435,8 @@ export function executeStackFrame(
           createAndExecuteChildStackFrame(block.instr, {
             passCurrentContext: true
           });
-          if (frame._unwindReason !== 0) {
-            break;
-          }
+
+          // Don't check for _unwindReason here because it's the regular behavior
 
           numberOfValuesAddedOnTopOfTheStack =
             frame.values.length - oldStackSize;
@@ -464,6 +463,9 @@ export function executeStackFrame(
         pop1OfType("label");
 
         frame.values = [...frame.values, ...topOfTheStack];
+
+        // Remove label
+        frame.labels = frame.labels.filter(x => x.id.value !== block.label.value);
 
         break;
       }
@@ -566,7 +568,18 @@ export function executeStackFrame(
       }
 
       case "br_if": {
-        const [label] = instruction.args;
+        const [label, ...children] = instruction.args;
+
+        // Interpret children first
+        // only WAST
+        if (typeof children !== "undefined" && children.length > 0) {
+          createAndExecuteChildStackFrame(children, {
+            passCurrentContext: true
+          });
+          if (frame._unwindReason !== 0) {
+            break;
+          }
+        }
 
         // 1. Assert: due to validation, a value of type i32 is on the top of the stack.
         // 2. Pop the value ci32.const c from the stack.
@@ -575,9 +588,92 @@ export function executeStackFrame(
         if (!c.value.eqz().isTrue()) {
           // 3. If c is non-zero, then
           // 3. a. Execute the instruction (br l).
-          const res = br(label);
 
-          pushResult(res);
+          /**
+           * FIXME(sven): duplicate br implementation here!
+           */
+          const l = label.value;
+
+          // 1. Assert: due to validation, the stack contains at least l+1 labels.
+          assertNItemsOnStack(frame.values, l + 1);
+
+          // 2. Let L be the l-th label appearing on the stack, starting from the top and counting from zero.
+          const labelidx = frame.values[l];
+
+          const L = frame.labels.find(x => x.id.value === labelidx.value);
+
+          if (typeof L === "undefined") {
+            throw newRuntimeError(`br: unknown label ${labelidx.value}`);
+          }
+
+          // 3. Let n be the arity of L.
+          const n = L.arity;
+
+          // 4. Assert: due to validation, there are at least nn values on the top of the stack.
+          assertNItemsOnStack(frame.values, n);
+
+          // 5. Pop the values valn from the stack
+          const val = frame.values[n];
+
+          const bottomOfTheStack = frame.values.slice(0, n);
+          const topOfTheStack = frame.values.slice(n + 1);
+
+          frame.values = [...bottomOfTheStack, ...topOfTheStack];
+
+          // 6. Repeat l+1 times:
+          for (let i = 0; i < l + 1; i++) {
+            // a. While the top of the stack is a value, do:
+            // i. Pop the value from the stack
+            const value = frame.values[frame.values.length - 1];
+
+            if (typeof value === "undefined") {
+              break;
+            }
+
+            if (value.type !== "label") {
+              pop1();
+            }
+          }
+
+          // b. Assert: due to validation, the top of the stack now is a label.
+          // c. Pop the label from the stack.
+          pop1OfType("label");
+
+          // 7. Push the values valn to the stack.
+          pushResult(val);
+
+          // unwind the call stack
+          let to = frame.labels.length - l;
+          let f = frame;
+
+          while (f != null) {
+            f._unwindReason = 1;
+
+            if (to === 0) {
+              break;
+            }
+
+            to--;
+            f = f.parent;
+          }
+
+          const code = L.value.code || L.value.instr;
+
+          console.log('continue', code)
+          console.log('pc', pc)
+
+          // 8. Jump to the continuation of L
+          createAndExecuteChildStackFrame(code, {
+            passCurrentContext: true,
+            startsAtPc: pc
+          });
+          if (frame._unwindReason !== 0) {
+            break;
+          }
+
+          /**
+           * End br duplication
+           */
         } else {
           // 4. Else:
           // 4. a. Do nothing.
