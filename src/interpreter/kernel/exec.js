@@ -15,10 +15,12 @@ const i64 = require("../runtime/values/i64");
 const f32 = require("../runtime/values/f32");
 const f64 = require("../runtime/values/f64");
 const label = require("../runtime/values/label");
-const { createChildStackFrame } = require("./stackframe");
+const stackframe = require("./stackframe");
 const { createTrap } = require("./signals");
 const { RuntimeError } = require("../../errors");
 const t = require("../../compiler/AST");
+
+// DEFINE_MACRO(CHECK_STACK_UNWIND, 'if (frame._unwindReason !== 0) { break; }');
 
 // TODO(sven): can remove asserts call at compile to gain perf in prod
 function assert(cond) {
@@ -56,8 +58,7 @@ export function executeStackFrame(
       instrs = instrs.slice(startsAtPc + 1);
     }
 
-    const childStackFrame = createChildStackFrame(frame, instrs);
-    childStackFrame.trace = frame.trace;
+    const childStackFrame = stackframe.createChildStackFrame(frame, instrs);
 
     if (passCurrentContext === true) {
       childStackFrame.values = frame.values;
@@ -65,14 +66,19 @@ export function executeStackFrame(
     }
 
     const res = executeStackFrame(childStackFrame, depth + 1);
-    pushResult(res);
+
+    if (childStackFrame._unwindReason === 0) {
+      pushResult(res);
+    }
+
+    return childStackFrame._unwindReason;
   }
 
   function getLocalByIndex(index: number) {
     const local = frame.locals[index];
 
     if (typeof local === "undefined") {
-      throw new RuntimeError(
+      throw newRuntimeError(
         "Assertion error: no local value at index " + index
       );
     }
@@ -108,10 +114,10 @@ export function executeStackFrame(
     const v = frame.values.pop();
 
     if (typeof type === "string" && v.type !== type) {
-      throw new RuntimeError(
+      throw newRuntimeError(
         "Internal failure: expected value of type " +
           type +
-          " on top of the stack, give type: " +
+          " on top of the stack, type given: " +
           v.type
       );
     }
@@ -132,7 +138,7 @@ export function executeStackFrame(
     const c1 = frame.values.pop();
 
     if (c2.type !== type2) {
-      throw new RuntimeError(
+      throw newRuntimeError(
         "Internal failure: expected c2 value of type " +
           type2 +
           " on top of the stack, give type: " +
@@ -141,7 +147,7 @@ export function executeStackFrame(
     }
 
     if (c1.type !== type1) {
-      throw new RuntimeError(
+      throw newRuntimeError(
         "Internal failure: expected c1 value of type " +
           type1 +
           " on top of the stack, give type: " +
@@ -182,16 +188,15 @@ export function executeStackFrame(
     const code = getLabel(label);
 
     if (typeof code === "undefined") {
-      throw new RuntimeError(`Label ${label.value} doesn't exist`);
+      throw newRuntimeError(`Label ${label.value} doesn't exist`);
     }
 
     // FIXME(sven): find a more generic way to handle label and its code
     // Currently func body and block instr*.
-    const childStackFrame = createChildStackFrame(
+    const childStackFrame = stackframe.createChildStackFrame(
       frame,
       code.body || code.instr
     );
-    childStackFrame.trace = frame.trace;
 
     return executeStackFrame(childStackFrame, depth + 1);
   }
@@ -200,10 +205,10 @@ export function executeStackFrame(
     if (instruction.namedArgs && instruction.namedArgs.offset) {
       const offset = instruction.namedArgs.offset.value;
       if (offset < 0) {
-        throw new RuntimeError("offset must be positive");
+        throw newRuntimeError("offset must be positive");
       }
       if (offset > 0xffffffff) {
-        throw new RuntimeError(
+        throw newRuntimeError(
           "offset must be less than or equal to 0xffffffff"
         );
       }
@@ -215,11 +220,16 @@ export function executeStackFrame(
 
   function getMemory(): Memory {
     if (frame.originatingModule.memaddrs.length != 1) {
-      throw new RuntimeError("unknown memory");
+      throw newRuntimeError("unknown memory");
     }
 
     const memAddr = frame.originatingModule.memaddrs[0];
     return frame.allocator.get(memAddr);
+  }
+
+  function newRuntimeError(msg) {
+    // console.log(stackframe.toString(frame));
+    return new RuntimeError(msg);
   }
 
   assertStackDepth(depth);
@@ -265,7 +275,7 @@ export function executeStackFrame(
         const n = instruction.args[0];
 
         if (typeof n === "undefined") {
-          throw new RuntimeError("const requires one argument, none given.");
+          throw newRuntimeError("const requires one argument, none given.");
         }
 
         if (
@@ -273,7 +283,7 @@ export function executeStackFrame(
           n.type !== "LongNumberLiteral" &&
           n.type !== "FloatLiteral"
         ) {
-          throw new RuntimeError("const: unsupported value of type: " + n.type);
+          throw newRuntimeError("const: unsupported value of type: " + n.type);
         }
 
         pushResult(castIntoStackLocalOfType(instruction.object, n.value));
@@ -310,6 +320,9 @@ export function executeStackFrame(
 
         if (loop.instr.length > 0) {
           createAndExecuteChildStackFrame(loop.instr);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         break;
@@ -335,7 +348,7 @@ export function executeStackFrame(
         const call = instruction;
 
         if (call.index.type === "Identifier") {
-          throw new RuntimeError(
+          throw newRuntimeError(
             "Internal compiler error: Identifier argument in call must be " +
               "transformed to a NumberLiteral node"
           );
@@ -351,7 +364,7 @@ export function executeStackFrame(
           const funcaddr = frame.originatingModule.funcaddrs[index];
 
           if (typeof funcaddr === "undefined") {
-            throw new RuntimeError(
+            throw newRuntimeError(
               `No function were found in module at address ${index}`
             );
           }
@@ -361,7 +374,7 @@ export function executeStackFrame(
           const subroutine = frame.allocator.get(funcaddr);
 
           if (typeof subroutine !== "object") {
-            throw new RuntimeError(
+            throw newRuntimeError(
               `Cannot call function at address ${funcaddr}: not a function`
             );
           }
@@ -375,6 +388,9 @@ export function executeStackFrame(
 
           if (subroutine.isExternal === false) {
             createAndExecuteChildStackFrame(subroutine.code);
+            if (frame._unwindReason !== 0) {
+              break;
+            }
           } else {
             const res = subroutine.code(args.map(arg => arg.value));
 
@@ -416,6 +432,9 @@ export function executeStackFrame(
           createAndExecuteChildStackFrame(block.instr, {
             passCurrentContext: true
           });
+          if (frame._unwindReason !== 0) {
+            break;
+          }
 
           numberOfValuesAddedOnTopOfTheStack =
             frame.values.length - oldStackSize;
@@ -452,7 +471,7 @@ export function executeStackFrame(
         const [label, ...children] = instruction.args;
 
         if (label.type === "Identifier") {
-          throw new RuntimeError(
+          throw newRuntimeError(
             "Internal compiler error: Identifier argument in br must be " +
               "transformed to a NumberLiteral node"
           );
@@ -469,7 +488,7 @@ export function executeStackFrame(
         const L = frame.labels.find(x => x.id.value === labelidx.value);
 
         if (typeof L === "undefined") {
-          throw new RuntimeError(`br: unknown label ${labelidx.value}`);
+          throw newRuntimeError(`br: unknown label ${labelidx.value}`);
         }
 
         // 3. Let n be the arity of L.
@@ -504,17 +523,37 @@ export function executeStackFrame(
         // 7. Push the values valn to the stack.
         pushResult(val);
 
+        // unwind the call stack
+        let to = frame.labels.length - l;
+        let f = frame;
+
+        while (f != null) {
+          f._unwindReason = 1;
+
+          if (to === 0) {
+            break;
+          }
+
+          to--;
+          f = f.parent;
+        }
+
         // WAST semantics
         if (typeof children !== "undefined" && children.length > 0) {
           // Jump to the children
-          return createAndExecuteChildStackFrame(children);
-        } else {
-          // 8. Jump to the continuation of L
-          return createAndExecuteChildStackFrame(L.value.code, {
-            passCurrentContext: true,
-            startsAtPc: pc
-          });
+          L.value.code.push(...children);
         }
+
+        // 8. Jump to the continuation of L
+        createAndExecuteChildStackFrame(L.value.code, {
+          passCurrentContext: true,
+          startsAtPc: pc
+        });
+        if (frame._unwindReason !== 0) {
+          break;
+        }
+
+        break;
       }
 
       case "br_if": {
@@ -541,6 +580,9 @@ export function executeStackFrame(
       case "if": {
         if (instruction.test.length > 0) {
           createAndExecuteChildStackFrame(instruction.test);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         // 1. Assert: due to validation, a value of value type i32 is on the top of the stack.
@@ -552,6 +594,9 @@ export function executeStackFrame(
            * Execute consequent
            */
           createAndExecuteChildStackFrame(instruction.consequent);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         } else if (
           typeof instruction.alternate !== "undefined" &&
           instruction.alternate.length > 0
@@ -560,6 +605,9 @@ export function executeStackFrame(
            * Execute alternate
            */
           createAndExecuteChildStackFrame(instruction.alternate);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         break;
@@ -575,7 +623,7 @@ export function executeStackFrame(
       case "trap": {
         // signalling abrupt termination
         // https://webassembly.github.io/spec/core/exec/runtime.html#syntax-trap
-        return createTrap();
+        throw createTrap();
       }
 
       /**
@@ -588,15 +636,13 @@ export function executeStackFrame(
         const index = instruction.args[0];
 
         if (typeof index === "undefined") {
-          throw new RuntimeError(
-            "get_local requires one argument, none given."
-          );
+          throw newRuntimeError("get_local requires one argument, none given.");
         }
 
         if (index.type === "NumberLiteral" || index.type === "FloatLiteral") {
           getLocalByIndex(index.value);
         } else {
-          throw new RuntimeError(
+          throw newRuntimeError(
             "get_local: unsupported index of type: " + index.type
           );
         }
@@ -613,6 +659,9 @@ export function executeStackFrame(
           // WAST
 
           createAndExecuteChildStackFrame([init]);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
 
           const res = pop1();
           setLocalByIndex(index.value, res);
@@ -625,7 +674,7 @@ export function executeStackFrame(
           // 5. Replace F.locals[x] with the value val
           setLocalByIndex(index.value, val);
         } else {
-          throw new RuntimeError(
+          throw newRuntimeError(
             "set_local: unsupported index of type: " + index.type
           );
         }
@@ -642,6 +691,9 @@ export function executeStackFrame(
           // WAST
 
           createAndExecuteChildStackFrame([init]);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
 
           const res = pop1();
           setLocalByIndex(index.value, res);
@@ -667,7 +719,7 @@ export function executeStackFrame(
           // 5. 5. Replace F.locals[x] with the value val
           setLocalByIndex(index.value, val2);
         } else {
-          throw new RuntimeError(
+          throw newRuntimeError(
             "tee_local: unsupported index of type: " + index.type
           );
         }
@@ -682,20 +734,23 @@ export function executeStackFrame(
         // Interpret right branch first if it's a child instruction
         if (typeof right !== "undefined") {
           createAndExecuteChildStackFrame([right]);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
         const globaladdr = frame.originatingModule.globaladdrs[index.value];
 
         if (typeof globaladdr === "undefined") {
-          throw new RuntimeError(`Global address ${index.value} not found`);
+          throw newRuntimeError(`Global address ${index.value} not found`);
         }
 
         // 4. Assert: due to validation, S.globals[a] exists.
         const globalinst = frame.allocator.get(globaladdr);
 
         if (typeof globalinst !== "object") {
-          throw new RuntimeError(`Unexpected data for global at ${globaladdr}`);
+          throw newRuntimeError(`Unexpected data for global at ${globaladdr}`);
         }
 
         // 7. Pop the value val from the stack.
@@ -717,14 +772,14 @@ export function executeStackFrame(
         const globaladdr = frame.originatingModule.globaladdrs[index.value];
 
         if (typeof globaladdr === "undefined") {
-          throw new RuntimeError(`Unknown global at index: ${index.value}`);
+          throw newRuntimeError(`Unknown global at index: ${index.value}`);
         }
 
         // 4. Assert: due to validation, S.globals[a] exists.
         const globalinst = frame.allocator.get(globaladdr);
 
         if (typeof globalinst !== "object") {
-          throw new RuntimeError(`Unexpected data for global at ${globaladdr}`);
+          throw newRuntimeError(`Unexpected data for global at ${globaladdr}`);
         }
 
         // 7. Pop the value val from the stack.
@@ -738,6 +793,9 @@ export function executeStackFrame(
 
         if (args.length > 0) {
           createAndExecuteChildStackFrame(args);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         // Abort execution and return the first item on the stack
@@ -759,6 +817,9 @@ export function executeStackFrame(
         // only WAST
         if (typeof args !== "undefined" && args.length > 0) {
           createAndExecuteChildStackFrame(args);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         const memory = getMemory();
@@ -780,7 +841,7 @@ export function executeStackFrame(
         }
 
         if (ptr + valueBuffer.length > memory.buffer.byteLength) {
-          throw new RuntimeError("memory access out of bounds");
+          throw newRuntimeError("memory access out of bounds");
         }
 
         const memoryBuffer = new Uint8Array(memory.buffer);
@@ -806,6 +867,9 @@ export function executeStackFrame(
         // only WAST
         if (typeof args !== "undefined" && args.length > 0) {
           createAndExecuteChildStackFrame(args);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         const memory = getMemory();
@@ -850,13 +914,13 @@ export function executeStackFrame(
           case "i32":
           case "f32":
             if (ptr + 4 > memory.buffer.byteLength) {
-              throw new RuntimeError("memory access out of bounds");
+              throw newRuntimeError("memory access out of bounds");
             }
             break;
           case "i64":
           case "f64":
             if (ptr + 8 > memory.buffer.byteLength) {
-              throw new RuntimeError("memory access out of bounds");
+              throw newRuntimeError("memory access out of bounds");
             }
             break;
         }
@@ -935,7 +999,7 @@ export function executeStackFrame(
             binopFn = binopf64;
             break;
           default:
-            throw new RuntimeError(
+            throw newRuntimeError(
               "Unsupported operation " +
                 instruction.id +
                 " on " +
@@ -948,11 +1012,17 @@ export function executeStackFrame(
         // Interpret left branch first if it's a child instruction
         if (typeof left !== "undefined") {
           createAndExecuteChildStackFrame([left]);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         // Interpret right branch first if it's a child instruction
         if (typeof right !== "undefined") {
           createAndExecuteChildStackFrame([right]);
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         const [c1, c2] = pop2(instruction.object, instruction.object);
@@ -995,7 +1065,7 @@ export function executeStackFrame(
             unopFn = unopf64;
             break;
           default:
-            throw new RuntimeError(
+            throw newRuntimeError(
               "Unsupported operation " + instruction.id + " on " + opType
             );
         }
@@ -1007,6 +1077,9 @@ export function executeStackFrame(
           createAndExecuteChildStackFrame([operand], {
             passCurrentContext: true
           });
+          if (frame._unwindReason !== 0) {
+            break;
+          }
         }
 
         const c = pop1OfType(opType);
@@ -1015,6 +1088,10 @@ export function executeStackFrame(
 
         break;
       }
+    }
+
+    if (typeof frame.trace === "function") {
+      frame.trace(depth, pc, instruction, frame);
     }
 
     pc++;

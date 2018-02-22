@@ -95,12 +95,12 @@ export function createHostfunc(
       id: t.identifier(exportinst.name)
     });
 
-    // function trace(depth, pc, i, frame) {
+    // function trace(depth, blockpc, i, frame) {
     //   function ident() {
     //     let out = "";
 
     //     for (let i = 0; i < depth; i++) {
-    //       out += "|||";
+    //       out += "\t|";
     //     }
 
     //     return out;
@@ -108,10 +108,11 @@ export function createHostfunc(
 
     //   console.log(
     //     ident(),
-    //     `-------------- pc: ${pc} - depth: ${depth} --------------`
+    //     `-------------- blockpc: ${blockpc} - depth: ${depth} --------------`
     //   );
 
     //   console.log(ident(), "instruction:", i.id);
+    //   console.log(ident(), "unwind reason:", frame._unwindReason);
 
     //   console.log(ident(), "values:");
     //   frame.values.forEach((stackLocal: StackLocal) => {

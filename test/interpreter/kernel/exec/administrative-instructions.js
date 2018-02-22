@@ -12,7 +12,7 @@ const {
 
 describe("kernel exec - administrative instructions", () => {
   it("should stop executing the stackframe at trap", () => {
-    let pc;
+    let blockpc;
 
     const code = [
       t.instruction("nop"),
@@ -23,7 +23,7 @@ describe("kernel exec - administrative instructions", () => {
     ];
 
     const stackFrame = createStackFrame(code, []);
-    stackFrame.trace = (_, x) => (pc = x);
+    stackFrame.trace = (_, x) => (blockpc = x);
 
     try {
       executeStackFrame(stackFrame);
@@ -32,12 +32,12 @@ describe("kernel exec - administrative instructions", () => {
       assert.isOk(e);
     }
 
-    assert.notEqual(code.length, pc + 1);
-    assert.equal(pc, 1);
+    assert.notEqual(code.length, blockpc + 1);
+    assert.equal(blockpc, 1);
   });
 
   it("should stop executing the stackframe at unreachable", () => {
-    let pc;
+    let blockpc;
 
     const code = [
       t.instruction("nop"),
@@ -48,7 +48,7 @@ describe("kernel exec - administrative instructions", () => {
     ];
 
     const stackFrame = createStackFrame(code, []);
-    stackFrame.trace = (_, x) => (pc = x);
+    stackFrame.trace = (_, x) => (blockpc = x);
 
     try {
       executeStackFrame(stackFrame);
@@ -57,7 +57,7 @@ describe("kernel exec - administrative instructions", () => {
       assert.isOk(e);
     }
 
-    assert.notEqual(code.length, pc + 1);
-    assert.equal(pc, 1);
+    assert.notEqual(code.length, blockpc + 1);
+    assert.equal(blockpc, 1);
   });
 });
