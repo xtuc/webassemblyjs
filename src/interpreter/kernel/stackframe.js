@@ -39,7 +39,7 @@ export function createStackFrame(
      */
     allocator,
 
-    _unwindReason: 0,
+    _unwindReason: 0
   };
 }
 

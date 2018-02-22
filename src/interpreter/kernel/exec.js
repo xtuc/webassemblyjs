@@ -514,6 +514,10 @@ export function executeStackFrame(
           // i. Pop the value from the stack
           const value = frame.values[frame.values.length - 1];
 
+          if (typeof value === "undefined") {
+            break;
+          }
+
           if (value.type !== "label") {
             pop1();
           }
@@ -541,7 +545,7 @@ export function executeStackFrame(
           f = f.parent;
         }
 
-        const code = (L.value.code || L.value.instr);
+        const code = L.value.code || L.value.instr;
 
         // WAST semantics
         if (typeof children !== "undefined" && children.length > 0) {
@@ -631,6 +635,15 @@ export function executeStackFrame(
         throw createTrap();
       }
 
+      case "local": {
+        const [valtype] = instruction.args;
+
+        const init = castIntoStackLocalOfType(valtype.name, 0);
+        frame.locals.push(init);
+
+        break;
+      }
+
       /**
        * Memory Instructions
        *
@@ -663,7 +676,7 @@ export function executeStackFrame(
         if (typeof init !== "undefined" && init.type === "Instr") {
           // WAST
 
-          createAndExecuteChildStackFrame([init]);
+          createAndExecuteChildStackFrame([init], { passCurrentContext: true });
           if (frame._unwindReason !== 0) {
             break;
           }
@@ -695,7 +708,7 @@ export function executeStackFrame(
         if (typeof init !== "undefined" && init.type === "Instr") {
           // WAST
 
-          createAndExecuteChildStackFrame([init]);
+          createAndExecuteChildStackFrame([init], { passCurrentContext: true });
           if (frame._unwindReason !== 0) {
             break;
           }
@@ -738,7 +751,9 @@ export function executeStackFrame(
 
         // Interpret right branch first if it's a child instruction
         if (typeof right !== "undefined") {
-          createAndExecuteChildStackFrame([right]);
+          createAndExecuteChildStackFrame([right], {
+            passCurrentContext: true
+          });
           if (frame._unwindReason !== 0) {
             break;
           }
@@ -797,7 +812,7 @@ export function executeStackFrame(
         const { args } = instruction;
 
         if (args.length > 0) {
-          createAndExecuteChildStackFrame(args);
+          createAndExecuteChildStackFrame(args, { passCurrentContext: true });
           if (frame._unwindReason !== 0) {
             break;
           }
@@ -821,7 +836,7 @@ export function executeStackFrame(
         // Interpret children first
         // only WAST
         if (typeof args !== "undefined" && args.length > 0) {
-          createAndExecuteChildStackFrame(args);
+          createAndExecuteChildStackFrame(args, { passCurrentContext: true });
           if (frame._unwindReason !== 0) {
             break;
           }
@@ -871,7 +886,7 @@ export function executeStackFrame(
         // Interpret children first
         // only WAST
         if (typeof args !== "undefined" && args.length > 0) {
-          createAndExecuteChildStackFrame(args);
+          createAndExecuteChildStackFrame(args, { passCurrentContext: true });
           if (frame._unwindReason !== 0) {
             break;
           }
@@ -1016,7 +1031,9 @@ export function executeStackFrame(
 
         // Interpret left branch first if it's a child instruction
         if (typeof left !== "undefined") {
-          createAndExecuteChildStackFrame([left]);
+          createAndExecuteChildStackFrame([left], {
+            passCurrentContext: true
+          });
           if (frame._unwindReason !== 0) {
             break;
           }
@@ -1024,7 +1041,9 @@ export function executeStackFrame(
 
         // Interpret right branch first if it's a child instruction
         if (typeof right !== "undefined") {
-          createAndExecuteChildStackFrame([right]);
+          createAndExecuteChildStackFrame([right], {
+            passCurrentContext: true
+          });
           if (frame._unwindReason !== 0) {
             break;
           }
