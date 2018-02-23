@@ -36,9 +36,6 @@ function assertStackDepth(depth: number) {
 type createChildStackFrameOptions = {
   // Pass the current stack to the child frame
   passCurrentContext?: boolean,
-
-  // Starts the evaluation from a given pc
-  startsAtPc?: number
 };
 
 export function executeStackFrame(
@@ -47,22 +44,13 @@ export function executeStackFrame(
 ): ?StackLocal {
   function createAndExecuteChildStackFrame(
     instrs: Array<Instruction>,
-    { passCurrentContext, startsAtPc }: createChildStackFrameOptions = {}
+    { passCurrentContext }: createChildStackFrameOptions = {}
   ): ?StackLocal {
-    // if (typeof startsAtPc === "number") {
-    //   // Since the pc is incremental we can cut out the previous instructions
-    //   instrs = instrs.slice(startsAtPc + 1);
-    // }
-
     const childStackFrame = stackframe.createChildStackFrame(frame, instrs);
 
     if (passCurrentContext === true) {
       childStackFrame.values = frame.values;
       childStackFrame.labels = frame.labels;
-    }
-
-    if (typeof startsAtPc === "number") {
-      childStackFrame._pc = startsAtPc + 1;
     }
 
     const res = executeStackFrame(childStackFrame, depth + 1);
