@@ -136,7 +136,8 @@ function binop(
       return createValue(value1.copysign(value2));
   }
 
-  throw new Error("Unsupported binop: " + sign);
+  // FIXME(sven): seperate binop from comparison
+  // throw new Error("Unsupported binop: " + sign);
 }
 
 export function binopi32(

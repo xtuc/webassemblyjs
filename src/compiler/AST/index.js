@@ -175,11 +175,10 @@ export function instruction(
 }
 
 export function loopInstruction(
-  label: Identifier,
+  label: ?Identifier,
   resulttype: ?Valtype,
   instr: Array<Instruction>
 ): LoopInstruction {
-  assert(label !== null);
   assert(typeof instr === "object" && typeof instr.length !== "undefined");
 
   return {
