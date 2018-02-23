@@ -615,8 +615,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         parseInstructionBlock(instr);
 
-        const label = t.identifier(getUniqueName("loop"));
-        const loopNode = t.loopInstruction(label, blocktype, instr);
+        const loopNode = t.loopInstruction(null, blocktype, instr);
 
         code.push(loopNode);
         instructionAlreadyCreated = true;
