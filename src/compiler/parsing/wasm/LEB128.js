@@ -251,10 +251,10 @@ function bufReadUInt(buffer) {
  * Reads an arbitrary signed int from a buffer.
  */
 function bufReadInt(buffer) {
-  var length = buffer.length;
-  var positive = buffer[length - 1] < 0x80;
-  var result = positive ? 0 : -1;
-  var lossy = false;
+  const length = buffer.length;
+  const positive = buffer[length - 1] < 0x80;
+  let result = positive ? 0 : -1;
+  let lossy = false;
 
   // Note: We can't use bit manipulation here, since that stops
   // working if the result won't fit in a 32-bit int.
@@ -262,12 +262,12 @@ function bufReadInt(buffer) {
   if (length < 7) {
     // Common case which can't possibly be lossy (because the result has
     // no more than 48 bits, and loss only happens with 54 or more).
-    for (var i = length - 1; i >= 0; i--) {
-      result = (result * 0x100) + buffer[i];
+    for (let i = length - 1; i >= 0; i--) {
+      result = result * 0x100 + buffer[i];
     }
   } else {
-    for (var i = length - 1; i >= 0; i--) {
-      var one = buffer[i];
+    for (let i = length - 1; i >= 0; i--) {
+      const one = buffer[i];
       result *= 0x100;
       if (isLossyToAdd(result, one)) {
         lossy = true;
