@@ -2,6 +2,7 @@
 import Long from "long";
 
 import { RuntimeError } from "../../../errors";
+import { type i32, createFalse, createTrue } from "./i32";
 
 const type = "i64";
 
@@ -76,24 +77,34 @@ export class i64 implements IntegerValue<i64> {
     throw new RuntimeError("Unsupported operation");
   }
 
-  lt_s(/*operand: i64*/): i64 {
+  lt_s(/*operand: i64*/): i32 {
     throw new RuntimeError("Unsupported operation");
   }
 
-  lt_u(/*operand: i64*/): i64 {
+  lt_u(/*operand: i64*/): i32 {
     throw new RuntimeError("Unsupported operation");
   }
 
-  le_s(/*operand: i64*/): i64 {
+  le_s(/*operand: i64*/): i32 {
     throw new RuntimeError("Unsupported operation");
   }
 
-  le_u(/*operand: i64*/): i64 {
+  le_u(/*operand: i64*/): i32 {
     throw new RuntimeError("Unsupported operation");
   }
 
-  gt_s(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  gt_s(operand: i64): i32 {
+    // https://webassembly.github.io/spec/core/exec/numerics.html#op-igt-s
+    // FIXME(sven): very dirty implementation
+
+    const j1 = this._value.toNumber();
+    const j2 = operand._value.toNumber();
+
+    if (j1 > j2) {
+      return createTrue();
+    } else {
+      return createFalse();
+    }
   }
 
   gt_u(/*operand: i64*/): i64 {
@@ -207,6 +218,10 @@ export class i64 implements IntegerValue<i64> {
 }
 
 export function createValueFromAST(value: LongNumber): StackLocal {
+  if (typeof value.low === "undefined" || typeof value.high === "undefined") {
+    throw new Error('i64.createValueFromAST malformed value: ' + JSON.stringify(value));
+  }
+
   return {
     type,
     value: new i64(new Long(value.low, value.high))

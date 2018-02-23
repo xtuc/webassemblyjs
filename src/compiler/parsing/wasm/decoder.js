@@ -31,6 +31,17 @@ const {
 const ieee754 = require("./ieee754");
 const { utf8ArrayToStr } = require("./utf8");
 
+/**
+ * FIXME(sven): we can't do that because number > 2**53 will fail here
+ * because they cannot be represented in js.
+ */
+function badI32ToI64Conversion(value: number): LongNumber {
+  return {
+    high: value < 0 ? -1 : 0,
+    low: value >>> 0
+  }
+}
+
 function toHex(n: number): string {
   return "0x" + Number(n).toString(16);
 }
@@ -743,7 +754,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
           dump([value], "value");
 
-          args.push(t.numberLiteral(value));
+          const node = {
+            type: "LongNumberLiteral",
+            value: badI32ToI64Conversion(value)
+          };
+
+          args.push(node);
         }
 
         if (instruction.object === "u64") {

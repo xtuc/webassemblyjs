@@ -39,7 +39,12 @@ export function createStackFrame(
      */
     allocator,
 
-    _unwindReason: 0
+    _unwindReason: 0,
+
+    /**
+     * Program counter, used to track the execution of the code
+     */
+    _pc: 0
   };
 }
 
@@ -52,7 +57,6 @@ export function createChildStackFrame(
     originatingModule,
     labels,
     allocator,
-    _unwindReason,
     trace
   } = parent;
 
@@ -70,8 +74,18 @@ export function toString(frame: StackFrame): string {
   out += "Stack frame-------------------------------------------------------\n";
 
   out += "code:\n";
-  frame.code.forEach((i: Instruction) => {
-    out += `\t- id: ${i.id}\n`;
+  frame.code.forEach((i: Instruction, k) => {
+    if (typeof i.object === "string") {
+      out += `\t- id: ${i.object}.${i.id}`;
+    } else {
+      out += `\t- id: ${i.id}`;
+    }
+
+    if (k === frame._pc) {
+      out += " <---- pc";
+    }
+
+    out += "\n";
   });
 
   out += "\nunwind reason: " + frame._unwindReason;
@@ -90,7 +104,13 @@ export function toString(frame: StackFrame): string {
 
   out += "labels:\n";
   frame.labels.forEach((label, k) => {
-    out += `\t- ${k} id: ${label.id.value}\n`;
+    let value = "unknown";
+
+    if (label.id != null) {
+      value = label.id.value;
+    }
+
+    out += `\t- ${k} id: ${value}\n`;
   });
 
   out += "------------------------------------------------------------------\n";

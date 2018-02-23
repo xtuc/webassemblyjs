@@ -114,6 +114,14 @@ export function createHostfunc(
     //   console.log(ident(), "instruction:", i.id);
     //   console.log(ident(), "unwind reason:", frame._unwindReason);
 
+    //   console.log(ident(), "locals:");
+    //   frame.locals.forEach((stackLocal: StackLocal) => {
+    //     console.log(
+    //       ident(),
+    //       `\t- type: ${stackLocal.type}, value: ${stackLocal.value}`
+    //     );
+    //   });
+
     //   console.log(ident(), "values:");
     //   frame.values.forEach((stackLocal: StackLocal) => {
     //     console.log(
@@ -126,7 +134,12 @@ export function createHostfunc(
 
     //   console.log(ident(), "labels:");
     //   frame.labels.forEach((label, k) => {
-    //     console.log(ident(), `\t- ${k} id: ${label.id.value}`);
+    //     let value = "unknown";
+
+    //     if (label.id != null) {
+    //       value = label.id.value;
+    //     }
+    //     console.log(ident(), `\t- ${k} id: ${value}`);
     //   });
 
     //   console.log(
@@ -152,7 +165,10 @@ export function executeStackFrameAndGetResult(stackFrame: StackFrame): any {
     if (e instanceof ExecutionHasBeenTrapped) {
       throw e;
     } else {
-      throw new RuntimeError(e.message);
+      const err = new RuntimeError(e.message);
+      err.stack = e.stack;
+
+      throw err;
     }
   }
 }

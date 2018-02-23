@@ -6,6 +6,7 @@ const {
   binopf32,
   binopf64
 } = require("./instruction/binop");
+const { extendSignedi32 } = require("./instruction/conversion");
 const { unopi32, unopi64, unopf32, unopf64 } = require("./instruction/unop");
 const {
   castIntoStackLocalOfType
@@ -47,22 +48,24 @@ export function executeStackFrame(
   frame: StackFrame,
   depth: number = 0
 ): ?StackLocal {
-  let pc = 0;
-
   function createAndExecuteChildStackFrame(
     instrs: Array<Instruction>,
     { passCurrentContext, startsAtPc }: createChildStackFrameOptions = {}
   ): ?StackLocal {
-    if (typeof startsAtPc === "number") {
-      // Since the pc is incremental we can cut out the previous instructions
-      instrs = instrs.slice(startsAtPc + 1);
-    }
+    // if (typeof startsAtPc === "number") {
+    //   // Since the pc is incremental we can cut out the previous instructions
+    //   instrs = instrs.slice(startsAtPc + 1);
+    // }
 
     const childStackFrame = stackframe.createChildStackFrame(frame, instrs);
 
     if (passCurrentContext === true) {
       childStackFrame.values = frame.values;
       childStackFrame.labels = frame.labels;
+    }
+
+    if (typeof startsAtPc === "number") {
+      childStackFrame._pc = startsAtPc + 1;
     }
 
     const res = executeStackFrame(childStackFrame, depth + 1);
@@ -229,11 +232,11 @@ export function executeStackFrame(
 
   assertStackDepth(depth);
 
-  while (pc < frame.code.length) {
-    const instruction = frame.code[pc];
+  while (frame._pc < frame.code.length) {
+    const instruction = frame.code[frame._pc];
 
     if (typeof frame.trace === "function") {
-      frame.trace(depth, pc, instruction, frame);
+      frame.trace(depth, frame._pc, instruction, frame);
     }
 
     switch (instruction.type) {
@@ -308,6 +311,15 @@ export function executeStackFrame(
             typeof loop.instr.length !== "undefined"
         );
 
+        /**
+         * Used to keep track of the number of values added on top of the stack
+         * because we need to remove the label after the execution of this block.
+         */
+        let numberOfValuesAddedOnTopOfTheStack = 0;
+
+        // FIXME(sven): do this in the AST
+        loop.label = t.identifier("loop" + frame._pc);
+
         // 2. Enter the block instr∗ with label
         frame.labels.push({
           value: loop,
@@ -315,14 +327,42 @@ export function executeStackFrame(
           id: loop.label
         });
 
+        pushResult(label.createValue(loop.label.value));
+
         if (loop.instr.length > 0) {
+          const oldStackSize = frame.values.length;
+
           createAndExecuteChildStackFrame(loop.instr, {
             passCurrentContext: true
           });
           if (frame._unwindReason !== 0) {
             break;
           }
+
+          numberOfValuesAddedOnTopOfTheStack =
+            frame.values.length - oldStackSize;
         }
+
+        if (numberOfValuesAddedOnTopOfTheStack > 1) {
+          const topOfTheStack = frame.values.slice(
+            frame.values.length - numberOfValuesAddedOnTopOfTheStack
+          );
+
+          frame.values.splice(
+            frame.values.length - numberOfValuesAddedOnTopOfTheStack
+          );
+
+          pop1OfType("label");
+
+          frame.values = [...frame.values, ...topOfTheStack];
+        } else {
+          pop1OfType("label");
+        }
+
+        // Remove label
+        frame.labels = frame.labels.filter(
+          x => x.id.value !== loop.label.value
+        );
 
         break;
       }
@@ -422,6 +462,8 @@ export function executeStackFrame(
 
         if (block.label.type === "Identifier") {
           pushResult(label.createValue(block.label.value));
+        } else {
+          throw newRuntimeError("Block has no id");
         }
 
         assert(
@@ -460,12 +502,16 @@ export function executeStackFrame(
           frame.values.length - numberOfValuesAddedOnTopOfTheStack
         );
 
+        // 3. Assert: due to validation, the label LL is now on the top of the stack.
+        // 4. Pop the label from the stack.
         pop1OfType("label");
 
         frame.values = [...frame.values, ...topOfTheStack];
 
         // Remove label
-        frame.labels = frame.labels.filter(x => x.id.value !== block.label.value);
+        frame.labels = frame.labels.filter(
+          x => x.id.value !== block.label.value
+        );
 
         break;
       }
@@ -482,13 +528,28 @@ export function executeStackFrame(
           );
         }
 
+        // Stop here in that branch
+        // frame.code = frame.code.slice(frame._pc, frame.code.length + 1);
+
         const l = label.value;
 
         // 1. Assert: due to validation, the stack contains at least l+1 labels.
         assertNItemsOnStack(frame.values, l + 1);
 
         // 2. Let L be the l-th label appearing on the stack, starting from the top and counting from zero.
-        const labelidx = frame.values[l];
+        let seenLabels = 0;
+        let labelidx;
+        // for (var i = 0, len = frame.values.length; i < len; i++) {
+        for (let i = frame.values.length; i--; ) {
+          if (frame.values[i].type === "label") {
+            if (seenLabels === l) {
+              labelidx = frame.values[i];
+              break;
+            }
+
+            seenLabels++;
+          }
+        }
 
         const L = frame.labels.find(x => x.id.value === labelidx.value);
 
@@ -533,7 +594,7 @@ export function executeStackFrame(
         pushResult(val);
 
         // unwind the call stack
-        let to = frame.labels.length - l;
+        let to = l;
         let f = frame;
 
         while (f != null) {
@@ -558,7 +619,7 @@ export function executeStackFrame(
         // 8. Jump to the continuation of L
         createAndExecuteChildStackFrame(code, {
           passCurrentContext: true,
-          startsAtPc: pc
+          startsAtPc: frame._pc
         });
         if (frame._unwindReason !== 0) {
           break;
@@ -585,7 +646,7 @@ export function executeStackFrame(
         // 2. Pop the value ci32.const c from the stack.
         const c = pop1OfType("i32");
 
-        if (!c.value.eqz().isTrue()) {
+        if (c.value.eqz().isTrue() === false) {
           // 3. If c is non-zero, then
           // 3. a. Execute the instruction (br l).
 
@@ -598,7 +659,19 @@ export function executeStackFrame(
           assertNItemsOnStack(frame.values, l + 1);
 
           // 2. Let L be the l-th label appearing on the stack, starting from the top and counting from zero.
-          const labelidx = frame.values[l];
+          let seenLabels = 0;
+          let labelidx;
+          // for (var i = 0, len = frame.values.length; i < len; i++) {
+          for (let i = frame.values.length; i--; ) {
+            if (frame.values[i].type === "label") {
+              if (seenLabels === l) {
+                labelidx = frame.values[i];
+                break;
+              }
+
+              seenLabels++;
+            }
+          }
 
           const L = frame.labels.find(x => x.id.value === labelidx.value);
 
@@ -609,7 +682,7 @@ export function executeStackFrame(
           // 3. Let n be the arity of L.
           const n = L.arity;
 
-          // 4. Assert: due to validation, there are at least nn values on the top of the stack.
+          // 4. Assert: due to validation, there are at least n values on the top of the stack.
           assertNItemsOnStack(frame.values, n);
 
           // 5. Pop the values valn from the stack
@@ -643,7 +716,7 @@ export function executeStackFrame(
           pushResult(val);
 
           // unwind the call stack
-          let to = frame.labels.length - l;
+          let to = l;
           let f = frame;
 
           while (f != null) {
@@ -659,13 +732,10 @@ export function executeStackFrame(
 
           const code = L.value.code || L.value.instr;
 
-          console.log('continue', code)
-          console.log('pc', pc)
-
           // 8. Jump to the continuation of L
           createAndExecuteChildStackFrame(code, {
             passCurrentContext: true,
-            startsAtPc: pc
+            // startsAtPc: frame._pc
           });
           if (frame._unwindReason !== 0) {
             break;
@@ -728,7 +798,7 @@ export function executeStackFrame(
       case "trap": {
         // signalling abrupt termination
         // https://webassembly.github.io/spec/core/exec/runtime.html#syntax-trap
-        throw createTrap();
+        throw createTrap("Encountered unreachable or trap instruction");
       }
 
       case "local": {
@@ -915,7 +985,24 @@ export function executeStackFrame(
         }
 
         // Abort execution and return the first item on the stack
-        return pop1();
+        // return pop1();
+
+        // unwind the call stack
+        let to = 1;
+        let f = frame;
+
+        while (f != null) {
+          f._unwindReason = 1;
+
+          if (to === 0) {
+            break;
+          }
+
+          to--;
+          f = f.parent;
+        }
+
+        break;
       }
 
       /**
@@ -1090,16 +1177,7 @@ export function executeStackFrame(
       case "xor":
       case "and":
       case "eq":
-      case "ne":
-      case "lt_s":
-      case "lt_u":
-      case "le_s":
-      case "le_u":
-      case "gt":
-      case "gt_s":
-      case "gt_u":
-      case "ge_s":
-      case "ge_u": {
+      case "ne": {
         let binopFn;
         switch (instruction.object) {
           case "i32":
@@ -1115,7 +1193,7 @@ export function executeStackFrame(
             binopFn = binopf64;
             break;
           default:
-            throw newRuntimeError(
+            throw createTrap(
               "Unsupported operation " +
                 instruction.id +
                 " on " +
@@ -1147,6 +1225,85 @@ export function executeStackFrame(
 
         const [c1, c2] = pop2(instruction.object, instruction.object);
         pushResult(binopFn(c1, c2, instruction.id));
+
+        break;
+      }
+
+      /**
+       * Comparisons
+       *
+       * The only difference with the binary operations above is that the result
+       * is guaranteed to be an i32 (a boolean).
+       */
+      case "lt_s":
+      case "lt_u":
+      case "le_s":
+      case "le_u":
+      case "gt":
+      case "gt_s":
+      case "gt_u":
+      case "ge_s":
+      case "ge_u": {
+        let binopFn;
+        switch (instruction.object) {
+          case "i32":
+            binopFn = binopi32;
+            break;
+          case "i64":
+            binopFn = binopi64;
+            break;
+          case "f32":
+            binopFn = binopf32;
+            break;
+          case "f64":
+            binopFn = binopf64;
+            break;
+          default:
+            throw createTrap(
+              "Unsupported operation " +
+                instruction.id +
+                " on " +
+                instruction.object
+            );
+        }
+
+        const [left, right] = instruction.args;
+
+        // Interpret left branch first if it's a child instruction
+        if (typeof left !== "undefined") {
+          createAndExecuteChildStackFrame([left], {
+            passCurrentContext: true
+          });
+          if (frame._unwindReason !== 0) {
+            break;
+          }
+        }
+
+        // Interpret right branch first if it's a child instruction
+        if (typeof right !== "undefined") {
+          createAndExecuteChildStackFrame([right], {
+            passCurrentContext: true
+          });
+          if (frame._unwindReason !== 0) {
+            break;
+          }
+        }
+
+        const [c1, c2] = pop2(instruction.object, instruction.object);
+        const res = binopFn(c1, c2, instruction.id);
+
+        if (typeof res === "undefined") {
+          break;
+        }
+
+        /**
+         * FIXME(sven): needs to be interpreted as an i32 (since boolean)
+         *
+         * A solution would be to seperate binop from comparisons.
+         */
+        res.type = "i32";
+
+        pushResult(res);
 
         break;
       }
@@ -1185,7 +1342,7 @@ export function executeStackFrame(
             unopFn = unopf64;
             break;
           default:
-            throw newRuntimeError(
+            throw createTrap(
               "Unsupported operation " + instruction.id + " on " + opType
             );
         }
@@ -1208,13 +1365,40 @@ export function executeStackFrame(
 
         break;
       }
+
+      /**
+       * Conversions
+       */
+
+      // https://webassembly.github.io/spec/core/exec/numerics.html#op-extend-s
+      case "extend_s/i32": {
+        const { object } = instruction;
+
+        if (object === "i64") {
+          const t1 = "i32";
+
+          // 1. Assert: due to validation, a value of value type t1 is on the top of the stack.
+          // 2. Pop the value t1.const c1 from the stack.
+          const c1 = pop1OfType(t1);
+
+          // a. Let c2 be a possible result of the computation
+          const c2 = extendSignedi32(c1.value);
+
+          // b. Push the value t2.const c2 to the stack.
+          pushResult(castIntoStackLocalOfType("i64", c2));
+        } else {
+          throw createTrap(`${object}.extend_s/i32 not implemented`);
+        }
+
+        break;
+      }
     }
 
     if (typeof frame.trace === "function") {
-      frame.trace(depth, pc, instruction, frame);
+      frame.trace(depth, frame._pc, instruction, frame);
     }
 
-    pc++;
+    frame._pc++;
   }
 
   // Return the item on top of the values/stack;
@@ -1223,6 +1407,9 @@ export function executeStackFrame(
 
     if (res.type !== "label") {
       return res;
+    } else {
+      // Push label back
+      pushResult(res);
     }
   }
 }

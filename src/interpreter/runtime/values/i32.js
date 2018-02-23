@@ -327,3 +327,11 @@ export function createValueFromArrayBuffer(
     value: i32.fromArrayBuffer(buffer, ptr, extend, signed)
   };
 }
+
+export function createTrue(): i32 {
+  return new i32(1);
+}
+
+export function createFalse(): i32 {
+  return new i32(0);
+}
