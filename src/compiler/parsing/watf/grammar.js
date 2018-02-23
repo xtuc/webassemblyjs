@@ -114,14 +114,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
     }
 
-    function parseListOfInstructions(acc: Array<Instruction>) {
-      while (token.type === tokens.openParen) {
-        eatToken();
-
-        acc.push(parseFuncInstr());
-      }
-    }
-
     /**
      * Parses a memory instruction
      *

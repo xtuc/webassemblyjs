@@ -53,6 +53,6 @@ instantiate(buff, importObject)
     throw err;
   });
 
-process.on('unhandledRejection', error => {
+process.on("unhandledRejection", error => {
   throw error;
 });
