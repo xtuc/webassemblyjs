@@ -18,7 +18,6 @@ const label = require("../runtime/values/label");
 const stackframe = require("./stackframe");
 const { createTrap } = require("./signals");
 const { RuntimeError } = require("../../errors");
-const t = require("../../compiler/AST");
 
 // TODO(sven): can remove asserts call at compile to gain perf in prod
 function assert(cond) {
@@ -35,7 +34,7 @@ function assertStackDepth(depth: number) {
 
 type createChildStackFrameOptions = {
   // Pass the current stack to the child frame
-  passCurrentContext?: boolean,
+  passCurrentContext?: boolean
 };
 
 export function executeStackFrame(
@@ -288,9 +287,6 @@ export function executeStackFrame(
           typeof loop.instr === "object" &&
             typeof loop.instr.length !== "undefined"
         );
-
-        // FIXME(sven): do this in the AST
-        loop.label = t.identifier("loop" + frame._pc);
 
         // 2. Enter the block instr∗ with label
         frame.labels.push({
