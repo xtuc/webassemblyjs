@@ -39,7 +39,7 @@ function badI32ToI64Conversion(value: number): LongNumber {
   return {
     high: value < 0 ? -1 : 0,
     low: value >>> 0
-  };
+  }
 }
 
 function toHex(n: number): string {

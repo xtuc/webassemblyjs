@@ -219,9 +219,7 @@ export class i64 implements IntegerValue<i64> {
 
 export function createValueFromAST(value: LongNumber): StackLocal {
   if (typeof value.low === "undefined" || typeof value.high === "undefined") {
-    throw new Error(
-      "i64.createValueFromAST malformed value: " + JSON.stringify(value)
-    );
+    throw new Error('i64.createValueFromAST malformed value: ' + JSON.stringify(value));
   }
 
   return {
