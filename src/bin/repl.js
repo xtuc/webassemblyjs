@@ -117,7 +117,12 @@ function assert_return(node) {
   const expectedEvaluation = partialEvaluation.evaluate(allocator, args);
 
   if (expectedEvaluation !== undefined) {
-    expectedRes = expectedEvaluation.value.toString();
+
+    if (expectedEvaluation.type === "i64") {
+      expectedRes = expectedEvaluation.value.toString();
+    } else {
+      expectedRes = expectedEvaluation.value.toNumber();
+    }
   }
 
   if (action.type === "Instr" && action.id === "invoke") {
@@ -184,7 +189,7 @@ function invoke(node) {
         return evaluation.value._value;
       }
 
-      return evaluation.value.toString();
+      return evaluation.value.toNumber();
     }
   });
 

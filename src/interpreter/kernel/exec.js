@@ -537,7 +537,7 @@ export function executeStackFrame(
           throw newRuntimeError("get_local requires one argument, none given.");
         }
 
-        if (index.type === "NumberLiteral" || index.type === "FloatLiteral") {
+        if (index.type === "NumberLiteral") {
           getLocalByIndex(index.value);
         } else {
           throw newRuntimeError(
