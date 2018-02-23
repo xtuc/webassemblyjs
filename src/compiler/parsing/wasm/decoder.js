@@ -19,9 +19,11 @@ const {
 } = require("./constants");
 
 const {
+  decodeInt32,
   decodeUInt32,
   MAX_NUMBER_OF_BYTE_U32,
 
+  decodeInt64,
   decodeUInt64,
   MAX_NUMBER_OF_BYTE_U64
 } = require("./LEB128");
@@ -180,14 +182,34 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
    * The length will be handled by the leb librairy, we pass the max number of
    * byte.
    */
-  function readU32(): DecodedU32 {
+  function readU32(): Decoded32 {
     const bytes = readBytes(MAX_NUMBER_OF_BYTE_U32);
     const buffer = Buffer.from(bytes);
 
     return decodeUInt32(buffer);
   }
 
-  function readU64(): DecodedU64 {
+  /**
+   * Decode a signed 32bits interger
+   */
+  function read32(): Decoded32 {
+    const bytes = readBytes(MAX_NUMBER_OF_BYTE_U32);
+    const buffer = Buffer.from(bytes);
+
+    return decodeInt32(buffer);
+  }
+
+  /**
+   * Decode a signed 64bits integer
+   */
+  function read64(): Decoded64 {
+    const bytes = readBytes(MAX_NUMBER_OF_BYTE_U64);
+    const buffer = Buffer.from(bytes);
+
+    return decodeInt64(buffer);
+  }
+
+  function readU64(): Decoded64 {
     const bytes = readBytes(MAX_NUMBER_OF_BYTE_U64);
     const buffer = Buffer.from(bytes);
 
@@ -543,7 +565,11 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       const instruction = symbolsByByte[instructionByte];
 
-      dump([instructionByte], instruction.name);
+      if (typeof instruction.object === "string") {
+        dump([instructionByte], `${instruction.object}.${instruction.name}`);
+      } else {
+        dump([instructionByte], instruction.name);
+      }
 
       if (typeof instruction === "undefined") {
         throw new CompileError(
@@ -691,6 +717,16 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
          * Numeric instructions
          */
         if (instruction.object === "i32") {
+          const value32 = read32();
+          const value = value32.value;
+          eatBytes(value32.nextIndex);
+
+          dump([value], "value");
+
+          args.push(t.numberLiteral(value));
+        }
+
+        if (instruction.object === "u32") {
           const valueu32 = readU32();
           const value = valueu32.value;
           eatBytes(valueu32.nextIndex);
@@ -701,6 +737,16 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         }
 
         if (instruction.object === "i64") {
+          const value64 = read64();
+          const value = value64.value;
+          eatBytes(value64.nextIndex);
+
+          dump([value], "value");
+
+          args.push(t.numberLiteral(value));
+        }
+
+        if (instruction.object === "u64") {
           const valueu64 = readU64();
           const value = valueu64.value;
           eatBytes(valueu64.nextIndex);

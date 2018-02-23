@@ -188,6 +188,26 @@ export function decodeUInt64(encodedBuffer, index) {
   return { value: value, nextIndex: result.nextIndex, lossy: parsed.lossy };
 }
 
+export function decodeInt64(encodedBuffer, index) {
+  const result = decodeBufferCommon(encodedBuffer, index, true);
+  const parsed = bufReadInt(result.value);
+  const value = parsed.value;
+
+  bufFree(result.value);
+
+  return { value: value, nextIndex: result.nextIndex, lossy: parsed.lossy };
+}
+
+export function decodeInt32(encodedBuffer, index) {
+  const result = decodeBufferCommon(encodedBuffer, index, true);
+  const parsed = bufReadInt(result.value);
+  const value = parsed.value;
+
+  bufFree(result.value);
+
+  return { value: value, nextIndex: result.nextIndex };
+}
+
 export function decodeUInt32(encodedBuffer, index) {
   const result = decodeBufferCommon(encodedBuffer, index, false);
   const parsed = bufReadUInt(result.value);
@@ -216,6 +236,38 @@ function bufReadUInt(buffer) {
   } else {
     for (let i = length - 1; i >= 0; i--) {
       const one = buffer[i];
+      result *= 0x100;
+      if (isLossyToAdd(result, one)) {
+        lossy = true;
+      }
+      result += one;
+    }
+  }
+
+  return { value: result, lossy: lossy };
+}
+
+/**
+ * Reads an arbitrary signed int from a buffer.
+ */
+function bufReadInt(buffer) {
+  var length = buffer.length;
+  var positive = buffer[length - 1] < 0x80;
+  var result = positive ? 0 : -1;
+  var lossy = false;
+
+  // Note: We can't use bit manipulation here, since that stops
+  // working if the result won't fit in a 32-bit int.
+
+  if (length < 7) {
+    // Common case which can't possibly be lossy (because the result has
+    // no more than 48 bits, and loss only happens with 54 or more).
+    for (var i = length - 1; i >= 0; i--) {
+      result = (result * 0x100) + buffer[i];
+    }
+  } else {
+    for (var i = length - 1; i >= 0; i--) {
+      var one = buffer[i];
       result *= 0x100;
       if (isLossyToAdd(result, one)) {
         lossy = true;

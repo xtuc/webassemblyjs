@@ -7,8 +7,8 @@ interface Type {
   nextIndex: number;
 }
 
-type DecodedU32 = VariableLengthValue;
-type DecodedU64 = VariableLengthValue;
+type Decoded32 = VariableLengthValue;
+type Decoded64 = VariableLengthValue;
 type DecodedF32 = VariableLengthValue;
 type DecodedF64 = VariableLengthValue;
 
