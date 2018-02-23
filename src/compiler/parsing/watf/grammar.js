@@ -114,14 +114,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
     }
 
-    function parseListOfInstructions(acc: Array<Instruction>) {
-      while (token.type === tokens.openParen) {
-        eatToken();
-
-        acc.push(parseFuncInstr());
-      }
-    }
-
     /**
      * Parses a memory instruction
      *
@@ -1138,14 +1130,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
         }
 
+        const instrArgs = [];
+
         // Nested instruction
-        if (token.type === tokens.openParen) {
-          const callBody = [];
+        while (token.type === tokens.openParen) {
+          eatToken();
 
-          parseListOfInstructions(callBody);
-
-          // Ignore call body for now since it's just in the WAST format and
-          // not in the WASM production format.
+          instrArgs.push(parseFuncInstr());
           eatTokenOfType(tokens.closeParen);
         }
 
@@ -1153,7 +1144,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           throw new Error("Missing argument in call instruciton");
         }
 
-        return t.callInstruction(index);
+        if (instrArgs.length > 0) {
+          return t.callInstruction(index, instrArgs);
+        } else {
+          return t.callInstruction(index);
+        }
       } else if (isKeyword(token, keywords.if)) {
         eatToken(); // Keyword
 
@@ -1273,6 +1268,57 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         name,
         id
       });
+    }
+
+    /**
+     * Parses a type instruction
+     *
+     * WAST:
+     *
+     * typedef: ( type <name>? ( func <param>* <result>* ) )
+     */
+    function parseType(): TypeInstruction {
+      let id;
+      let params = [];
+      let result = [];
+
+      if (token.type === tokens.identifier) {
+        id = t.identifier(token.value);
+        eatToken();
+      }
+
+      if (lookaheadAndCheck(tokens.openParen, keywords.func)) {
+        eatToken(); // (
+        eatToken(); // func
+
+        if (token.type === tokens.closeParen) {
+          eatToken();
+          // function with an empty signature, we can abort here
+          return t.typeInstructionFunc([], [], id);
+        }
+
+        if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
+          eatToken(); // (
+          eatToken(); // param
+
+          params = parseFuncParam();
+
+          eatTokenOfType(tokens.closeParen);
+        }
+
+        if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
+          eatToken(); // (
+          eatToken(); // param
+
+          result = parseFuncResult();
+
+          eatTokenOfType(tokens.closeParen);
+        }
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      return t.typeInstructionFunc(params, result, id);
     }
 
     /**
@@ -1560,6 +1606,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.global)) {
         eatToken();
         const node = parseGlobal();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.type)) {
+        eatToken();
+        const node = parseType();
         eatTokenOfType(tokens.closeParen);
 
         return node;

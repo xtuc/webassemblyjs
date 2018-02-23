@@ -10,6 +10,6 @@ export class ExecutionHasBeenTrapped extends Error {}
  */
 export function createTrap(
   reason?: string = "Execution has been trapped"
-): StackLocal {
-  throw new ExecutionHasBeenTrapped(reason);
+): ExecutionHasBeenTrapped {
+  return new ExecutionHasBeenTrapped(reason);
 }

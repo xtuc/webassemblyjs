@@ -108,6 +108,9 @@ export function walk(
       // $FlowIgnore
       walk(n.label, cb);
     }
+
+    // $FlowIgnore
+    n.instr.forEach(x => walk(x, cb));
   }
 
   if (n.type === "BlockInstruction") {
@@ -127,6 +130,11 @@ export function walk(
 
     // $FlowIgnore
     walk(n.testLabel, cb);
+
+    // $FlowIgnore
+    n.consequent.forEach(x => walk(x, cb));
+    // $FlowIgnore
+    n.alternate.forEach(x => walk(x, cb));
   }
 
   if (n.type === "Func") {

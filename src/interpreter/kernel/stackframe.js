@@ -37,7 +37,12 @@ export function createStackFrame(
     /**
      * For shared memory operations
      */
-    allocator
+    allocator,
+
+    /**
+     * Program counter, used to track the execution of the code
+     */
+    _pc: 0
   };
 }
 
@@ -45,10 +50,10 @@ export function createChildStackFrame(
   parent: StackFrame,
   code: Array<Instruction>
 ): StackFrame {
-  const { locals, originatingModule, labels, allocator } = parent;
+  const { locals, originatingModule, allocator, trace } = parent;
 
   const frame = createStackFrame(code, locals, originatingModule, allocator);
-  frame.labels = labels;
+  frame.trace = trace;
 
   return frame;
 }

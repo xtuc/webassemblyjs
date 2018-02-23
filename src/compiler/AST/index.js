@@ -175,10 +175,11 @@ export function instruction(
 }
 
 export function loopInstruction(
-  label: ?Identifier,
+  label: Identifier,
   resulttype: ?Valtype,
   instr: Array<Instruction>
 ): LoopInstruction {
+  assert(label !== null);
   assert(typeof instr === "object" && typeof instr.length !== "undefined");
 
   return {
@@ -272,14 +273,23 @@ export function numberLiteral(
   return x;
 }
 
-export function callInstruction(index: Index): CallInstruction {
+export function callInstruction(
+  index: Index,
+  instrArgs?: Array<Expression>
+): CallInstruction {
   assert(typeof index.type === "string");
 
-  return {
+  const n: CallInstruction = {
     type: "CallInstruction",
     id: "call",
     index
   };
+
+  if (typeof instrArgs === "object") {
+    n.instrArgs = instrArgs;
+  }
+
+  return n;
 }
 
 export function ifInstruction(
@@ -470,6 +480,21 @@ export function memIndexLiteral(value: number): Memidx {
   // $FlowIgnore
   const x: U32Literal = numberLiteral(value, "u32");
   return x;
+}
+
+export function typeInstructionFunc(
+  params: Array<FuncParam> = [],
+  result: Array<Valtype> = [],
+  id: ?Index
+): TypeInstruction {
+  return {
+    type: "TypeInstruction",
+    id,
+    functype: {
+      params,
+      result
+    }
+  };
 }
 
 export function callIndirectInstruction(

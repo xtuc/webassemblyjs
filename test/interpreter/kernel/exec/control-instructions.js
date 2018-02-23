@@ -34,7 +34,9 @@ describe("kernel exec - control instruction", () => {
 
       const loopCode = [t.instruction("nop"), t.instruction("nop")];
 
-      const loop = [t.loopInstruction(undefined, undefined, loopCode)];
+      const loop = [
+        t.loopInstruction(t.identifier("loop"), undefined, loopCode)
+      ];
 
       const stackFrame = createStackFrame(loop, []);
       stackFrame.trace = (depth, pc) => {

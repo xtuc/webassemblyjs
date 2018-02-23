@@ -202,7 +202,8 @@ type IfInstruction = {
 
 type CallInstruction = {
   type: "CallInstruction",
-  index: Index
+  index: Index,
+  instrArgs?: Array<Expression> // only for WAST
 };
 
 type CallIndirectInstruction = {
@@ -295,6 +296,15 @@ type BlockComment = {
 type ValtypeLiteral = {
   type: "ValtypeLiteral",
   name: Valtype
+};
+
+type TypeInstruction = {
+  type: "TypeInstruction",
+  id: ?Index,
+  functype: {
+    params: Array<FuncParam>,
+    result: Array<Valtype>
+  }
 };
 
 type Start = {

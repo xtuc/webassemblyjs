@@ -24,18 +24,18 @@ describe("kernel exec", () => {
     });
   });
 
-  describe("pc", () => {
+  describe("blockpc", () => {
     it("should increase after each instruction", () => {
-      let pc = 0;
+      let blockpc = 0;
 
       const code = [t.instruction("nop"), t.instruction("nop")];
 
       const stackFrame = createStackFrame(code, []);
-      stackFrame.trace = (_, x) => (pc = x);
+      stackFrame.trace = (_, x) => (blockpc = x);
 
       executeStackFrame(stackFrame);
 
-      assert.equal(pc, code.length - 1);
+      assert.equal(blockpc, code.length - 1);
     });
   });
 });

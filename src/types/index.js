@@ -73,7 +73,9 @@ type StackFrame = {
   originatingModule: ModuleInstance,
   allocator: Allocator,
 
-  trace?: (number, number, Instruction) => void
+  trace?: (number, number, Instruction, StackFrame) => void,
+
+  _pc: number
 };
 
 type StackLocal = {
@@ -96,14 +98,14 @@ interface IntegerValue<T> extends NumericOperations<T> {
   xor(operand: T): T;
   eq(operand: T): T;
   ne(operand: T): T;
-  lt_s(operand: T): T;
-  lt_u(operand: T): T;
-  le_s(operand: T): T;
-  le_u(operand: T): T;
-  gt_s(operand: T): T;
-  gt_u(operand: T): T;
-  ge_s(operand: T): T;
-  ge_u(operand: T): T;
+  lt_s(operand: T): i32;
+  lt_u(operand: T): i32;
+  le_s(operand: T): i32;
+  le_u(operand: T): i32;
+  gt_s(operand: T): i32;
+  gt_u(operand: T): i32;
+  ge_s(operand: T): i32;
+  ge_u(operand: T): i32;
   clz(): T;
   popcnt(): T;
   eqz(): T;

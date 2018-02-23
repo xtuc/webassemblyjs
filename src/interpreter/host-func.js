@@ -6,7 +6,9 @@ const {
 const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");
 const { RuntimeError } = require("../errors");
+const label = require("./runtime/values/label");
 const { ExecutionHasBeenTrapped } = require("./kernel/signals");
+const t = require("../compiler/AST");
 
 export function createHostfunc(
   moduleinst: ModuleInstance,
@@ -84,13 +86,69 @@ export function createHostfunc(
       allocator
     );
 
-    // stackFrame.trace = (depth, pc, i) => console.log(
-    //   'trace exec',
-    //   'depth:' + depth,
-    //   'pc:' + pc,
-    //   'instruction:' + i.type,
-    //   'v:' + i.id,
-    // );
+    // 2. Enter the block instr∗ with label
+    stackFrame.values.push(label.createValue(exportinst.name));
+
+    stackFrame.labels.push({
+      value: funcinst,
+      arity: funcinstArgs.length,
+      id: t.identifier(exportinst.name)
+    });
+
+    // function trace(depth, blockpc, i, frame) {
+    //   function ident() {
+    //     let out = "";
+
+    //     for (let i = 0; i < depth; i++) {
+    //       out += "\t|";
+    //     }
+
+    //     return out;
+    //   }
+
+    //   console.log(
+    //     ident(),
+    //     `-------------- blockpc: ${blockpc} - depth: ${depth} --------------`
+    //   );
+
+    //   console.log(ident(), "instruction:", i.id);
+    //   console.log(ident(), "unwind reason:", frame._unwindReason);
+
+    //   console.log(ident(), "locals:");
+    //   frame.locals.forEach((stackLocal: StackLocal) => {
+    //     console.log(
+    //       ident(),
+    //       `\t- type: ${stackLocal.type}, value: ${stackLocal.value}`
+    //     );
+    //   });
+
+    //   console.log(ident(), "values:");
+    //   frame.values.forEach((stackLocal: StackLocal) => {
+    //     console.log(
+    //       ident(),
+    //       `\t- type: ${stackLocal.type}, value: ${stackLocal.value}`
+    //     );
+    //   });
+
+    //   console.log(ident(), "");
+
+    //   console.log(ident(), "labels:");
+    //   frame.labels.forEach((label, k) => {
+    //     let value = "unknown";
+
+    //     if (label.id != null) {
+    //       value = label.id.value;
+    //     }
+    //     console.log(ident(), `\t- ${k} id: ${value}`);
+    //   });
+
+    //   console.log(
+    //     ident(),
+    //     "--------------------------------------------------\n"
+    //   );
+    // }
+
+    // stackFrame.trace = trace;
 
     return executeStackFrameAndGetResult(stackFrame);
   };
@@ -107,7 +165,10 @@ export function executeStackFrameAndGetResult(stackFrame: StackFrame): any {
     if (e instanceof ExecutionHasBeenTrapped) {
       throw e;
     } else {
-      throw new RuntimeError(e.message);
+      const err = new RuntimeError(e.message);
+      err.stack = e.stack;
+
+      throw err;
     }
   }
 }
