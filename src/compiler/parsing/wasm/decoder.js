@@ -176,6 +176,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   function readUTF8String(): DecodedUTF8String {
     const lenu32 = readU32();
     const len = lenu32.value;
+
+    dump([toHex(len)], "string length");
+
     eatBytes(lenu32.nextIndex);
 
     const bytes = readBytes(len);
@@ -328,6 +331,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     eatBytes(numberOfImportsu32.nextIndex);
 
     for (let i = 0; i < numberOfImports; i++) {
+      dumpSep("import header " + i);
+
       /**
        * Module name
        */
@@ -352,7 +357,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       const descrType = importTypes[descrTypeByte];
 
-      dump([descrTypeByte], "import type");
+      dump([descrTypeByte], "import kind");
 
       if (typeof descrType === "undefined") {
         throw new CompileError(
@@ -892,16 +897,18 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
     const type = valtypes[valtypeByte];
 
-    dump([valtypeByte], "valtype type");
+    dump([valtypeByte], type);
 
     if (typeof type === "undefined") {
       throw new CompileError("Unknown valtype: " + toHex(valtypeByte));
     }
 
     const globalTypeByte = readByte();
+    eatBytes(1);
+
     const globalType = globalTypes[globalTypeByte];
 
-    dump([globalTypeByte], "global type");
+    dump([globalTypeByte], `global type (${globalType})`);
 
     if (typeof globalType === "undefined") {
       throw new CompileError("Invalid mutability: " + toHex(globalTypeByte));
