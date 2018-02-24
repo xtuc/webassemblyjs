@@ -39,6 +39,35 @@
             "type": "NumberLiteral",
             "value": 1
           }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_1"
+          },
+          "params": [],
+          "result": [],
+          "body": [
+            {
+              "type": "Instr",
+              "id": "get_global",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
+              ]
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0
+              }
+            }
+          ]
         }
       ]
     }
