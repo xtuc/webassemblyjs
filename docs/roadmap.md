@@ -10,7 +10,7 @@ There are a few PRs against Webpack to use directly or indirectly this project:
 It's important that the features used in Webpack are working, and thus the following work is priority:
 - Making sure that we can decode WASM binaries
   - [x] Ability to import memory (https://github.com/xtuc/js-webassembly-interpreter/issues/137)
-  - [ ] Ability to import table (https://github.com/xtuc/js-webassembly-interpreter/issues/171)
+  - [x] Ability to import table (https://github.com/xtuc/js-webassembly-interpreter/issues/171)
   - [ ] Decode data sections
   - [ ] Decode custom sections
   - [ ] Add more invalid modules coverage from spec tests
