@@ -1,0 +1,12 @@
+{
+  "name": "@webassemblyjs/ast",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "webassembly-floating-point-hex-parser": "0.1.2",
+    "webassemblyjs": "1.0.0"
+  }
+}

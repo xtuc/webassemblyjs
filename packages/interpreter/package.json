@@ -1,0 +1,12 @@
+{
+  "name": "@webassemblyjs/interpreter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "webassemblyjs": "1.0.0",
+    "@webassemblyjs/ast": "1.0.0"
+  }
+}

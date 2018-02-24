@@ -1,6 +1,7 @@
 MOCHA_OPTS =
 NODE_OPTS =
 
+LERNA = ./node_modules/.bin/lerna
 FLOWTYPED = ./node_modules/.bin/flow-typed
 NODE = node
 PRETTIER = ./node_modules/.bin/prettier
@@ -23,17 +24,21 @@ clean-all: clean
 
 bootstrap: clean-all
 	npm install
+	$(LERNA) bootstrap
 
 build: clean
-	$(BABEL) --out-dir lib/ src/
+	./scripts/build.sh
 
 watch:
 	$(BABEL) --out-dir lib/ src/ --watch
 
 test-ci: test test-whitelisted-spec lint
 
+test-nobuild:
+	./scripts/test.sh
+
 test: build
-	$(MOCHA) test/ --recursive
+	./scripts/test.sh
 
 test-whitelisted-spec: make-executables
 	./lib/bin/repl.js spec/test/core/exports.wast

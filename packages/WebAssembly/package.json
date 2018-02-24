@@ -1,0 +1,14 @@
+{
+  "name": "webassemblyjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@webassemblyjs/ast": "1.0.0"
+  }
+}

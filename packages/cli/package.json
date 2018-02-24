@@ -1,0 +1,11 @@
+{
+  "name": "@webassemblyjs/cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo no tests"
+  },
+  "author": "",
+  "license": "ISC"
+}
