@@ -2,7 +2,7 @@
 
 import { Memory } from "./memory";
 import { RuntimeError } from "../../../errors";
-
+const { Table } = require("./table");
 const { traverse } = require("../../../compiler/AST/traverse");
 const func = require("./func");
 const externvalue = require("./extern");
@@ -85,6 +85,15 @@ function instantiateImports(
     moduleInstance.memaddrs.push(addr);
   }
 
+  function handleTableImport(node: ModuleImport) {
+    const tableinstance = getExternalElementOrThrow(node.module, node.name);
+
+    const addr = allocator.malloc(1 /* size of the tableinstance struct */);
+    allocator.set(addr, tableinstance);
+
+    moduleInstance.tableaddrs.push(addr);
+  }
+
   traverse(n, {
     ModuleImport({ node }: NodePath<ModuleImport>) {
       switch (node.descr.type) {
@@ -94,6 +103,8 @@ function instantiateImports(
           return handleGlobalImport(node, node.descr);
         case "Memory":
           return handleMemoryImport(node);
+        case "Table":
+          return handleTableImport(node);
         default:
           throw new Error("Unsupported import of type: " + node.descr.type);
       }
@@ -171,8 +182,12 @@ function instantiateInternals(
     },
 
     Table({ node }: NodePath<Table>) {
-      // TODO(sven): implement exporting a Table instance
-      const tableinstance = null;
+      // $FlowIgnore: see type Table in src/types/AST.js
+      const initial = node.limits.min;
+      // $FlowIgnore: see type Table in src/types/AST.js
+      const element = node.elementType;
+
+      const tableinstance = new Table({ initial, element });
 
       const addr = allocator.malloc(1 /* size of the tableinstance struct */);
       allocator.set(addr, tableinstance);
@@ -181,8 +196,27 @@ function instantiateInternals(
 
       if (node.name != null) {
         if (node.name.type === "Identifier") {
+          // $FlowIgnore
           internals.instantiatedTables[node.name.value] = addr;
         }
+      }
+    },
+
+    Elem({ node }: NodePath<Elem>) {
+      let table;
+
+      if (node.table.type === "NumberLiteral") {
+        const addr = moduleInstance.tableaddrs[node.table.value];
+        table = allocator.get(addr);
+      }
+
+      if (typeof table === "object") {
+        // FIXME(sven): expose the function in a HostFunc
+        table.push(function() {
+          throw new Error("Unsupported operation");
+        });
+      } else {
+        throw new CompileError("Unknown table");
       }
     },
 

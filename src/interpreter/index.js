@@ -4,7 +4,6 @@ const { traverse } = require("../compiler/AST/traverse");
 const modulevalue = require("./runtime/values/module");
 const { RuntimeError } = require("../errors");
 const { Module } = require("../compiler/compile/module");
-const { Table } = require("./runtime/values/table");
 const { createAllocator } = require("./kernel/memory");
 const importObjectUtils = require("./import-object");
 import { createHostfunc, executeStackFrameAndGetResult } from "./host-func";
@@ -15,7 +14,6 @@ export class Instance {
 
   _allocator: Allocator;
   _moduleInstance: ModuleInstance;
-  _table: ?TableInstance;
 
   /**
    * Map id to external elements or callable functions
@@ -59,11 +57,7 @@ export class Instance {
           this._externalElements[key] = {};
         }
 
-        if (value instanceof Table) {
-          this._table = value;
-        } else {
-          this._externalElements[key][key2] = value;
-        }
+        this._externalElements[key][key2] = value;
       });
     }
 
@@ -110,10 +104,6 @@ export class Instance {
         }
 
         this.exports[exportinst.name] = memoryinst;
-      }
-
-      if (this._table != undefined) {
-        this._table.push(this.exports[exportinst.name]);
       }
     });
 
