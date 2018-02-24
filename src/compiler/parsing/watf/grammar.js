@@ -424,6 +424,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           descr = t.globalImportDescr(valtype, "const");
         }
+      } else if (isKeyword(token, keywords.memory) === true) {
+        eatToken(); // Keyword
+
+        descr = parseMemory();
       } else {
         throw new Error("Unsupported import type: " + tokenToString(token));
       }

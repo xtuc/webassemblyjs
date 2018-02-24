@@ -25,6 +25,13 @@ export function getType(instrs: Array<Instruction>): ?Array<Valtype> {
 
   // It's a ObjectInstruction
   if (typeof last.object === "string") {
+    // u32 are in fact i32
+    // $FlowIgnore
+    if (last.object === "u32") {
+      // $FlowIgnore
+      last.object = "i32";
+    }
+
     // $FlowIgnore
     const opName = `${last.object}.${last.id}`;
     const signature = signatures[opName];

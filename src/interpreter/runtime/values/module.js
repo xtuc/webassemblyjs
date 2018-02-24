@@ -76,6 +76,15 @@ function instantiateImports(
     moduleInstance.globaladdrs.push(addr);
   }
 
+  function handleMemoryImport(node: ModuleImport) {
+    const memoryinstance = getExternalElementOrThrow(node.module, node.name);
+
+    const addr = allocator.malloc(1 /* size of the memoryinstance struct */);
+    allocator.set(addr, memoryinstance);
+
+    moduleInstance.memaddrs.push(addr);
+  }
+
   traverse(n, {
     ModuleImport({ node }: NodePath<ModuleImport>) {
       switch (node.descr.type) {
@@ -83,6 +92,8 @@ function instantiateImports(
           return handleFuncImport(node, node.descr);
         case "GlobalType":
           return handleGlobalImport(node, node.descr);
+        case "Memory":
+          return handleMemoryImport(node);
         default:
           throw new Error("Unsupported import of type: " + node.descr.type);
       }
@@ -176,23 +187,19 @@ function instantiateInternals(
     },
 
     Memory({ node }: NodePath<Memory>) {
+      // Module has already a memory instance (likely imported), skip this.
+      if (moduleInstance.memaddrs.length !== 0) {
+        return;
+      }
+
       // $FlowIgnore: see type Memory in src/types/AST.js
-      const limits = node.limits;
-
-      if (limits.max && limits.max < limits.min) {
-        throw new RuntimeError("size minimum must not be greater than maximum");
-      }
-
-      if (limits.min > 65536) {
-        throw new RuntimeError(
-          "memory size must be at most 65536 pages (4GiB)"
-        );
-      }
+      const { min, max } = node.limits;
 
       const memoryDescriptor = {
-        initial: limits.min,
-        maximum: limits.max
+        initial: min,
+        maximum: max
       };
+
       const memoryinstance = new Memory(memoryDescriptor);
 
       const addr = allocator.malloc(1 /* size of the memoryinstance struct */);

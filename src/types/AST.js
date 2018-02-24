@@ -235,7 +235,7 @@ type FuncImportDescr = {
   results: Array<Valtype>
 };
 
-type ImportDescr = FuncImportDescr | GlobalType;
+type ImportDescr = FuncImportDescr | GlobalType | Memory;
 
 type ModuleImport = {
   type: "ModuleImport",

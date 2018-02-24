@@ -1,5 +1,7 @@
 // @flow
 
+import { RuntimeError } from "../../../errors";
+
 const WEBASSEMBLY_PAGE_SIZE = 64 * 1024 /* 64KiB */;
 
 export class Memory implements MemoryInstance {
@@ -13,19 +15,19 @@ export class Memory implements MemoryInstance {
       throw new TypeError("MemoryDescriptor must be an object");
     }
 
+    if (typeof descr.maximum === "number" && descr.maximum < descr.initial) {
+      throw new RangeError("Initial memory can not be higher than the maximum");
+    }
+
+    if (descr.initial > 65536) {
+      throw new RuntimeError("memory size must be at most 65536 pages (4GiB)");
+    }
+
     if (typeof descr.maximum === "number") {
       this._maximumBytes = descr.maximum * WEBASSEMBLY_PAGE_SIZE;
     }
 
-    if (typeof descr.initial === "number") {
-      this._initialBytes = descr.initial * WEBASSEMBLY_PAGE_SIZE;
-
-      if (this._initialBytes > this._maximumBytes) {
-        throw new RangeError(
-          "Initial memory can not be higher than the maximum"
-        );
-      }
-    }
+    this._initialBytes = descr.initial * WEBASSEMBLY_PAGE_SIZE;
 
     this._allocateInitial();
   }
