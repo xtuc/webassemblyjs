@@ -88,4 +88,6 @@
   (func $test)
   (start $test)
   (start 0)
+  (import "a" "b" (table $temp_30 1 anyfunc))
+  (import "c" "d" (table $temp_31 5 25 anyfunc))
 )

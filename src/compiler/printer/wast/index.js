@@ -199,6 +199,10 @@ function printModuleImportDescr(n: ImportDescr, depth: number): string {
     out += ")";
   }
 
+  if (n.type === "Table") {
+    out += printTable(n, depth);
+  }
+
   return out;
 }
 
