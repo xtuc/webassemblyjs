@@ -69,6 +69,9 @@
         (i32.const 8)
       )
     )
+    (i64.const -1)
+    (i64.const 1)
+    (i64.const 255)
   )
   ;; a
 
