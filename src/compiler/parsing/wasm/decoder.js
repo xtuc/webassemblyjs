@@ -388,6 +388,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         });
       } else if (descrType === "global") {
         importDescr = parseGlobalType();
+      } else if (descrType === "mem") {
+        const memoryNode = parseMemoryType(0);
+
+        state.memoriesInModule.push(memoryNode);
+
+        importDescr = memoryNode;
       } else {
         throw new CompileError("Unsupported import of type: " + descrType);
       }
@@ -960,6 +966,36 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     }
   }
 
+  // https://webassembly.github.io/spec/core/binary/types.html#memory-types
+  function parseMemoryType(i: number): Memory {
+    const limitType = readByte();
+    eatBytes(1);
+
+    let min, max;
+
+    if (limitHasMaximum[limitType] === true) {
+      const u32min = readU32();
+      min = u32min.value;
+      eatBytes(u32min.nextIndex);
+
+      dump([min], "min");
+
+      const u32max = readU32();
+      max = u32max.value;
+      eatBytes(u32max.nextIndex);
+
+      dump([max], "max");
+    } else {
+      const u32min = readU32();
+      min = u32min.value;
+      eatBytes(u32min.nextIndex);
+
+      dump([min], "min");
+    }
+
+    return t.memory(t.limits(min, max), t.indexLiteral(i));
+  }
+
   // https://webassembly.github.io/spec/binary/modules.html#memory-section
   function parseMemorySection() {
     const memories = [];
@@ -971,32 +1007,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     dump([numberOfElements], "num elements");
 
     for (let i = 0; i < numberOfElements; i++) {
-      const limitType = readByte();
-      eatBytes(1);
-
-      let min, max;
-
-      if (limitHasMaximum[limitType] === true) {
-        const u32min = readU32();
-        min = u32min.value;
-        eatBytes(u32min.nextIndex);
-
-        dump([min], "min");
-
-        const u32max = readU32();
-        max = u32max.value;
-        eatBytes(u32max.nextIndex);
-
-        dump([max], "max");
-      } else {
-        const u32min = readU32();
-        min = u32min.value;
-        eatBytes(u32min.nextIndex);
-
-        dump([min], "min");
-      }
-
-      const memoryNode = t.memory(t.limits(min, max), t.indexLiteral(i));
+      const memoryNode = parseMemoryType(i);
 
       state.memoriesInModule.push(memoryNode);
       memories.push(memoryNode);
