@@ -2,156 +2,162 @@
   "type": "Program",
   "body": [
     {
-      "type": "Elem",
-      "table": {
-        "type": "NumberLiteral",
-        "value": 0
-      },
-      "offset": [
+      "type": "Module",
+      "id": null,
+      "fields": [
         {
-          "type": "Instr",
-          "id": "const",
-          "object": "i32",
-          "args": [
+          "type": "Elem",
+          "table": {
+            "type": "NumberLiteral",
+            "value": 0
+          },
+          "offset": [
             {
-              "type": "NumberLiteral",
-              "value": 0
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
+              ]
             }
-          ]
-        }
-      ],
-      "funcs": []
-    },
-    {
-      "type": "Elem",
-      "table": {
-        "type": "NumberLiteral",
-        "value": 0
-      },
-      "offset": [
-        {
-          "type": "Instr",
-          "id": "const",
-          "object": "i32",
-          "args": [
-            {
-              "type": "NumberLiteral",
-              "value": 0
-            }
-          ]
-        }
-      ],
-      "funcs": [
-        {
-          "type": "Identifier",
-          "value": "f"
-        }
-      ]
-    },
-    {
-      "type": "Elem",
-      "table": {
-        "type": "NumberLiteral",
-        "value": 0
-      },
-      "offset": [
-        {
-          "type": "Instr",
-          "id": "const",
-          "object": "i32",
-          "args": [
-            {
-              "type": "NumberLiteral",
-              "value": 0
-            }
-          ]
-        }
-      ],
-      "funcs": []
-    },
-    {
-      "type": "Elem",
-      "table": {
-        "type": "NumberLiteral",
-        "value": 0
-      },
-      "offset": [
-        {
-          "type": "Instr",
-          "id": "nop",
-          "args": []
+          ],
+          "funcs": []
         },
         {
-          "type": "Instr",
-          "id": "const",
-          "object": "i32",
-          "args": [
+          "type": "Elem",
+          "table": {
+            "type": "NumberLiteral",
+            "value": 0
+          },
+          "offset": [
             {
-              "type": "NumberLiteral",
-              "value": 0
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
+              ]
+            }
+          ],
+          "funcs": [
+            {
+              "type": "Identifier",
+              "value": "f"
             }
           ]
-        }
-      ],
-      "funcs": []
-    },
-    {
-      "type": "Elem",
-      "table": {
-        "type": "NumberLiteral",
-        "value": 0
-      },
-      "offset": [
+        },
         {
-          "type": "Instr",
-          "id": "const",
-          "object": "i32",
-          "args": [
+          "type": "Elem",
+          "table": {
+            "type": "NumberLiteral",
+            "value": 0
+          },
+          "offset": [
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
+              ]
+            }
+          ],
+          "funcs": []
+        },
+        {
+          "type": "Elem",
+          "table": {
+            "type": "NumberLiteral",
+            "value": 0
+          },
+          "offset": [
+            {
+              "type": "Instr",
+              "id": "nop",
+              "args": []
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0
+                }
+              ]
+            }
+          ],
+          "funcs": []
+        },
+        {
+          "type": "Elem",
+          "table": {
+            "type": "NumberLiteral",
+            "value": 0
+          },
+          "offset": [
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "funcs": [
+            {
+              "type": "Identifier",
+              "value": "f"
+            },
+            {
+              "type": "Identifier",
+              "value": "g"
+            }
+          ]
+        },
+        {
+          "type": "Elem",
+          "table": {
+            "type": "NumberLiteral",
+            "value": 0
+          },
+          "offset": [
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1
+                }
+              ]
+            }
+          ],
+          "funcs": [
             {
               "type": "NumberLiteral",
               "value": 1
-            }
-          ]
-        }
-      ],
-      "funcs": [
-        {
-          "type": "Identifier",
-          "value": "f"
-        },
-        {
-          "type": "Identifier",
-          "value": "g"
-        }
-      ]
-    },
-    {
-      "type": "Elem",
-      "table": {
-        "type": "NumberLiteral",
-        "value": 0
-      },
-      "offset": [
-        {
-          "type": "Instr",
-          "id": "const",
-          "object": "i32",
-          "args": [
+            },
             {
               "type": "NumberLiteral",
-              "value": 1
+              "value": 0
             }
           ]
-        }
-      ],
-      "funcs": [
-        {
-          "type": "NumberLiteral",
-          "value": 1
-        },
-        {
-          "type": "NumberLiteral",
-          "value": 0
         }
       ]
     }
