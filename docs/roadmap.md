@@ -1,0 +1,28 @@
+# Roadmap
+
+There are a few PRs against Webpack to use directly or indirectly this project:
+- https://github.com/webpack/webpack/pull/6533
+- https://github.com/webpack/webpack/pull/6531
+- https://github.com/ballercat/wasm-loader/pull/7
+
+## Version 1.0.0
+
+It's important that the features used in Webpack are working, and thus the following work is priority:
+- Making sure that we can decode WASM binaries
+  - [ ] Ability to import memory (https://github.com/xtuc/js-webassembly-interpreter/issues/137)
+  - [ ] Decode data sections
+  - [ ] Decode custom sections
+  - [ ] Add more invalid modules coverage from spec tests
+  - [x] Decode the start section (https://github.com/xtuc/js-webassembly-interpreter/pull/164)
+    - [ ] WASM - Start the execution from the start function
+    - [x] WAST - Start the execution from the start function
+- [ ] Rename WATF to WAT (https://github.com/xtuc/js-webassembly-interpreter/issues/152)
+    
+## Version 1.1.0
+
+The second important feature for Webpack is [wasm-dce](https://github.com/xtuc/wasm-dce).
+
+It depends on webassembly-interpreter, and thus the following work is todo:
+- Improve WASM support
+  - [ ] WASM code generation (https://github.com/xtuc/js-webassembly-interpreter/issues/68)
+  - [ ] Use our existing WAT and interpreter tests against our WASM implementation.
