@@ -151,7 +151,7 @@ export function executeStackFrame(
     } else if (index.type === "Identifier") {
       const label: Identifier = index;
 
-      // WATF
+      // WAST
       code = frame.labels.find(l => {
         if (l.id == null) {
           return false;

@@ -42,10 +42,10 @@ function createCheck(suite, ast) {
 }
 
 describe("compiler", () => {
-  describe("watf", () => {
+  describe("wast", () => {
     describe("parsing", () => {
       const testSuites = glob.sync(
-        "test/compiler/parsing/fixtures/watf/**/actual.wast"
+        "test/compiler/parsing/fixtures/wast/**/actual.wast"
       );
 
       testSuites.forEach(suite => {

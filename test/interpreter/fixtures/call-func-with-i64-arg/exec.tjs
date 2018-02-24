@@ -1,5 +1,5 @@
 it("should throw when calling the exported function", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
 
   const fn = m.exports.test;
 

@@ -1,5 +1,5 @@
 it("should throw an RuntimeError due to a stack overflow", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
   const fn = m.exports.main;
 
   assert.throws(fn, "Maximum call stack depth reached");

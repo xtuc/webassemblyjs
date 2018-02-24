@@ -4,7 +4,7 @@ const parseFloat = require("webassembly-floating-point-hex-parser");
 // equals("$2_$1", "$3", "$4");
 
 it("should conform to the wasm test suite", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
 
   const equals = (exportFunction, inputString, expectedOutputString) => {
     // optionally parse the input as floating point hex

@@ -7,7 +7,7 @@ it("should have entries in the table", () => {
     }
   };
 
-  WebAssembly.instantiateFromSource(watfmodule, importObj);
+  WebAssembly.instantiateFromSource(watmodule, importObj);
 
   assert.lengthOf(tbl, 1);
   assert.typeOf(tbl.get(0), "function");

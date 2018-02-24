@@ -1,5 +1,5 @@
 it("should instantiate the data section", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule, { m: { a: 2 } });
+  const m = WebAssembly.instantiateFromSource(watmodule, { m: { a: 2 } });
   const i32 = new Uint8Array(m.exports.memory.buffer);
 
   // store a number
