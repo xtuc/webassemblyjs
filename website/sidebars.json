@@ -5,7 +5,7 @@
       "usage"
     ],
     "Examples": [
-      "example-add-wat",
+      "example-add-wast",
       "example-add-wasm",
       "example-benchmark"
     ],
