@@ -1,5 +1,6 @@
 // @flow
 /* eslint flowtype-errors/show-errors: warn */
+import Long  from "long";
 
 const compact = false;
 const space = " ";
@@ -608,11 +609,23 @@ function printGenericInstruction(
   return out;
 }
 
+function printLongNumberLiteral(n: LongNumberLiteral): string {
+  const {low, high} = n.value;
+
+  const v = new Long(low, high);
+
+  return v.toString();
+}
+
 function printFuncInstructionArg(n: Object): string {
   let out = "";
 
   if (n.type === "NumberLiteral") {
     out += printNumberLiteral(n);
+  }
+
+  if (n.type === "LongNumberLiteral") {
+    out += printLongNumberLiteral(n);
   }
 
   if (n.type === "Identifier") {
