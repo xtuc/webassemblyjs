@@ -177,7 +177,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     const lenu32 = readU32();
     const len = lenu32.value;
 
-    dump([toHex(len)], "string length");
+    dump([len], "string length");
 
     eatBytes(lenu32.nextIndex);
 
