@@ -500,6 +500,9 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         id = func.id;
         signature = func.signature;
+      } else if (exportTypes[typeIndex] === "Table") {
+        console.warn("Unsupported export type table");
+        return;
       } else if (exportTypes[typeIndex] === "Mem") {
         const memNode = state.memoriesInModule[index];
 
@@ -517,7 +520,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
         signature = null;
       } else {
-        throw new CompileError("Unsupported export type: " + toHex(typeIndex));
+        console.warn("Unsupported export type: " + toHex(typeIndex));
+        return;
       }
 
       state.elementsInExportSection.push({
