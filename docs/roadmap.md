@@ -18,6 +18,7 @@ It's important that the features used in Webpack are working, and thus the follo
     - [ ] WASM - Start the execution from the start function
     - [x] WAST - Start the execution from the start function
 - [ ] Rename WATF to WAT (https://github.com/xtuc/js-webassembly-interpreter/issues/152)
+- [ ] Use a monorepo https://github.com/xtuc/js-webassembly-interpreter/issues/166
     
 ## Version 1.1.0
 
