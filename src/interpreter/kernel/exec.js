@@ -201,7 +201,7 @@ export function executeStackFrame(
   }
 
   function getMemory(): Memory {
-    if (frame.originatingModule.memaddrs.length != 1) {
+    if (frame.originatingModule.memaddrs.length !== 1) {
       throw newRuntimeError("unknown memory");
     }
 

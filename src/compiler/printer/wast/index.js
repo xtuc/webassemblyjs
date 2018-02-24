@@ -1,6 +1,6 @@
 // @flow
 /* eslint flowtype-errors/show-errors: warn */
-import Long  from "long";
+import Long from "long";
 
 const compact = false;
 const space = " ";
@@ -610,7 +610,7 @@ function printGenericInstruction(
 }
 
 function printLongNumberLiteral(n: LongNumberLiteral): string {
-  const {low, high} = n.value;
+  const { low, high } = n.value;
 
   const v = new Long(low, high);
 
