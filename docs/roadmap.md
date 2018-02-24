@@ -25,4 +25,4 @@ The second important feature for Webpack is [wasm-dce](https://github.com/xtuc/w
 It depends on webassembly-interpreter, and thus the following work is todo:
 - Improve WASM support
   - [ ] WASM code generation (https://github.com/xtuc/js-webassembly-interpreter/issues/68)
-  - [ ] Transform our current WAST test suite to WASM and relaunch the same tests.
+  - [ ] Use our existing WAT and interpreter tests against our WASM implementation.
