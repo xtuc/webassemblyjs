@@ -51,7 +51,7 @@ describe("compiler", () => {
       testSuites.forEach(suite => {
         it(suite, () => {
           const code = readFileSync(suite, "utf8");
-          const ast = parsers.parseWATF(code);
+          const ast = parsers.parseWAST(code);
 
           if (/wast-identifier-to-index/.test(suite) === true) {
             wastIdentifierToIndex.transform(ast);

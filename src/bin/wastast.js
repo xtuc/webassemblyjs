@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // @flow
 
-const { parseSource } = require("../compiler/parsing/watf");
+const { parseSource } = require("../compiler/parsing/wast");
 const { readFileSync } = require("fs");
 
 const filename = process.argv[2];

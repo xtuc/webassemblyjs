@@ -8,7 +8,7 @@ const {
   parseU32,
   isNanLiteral,
   isInfLiteral
-} = require("../parsing/watf/number-literals");
+} = require("../parsing/wast/number-literals");
 
 const { signatures } = require("./signatures");
 

@@ -1,6 +1,6 @@
 // @flow
 
-const { parseSource } = require("./compiler/parsing/watf");
+const { parseSource } = require("./compiler/parsing/wast");
 const { parseBinary } = require("./compiler/parsing/wasm");
 const { Instance } = require("./interpreter");
 const { RuntimeError, CompileError, LinkError } = require("./errors");
