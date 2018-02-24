@@ -87,6 +87,10 @@ export function walk(
     cb(n.type, createPath(n));
   }
 
+  if (n.type === "Elem") {
+    cb(n.type, createPath(n));
+  }
+
   if (n.type === "Instr") {
     cb(n.type, createPath(n));
 

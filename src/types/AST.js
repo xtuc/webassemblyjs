@@ -235,7 +235,7 @@ type FuncImportDescr = {
   results: Array<Valtype>
 };
 
-type ImportDescr = FuncImportDescr | GlobalType | Memory;
+type ImportDescr = FuncImportDescr | GlobalType | Memory | Table;
 
 type ModuleImport = {
   type: "ModuleImport",
@@ -311,3 +311,13 @@ type Start = {
   type: "Start",
   index: Index
 };
+
+type Elem = {
+  type: "Elem",
+  table: Index,
+
+  // multiple expression are allow in WAST
+  offset: Array<Instruction>,
+
+  funcs: Array<Index>,
+}

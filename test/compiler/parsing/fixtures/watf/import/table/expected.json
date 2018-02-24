@@ -1,0 +1,40 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "ModuleImport",
+      "module": "a",
+      "name": "b",
+      "descr": {
+        "type": "Table",
+        "elementType": "anyfunc",
+        "limits": {
+          "type": "Limit",
+          "min": "1"
+        },
+        "name": {
+          "type": "Identifier",
+          "value": "temp_1"
+        }
+      }
+    },
+    {
+      "type": "ModuleImport",
+      "module": "c",
+      "name": "d",
+      "descr": {
+        "type": "Table",
+        "elementType": "anyfunc",
+        "limits": {
+          "type": "Limit",
+          "min": "5",
+          "max": "25"
+        },
+        "name": {
+          "type": "Identifier",
+          "value": "temp_2"
+        }
+      }
+    }
+  ]
+}
