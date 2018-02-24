@@ -1,7 +1,7 @@
 // @flow
 
-const t = require("../../AST");
-const { CompileError } = require("../../../errors");
+import { CompileError } from "webassemblyjs/lib/errors";
+const t = require("@webassemblyjs/ast");
 
 const {
   importTypes,

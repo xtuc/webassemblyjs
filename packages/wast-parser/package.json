@@ -7,5 +7,10 @@
     "test": "mocha"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "webassembly-floating-point-hex-parser": "0.1.2",
+    "@webassemblyjs/ast": "1.0.0",
+    "webassemblyjs": "1.0.0"
+  }
 }

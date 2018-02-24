@@ -13,20 +13,21 @@ function toArrayBuffer(buf) {
 }
 
 describe("interpreter", () => {
-  describe("wat", () => {
-    const testSuites = glob.sync("test/interpreter/fixtures/**/module.wast");
+  describe("wasm", () => {
+    const testSuites = glob.sync(
+      "packages/WebAssembly/test/fixtures/**/module.wasm"
+    );
 
     testSuites.forEach(suite => {
       describe(suite, () => {
         const execFile = path.join(path.dirname(suite), "exec.tjs");
 
-        const module = readFileSync(suite, "utf8");
+        const module = toArrayBuffer(readFileSync(suite, null));
         const exec = readFileSync(execFile, "utf8");
 
         const sandbox = {
           WebAssembly,
-          watmodule: module,
-          require: require,
+          wasmmodule: module,
           console: global.console,
           assert: chai.assert,
           it,
@@ -44,19 +45,22 @@ describe("interpreter", () => {
     });
   });
 
-  describe("wasm", () => {
-    const testSuites = glob.sync("test/interpreter/fixtures/**/module.wasm");
+  describe("wat", () => {
+    const testSuites = glob.sync(
+      "packages/WebAssembly/test/fixtures/**/module.wast"
+    );
 
     testSuites.forEach(suite => {
       describe(suite, () => {
         const execFile = path.join(path.dirname(suite), "exec.tjs");
 
-        const module = toArrayBuffer(readFileSync(suite, null));
+        const module = readFileSync(suite, "utf8");
         const exec = readFileSync(execFile, "utf8");
 
         const sandbox = {
           WebAssembly,
-          wasmmodule: module,
+          watmodule: module,
+          require: require,
           console: global.console,
           assert: chai.assert,
           it,

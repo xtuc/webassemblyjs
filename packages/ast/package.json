@@ -7,6 +7,7 @@
   "license": "ISC",
   "dependencies": {
     "webassembly-floating-point-hex-parser": "0.1.2",
+    "@webassemblyjs/wast-parser": "1.0.0",
     "webassemblyjs": "1.0.0"
   }
 }

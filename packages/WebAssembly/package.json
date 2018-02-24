@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@webassemblyjs/ast": "1.0.0"
+    "webassembly-floating-point-hex-parser": "0.1.2",
+    "@webassemblyjs/ast": "1.0.0",
+    "@webassemblyjs/wast-parser": "1.0.0",
+    "@webassemblyjs/interpreter": "1.0.0",
+    "@webassemblyjs/wasm-parser": "1.0.0"
   }
 }

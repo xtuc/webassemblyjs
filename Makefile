@@ -34,9 +34,6 @@ watch:
 
 test-ci: test test-whitelisted-spec lint
 
-test-nobuild:
-	./scripts/test.sh
-
 test: build
 	./scripts/test.sh
 

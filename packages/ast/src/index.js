@@ -8,7 +8,7 @@ const {
   parseU32,
   isNanLiteral,
   isInfLiteral
-} = require("./parsing/number-literals");
+} = require("@webassemblyjs/wast-parser/lib/number-literals");
 
 const { signatures } = require("./signatures");
 

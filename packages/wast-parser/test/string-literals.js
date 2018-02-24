@@ -3,7 +3,7 @@
 const { assert } = require("chai");
 const {
   parseString
-} = require("../../../../lib/compiler/parsing/wast/string-literals");
+} = require("../lib/string-literals");
 
 describe("string literal parsing", () => {
   it("should support empty strings", () => {

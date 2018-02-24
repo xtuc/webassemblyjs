@@ -1,5 +1,6 @@
 // @flow
 
+const { parseSource } = require("@webassemblyjs/wast-parser");
 const glob = require("glob");
 const chai = require("chai");
 const diff = require("jest-diff");
@@ -7,22 +8,22 @@ const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 const { writeFileSync, readFileSync } = require("fs");
 const path = require("path");
 
-const { parsers, printers } = require("../../../lib/tools");
+const { printWAST } = require("../lib/index");
 
 describe("printer", () => {
   describe("wast", () => {
     const testSuites = glob.sync(
-      "test/compiler/printer/fixtures/wast/**/actual.wast"
+      "packages/wast-printer/test/fixtures/**/actual.wast"
     );
 
     testSuites.forEach(suite => {
       it(suite, () => {
         const input = readFileSync(suite, "utf8");
 
-        const ast = parsers.parseWAST(input);
+        const ast = parseSource(input);
 
         const expectedFile = path.join(path.dirname(suite), "expected.wast");
-        const code = printers.printWAST(ast);
+        const code = printWAST(ast);
 
         let expected;
         try {

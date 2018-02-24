@@ -1,6 +1,6 @@
 // @flow
 
-import wastIdentifierToIndex from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
+const wastIdentifierToIndex = require("@webassemblyjs/ast/lib/transform/wast-identifier-to-index");
 
 const glob = require("glob");
 const diff = require("jest-diff");
@@ -8,7 +8,7 @@ const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 const { writeFileSync, readFileSync } = require("fs");
 const path = require("path");
 
-const { parsers } = require("../../../lib/tools");
+const { parseSource } = require("../lib");
 
 function toArrayBuffer(buf) {
   return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
@@ -46,13 +46,13 @@ describe("compiler", () => {
   describe("wast", () => {
     describe("parsing", () => {
       const testSuites = glob.sync(
-        "test/compiler/parsing/fixtures/wast/**/actual.wast"
+        "packages/wast-parser/test/fixtures/wast/**/actual.wast"
       );
 
       testSuites.forEach(suite => {
         it(suite, () => {
           const code = readFileSync(suite, "utf8");
-          const ast = parsers.parseWAST(code);
+          const ast = parseSource(code);
 
           if (/wast-identifier-to-index/.test(suite) === true) {
             wastIdentifierToIndex.transform(ast);
@@ -60,20 +60,6 @@ describe("compiler", () => {
 
           createCheck(suite, ast);
         });
-      });
-    });
-  });
-
-  describe("Binary format parsing", () => {
-    const testSuites = glob.sync(
-      "test/compiler/parsing/fixtures/**/actual.wasm"
-    );
-
-    testSuites.forEach(suite => {
-      it(suite, () => {
-        const bin = toArrayBuffer(readFileSync(suite, null));
-        const ast = parsers.parseWASM(bin);
-        createCheck(suite, ast);
       });
     });
   });

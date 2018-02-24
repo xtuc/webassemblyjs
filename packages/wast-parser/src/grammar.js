@@ -1,9 +1,9 @@
 // @flow
 import { parse32I } from "./number-literals";
 import { parseString } from "./string-literals";
+const t = require("@webassemblyjs/ast");
 
 const { tokens, keywords } = require("./tokenizer");
-const t = require("../../AST");
 const { codeFrameColumns } = require("@babel/code-frame");
 
 type AllArgs = {

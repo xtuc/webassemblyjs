@@ -1,6 +1,6 @@
 // @flow
 
-import t from "@webassemblyjs/ast";
+const t = require("@webassemblyjs/ast");
 
 const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");

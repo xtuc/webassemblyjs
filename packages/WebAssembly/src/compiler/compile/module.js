@@ -1,7 +1,7 @@
 // @flow
 
 import { traverse } from "@webassemblyjs/ast/lib/traverse";
-import wastIdentifierToIndex from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
+import { transform } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
 
 import validateAST from "../validation";
 const { CompileError } = require("../../errors");
@@ -37,7 +37,7 @@ export function createCompiledModule(ast: Program): CompiledModule {
 
   // Do compile-time ast manipulation in order to remove WAST
   // semantics during execution
-  wastIdentifierToIndex.transform(ast);
+  transform(ast);
 
   traverse(ast, {
     ModuleExport({ node }: NodePath<ModuleExport>) {

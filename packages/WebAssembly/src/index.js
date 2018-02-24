@@ -1,12 +1,13 @@
 // @flow
 
-const { parseSource } = require("./compiler/parsing/wast");
-const { parseBinary } = require("./compiler/parsing/wasm");
-const { Instance } = require("./interpreter");
+const { parseSource } = require("@webassemblyjs/wast-parser");
+const { parseBinary } = require("@webassemblyjs/wasm-parser");
+const { Instance } = require("@webassemblyjs/interpreter");
+const { Memory } = require("@webassemblyjs/interpreter/lib/runtime/values/memory");
+const { Table } = require("@webassemblyjs/interpreter/lib/runtime/values/table");
+
 const { RuntimeError, CompileError, LinkError } = require("./errors");
 const { createCompiledModule, Module } = require("./compiler/compile/module");
-const { Memory } = require("./interpreter/runtime/values/memory");
-const { Table } = require("./interpreter/runtime/values/table");
 const { checkEndianness } = require("./check-endianness");
 
 const WebAssembly = {

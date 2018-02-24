@@ -6,7 +6,7 @@ const { readFileSync } = require("fs");
 const path = require("path");
 const chai = require("chai");
 
-const WebAssembly = require("../../../lib");
+const WebAssembly = require("../../lib");
 
 function toArrayBuffer(buf) {
   return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
