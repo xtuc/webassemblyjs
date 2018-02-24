@@ -1,0 +1,36 @@
+<html lang="en"><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>roadmap · WebAssembly interpreter</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="roadmap · WebAssembly interpreter"/><meta property="og:type" content="website"/><meta property="og:url" content="https://webassembly.js.org//index.html"/><meta property="og:description" content="# Roadmap"/><link rel="shortcut icon" href="/undefined"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="stylesheet" href="/css/custom.css"/><link rel="stylesheet" href="/css/main.css"/></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><h2 class="headerTitle">WebAssembly interpreter</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li><a href="/en/share.html" target="_self">Share</a></li><li><a href="/docs/index.html" target="_self">Documentation</a></li><li><a href="https://github.com/xtuc/js-webassembly-interpreter" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1>roadmap</h1></header><article><div><span><h1><a class="anchor" aria-hidden="true" name="roadmap"></a><a href="#roadmap" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Roadmap</h1>
+<p>There are a few PRs against Webpack to use directly or indirectly this project:</p>
+<ul>
+<li><a href="https://github.com/webpack/webpack/pull/6533">https://github.com/webpack/webpack/pull/6533</a></li>
+<li><a href="https://github.com/webpack/webpack/pull/6531">https://github.com/webpack/webpack/pull/6531</a></li>
+<li><a href="https://github.com/ballercat/wasm-loader/pull/7">https://github.com/ballercat/wasm-loader/pull/7</a></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" name="version-100"></a><a href="#version-100" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Version 1.0.0</h2>
+<p>It's important that the features used in Webpack are working, and thus the following work is priority:</p>
+<ul>
+<li>Making sure that we can decode WASM binaries
+<ul>
+<li>[x] Ability to import memory (<a href="https://github.com/xtuc/js-webassembly-interpreter/issues/137">https://github.com/xtuc/js-webassembly-interpreter/issues/137</a>)</li>
+<li>[x] Ability to import table (<a href="https://github.com/xtuc/js-webassembly-interpreter/issues/171">https://github.com/xtuc/js-webassembly-interpreter/issues/171</a>)</li>
+<li>[ ] Decode data sections</li>
+<li>[ ] Decode custom sections</li>
+<li>[ ] Add more invalid modules coverage from spec tests</li>
+<li>[x] Decode the start section (<a href="https://github.com/xtuc/js-webassembly-interpreter/pull/164">https://github.com/xtuc/js-webassembly-interpreter/pull/164</a>)
+<ul>
+<li>[ ] WASM - Start the execution from the start function</li>
+<li>[x] WAST - Start the execution from the start function</li>
+</ul></li>
+</ul></li>
+<li>[ ] Rename WATF to WAT (<a href="https://github.com/xtuc/js-webassembly-interpreter/issues/152">https://github.com/xtuc/js-webassembly-interpreter/issues/152</a>)</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" name="version-110"></a><a href="#version-110" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Version 1.1.0</h2>
+<p>The second important feature for Webpack is <a href="https://github.com/xtuc/wasm-dce">wasm-dce</a>.</p>
+<p>It depends on webassembly-interpreter, and thus the following work is todo:</p>
+<ul>
+<li>Improve WASM support
+<ul>
+<li>[ ] WASM code generation (<a href="https://github.com/xtuc/js-webassembly-interpreter/issues/68">https://github.com/xtuc/js-webassembly-interpreter/issues/68</a>)</li>
+<li>[ ] Use our existing WAT and interpreter tests against our WASM implementation.</li>
+</ul></li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"></div></div></div></div><div></div></div></body></html>
