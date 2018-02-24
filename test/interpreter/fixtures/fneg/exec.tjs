@@ -1,4 +1,4 @@
-const m = WebAssembly.instantiateFromSource(watfmodule);
+const m = WebAssembly.instantiateFromSource(watmodule);
 
 it("should negate positive input", () => {
   const res = m.exports.neg(0.5);

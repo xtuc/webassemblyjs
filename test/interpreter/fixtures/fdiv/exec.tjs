@@ -1,5 +1,5 @@
 it("should correctly use the operands as dividend and divisor", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
 
   const dividend = 10;
   const divisor = 2;

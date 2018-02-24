@@ -1,4 +1,4 @@
-const m = WebAssembly.instantiateFromSource(watfmodule);
+const m = WebAssembly.instantiateFromSource(watmodule);
 
 it("should be an object", () => {
   assert.typeOf(m, "object");

@@ -19,7 +19,7 @@ describe("printer", () => {
       it(suite, () => {
         const input = readFileSync(suite, "utf8");
 
-        const ast = parsers.parseWATF(input);
+        const ast = parsers.parseWAST(input);
 
         const expectedFile = path.join(path.dirname(suite), "expected.wast");
         const code = printers.printWAST(ast);

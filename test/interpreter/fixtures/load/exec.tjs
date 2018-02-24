@@ -2,7 +2,7 @@ const PAGE_SIZE = Math.pow(2, 16);
 const I32_SIZE = 4;
 
 it("should load from the given location", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
   const i32 = new Uint32Array(m.exports.memory.buffer);
 
   // store a number
@@ -11,7 +11,7 @@ it("should load from the given location", () => {
 });
 
 it("should throw for memory out of bounds", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
   const i32 = new Uint32Array(m.exports.memory.buffer);
 
   // upper bound
@@ -25,7 +25,7 @@ it("should throw for memory out of bounds", () => {
 });
 
 it("should support offsets", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
   const i32 = new Uint32Array(m.exports.memory.buffer);
 
   // load a number with an offset

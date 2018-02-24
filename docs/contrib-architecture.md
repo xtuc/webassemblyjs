@@ -15,7 +15,7 @@ Tools to manipulate and use our internal AST. You can see its definitions [here]
 
 The parsing is available for the following formats:
 
-- [WebAssembly Text Format](https://webassembly.github.io/spec/text/index.html) (watf)
+- [WebAssembly Text Format](https://webassembly.github.io/spec/text/index.html) (wat)
 - [WAST Script Syntax](https://github.com/WebAssembly/spec/tree/master/interpreter#scripts) (wast)
 - [WebAssembly Binary Format](https://webassembly.github.io/spec/binary/index.html) (wasm)
 

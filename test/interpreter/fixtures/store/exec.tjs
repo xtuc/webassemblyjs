@@ -2,13 +2,13 @@ const PAGE_SIZE = Math.pow(2, 16);
 const I32_SIZE = 4;
 
 it("should export the memory instance", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
 
   assert.containsAllKeys(m.exports.memory, ["buffer"]);
 });
 
 it("should store at the given location", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
   const i32 = new Uint32Array(m.exports.memory.buffer);
 
   // store a positive
@@ -22,7 +22,7 @@ it("should store at the given location", () => {
 });
 
 it("should throw for memory out of bounds", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
   const i32 = new Uint32Array(m.exports.memory.buffer);
 
   // upper bound
@@ -36,7 +36,7 @@ it("should throw for memory out of bounds", () => {
 });
 
 it("should support offsets", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
   const i32 = new Uint32Array(m.exports.memory.buffer);
 
   // upper bound
@@ -46,7 +46,7 @@ it("should support offsets", () => {
 });
 
 it("should support lower bit depth store", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
   const i8 = new Uint8Array(m.exports.memory.buffer);
 
   // upper bound

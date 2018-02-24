@@ -9,7 +9,7 @@ it("should import the memory", () => {
     env: { mem }
   };
 
-  const m = WebAssembly.instantiateFromSource(watfmodule, importObject);
+  const m = WebAssembly.instantiateFromSource(watmodule, importObject);
 
   assert.typeOf(m.exports.get(), "number");
   assert.notEqual(m.exports.get(), 0); // default value
