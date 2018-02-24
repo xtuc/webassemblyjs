@@ -880,7 +880,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const namedArgs = {};
       let signaturePtr = 0;
 
-      while (token.type === tokens.name) {
+      while (token.type === tokens.name || isKeyword(token, keywords.offset)) {
         const key = token.value;
         eatToken();
 
@@ -1520,6 +1520,67 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     /**
+     * Parses an element segments instruction
+     *
+     * WAST:
+     *
+     * elem:    ( elem <var>? (offset <instr>* ) <var>* )
+     *          ( elem <var>? <expr> <var>* )
+     *
+     * var:    <nat> | <name>
+     */
+    function parseElem(): Elem {
+      let tableIndex;
+
+      const offset = [];
+      const funcs = [];
+
+      if (token.type === tokens.identifier) {
+        tableIndex = t.identifier(token.value);
+        eatToken();
+      }
+
+      if (token.type === tokens.number) {
+        tableIndex = t.indexLiteral(token.value);
+        eatToken();
+      }
+
+      while (token.type !== tokens.closeParen) {
+        if (lookaheadAndCheck(tokens.openParen, keywords.offset)) {
+          eatToken(); // (
+          eatToken(); // offset
+
+          while (token.type !== tokens.closeParen) {
+            eatTokenOfType(tokens.openParen);
+
+            offset.push(parseFuncInstr());
+
+            eatTokenOfType(tokens.closeParen);
+          }
+
+          eatTokenOfType(tokens.closeParen);
+        } else if (token.type === tokens.identifier) {
+          funcs.push(t.identifier(token.value));
+          eatToken();
+        } else if (token.type === tokens.number) {
+          funcs.push(t.indexLiteral(token.value));
+          eatToken();
+        } else if (token.type === tokens.openParen) {
+          eatToken(); // (
+
+          offset.push(parseFuncInstr());
+
+          eatTokenOfType(tokens.closeParen);
+        } else {
+          showCodeFrame(source, token.loc);
+          throw new Error("Unsupported token in elem: " + tokenToString(token));
+        }
+      }
+
+      return t.elem(tableIndex, offset, funcs);
+    }
+
+    /**
      * Parses the start instruction in a module
      *
      * WAST:
@@ -1630,6 +1691,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (isKeyword(token, keywords.start)) {
         eatToken();
         const node = parseStart();
+        eatTokenOfType(tokens.closeParen);
+
+        return node;
+      }
+
+      if (isKeyword(token, keywords.elem)) {
+        eatToken();
+        const node = parseElem();
         eatTokenOfType(tokens.closeParen);
 
         return node;

@@ -516,3 +516,16 @@ export function start(index: Index): Start {
     index
   };
 }
+
+export function elem(
+  table: Index = indexLiteral(0),
+  offset: Array<Instruction>,
+  funcs: Array<Index>
+): Elem {
+  return {
+    type: "Elem",
+    table,
+    offset,
+    funcs
+  };
+}

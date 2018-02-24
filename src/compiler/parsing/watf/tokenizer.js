@@ -87,7 +87,8 @@ const keywords = {
   data: "data",
   type: "type",
   elem: "elem",
-  start: "start"
+  start: "start",
+  offset: "offset"
 };
 
 const CloseParenToken = createToken(tokens.closeParen);
