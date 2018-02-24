@@ -428,6 +428,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // Keyword
 
         descr = parseMemory();
+      } else if (isKeyword(token, keywords.table) === true) {
+        eatToken(); // Keyword
+
+        descr = parseTable();
       } else {
         throw new Error("Unsupported import type: " + tokenToString(token));
       }
