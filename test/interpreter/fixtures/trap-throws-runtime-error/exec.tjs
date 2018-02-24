@@ -1,5 +1,5 @@
 it("should throw a runetimeError when trapped", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
 
   assert.throws(
     m.exports.trap,

@@ -1,6 +1,6 @@
 ---
-title: Add in WATF
-id: example-add-watf
+title: Add in WAST
+id: example-add-wast
 ---
 
 ## Input

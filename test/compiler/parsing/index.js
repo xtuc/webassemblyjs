@@ -42,16 +42,16 @@ function createCheck(suite, ast) {
 }
 
 describe("compiler", () => {
-  describe("watf", () => {
+  describe("wast", () => {
     describe("parsing", () => {
       const testSuites = glob.sync(
-        "test/compiler/parsing/fixtures/watf/**/actual.wast"
+        "test/compiler/parsing/fixtures/wast/**/actual.wast"
       );
 
       testSuites.forEach(suite => {
         it(suite, () => {
           const code = readFileSync(suite, "utf8");
-          const ast = parsers.parseWATF(code);
+          const ast = parsers.parseWAST(code);
 
           if (/wast-identifier-to-index/.test(suite) === true) {
             wastIdentifierToIndex.transform(ast);

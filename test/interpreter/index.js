@@ -13,7 +13,7 @@ function toArrayBuffer(buf) {
 }
 
 describe("interpreter", () => {
-  describe("watf", () => {
+  describe("wat", () => {
     const testSuites = glob.sync("test/interpreter/fixtures/**/module.wast");
 
     testSuites.forEach(suite => {
@@ -25,7 +25,7 @@ describe("interpreter", () => {
 
         const sandbox = {
           WebAssembly,
-          watfmodule: module,
+          watmodule: module,
           require: require,
           console: global.console,
           assert: chai.assert,

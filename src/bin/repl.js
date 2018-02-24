@@ -266,7 +266,7 @@ function replEval(input) {
     console.log(input);
   }
 
-  const ast = parsers.parseWATFSpecTest(input);
+  const ast = parsers.parseWAST(input);
   const [node] = ast.body;
 
   // Empty input, skip this iteration

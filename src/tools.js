@@ -1,6 +1,6 @@
 // @flow
 
-const { parseSource } = require("./compiler/parsing/watf");
+const { parseSource } = require("./compiler/parsing/wast");
 const { parseBinary } = require("./compiler/parsing/wasm");
 const { traverse } = require("./compiler/AST/traverse");
 const t = require("./compiler/AST/index");
@@ -11,11 +11,11 @@ export const printers = {
 };
 
 export const parsers = {
-  parseWATF(content: string): Program {
+  parseWAT(content: string): Program {
     return parseSource(content);
   },
 
-  parseWATFSpecTest(content: string): Program {
+  parseWAST(content: string): Program {
     return parseSource(content);
   },
 

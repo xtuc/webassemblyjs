@@ -626,7 +626,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses a loop instruction
      *
-     * WATF:
+     * WAT:
      *
      * blockinstr :: 'loop' I:label rt:resulttype (in:instr*) 'end' id?
      *
@@ -678,7 +678,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses an export instruction
      *
-     * WATF:
+     * WAT:
      *
      * export:  ( export <string> <exkind> )
      * exkind:  ( func <var> )
@@ -962,7 +962,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /**
      * Parses an instruction
      *
-     * WATF:
+     * WAT:
      *
      * instr      :: plaininst
      *               blockinstr
@@ -1181,7 +1181,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     /*
      * Parses a function
      *
-     * WATF:
+     * WAT:
      *
      * functype :: ( 'func' t1:vec(param) t2:vec(result) )
      * param    :: ( 'param' id? t:valtype )
@@ -1199,10 +1199,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseFunc(): Func {
-      if (hasPlugin("wast") === false) {
-        throw new Error("Parse func: unsupported WATF grammar");
-      }
-
       let fnName = t.identifier(getUniqueName("func"));
       const fnBody = [];
       const fnParams: Array<FuncParam> = [];

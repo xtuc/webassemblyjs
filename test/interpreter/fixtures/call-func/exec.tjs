@@ -1,4 +1,4 @@
-const m = WebAssembly.instantiateFromSource(watfmodule);
+const m = WebAssembly.instantiateFromSource(watmodule);
 
 it("should call a function by its index", () => {
   const result = m.exports.callByIndex();

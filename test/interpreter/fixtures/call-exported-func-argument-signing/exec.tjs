@@ -1,5 +1,5 @@
 it("should treat integers as signed", () => {
-  const m = WebAssembly.instantiateFromSource(watfmodule);
+  const m = WebAssembly.instantiateFromSource(watmodule);
 
   // for numbers < 2^31 the input is the same as the output
   let res = m.exports.get(1234);
