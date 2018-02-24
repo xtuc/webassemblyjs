@@ -123,6 +123,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     functionsInModule: []
   };
 
+  function isEOF(): boolean {
+    return offset >= buf.length;
+  }
+
   function eatBytes(n: number) {
     offset = offset + n;
   }
@@ -235,6 +239,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   function parseModuleHeader() {
+    if (isEOF() === true || offset + 4 > buf.length) {
+      throw new Error("unexpected end");
+    }
+
     const header = readBytes(4);
 
     if (byteArrayEq(magicModuleHeader, header) === false) {
@@ -247,10 +255,14 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   function parseVersion() {
+    if (isEOF() === true || offset + 4 > buf.length) {
+      throw new Error("unexpected end");
+    }
+
     const version = readBytes(4);
 
     if (byteArrayEq(moduleVersion, version) === false) {
-      throw new CompileError("unknown wasm version: " + version.join(" "));
+      throw new CompileError("unknown binary version");
     }
 
     dump(version, "wasm version");
