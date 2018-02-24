@@ -98,8 +98,10 @@ function instantiateImports(
     ModuleImport({ node }: NodePath<ModuleImport>) {
       switch (node.descr.type) {
         case "FuncImportDescr":
+          // $FlowIgnore
           return handleFuncImport(node, node.descr);
         case "GlobalType":
+          // $FlowIgnore
           return handleGlobalImport(node, node.descr);
         case "Memory":
           return handleMemoryImport(node);

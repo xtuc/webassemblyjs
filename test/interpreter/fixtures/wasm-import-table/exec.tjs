@@ -1,0 +1,12 @@
+it("should import the memory", () => {
+  const tbl = new WebAssembly.Table({ initial: 1, element: "anyfunc" });
+
+  const importObject = {
+    env: { tbl }
+  };
+
+  return WebAssembly.instantiate(wasmmodule, importObject).then(m => {
+    assert.lengthOf(tbl, 1);
+    assert.typeOf(tbl.get(0), "function");
+  });
+});

@@ -388,6 +388,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         });
       } else if (descrType === "global") {
         importDescr = parseGlobalType();
+      } else if (descrType === "table") {
+        importDescr = parseTableType();
       } else if (descrType === "mem") {
         const memoryNode = parseMemoryType(0);
 
@@ -822,6 +824,49 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     }
   }
 
+  // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
+  function parseTableType(): Table {
+    const elementTypeByte = readByte();
+    eatBytes(1);
+
+    dump([elementTypeByte], "element type");
+
+    const elementType = tableTypes[elementTypeByte];
+
+    if (typeof elementType === "undefined") {
+      throw new CompileError(
+        "Unknown element type in table: " + toHex(elementType)
+      );
+    }
+
+    const limitType = readByte();
+    eatBytes(1);
+
+    let min, max;
+
+    if (limitHasMaximum[limitType] === true) {
+      const u32min = readU32();
+      min = u32min.value;
+      eatBytes(u32min.nextIndex);
+
+      dump([min], "min");
+
+      const u32max = readU32();
+      max = u32max.value;
+      eatBytes(u32max.nextIndex);
+
+      dump([max], "max");
+    } else {
+      const u32min = readU32();
+      min = u32min.value;
+      eatBytes(u32min.nextIndex);
+
+      dump([min], "min");
+    }
+
+    return t.table(elementType, t.limits(min, max));
+  }
+
   // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
   function parseTableSection() {
     const tables = [];
@@ -833,45 +878,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     dump([numberOfTable], "num tables");
 
     for (let i = 0; i < numberOfTable; i++) {
-      const elementTypeByte = readByte();
-      eatBytes(1);
-
-      dump([elementTypeByte], "element type");
-
-      const elementType = tableTypes[elementTypeByte];
-
-      if (typeof elementType === "undefined") {
-        throw new CompileError(
-          "Unknown element type in table: " + toHex(elementType)
-        );
-      }
-
-      const limitType = readByte();
-      eatBytes(1);
-
-      let min, max;
-
-      if (limitHasMaximum[limitType] === true) {
-        const u32min = readU32();
-        min = u32min.value;
-        eatBytes(u32min.nextIndex);
-
-        dump([min], "min");
-
-        const u32max = readU32();
-        max = u32max.value;
-        eatBytes(u32max.nextIndex);
-
-        dump([max], "max");
-      } else {
-        const u32min = readU32();
-        min = u32min.value;
-        eatBytes(u32min.nextIndex);
-
-        dump([min], "min");
-      }
-
-      tables.push(t.table(elementType, t.limits(min, max)));
+      const tableNode = parseTableType();
+      tables.push(tableNode);
     }
 
     return tables;
@@ -928,6 +936,8 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   function parseElemSection() {
+    const elems = [];
+
     const numberOfElementsu32 = readU32();
     const numberOfElements = numberOfElementsu32.value;
     eatBytes(numberOfElementsu32.nextIndex);
@@ -956,14 +966,22 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
 
       dump([indices], "num indices");
 
+      const indexValues = [];
+
       for (let i = 0; i < indices; i++) {
         const indexu32 = readU32();
         const index = indexu32.value;
         eatBytes(indexu32.nextIndex);
 
         dump([index], "index");
+
+        indexValues.push(t.indexLiteral(index));
       }
+
+      elems.push(t.elem(t.indexLiteral(tableindex), instr, indexValues));
     }
+
+    return elems;
   }
 
   // https://webassembly.github.io/spec/core/binary/types.html#memory-types
@@ -1149,8 +1167,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
         dump([sectionId], "section code");
         dump([0x0], "section size (ignore)");
 
-        parseElemSection();
-        break;
+        return parseElemSection();
       }
 
       case sections.globalSection: {
