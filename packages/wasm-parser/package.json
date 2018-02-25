@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-parser",
-  "version": "1.0.0-y.4",
+  "version": "1.0.0-y.5",
   "keywords": [
     "webassembly",
     "javascript",
@@ -16,12 +16,15 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/ast": "^1.0.0-y.4",
-    "@webassemblyjs/wasm-parser": "^1.0.0-y.4",
-    "webassemblyjs": "^1.0.0-y.4"
+    "@webassemblyjs/ast": "1.0.0-y.5",
+    "@webassemblyjs/wasm-parser": "1.0.0-y.5",
+    "webassemblyjs": "1.0.0-y.5"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuc/js-webassembly-interpreter.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

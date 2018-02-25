@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/cli",
-  "version": "1.0.0-y.4",
+  "version": "1.0.0-y.5",
   "description": "Toolbox for WebAssembly",
   "main": "lib/index.js",
   "keywords": [
@@ -18,11 +18,11 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/ast": "^1.0.0-y.4",
-    "@webassemblyjs/wasm-parser": "^1.0.0-y.4",
-    "@webassemblyjs/wast-parser": "^1.0.0-y.4",
-    "@webassemblyjs/wast-printer": "^1.0.0-y.4",
-    "webassemblyjs": "^1.0.0-y.4"
+    "@webassemblyjs/ast": "1.0.0-y.5",
+    "@webassemblyjs/wasm-parser": "1.0.0-y.5",
+    "@webassemblyjs/wast-parser": "1.0.0-y.5",
+    "@webassemblyjs/wast-printer": "1.0.0-y.5",
+    "webassemblyjs": "1.0.0-y.5"
   },
   "bin": {
     "wasmdump": "./lib/bin/wasmdump.js",
@@ -35,5 +35,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuc/js-webassembly-interpreter.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
