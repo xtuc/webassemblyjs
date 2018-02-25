@@ -3,7 +3,7 @@
   "packages": [
     "packages/*"
   ],
-  "version": "1.0.0-y.5",
+  "version": "1.0.0-y.6",
   "npmClient": "yarn",
   "npmClientArgs": [
     "--no-lockfile"
