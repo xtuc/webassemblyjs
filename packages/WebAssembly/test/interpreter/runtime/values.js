@@ -4,18 +4,18 @@ const t = require("@webassemblyjs/ast");
 
 const { assert } = require("chai");
 
-const modulevalue = require("../../lib/runtime/values/module");
-const globalvalue = require("../../lib/runtime/values/global");
-const tablevalue = require("../../lib/runtime/values/table");
-const funcvalue = require("../../lib/runtime/values/func");
-const externalvalue = require("../../lib/runtime/values/extern");
-const i32 = require("../../lib/runtime/values/i32");
-const i64 = require("../../lib/runtime/values/i64");
-const f32 = require("../../lib/runtime/values/f32");
-const f64 = require("../../lib/runtime/values/f64");
-const label = require("../../lib/runtime/values/label");
-const { Memory } = require("../../lib/runtime/values/memory");
-const { createAllocator } = require("../../lib/kernel/memory");
+const modulevalue = require("../../../lib/interpreter/runtime/values/module");
+const globalvalue = require("../../../lib/interpreter/runtime/values/global");
+const tablevalue = require("../../../lib/interpreter/runtime/values/table");
+const funcvalue = require("../../../lib/interpreter/runtime/values/func");
+const externalvalue = require("../../../lib/interpreter/runtime/values/extern");
+const i32 = require("../../../lib/interpreter/runtime/values/i32");
+const i64 = require("../../../lib/interpreter/runtime/values/i64");
+const f32 = require("../../../lib/interpreter/runtime/values/f32");
+const f64 = require("../../../lib/interpreter/runtime/values/f64");
+const label = require("../../../lib/interpreter/runtime/values/label");
+const { Memory } = require("../../../lib/interpreter/runtime/values/memory");
+const { createAllocator } = require("../../../lib/interpreter/kernel/memory");
 
 describe("module create interface", () => {
   const memory = new Memory({ initial: 100 });

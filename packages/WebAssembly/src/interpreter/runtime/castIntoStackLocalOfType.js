@@ -1,6 +1,6 @@
 // @flow
-const { RuntimeError } = require("webassemblyjs/lib/errors");
 
+const { RuntimeError } = require("../../errors");
 const i32 = require("./values/i32");
 const i64 = require("./values/i64");
 const f32 = require("./values/f32");

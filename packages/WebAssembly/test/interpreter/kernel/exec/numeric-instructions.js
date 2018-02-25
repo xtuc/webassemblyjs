@@ -5,15 +5,22 @@ const t = require("@webassemblyjs/ast");
 const Long = require("long");
 const { assert } = require("chai");
 
-const { i32 } = require("../../../lib/runtime/values/i32");
-const { i64 } = require("../../../lib/runtime/values/i64");
-const { f32, f32nan } = require("../../../lib/runtime/values/f32");
-const { f64 } = require("../../../lib/runtime/values/f64");
+const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
+const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
+const {
+  f32,
+  f32nan
+} = require("../../../../lib/interpreter/runtime/values/f32");
+const { f64 } = require("../../../../lib/interpreter/runtime/values/f64");
 const {
   castIntoStackLocalOfType
-} = require("../../../lib/runtime/castIntoStackLocalOfType");
-const { executeStackFrame } = require("../../../lib/kernel/exec");
-const { createStackFrame } = require("../../../lib/kernel/stackframe");
+} = require("../../../../lib/interpreter/runtime/castIntoStackLocalOfType");
+const {
+  executeStackFrame
+} = require("../../../../lib/interpreter/kernel/exec");
+const {
+  createStackFrame
+} = require("../../../../lib/interpreter/kernel/stackframe");
 
 /*::
 type TestCase = {

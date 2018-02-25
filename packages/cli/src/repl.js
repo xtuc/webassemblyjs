@@ -6,16 +6,16 @@ const { createReadStream } = require("fs");
 const {
   createCompiledModule
 } = require("webassemblyjs/lib/compiler/compile/module");
-const { Instance } = require("@webassemblyjs/interpreter");
-const partialEvaluation = require("@webassemblyjs/interpreter/lib/partial-evaluation");
+const { Instance } = require("webassemblyjs/lib/interpreter");
+const partialEvaluation = require("webassemblyjs/lib/interpreter/partial-evaluation");
 const t = require("@webassemblyjs/ast");
 const { parseSource } = require("@webassemblyjs/wast-parser");
 const {
   Memory
-} = require("@webassemblyjs/interpreter/lib/runtime/values/memory");
+} = require("webassemblyjs/lib/interpreter/runtime/values/memory");
 const {
   createAllocator
-} = require("@webassemblyjs/interpreter/lib/kernel/memory");
+} = require("webassemblyjs/lib/interpreter/kernel/memory");
 const { parseBinary } = require("@webassemblyjs/wasm-parser");
 
 const isVerbose = process.argv.find(x => x === "--debug") !== undefined;

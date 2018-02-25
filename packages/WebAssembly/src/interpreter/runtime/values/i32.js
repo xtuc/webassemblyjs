@@ -1,7 +1,7 @@
 // @flow
 const Long = require("long");
 
-const { RuntimeError } = require("webassemblyjs/lib/errors");
+const { RuntimeError } = require("../../../errors");
 
 const bits = 32;
 const type = "i32";

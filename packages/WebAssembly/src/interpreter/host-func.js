@@ -1,8 +1,8 @@
 // @flow
 
-import { RuntimeError } from "webassemblyjs/lib/errors";
 const t = require("@webassemblyjs/ast");
 
+import { RuntimeError } from "../errors";
 const {
   castIntoStackLocalOfType
 } = require("./runtime/castIntoStackLocalOfType");

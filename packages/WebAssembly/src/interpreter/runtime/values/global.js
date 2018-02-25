@@ -1,13 +1,10 @@
 // @flow
 
-import { isConst } from "webassemblyjs/lib/compiler/validation/is-const";
-import {
-  getType,
-  typeEq
-} from "webassemblyjs/lib/compiler/validation/type-inference";
+import { isConst } from "../../../compiler/validation/is-const";
+import { getType, typeEq } from "../../../compiler/validation/type-inference";
 
 const { evaluate } = require("../../partial-evaluation");
-const { CompileError } = require("webassemblyjs/lib/errors");
+const { CompileError } = require("../../../errors");
 
 export function createInstance(
   allocator: Allocator,

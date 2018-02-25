@@ -1,9 +1,9 @@
 // @flow
 
-import { RuntimeError } from "webassemblyjs/lib/errors";
 import { traverse } from "@webassemblyjs/ast/lib/traverse";
-import { Module } from "webassemblyjs/lib/compiler/compile/module";
 
+import { Module } from "../compiler/compile/module";
+import { RuntimeError } from "../errors";
 const modulevalue = require("./runtime/values/module");
 const { createAllocator } = require("./kernel/memory");
 const importObjectUtils = require("./import-object");

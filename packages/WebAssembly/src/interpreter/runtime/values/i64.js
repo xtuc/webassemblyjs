@@ -1,7 +1,7 @@
 // @flow
 import Long from "long";
 
-const { RuntimeError } = require("webassemblyjs/lib/errors");
+const { RuntimeError } = require("../../../errors");
 import { type i32 } from "./i32";
 
 const type = "i64";

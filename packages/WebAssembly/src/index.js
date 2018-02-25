@@ -2,14 +2,10 @@
 
 const { parseSource } = require("@webassemblyjs/wast-parser");
 const { parseBinary } = require("@webassemblyjs/wasm-parser");
-const { Instance } = require("@webassemblyjs/interpreter");
-const {
-  Memory
-} = require("@webassemblyjs/interpreter/lib/runtime/values/memory");
-const {
-  Table
-} = require("@webassemblyjs/interpreter/lib/runtime/values/table");
 
+const { Instance } = require("./interpreter");
+const { Memory } = require("./interpreter/runtime/values/memory");
+const { Table } = require("./interpreter/runtime/values/table");
 const { RuntimeError, CompileError, LinkError } = require("./errors");
 const { createCompiledModule, Module } = require("./compiler/compile/module");
 const { checkEndianness } = require("./check-endianness");

@@ -5,10 +5,14 @@ const t = require("@webassemblyjs/ast");
 const { assert } = require("chai");
 const Long = require("long");
 
-const { i64 } = require("../../../lib/runtime/values/i64");
-const { Memory } = require("../../../lib/runtime/values/memory");
-const { executeStackFrame } = require("../../../lib/kernel/exec");
-const { createStackFrame } = require("../../../lib/kernel/stackframe");
+const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
+const { Memory } = require("../../../../lib/interpreter/runtime/values/memory");
+const {
+  executeStackFrame
+} = require("../../../../lib/interpreter/kernel/exec");
+const {
+  createStackFrame
+} = require("../../../../lib/interpreter/kernel/stackframe");
 
 describe("kernel exec - store / load instructions", () => {
   let linearMemory;

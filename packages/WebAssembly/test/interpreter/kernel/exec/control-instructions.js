@@ -4,8 +4,12 @@ const t = require("@webassemblyjs/ast");
 
 const { assert } = require("chai");
 
-const { executeStackFrame } = require("../../../lib/kernel/exec");
-const { createStackFrame } = require("../../../lib/kernel/stackframe");
+const {
+  executeStackFrame
+} = require("../../../../lib/interpreter/kernel/exec");
+const {
+  createStackFrame
+} = require("../../../../lib/interpreter/kernel/stackframe");
 
 describe("kernel exec - control instruction", () => {
   it("should execute nop", () => {

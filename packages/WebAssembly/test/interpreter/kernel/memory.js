@@ -2,8 +2,8 @@
 
 const { assert } = require("chai");
 
-const { Memory } = require("../../lib/runtime/values/memory");
-const { createAllocator } = require("../../lib/kernel/memory");
+const { Memory } = require("../../../lib/interpreter/runtime/values/memory");
+const { createAllocator } = require("../../../lib/interpreter/kernel/memory");
 
 describe("kernel - memory management", () => {
   const memory = new Memory({ initial: 100 });

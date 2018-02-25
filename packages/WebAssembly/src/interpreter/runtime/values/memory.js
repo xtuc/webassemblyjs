@@ -1,6 +1,6 @@
 // @flow
 
-const { RuntimeError } = require("webassemblyjs/lib/errors");
+const { RuntimeError } = require("../../../errors");
 
 const WEBASSEMBLY_PAGE_SIZE = 64 * 1024 /* 64KiB */;
 

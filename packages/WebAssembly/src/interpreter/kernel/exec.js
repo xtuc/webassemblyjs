@@ -1,6 +1,6 @@
 // @flow
 import { Memory } from "../runtime/values/memory";
-import { RuntimeError } from "webassemblyjs/lib/errors";
+import { RuntimeError } from "../../errors";
 
 const {
   binopi32,

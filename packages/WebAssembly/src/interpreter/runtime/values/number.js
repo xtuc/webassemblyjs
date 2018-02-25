@@ -1,6 +1,6 @@
 // @flow
 
-import { RuntimeError } from "webassemblyjs/lib/errors";
+import { RuntimeError } from "../../../errors";
 
 export class Float<U> implements FloatingPointValue<Float<U>, U> {
   _value: number;
