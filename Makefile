@@ -7,14 +7,13 @@ NODE = node
 PRETTIER = ./node_modules/.bin/prettier
 MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
 BABEL = ./node_modules/.bin/babel --ignore src/types/npm
-ESLINT = ./node_modules/.bin/eslint --format=codeframe
+ESLINT = ./node_modules/.bin/eslint
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1
 MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 
-.PHONY: test build
+REPL = $(NODE) ./packages/cli/lib/repl.js
 
-make-executables:
-	chmod +x ./lib/bin/*
+.PHONY: test build
 
 clean:
 	rm -rf ./lib
@@ -37,11 +36,11 @@ test-ci: test test-whitelisted-spec lint
 test: build
 	./scripts/test.sh
 
-test-whitelisted-spec: make-executables
-	./lib/bin/repl.js spec/test/core/exports.wast
-	./lib/bin/repl.js spec/test/core/globals.wast
-	./lib/bin/repl.js spec/test/core/i32.wast
-	./lib/bin/repl.js spec/test/core/binary.wast
+test-whitelisted-spec:
+	$(REPL) spec/test/core/exports.wast
+	$(REPL) spec/test/core/globals.wast
+	$(REPL) spec/test/core/i32.wast
+	$(REPL) spec/test/core/binary.wast
 
 test-spec:
 	./spec/test/core/run.py --wasm ./lib/bin/repl.js

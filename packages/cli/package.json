@@ -11,7 +11,9 @@
   "dependencies": {
     "@webassemblyjs/wast-printer": "1.0.0",
     "@webassemblyjs/wasm-parser": "1.0.0",
+    "@webassemblyjs/wast-parser": "1.0.0",
     "@webassemblyjs/ast": "1.0.0",
+    "@webassemblyjs/interpreter": "1.0.0",
     "webassemblyjs": "1.0.0"
   }
 }

@@ -10,10 +10,6 @@ const path = require("path");
 
 const { parseSource } = require("../lib");
 
-function toArrayBuffer(buf) {
-  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
-}
-
 function createCheck(suite, ast) {
   const expectedFile = path.join(path.dirname(suite), "expected.json");
   const code = JSON.stringify(ast, null, 2);
