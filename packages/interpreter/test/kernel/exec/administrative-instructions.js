@@ -3,12 +3,8 @@
 const t = require("@webassemblyjs/ast");
 const { assert } = require("chai");
 
-const {
-  executeStackFrame
-} = require("../../../lib/kernel/exec");
-const {
-  createStackFrame
-} = require("../../../lib/kernel/stackframe");
+const { executeStackFrame } = require("../../../lib/kernel/exec");
+const { createStackFrame } = require("../../../lib/kernel/stackframe");
 
 describe("kernel exec - administrative instructions", () => {
   it("should stop executing the stackframe at trap", () => {

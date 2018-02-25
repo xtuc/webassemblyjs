@@ -319,5 +319,5 @@ type Elem = {
   // multiple expression are allow in WAST
   offset: Array<Instruction>,
 
-  funcs: Array<Index>,
-}
+  funcs: Array<Index>
+};

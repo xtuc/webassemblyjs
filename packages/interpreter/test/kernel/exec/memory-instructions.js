@@ -10,12 +10,8 @@ const { i64 } = require("../../../lib/runtime/values/i64");
 const { f32 } = require("../../../lib/runtime/values/f32");
 const { f64 } = require("../../../lib/runtime/values/f64");
 
-const {
-  executeStackFrame
-} = require("../../../lib/kernel/exec");
-const {
-  createStackFrame
-} = require("../../../lib/kernel/stackframe");
+const { executeStackFrame } = require("../../../lib/kernel/exec");
+const { createStackFrame } = require("../../../lib/kernel/stackframe");
 
 describe("kernel exec - memory instructions", () => {
   const operations = [

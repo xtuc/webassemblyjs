@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // @flow
 
-const { parseSource } = require("../compiler/parsing/wast");
+const { parseSource } = require("@webassemblyjs/wast-parser");
 const { readFileSync } = require("fs");
 
 const filename = process.argv[2];

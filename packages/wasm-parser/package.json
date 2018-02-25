@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "webassemblyjs": "1.0.0",
+    "@webassemblyjs/wasm-parser": "1.0.0",
     "@webassemblyjs/ast": "1.0.0"
   }
 }

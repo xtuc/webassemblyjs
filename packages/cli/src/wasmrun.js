@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // @flow
 
-const { instantiate } = require("../index");
+const { instantiate } = require("webassemblyjs");
 const fs = require("fs");
 
 function debug(msg: string) {

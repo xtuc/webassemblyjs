@@ -18,6 +18,5 @@ it("should import the memory", () => {
 
     i32[0] = 1;
     assert.equal(get(), 1);
-
   });
 });

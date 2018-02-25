@@ -5,13 +5,8 @@ const t = require("@webassemblyjs/ast");
 const { assert } = require("chai");
 
 const { i32 } = require("../../../lib/runtime/values/i32");
-const {
-  executeStackFrame
-} = require("../../../lib/kernel/exec");
-const {
-  createStackFrame
-} = require("../../../lib/kernel/stackframe");
-
+const { executeStackFrame } = require("../../../lib/kernel/exec");
+const { createStackFrame } = require("../../../lib/kernel/stackframe");
 
 describe("kernel exec - parametric instructions", () => {
   const operations = [

@@ -3,8 +3,8 @@
 [include]
 
 [libs]
-./src/types/
-./src/compiler/parsing/wasm/types/decoder.js
+./types/
+./packages/wasm-parser/src/types/decoder.js
 
 [lints]
 

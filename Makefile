@@ -7,7 +7,7 @@ NODE = node
 PRETTIER = ./node_modules/.bin/prettier
 MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
 BABEL = ./node_modules/.bin/babel --ignore src/types/npm
-ESLINT = ./node_modules/.bin/eslint
+ESLINT = ./node_modules/.bin/eslint --format=codeframe
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1
 MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 
@@ -47,7 +47,7 @@ test-spec:
 	./spec/test/core/run.py --wasm ./lib/bin/repl.js
 
 lint:
-	$(ESLINT) src test docs benchmark
+	$(ESLINT) packages
 
 publish: build
 	npm publish
@@ -65,7 +65,7 @@ bench:
 	$(NODE) $(NODE_OPTS) ./benchmark
 
 fix:
-	$(PRETTIER) --write "{src,test,docs,benchmark}/**/*.js" "**/*.tjs"
+	$(PRETTIER) --write "{packages,docs,benchmark}/**/*.js" "**/*.tjs"
 
 flow-update-def:
 	$(FLOWTYPED) install --libdefDir src/types

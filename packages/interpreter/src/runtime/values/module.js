@@ -3,7 +3,11 @@
 import { traverse } from "@webassemblyjs/ast/lib/traverse";
 import { Memory } from "./memory";
 
-const { RuntimeError, LinkError, CompileError } = require("webassemblyjs/lib/errors");
+const {
+  RuntimeError,
+  LinkError,
+  CompileError
+} = require("webassemblyjs/lib/errors");
 const { Table } = require("./table");
 const func = require("./func");
 const externvalue = require("./extern");

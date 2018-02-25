@@ -7,5 +7,11 @@
     "test": "echo no tests"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@webassemblyjs/wast-printer": "1.0.0",
+    "@webassemblyjs/wasm-parser": "1.0.0",
+    "@webassemblyjs/ast": "1.0.0",
+    "webassemblyjs": "1.0.0"
+  }
 }

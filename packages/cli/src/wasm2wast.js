@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const { readFileSync } = require("fs");
-
-const { parsers, printers } = require("../tools");
+const { parseBinary } = require("@webassemblyjs/wasm-parser");
+const { printWAST } = require("@webassemblyjs/wast-printer");
 
 function toArrayBuffer(buf) {
   return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
@@ -10,8 +10,8 @@ function toArrayBuffer(buf) {
 const filename = process.argv[2];
 
 const buff = toArrayBuffer(readFileSync(filename, null));
-const ast = parsers.parseWASM(buff);
+const ast = parseBinary(buff);
 
-const wast = printers.printWAST(ast);
+const wast = printWAST(ast);
 
 process.stdout.write(wast);

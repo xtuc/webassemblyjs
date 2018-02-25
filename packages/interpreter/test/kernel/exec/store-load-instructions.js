@@ -7,13 +7,8 @@ const Long = require("long");
 
 const { i64 } = require("../../../lib/runtime/values/i64");
 const { Memory } = require("../../../lib/runtime/values/memory");
-const {
-  executeStackFrame
-} = require("../../../lib/kernel/exec");
-const {
-  createStackFrame
-} = require("../../../lib/kernel/stackframe");
-
+const { executeStackFrame } = require("../../../lib/kernel/exec");
+const { createStackFrame } = require("../../../lib/kernel/stackframe");
 
 describe("kernel exec - store / load instructions", () => {
   let linearMemory;

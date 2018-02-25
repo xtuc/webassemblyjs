@@ -10,13 +10,8 @@ const { i64 } = require("../../../lib/runtime/values/i64");
 const {
   castIntoStackLocalOfType
 } = require("../../../lib/runtime/castIntoStackLocalOfType");
-const {
-  executeStackFrame
-} = require("../../../lib/kernel/exec");
-const {
-  createStackFrame
-} = require("../../../lib/kernel/stackframe");
-
+const { executeStackFrame } = require("../../../lib/kernel/exec");
+const { createStackFrame } = require("../../../lib/kernel/stackframe");
 
 /*::
 type TestCase = {

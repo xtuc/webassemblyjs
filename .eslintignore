@@ -1,2 +1,4 @@
 types/
-src/compiler/parsing/wasm/types/
+packages/wasm-parser/src/types/
+packages/*/node_modules
+packages/*/lib
