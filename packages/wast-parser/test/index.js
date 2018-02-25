@@ -46,7 +46,7 @@ describe("compiler", () => {
   describe("wast", () => {
     describe("parsing", () => {
       const testSuites = glob.sync(
-        "packages/wast-parser/test/fixtures/wast/**/actual.wast"
+        "packages/wast-parser/test/fixtures/**/actual.wast"
       );
 
       testSuites.forEach(suite => {
