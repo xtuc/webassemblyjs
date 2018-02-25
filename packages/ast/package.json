@@ -1,13 +1,25 @@
 {
   "name": "@webassemblyjs/ast",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.0-y.6",
+  "description": "AST utils for webassemblyjs",
+  "keywords": [
+    "webassembly",
+    "javascript",
+    "ast"
+  ],
   "main": "lib/index.js",
-  "author": "",
-  "license": "ISC",
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
   "dependencies": {
+    "@webassemblyjs/wast-parser": "1.0.0-y.6",
     "webassembly-floating-point-hex-parser": "0.1.2",
-    "@webassemblyjs/wast-parser": "1.0.0",
-    "webassemblyjs": "1.0.0"
+    "webassemblyjs": "1.0.0-y.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/js-webassembly-interpreter.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -9,7 +9,7 @@ Code parsing and manipulations.
 
 ### AST
 
-Tools to manipulate and use our internal AST. You can see its definitions [here](https://github.com/xtuc/js-webassembly-interpreter/blob/master/src/types/AST.js).
+Tools to manipulate and use our internal AST. You can see its definitions [here](https://github.com/xtuc/js-webassembly-interpreter/blob/master/types/AST.js).
 
 ### Parsing
 
