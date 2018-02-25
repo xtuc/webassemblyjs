@@ -1,18 +1,30 @@
 {
   "name": "@webassemblyjs/wast-parser",
   "version": "1.0.0",
-  "description": "",
+  "description": "WebAssembly text format parser",
+  "keywords": [
+    "webassembly",
+    "javascript",
+    "ast",
+    "parser",
+    "wat",
+    "wast"
+  ],
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
   "dependencies": {
     "@babel/code-frame": "^7.0.0-beta.36",
     "webassembly-floating-point-hex-parser": "0.1.2",
     "@webassemblyjs/ast": "1.0.0",
     "webassemblyjs": "1.0.0",
     "long": "^3.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/js-webassembly-interpreter.git"
   }
 }
