@@ -15,5 +15,13 @@
     "@webassemblyjs/ast": "1.0.0",
     "@webassemblyjs/interpreter": "1.0.0",
     "webassemblyjs": "1.0.0"
+  },
+  "bin": {
+    "wasmdump": "./lib/bin/wasmdump.js",
+    "wasmast": "./lib/bin/wasmast.js",
+    "wasmrun": "./lib/bin/wasmrun.js",
+    "wasm": "./lib/bin/repl.js",
+    "wasm2wast": "./lib/bin/wasm2wast.js",
+    "wastast": "./lib/bin/wastast.js"
   }
 }

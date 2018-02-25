@@ -15,17 +15,14 @@ REPL = $(NODE) ./packages/cli/lib/repl.js
 
 .PHONY: test build
 
-clean:
-	rm -rf ./lib
-
-clean-all: clean
-	rm -rf ./node_modules
+clean-all:
+	rm -rf ./node_modules ./packages/*/node_modules
 
 bootstrap: clean-all
 	npm install
 	$(LERNA) bootstrap
 
-build: clean
+build:
 	./scripts/build.sh
 
 watch:
@@ -49,7 +46,7 @@ lint:
 	$(ESLINT) packages
 
 publish: build
-	npm publish
+	lerna publish
 
 repl: build
 	$(NODE) $(NODE_OPTS) ./lib/repl
