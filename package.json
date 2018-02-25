@@ -1,4 +1,5 @@
 {
+  "private": true,
   "scripts": {
     "test": "make test",
     "build": "make build"

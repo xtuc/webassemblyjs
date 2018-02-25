@@ -46,7 +46,7 @@ lint:
 	$(ESLINT) packages
 
 publish: build
-	lerna publish
+	lerna publish --force-publish=* --exact
 
 repl: build
 	$(NODE) $(NODE_OPTS) ./lib/repl
