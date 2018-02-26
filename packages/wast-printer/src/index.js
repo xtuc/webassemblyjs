@@ -12,7 +12,7 @@ function indent(nb: number): string {
     .join("");
 }
 
-export function printWAST(n: Node): string {
+export function print(n: Node): string {
   if (n.type === "Program") {
     return printProgram(n, 0);
   }

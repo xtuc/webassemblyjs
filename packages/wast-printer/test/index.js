@@ -8,7 +8,7 @@ const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 const { writeFileSync, readFileSync } = require("fs");
 const path = require("path");
 
-const { printWAST } = require("../lib/index");
+const { print } = require("../lib/index");
 
 describe("printer", () => {
   describe("wast", () => {
@@ -23,7 +23,7 @@ describe("printer", () => {
         const ast = parse(input);
 
         const expectedFile = path.join(path.dirname(suite), "expected.wast");
-        const code = printWAST(ast);
+        const code = print(ast);
 
         let expected;
         try {
