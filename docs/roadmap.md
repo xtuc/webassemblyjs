@@ -17,7 +17,7 @@ It's important that the features used in Webpack are working, and thus the follo
   - [x] Decode the start section (https://github.com/xtuc/webassemblyjs/pull/164)
     - [ ] WASM - Start the execution from the start function
     - [x] WAST - Start the execution from the start function
-- [ ] Use a monorepo https://github.com/xtuc/webassemblyjs/issues/166
+- [x] Use a monorepo (https://github.com/xtuc/webassemblyjs/issues/166)
 - [x] Rename WATF to WAT (https://github.com/xtuc/webassemblyjs/issues/152)
     
 ## Version 1.1.0
