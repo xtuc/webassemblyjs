@@ -16,7 +16,7 @@ request.send();
 request.onload = function() {
   var bytes = request.response;
 
-  webassemblyInterpreter
+  webassemblyjs
     .instantiate(bytes)
     .then((module) => {
 
@@ -37,5 +37,5 @@ request.onload = function() {
 
 The binary is available here: [https://webassembly.js.org/example-add.wasm](/example-add.wasm).
 
-<script src="https://bundle.run/webassemblyjs@1.0.0-y.7"></script>
+<script src="https://bundle.run/webassemblyjs@1.0.0-y.8"></script>
 <script src="/example-exec.js"></script>

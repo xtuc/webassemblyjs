@@ -38,5 +38,5 @@ document.getElementById("res").innerHTML = res;
 
 <div id="res">...</div>
 
-<script src="https://bundle.run/webassemblyjs@1.0.0-y.7"></script>
+<script src="https://bundle.run/webassemblyjs@1.0.0-y.8"></script>
 <script src="/example-exec.js"></script>
