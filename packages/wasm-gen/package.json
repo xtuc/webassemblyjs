@@ -1,0 +1,35 @@
+{
+  "name": "@webassemblyjs/wasm-gen",
+  "version": "1.4.1",
+  "description": "Emit documentation/code for your WASM binary Edit",
+  "keywords": [
+    "webassembly",
+    "javascript",
+    "wasm",
+    "binary",
+    "markdown"
+  ],
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/js-webassembly-interpreter.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
+  "bin": {
+    "wasmgen": "src/cli.js"
+  },
+  "dependencies": {
+    "@babel/generator": "^7.0.0-beta.40",
+    "@babel/template": "^7.0.0-beta.40",
+    "@babel/types": "^7.0.0-beta.40",
+    "commander": "^2.14.1",
+    "@webassemblyjs/wasm-parser": "1.0.0-y.7"
+  }
+}

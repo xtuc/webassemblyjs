@@ -1,0 +1,22 @@
+it("should import the memory", () => {
+  const mem = new WebAssembly.Memory({ initial: 100 });
+
+  // Fill memory
+  const i32 = new Uint32Array(mem.buffer);
+  i32[0] = 10;
+
+  const importObject = {
+    env: { mem }
+  };
+
+  return WebAssembly.instantiate(wasmmodule, importObject).then(m => {
+    const get = m.instance.exports.get;
+
+    assert.typeOf(get(), "number");
+    assert.notEqual(get(), 0); // default value
+    assert.equal(get(), 10);
+
+    i32[0] = 1;
+    assert.equal(get(), 1);
+  });
+});

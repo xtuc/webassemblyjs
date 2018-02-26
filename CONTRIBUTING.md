@@ -13,8 +13,7 @@ Feel free to open an issue and/or reach out @xtuc.
 ```sh
 git clone https://github.com/xtuc/js-webassembly-interpreter
 cd js-webassembly-interpreter
-
-npm install
+make bootstrap
 ```
 
 ### Building

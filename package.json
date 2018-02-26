@@ -1,27 +1,11 @@
 {
-  "name": "webassembly-interpreter",
-  "version": "0.0.31",
-  "keywords": [
-    "webassembly",
-    "interpreter",
-    "javascript",
-    "ast",
-    "compiler",
-    "parser",
-    "polyfill"
-  ],
-  "description": "WebAssembly interpreter",
-  "main": "lib/index.js",
-  "license": "GPL-2.0",
+  "private": true,
   "scripts": {
     "test": "make test",
     "build": "make build"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/xtuc/js-webassembly-interpreter.git"
-  },
   "author": "Sven Sauleau",
+  "license": "GPL-2.0",
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.34",
     "@babel/core": "^7.0.0-beta.34",
@@ -43,19 +27,7 @@
     "markdown-to-html": "0.0.13",
     "mocha": "^4.0.1",
     "performance-now": "^2.1.0",
-    "prettier": "^1.9.2"
-  },
-  "bin": {
-    "wasmdump": "./lib/bin/wasmdump.js",
-    "wasmast": "./lib/bin/wasmast.js",
-    "wasmrun": "./lib/bin/wasmrun.js",
-    "wasm": "./lib/bin/repl.js",
-    "wasm2wast": "./lib/bin/wasm2wast.js",
-    "wastast": "./lib/bin/wastast.js"
-  },
-  "dependencies": {
-    "@babel/code-frame": "^7.0.0-beta.36",
-    "long": "^3.2.0",
-    "webassembly-floating-point-hex-parser": "0.1.2"
+    "prettier": "^1.9.2",
+    "lerna": "^2.9.0"
   }
 }

@@ -1,0 +1,30 @@
+{
+  "name": "@webassemblyjs/wast-printer",
+  "version": "1.0.0-y.7",
+  "description": "WebAssembly text format printer",
+  "main": "lib/index.js",
+  "keywords": [
+    "webassembly",
+    "javascript",
+    "ast",
+    "compiler",
+    "printer",
+    "wast"
+  ],
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "@webassemblyjs/wast-parser": "1.0.0-y.7",
+    "long": "^3.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/js-webassembly-interpreter.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@webassemblyjs/wasm-parser",
+  "version": "1.0.0-y.7",
+  "keywords": [
+    "webassembly",
+    "javascript",
+    "ast",
+    "parser",
+    "wasm"
+  ],
+  "description": "WebAssembly binary format parser",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "@webassemblyjs/ast": "1.0.0-y.7",
+    "@webassemblyjs/wasm-parser": "1.0.0-y.7",
+    "webassemblyjs": "1.0.0-y.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/js-webassembly-interpreter.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

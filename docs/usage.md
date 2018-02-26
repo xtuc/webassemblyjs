@@ -5,12 +5,12 @@ id: usage
 
 ## CDN
 
-You can import `https://bundle.run/webassembly-interpreter` and the `webassemblyInterpreter` object will be accessible.
+You can import `https://bundle.run/webassemblyjs` and the `webassemblyjs` object will be accessible.
 
 ## npm
 
 ```sh
-npm install webassembly-interpreter
+npm install @webassemblyjs/cli
 ```
 
 ### Command line interface
