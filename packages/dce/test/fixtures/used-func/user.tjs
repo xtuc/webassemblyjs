@@ -1,4 +1,4 @@
-import makeX from 'module.wasm';
+import makeX from "module.wasm";
 
 makeX().then(instance => {
   instance.exports.foobar();

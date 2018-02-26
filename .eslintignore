@@ -2,3 +2,4 @@ types/
 packages/wasm-parser/src/types/
 packages/*/node_modules
 packages/*/lib
+packages/dce/src/libwabt.js

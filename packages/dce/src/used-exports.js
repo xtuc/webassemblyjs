@@ -1,4 +1,4 @@
-const {parse} = require("babylon");
+const { parse } = require("babylon");
 const traverse = require("@babel/traverse").default;
 const t = require("@babel/types");
 
@@ -10,9 +10,7 @@ function parseSource(source) {
   return parse(source, {
     sourceType: "module",
 
-    plugins: [
-      "jsx",
-    ]
+    plugins: ["jsx"]
   });
 }
 
@@ -23,11 +21,8 @@ function parseSource(source) {
  *         ^
  */
 function onLocalModuleBinding(ident, ast, acc) {
-
   traverse(ast, {
-
-    CallExpression({node: callExpression}) {
-
+    CallExpression({ node: callExpression }) {
       // left must be a member expression
       if (t.isMemberExpression(callExpression.callee) === false) {
         return;
@@ -39,9 +34,9 @@ function onLocalModuleBinding(ident, ast, acc) {
        * Search for `makeX().then(...)`
        */
       if (
-        t.isCallExpression(memberExpression.object)
-        && memberExpression.object.callee.name === ident.name
-        && memberExpression.property.name === "then"
+        t.isCallExpression(memberExpression.object) &&
+        memberExpression.object.callee.name === ident.name &&
+        memberExpression.property.name === "then"
       ) {
         const [thenFnBody] = callExpression.arguments;
 
@@ -52,7 +47,6 @@ function onLocalModuleBinding(ident, ast, acc) {
         onInstanceThenFn(thenFnBody, acc);
       }
     }
-
   });
 }
 
@@ -77,55 +71,51 @@ function onInstanceThenFn(fn, acc) {
    */
   if (t.isObjectPattern(localIdent) === true) {
     // ModuleInstance has the exports prop by spec
-    localIdent = t.identifier('exports');
+    localIdent = t.identifier("exports");
   }
 
   traverse(fn.body, {
     noScope: true,
 
     MemberExpression(path) {
-      const {object, property} = path.node;
+      const { object, property } = path.node;
 
       /**
        * Search for `localIdent.exports`
        */
       if (
-        identEq(object, localIdent) === true
-        && t.isIdentifier(property, {name: 'exports'})
+        identEq(object, localIdent) === true &&
+        t.isIdentifier(property, { name: "exports" })
       ) {
         /**
          * We are looking for the right branch of the parent MemberExpression:
          * `(localIdent.exports).x`
          *                       ^
          */
-        let {property} = path.parentPath.node;
+        const { property } = path.parentPath.node;
 
         // Found an usage of an export
         acc.push(property.name);
 
         path.stop();
-      }
-
-      /**
-       * `exports` might be a local binding (from destructuring)
-       */
-      else if (identEq(object, localIdent) === true) {
+      } else if (identEq(object, localIdent) === true) {
+        /**
+         * `exports` might be a local binding (from destructuring)
+         */
         // Found an usage of an export
         acc.push(property.name);
 
         path.stop();
       }
     }
-
   });
 }
 
-module.exports = function (source) {
-  const usedExports = []
+module.exports = function(source) {
+  const usedExports = [];
   const ast = parseSource(source);
 
   traverse(ast, {
-
     ImportDeclaration(path) {
       const [specifier] = path.node.specifiers;
 
@@ -133,7 +123,6 @@ module.exports = function (source) {
         onLocalModuleBinding(specifier.local, ast, usedExports);
         path.stop();
       }
-
     }
   });
 

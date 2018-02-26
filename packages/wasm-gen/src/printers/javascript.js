@@ -4,9 +4,9 @@ const template = require("@babel/template").default;
 const generate = require("@babel/generator").default;
 const t = require("@babel/types");
 
-const globalInstanceIdentifier = t.identifier('instance');
-const globalMemoryIdentifier = t.identifier('_memory0');
-const globalTableIdentifier = t.identifier('_table0');
+const globalInstanceIdentifier = t.identifier("instance");
+const globalMemoryIdentifier = t.identifier("_memory0");
+const globalTableIdentifier = t.identifier("_table0");
 
 const exportFuncTemplate = template.program(`
   export function NAME(ARGS) {
@@ -67,25 +67,26 @@ function printExport(moduleExport, funcsTable) {
 
     const params = funcNode.params
       .map(x => x.valtype)
-      .map((x, k) => t.identifier('p' + k + '_' + x));
+      .map((x, k) => t.identifier("p" + k + "_" + x));
 
-    return genTemplate(exportFuncTemplate, {
-      NAME: t.identifier(moduleExport.name),
-      ARGS: params,
-      INSTANCE: globalInstanceIdentifier,
-    }) + '\n\n';
+    return (
+      genTemplate(exportFuncTemplate, {
+        NAME: t.identifier(moduleExport.name),
+        ARGS: params,
+        INSTANCE: globalInstanceIdentifier
+      }) + "\n\n"
+    );
   }
 
-  return '';
+  return "";
 }
 
-function print(ast, {url}) {
-
+function print(ast, { url }) {
   if (typeof url === "undefined") {
     throw new Error("You need to provide --url [url]");
   }
 
-  let out = '';
+  let out = "";
 
   const state = {
     moduleExports: [],
@@ -94,34 +95,32 @@ function print(ast, {url}) {
   };
 
   traverse(ast, {
-
-    Func({node}) {
+    Func({ node }) {
       state.funcsTable[node.name.value] = node;
     },
 
-    ModuleExport({node}) {
+    ModuleExport({ node }) {
       state.moduleExports.push(node);
     },
 
-    ModuleImport({node}) {
+    ModuleImport({ node }) {
       state.moduleImports.push(node);
     }
-
   });
 
   // Add comment
-  out += '/**\n';
-  out += ' * Autogenered by wasmgen -o js.\n';
-  out += ' *\n';
-  out += ' * DO NOT EDIT.\n';
-  out += ' */\n';
+  out += "/**\n";
+  out += " * Autogenered by wasmgen -o js.\n";
+  out += " *\n";
+  out += " * DO NOT EDIT.\n";
+  out += " */\n";
 
-  out += '\n';
+  out += "\n";
 
   out += genTemplate(headerTemplate, {
     INSTANCE: globalInstanceIdentifier,
     MEMORY: globalMemoryIdentifier,
-    TABLE: globalTableIdentifier,
+    TABLE: globalTableIdentifier
   });
 
   out += "\n\n";
@@ -129,7 +128,7 @@ function print(ast, {url}) {
   out += genTemplate(initFuncTemplate, {
     URL: t.StringLiteral(url),
     MEMORY: globalMemoryIdentifier,
-    TABLE: globalTableIdentifier,
+    TABLE: globalTableIdentifier
   });
 
   out += "\n\n";
@@ -137,7 +136,7 @@ function print(ast, {url}) {
   if (state.moduleExports.length > 0) {
     out += state.moduleExports.reduce((acc, e) => {
       return acc + printExport(e, state.funcsTable);
-    }, '');
+    }, "");
   }
 
   return out;
