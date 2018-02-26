@@ -1,6 +1,6 @@
 // @flow
 
-import { signatures } from "@webassemblyjs/ast/lib/signatures";
+import { signatures } from "@webassemblyjs/ast";
 
 export function typeEq(l: Array<Valtype>, r: Array<Valtype>): boolean {
   if (l.length !== r.length) {

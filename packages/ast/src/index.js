@@ -531,3 +531,4 @@ export function elem(
 }
 
 export { traverse } from "./traverse";
+export { signatures } from "./signatures";

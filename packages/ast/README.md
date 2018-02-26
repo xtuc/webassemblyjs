@@ -22,6 +22,14 @@ traverse(ast, {
 });
 ```
 
+### Instruction signatures
+
+```js
+import { signatures } from "@webassemblyjs/ast";
+
+console.log(signatures);
+```
+
 ### AST Nodes
 
 Coming soon.
