@@ -19,7 +19,7 @@ request.send();
 request.onload = function() {
   const bytes = request.response;
 
-  webassemblyInterpreter.instantiate(bytes).then(m => {
+  webassemblyjs.instantiate(bytes).then(m => {
     const exports = m.instance.exports;
 
     const t0 = performance.now();
