@@ -1,6 +1,6 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast/lib/traverse";
+import { traverse } from "@webassemblyjs/ast";
 const t = require("@webassemblyjs/ast");
 
 let i = 0;

@@ -1,6 +1,6 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast/lib/traverse";
+import { traverse } from "@webassemblyjs/ast";
 import { transform } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
 
 import validateAST from "../validation";

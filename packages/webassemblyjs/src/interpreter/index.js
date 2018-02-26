@@ -1,6 +1,6 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast/lib/traverse";
+import { traverse } from "@webassemblyjs/ast";
 
 import { Module } from "../compiler/compile/module";
 import { RuntimeError } from "../errors";

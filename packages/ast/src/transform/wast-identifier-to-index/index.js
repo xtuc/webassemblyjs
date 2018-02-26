@@ -1,8 +1,9 @@
 // @flow
 
+import { traverse } from "../../index";
+
 // FIXME(sven): do the same with all block instructions, must be more generic here
 
-const { traverse } = require("../../traverse");
 const t = require("../../index");
 
 export function transform(ast: Program) {

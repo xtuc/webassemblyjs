@@ -6,10 +6,7 @@ function createPath(node: Node): NodePath<Node> {
   };
 }
 
-export function walk(
-  n: Node,
-  cb: (type: string, path: NodePath<Node>) => void
-) {
+function walk(n: Node, cb: (type: string, path: NodePath<Node>) => void) {
   if (n.type === "Program") {
     cb(n.type, createPath(n));
 

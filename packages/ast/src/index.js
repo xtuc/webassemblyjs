@@ -529,3 +529,5 @@ export function elem(
     funcs
   };
 }
+
+export { traverse } from "./traverse";

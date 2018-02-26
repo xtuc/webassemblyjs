@@ -1,6 +1,6 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast/lib/traverse";
+import { traverse } from "@webassemblyjs/ast";
 import { Memory } from "./memory";
 
 const { RuntimeError, LinkError, CompileError } = require("../../../errors");

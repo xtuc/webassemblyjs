@@ -1,6 +1,6 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast/lib/traverse";
+import { traverse } from "@webassemblyjs/ast";
 
 export default function validate(ast: Program): Array<string> {
   const errors = [];
