@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "WebAssembly interpreter",
+    "tagline": "webassemblyjs",
     "contrib-architecture": "Architecture",
     "contrib-thirdparty-licenses": "Thirdparty licences",
     "contrib-transform-wast-identifier-to-index": "wast-identifer-to-index transformation",
