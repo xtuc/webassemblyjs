@@ -1,5 +1,5 @@
 ---
-title: js-webassembly-interpreter
+title: webassemblyjs
 id: index
 ---
 

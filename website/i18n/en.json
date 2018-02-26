@@ -11,7 +11,7 @@
     "example-add-wasm": "Add in WASM",
     "example-add-wast": "Add in WAST",
     "example-benchmark": "Benchmark",
-    "index": "js-webassembly-interpreter",
+    "index": "webassemblyjs",
     "roadmap": "roadmap",
     "usage": "Usage",
     "Share": "Share",

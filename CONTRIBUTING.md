@@ -11,8 +11,8 @@ Feel free to open an issue and/or reach out @xtuc.
 ### Setup
 
 ```sh
-git clone https://github.com/xtuc/js-webassembly-interpreter
-cd js-webassembly-interpreter
+git clone https://github.com/xtuc/webassemblyjs
+cd webassemblyjs
 make bootstrap
 ```
 

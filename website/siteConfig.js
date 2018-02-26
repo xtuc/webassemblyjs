@@ -5,12 +5,12 @@ const siteConfig = {
   copyright: "Sven Sauleau",
   url: "https://webassembly.js.org/",
   baseUrl: "/",
-  projectName: "js-webassembly-interpreter",
+  projectName: "webassemblyjs",
   headerLinks: [
     { page: "share", label: "Share" },
     { doc: "index", label: "Documentation" },
     {
-      href: "https://github.com/xtuc/js-webassembly-interpreter",
+      href: "https://github.com/xtuc/webassemblyjs",
       label: "GitHub"
     }
   ],

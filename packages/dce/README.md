@@ -31,7 +31,7 @@ I encounter some issues (like removing the `func` wasn't working) and added an a
 
 ## Third party licenses
 
-- [js-webassembly-interpreter](https://github.com/xtuc/js-webassembly-interpreter) - GNU General Public License v2.0 see [LICENCE](https://github.com/xtuc/js-webassembly-interpreter/blob/master/LICENCE)
+- [webassemblyjs](https://github.com/xtuc/webassemblyjs) - GNU General Public License v2.0 see [LICENCE](https://github.com/xtuc/webassemblyjs/blob/master/LICENCE)
 
 ## TODO
 
