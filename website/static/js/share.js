@@ -6,7 +6,7 @@ function runWasmgen(buffer) {
     out: "text"
   };
 
-  const out = wasmgen(buffer, opts);
+  const out = _webassemblyjs_wasmGen(buffer, opts);
 
   const lineCount = out.split("\n").length - 1;
   const sizePerLine = 20;
@@ -30,12 +30,12 @@ function runWasm2Wast(buffer) {
   }
 
   function toWast(ast) {
-    return webassemblyInterpreter.printers.printWAST(ast);
+    return _webassemblyjs_wastPrinter.print(ast);
   }
 
   function parseBinary(buff) {
     try {
-      return webassemblyInterpreter.parsers.parseWASM(buff);
+      return _webassemblyjs_wasmParser.decode(buff);
     } catch (e) {
       showOutput("Error: " + e.message);
       throw e;
@@ -52,8 +52,12 @@ function runWasm2Wast(buffer) {
   const downloadBtn = document.getElementById("download");
   const input = document.getElementById("upload");
 
-  if (typeof webassemblyInterpreter === "undefined") {
-    throw new Error("webassemblyInterpreter has not been loaded");
+  if (
+    typeof _webassemblyjs_wasmParser === "undefined" ||
+    typeof _webassemblyjs_wasmGen === "undefined" ||
+    typeof _webassemblyjs_wastPrinter === "undefined"
+  ) {
+    throw new Error("webassemblyjs has not been loaded correctly");
   }
 
   function downloadURL(data, fileName) {

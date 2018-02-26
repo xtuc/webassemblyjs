@@ -26,7 +26,7 @@ id: example-add-wast
 
 ```js
 var code = document.getElementById("input").innerText;
-var module = webassemblyInterpreter.instantiateFromSource(code);
+var module = webassemblyjs.instantiateFromSource(code);
 
 var res = module.exports.add(1, 1);
 document.getElementById("res").innerHTML = res;
@@ -38,5 +38,5 @@ document.getElementById("res").innerHTML = res;
 
 <div id="res">...</div>
 
-<script src="https://bundle.run/webassembly-interpreter@0.0.29"></script>
+<script src="https://bundle.run/webassemblyjs@1.0.0-y.7"></script>
 <script src="/example-exec.js"></script>

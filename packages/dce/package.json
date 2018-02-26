@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/dce",
-  "version": "1.0.0-y.7",
+  "version": "1.0.0-y.8",
   "description": "Eliminate unused functions in your WASM binary",
   "main": "src/index.js",
   "scripts": {
@@ -19,11 +19,11 @@
     "@babel/core": "^7.0.0-beta.39",
     "@babel/traverse": "^7.0.0-beta.39",
     "@babel/types": "^7.0.0-beta.39",
-    "babylon": "^7.0.0-beta.39",
-    "@webassemblyjs/ast": "1.0.0-y.7",
-    "@webassemblyjs/wasm-parser": "1.0.0-y.7",
-    "@webassemblyjs/wast-parser": "1.0.0-y.7",
-    "@webassemblyjs/wast-printer": "1.0.0-y.7"
+    "@webassemblyjs/ast": "1.0.0-y.8",
+    "@webassemblyjs/wasm-parser": "1.0.0-y.8",
+    "@webassemblyjs/wast-parser": "1.0.0-y.8",
+    "@webassemblyjs/wast-printer": "1.0.0-y.8",
+    "babylon": "^7.0.0-beta.39"
   },
   "devDependencies": {
     "chai": "^4.1.2",

@@ -24,7 +24,7 @@ It's important that the features used in Webpack are working, and thus the follo
 
 The second important feature for Webpack is [wasm-dce](https://github.com/xtuc/wasm-dce).
 
-It depends on webassembly-interpreter, and thus the following work is todo:
+It depends on webassemblyjs, and thus the following work is todo:
 - Improve WASM support
   - [ ] WASM code generation (https://github.com/xtuc/webassemblyjs/issues/68)
   - [ ] Use our existing WAT and interpreter tests against our WASM implementation.
