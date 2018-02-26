@@ -9,7 +9,7 @@ Code parsing and manipulations.
 
 ### AST
 
-Tools to manipulate and use our internal AST. You can see its definitions [here](https://github.com/xtuc/js-webassembly-interpreter/blob/master/types/AST.js).
+Tools to manipulate and use our internal AST. You can see its definitions [here](https://github.com/xtuc/webassemblyjs/blob/master/types/AST.js).
 
 ### Parsing
 
@@ -27,7 +27,7 @@ Provides core features (memory management, execution, ...).
 
 #### Why is this using a giant switch/case?
 
-As explained here: [56#issuecomment-355736921](https://github.com/xtuc/js-webassembly-interpreter/issues/56#issuecomment-355736921), it's a critical part of the interpreter and needs to be very fast.
+As explained here: [56#issuecomment-355736921](https://github.com/xtuc/webassemblyjs/issues/56#issuecomment-355736921), it's a critical part of the interpreter and needs to be very fast.
 Note that most of the interpreter uses that technique.
 
 #### Memory management
@@ -40,7 +40,7 @@ Note that garbage collection is done by the host (the JavaScript engine), there 
 
 #### The call stack
 
-To be as close as possible to a native environement the execution relies on StackFrames (its structure is defined [here](https://github.com/xtuc/js-webassembly-interpreter/blob/9559f8d94435cd7f1c77ca4ff8cee6016b0dc4d3/src/interpreter/kernel/stackframe.js)).
+To be as close as possible to a native environement the execution relies on StackFrames (its structure is defined [here](https://github.com/xtuc/webassemblyjs/blob/9559f8d94435cd7f1c77ca4ff8cee6016b0dc4d3/src/interpreter/kernel/stackframe.js)).
 
 The context in which StackFrames are executed is the call stack.
 

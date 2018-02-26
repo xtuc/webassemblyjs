@@ -922,7 +922,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         if (token.type === tokens.number) {
           args.push(
             // TODO(sven): refactor the type signature handling
-            // https://github.com/xtuc/js-webassembly-interpreter/pull/129 is a good start
+            // https://github.com/xtuc/webassemblyjs/pull/129 is a good start
             // $FlowIgnore
             t.numberLiteral(token.value, signature[signaturePtr++] || "f64")
           );
@@ -1091,7 +1091,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             eatToken(); // (
             eatToken(); // type
 
-            // TODO(sven): replace this with parseType in https://github.com/xtuc/js-webassembly-interpreter/pull/158
+            // TODO(sven): replace this with parseType in https://github.com/xtuc/webassemblyjs/pull/158
             eatToken(); // whatever
           } else if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
             eatToken(); // (
@@ -1495,7 +1495,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         /**
          * Shorthand notation for multiple anonymous parameters
          * @see https://webassembly.github.io/spec/core/text/types.html#function-types
-         * @see https://github.com/xtuc/js-webassembly-interpreter/issues/6
+         * @see https://github.com/xtuc/webassemblyjs/issues/6
          */
         if (id === undefined) {
           while (token.type === tokens.valtype) {

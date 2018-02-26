@@ -9,16 +9,16 @@ There are a few PRs against Webpack to use directly or indirectly this project:
 
 It's important that the features used in Webpack are working, and thus the following work is priority:
 - Making sure that we can decode WASM binaries
-  - [x] Ability to import memory (https://github.com/xtuc/js-webassembly-interpreter/issues/137)
-  - [x] Ability to import table (https://github.com/xtuc/js-webassembly-interpreter/issues/171)
+  - [x] Ability to import memory (https://github.com/xtuc/webassemblyjs/issues/137)
+  - [x] Ability to import table (https://github.com/xtuc/webassemblyjs/issues/171)
   - [ ] Decode data sections
   - [ ] Decode custom sections
   - [ ] Add more invalid modules coverage from spec tests
-  - [x] Decode the start section (https://github.com/xtuc/js-webassembly-interpreter/pull/164)
+  - [x] Decode the start section (https://github.com/xtuc/webassemblyjs/pull/164)
     - [ ] WASM - Start the execution from the start function
     - [x] WAST - Start the execution from the start function
-- [ ] Use a monorepo https://github.com/xtuc/js-webassembly-interpreter/issues/166
-- [x] Rename WATF to WAT (https://github.com/xtuc/js-webassembly-interpreter/issues/152)
+- [ ] Use a monorepo https://github.com/xtuc/webassemblyjs/issues/166
+- [x] Rename WATF to WAT (https://github.com/xtuc/webassemblyjs/issues/152)
     
 ## Version 1.1.0
 
@@ -26,5 +26,5 @@ The second important feature for Webpack is [wasm-dce](https://github.com/xtuc/w
 
 It depends on webassembly-interpreter, and thus the following work is todo:
 - Improve WASM support
-  - [ ] WASM code generation (https://github.com/xtuc/js-webassembly-interpreter/issues/68)
+  - [ ] WASM code generation (https://github.com/xtuc/webassemblyjs/issues/68)
   - [ ] Use our existing WAT and interpreter tests against our WASM implementation.

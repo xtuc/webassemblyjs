@@ -3,7 +3,7 @@
  *
  * See licence in /docs/thirdparty-licenses.txt
  *
- * Changes made by the xtuc/js-webassembly-interpreter contributors:
+ * Changes made by the xtuc/webassemblyjs contributors:
  * - refactor: move alls functions into one file and remove the unused functions
  * - feat: added some constants
  */
