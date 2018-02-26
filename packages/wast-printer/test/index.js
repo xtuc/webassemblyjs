@@ -1,6 +1,6 @@
 // @flow
 
-const { parseSource } = require("@webassemblyjs/wast-parser");
+const { parse } = require("@webassemblyjs/wast-parser");
 const glob = require("glob");
 const chai = require("chai");
 const diff = require("jest-diff");
@@ -20,7 +20,7 @@ describe("printer", () => {
       it(suite, () => {
         const input = readFileSync(suite, "utf8");
 
-        const ast = parseSource(input);
+        const ast = parse(input);
 
         const expectedFile = path.join(path.dirname(suite), "expected.wast");
         const code = printWAST(ast);

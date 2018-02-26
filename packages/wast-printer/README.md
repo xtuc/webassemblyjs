@@ -1,4 +1,3 @@
-
-# @webassembly/wast-parser
+# @webassemblyjs/wast-parser
 
 > WebAssembly text format printer

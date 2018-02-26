@@ -9,14 +9,14 @@ const {
 const { Instance } = require("webassemblyjs/lib/interpreter");
 const partialEvaluation = require("webassemblyjs/lib/interpreter/partial-evaluation");
 const t = require("@webassemblyjs/ast");
-const { parseSource } = require("@webassemblyjs/wast-parser");
+const { parse } = require("@webassemblyjs/wast-parser");
 const {
   Memory
 } = require("webassemblyjs/lib/interpreter/runtime/values/memory");
 const {
   createAllocator
 } = require("webassemblyjs/lib/interpreter/kernel/memory");
-const { parseBinary } = require("@webassemblyjs/wasm-parser");
+const { decode } = require("@webassemblyjs/wasm-parser");
 
 const isVerbose = process.argv.find(x => x === "--debug") !== undefined;
 
@@ -44,7 +44,7 @@ function decodeBinaryModule(node /*: BinaryModule */) {
     }
   }
 
-  parseBinary(out);
+  decode(out);
 }
 
 /**
@@ -272,7 +272,7 @@ function replEval(input) {
     console.log(input);
   }
 
-  const ast = parseSource(input);
+  const ast = parse(input);
   const [node] = ast.body;
 
   // Empty input, skip this iteration

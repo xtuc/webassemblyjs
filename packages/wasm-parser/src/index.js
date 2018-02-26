@@ -1,12 +1,11 @@
 // @flow
 
-const { decode } = require("./decoder");
+import * as decoder from "./decoder";
 
 type Opts = {
   dump: boolean
 };
 
-export function parseBinary(buf: ArrayBuffer, { dump }: Opts = {}): Program {
-  const ast = decode(buf, dump);
-  return ast;
+export function decode(buf: ArrayBuffer, { dump }: Opts = {}): Program {
+  return decoder.decode(buf, dump);
 }

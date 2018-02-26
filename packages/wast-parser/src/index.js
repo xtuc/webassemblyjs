@@ -1,13 +1,13 @@
 // @flow
 
-const { parse } = require("./grammar");
+import * as parser from "./grammar";
 const { tokenize } = require("./tokenizer");
 
-export function parseSource(source: string): Program {
+export function parse(source: string): Program {
   const tokens = tokenize(source);
 
   // We pass the source here to show code frames
-  const ast = parse(tokens, source);
+  const ast = parser.parse(tokens, source);
 
   return ast;
 }

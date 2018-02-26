@@ -1,4 +1,4 @@
-# @webassembly/ast
+# @webassemblyjs/ast
 
 > AST utils for webassemblyjs
 

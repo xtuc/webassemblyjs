@@ -6,7 +6,7 @@ const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 const { writeFileSync, readFileSync } = require("fs");
 const path = require("path");
 
-const { parseBinary } = require("../lib");
+const { decode } = require("../lib");
 
 function toArrayBuffer(buf) {
   return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
@@ -49,7 +49,7 @@ describe("compiler", () => {
     testSuites.forEach(suite => {
       it(suite, () => {
         const bin = toArrayBuffer(readFileSync(suite, null));
-        const ast = parseBinary(bin);
+        const ast = decode(bin);
         createCheck(suite, ast);
       });
     });

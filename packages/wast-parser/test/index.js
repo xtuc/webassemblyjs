@@ -8,7 +8,7 @@ const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 const { writeFileSync, readFileSync } = require("fs");
 const path = require("path");
 
-const { parseSource } = require("../lib");
+const { parse } = require("../lib");
 
 function createCheck(suite, ast) {
   const expectedFile = path.join(path.dirname(suite), "expected.json");
@@ -48,7 +48,7 @@ describe("compiler", () => {
       testSuites.forEach(suite => {
         it(suite, () => {
           const code = readFileSync(suite, "utf8");
-          const ast = parseSource(code);
+          const ast = parse(code);
 
           if (/wast-identifier-to-index/.test(suite) === true) {
             wastIdentifierToIndex.transform(ast);

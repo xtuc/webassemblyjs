@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // @flow
 
-const { parseSource } = require("@webassemblyjs/wast-parser");
+const { parse } = require("@webassemblyjs/wast-parser");
 const { readFileSync } = require("fs");
 
 const filename = process.argv[2];
@@ -11,6 +11,6 @@ if (typeof filename === "undefined") {
 }
 
 const content = readFileSync(filename, "utf8");
-const ast = parseSource(content);
+const ast = parse(content);
 
 console.log(JSON.stringify(ast, null, 2));

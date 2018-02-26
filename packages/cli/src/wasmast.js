@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // @flow
 
-const { parseBinary } = require("@webassemblyjs/wasm-parser");
+const { decode } = require("@webassemblyjs/wasm-parser");
 
 const fastast = require("./printer/fast-ast");
 const { readFileSync } = require("fs");
@@ -18,6 +18,6 @@ if (typeof filename === "undefined") {
 
 // $FlowIgnore: this is correct but not correctly documented
 const buff = toArrayBuffer(readFileSync(filename, null));
-const ast = parseBinary(buff);
+const ast = decode(buff);
 
 fastast.print(ast);

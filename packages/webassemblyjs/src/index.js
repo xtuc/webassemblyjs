@@ -1,7 +1,7 @@
 // @flow
 
-const { parseSource } = require("@webassemblyjs/wast-parser");
-const { parseBinary } = require("@webassemblyjs/wasm-parser");
+const { parse } = require("@webassemblyjs/wast-parser");
+const { decode } = require("@webassemblyjs/wasm-parser");
 
 const { Instance } = require("./interpreter");
 const { Memory } = require("./interpreter/runtime/values/memory");
@@ -33,7 +33,7 @@ const WebAssembly = {
         );
       }
 
-      const ast = parseBinary(buff);
+      const ast = decode(buff);
       const module = createCompiledModule(ast);
 
       resolve({
@@ -45,7 +45,7 @@ const WebAssembly = {
 
   compile(buff: ArrayBuffer): Promise<CompiledModule> {
     return new Promise(resolve => {
-      const ast = parseBinary(buff);
+      const ast = decode(buff);
 
       resolve(createCompiledModule(ast));
     });
@@ -55,7 +55,7 @@ const WebAssembly = {
     content: string,
     importObject: ImportObject = {}
   ): Instance {
-    const ast = parseSource(content);
+    const ast = parse(content);
     const module = createCompiledModule(ast);
 
     return new Instance(module, importObject);
