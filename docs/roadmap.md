@@ -11,11 +11,9 @@ It's important that the features used in Webpack are working, and thus the follo
 - Making sure that we can decode WASM binaries
   - [x] Ability to import memory (https://github.com/xtuc/webassemblyjs/issues/137)
   - [x] Ability to import table (https://github.com/xtuc/webassemblyjs/issues/171)
-  - [ ] Decode data sections
-  - [ ] Decode custom sections
+  - [x] Decode data and custom sections, we can skip them for now (https://github.com/xtuc/webassemblyjs/pull/185)
   - [ ] Add more invalid modules coverage from spec tests
   - [x] Decode the start section (https://github.com/xtuc/webassemblyjs/pull/164)
-    - [ ] WASM - Start the execution from the start function
     - [x] WAST - Start the execution from the start function
 - [x] Use a monorepo (https://github.com/xtuc/webassemblyjs/issues/166)
 - [x] Rename WATF to WAT (https://github.com/xtuc/webassemblyjs/issues/152)
