@@ -13,5 +13,14 @@ npm install @webassemblyjs/wasm-parser
 ```js
 import { decode } from "@webassemblyjs/wasm-parser";
 
-const ast = decode(binary);
+const decoderOpts = {};
+
+const ast = decode(binary, decoderOpts);
 ```
+
+### Decoder options
+
+- `dump`: print dump information while decoding (default `false`)
+- `ignoreCodeSection`: ignore the code section (default `false`)
+- `ignoreDataSection`: ignore the data section (default `false`)
+

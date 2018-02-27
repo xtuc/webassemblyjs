@@ -22,5 +22,8 @@ for D in ./packages/*; do
 
   # Build
   ./node_modules/.bin/babel "${D}/src" \
-    --out-dir "${D}/lib"
+    --out-dir "${D}/lib" \
+    --ignore packages/dce/src/libwabt.js
 done
+
+cp -v packages/dce/src/libwabt.js packages/dce/lib/libwabt.js

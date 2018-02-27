@@ -60,3 +60,10 @@ type State = {
   elementsInExportSection: Array<DecodedElementInExportSection>,
   elementsInCodeSection: Array<DecodedElementInCodeSection>
 };
+
+type DecoderOpts = {
+  dump: boolean,
+  ignoreDataSection: boolean,
+  ignoreCodeSection: boolean
+};
+
