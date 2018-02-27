@@ -2,10 +2,13 @@
 
 import * as decoder from "./decoder";
 
-type Opts = {
-  dump: boolean
+const defaultDecoderOpts = {
+  dump: false,
+  ignoreCodeSection: false,
+  ignoreDataSection: false
 };
 
-export function decode(buf: ArrayBuffer, { dump }: Opts = {}): Program {
-  return decoder.decode(buf, dump);
+export function decode(buf: ArrayBuffer, customOpts: Object): Program {
+  const opts: DecoderOpts = Object.assign({}, defaultDecoderOpts, customOpts);
+  return decoder.decode(buf, opts);
 }

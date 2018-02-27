@@ -60,7 +60,7 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
   return true;
 }
 
-export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
+export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   const buf = new Uint8Array(ab);
 
   let inc = 0;
@@ -74,7 +74,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   let offset = 0;
 
   function dump(b: Array<Byte>, msg: any) {
-    if (!printDump) return;
+    if (opts.dump === false) return;
 
     const pad = "\t\t\t\t\t\t\t\t\t\t";
     let str = "";
@@ -89,7 +89,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
   }
 
   function dumpSep(msg: string) {
-    if (!printDump) return;
+    if (opts.dump === false) return;
 
     console.log(";", msg);
   }
@@ -1124,7 +1124,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.typeSection: {
         dumpSep("section Type");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
 
         const u32 = readU32();
         const numberOfTypes = u32.value;
@@ -1137,7 +1137,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.tableSection: {
         dumpSep("section Table");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
 
         return parseTableSection();
       }
@@ -1145,7 +1145,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.importSection: {
         dumpSep("section Import");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
 
         return parseImportSection();
       }
@@ -1153,7 +1153,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.funcSection: {
         dumpSep("section Function");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
 
         parseFuncSection();
         break;
@@ -1162,7 +1162,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.exportSection: {
         dumpSep("section Export");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
 
         parseExportSection();
         break;
@@ -1171,7 +1171,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.codeSection: {
         dumpSep("section Code");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
+
+        if (opts.ignoreCodeSection === true) {
+          eatBytes(sectionSizeInBytes); // eat the entire section
+          return [];
+        }
 
         parseCodeSection();
         break;
@@ -1180,7 +1185,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.startSection: {
         dumpSep("section Start");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
 
         return [parseStartSection()];
       }
@@ -1188,7 +1193,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.elemSection: {
         dumpSep("section Element");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
 
         return parseElemSection();
       }
@@ -1196,7 +1201,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.globalSection: {
         dumpSep("section Global");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
 
         return parseGlobalSection();
       }
@@ -1204,7 +1209,7 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.memorySection: {
         dumpSep("section Memory");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
 
         return parseMemorySection();
       }
@@ -1212,7 +1217,12 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
       case sections.dataSection: {
         dumpSep("section Data");
         dump([sectionId], "section code");
-        dump([0x0], "section size (ignore)");
+        dump([sectionSizeInBytes], "section size");
+
+        if (opts.ignoreDataSection === true) {
+          eatBytes(sectionSizeInBytes); // eat the entire section
+          return [];
+        }
 
         return parseDataSection();
       }
@@ -1267,7 +1277,10 @@ export function decode(ab: ArrayBuffer, printDump: boolean = false): Program {
     }
 
     const decodedElementInCodeSection = state.elementsInCodeSection[funcIndex];
-    body = decodedElementInCodeSection.code;
+
+    if (opts.ignoreCodeSection === false) {
+      body = decodedElementInCodeSection.code;
+    }
 
     funcIndex++;
 
