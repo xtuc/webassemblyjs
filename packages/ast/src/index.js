@@ -61,17 +61,40 @@ export function program(body: Array<Node>): Program {
   };
 }
 
-export function module(id: ?string, fields: ModuleFields): Module {
+export function module(
+  id: ?string,
+  fields: ModuleFields,
+  metadata?: ModuleMetadata
+): Module {
   if (id != null) {
     assert(typeof id === "string");
   }
 
   assert(typeof fields === "object" && typeof fields.length !== "undefined");
 
-  return {
+  const n: Module = {
     type: "Module",
     id,
     fields
+  };
+
+  if (typeof metadata !== "undefined") {
+    n.metadata = metadata;
+  }
+
+  return n;
+}
+
+export function sectionMetadata(
+  section: SectionName,
+  startOffset: number,
+  size: number
+): SectionMetadata {
+  return {
+    type: "SectionMetadata",
+    section,
+    startOffset,
+    size
   };
 }
 
@@ -532,3 +555,4 @@ export function elem(
 
 export { traverse, traverseWithHooks } from "./traverse";
 export { signatures } from "./signatures";
+export { getSectionMetadata } from "./utils";

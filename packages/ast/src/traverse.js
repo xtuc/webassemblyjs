@@ -23,6 +23,15 @@ function walk(n: Node, cb: Cb) {
       // $FlowIgnore
       n.fields.forEach(x => walk(x, cb));
     }
+
+    if (typeof n.metadata !== "undefined") {
+      // $FlowIgnore
+      n.metadata.sections.forEach(x => walk(x, cb));
+    }
+  }
+
+  if (n.type === "SectionMetadata") {
+    cb(n.type, createPath(n));
   }
 
   if (n.type === "ModuleExport") {

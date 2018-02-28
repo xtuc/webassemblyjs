@@ -83,7 +83,41 @@
             }
           }
         }
-      ]
+      ],
+      "metadata": {
+        "sections": [
+          {
+            "type": "SectionMetadata",
+            "section": "type",
+            "startOffset": 9,
+            "size": 10
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "import",
+            "startOffset": 21,
+            "size": 22
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "function",
+            "startOffset": 45,
+            "size": 2
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "export",
+            "startOffset": 49,
+            "size": 13
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "code",
+            "startOffset": 64,
+            "size": 9
+          }
+        ]
+      }
     }
   ]
 }

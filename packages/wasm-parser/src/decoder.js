@@ -1121,9 +1121,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
-  function parseSection(): Array<Node> {
+  function parseSection(): { nodes: Array<Node>, metadata: SectionMetadata } {
     const sectionId = readByte();
     eatBytes(1);
+
+    const startOffset = offset;
 
     const u32 = readU32();
     const sectionSizeInBytes = u32.value;
@@ -1139,8 +1141,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const numberOfTypes = u32.value;
         eatBytes(u32.nextIndex);
 
+        const metadata = t.sectionMetadata(
+          "type",
+          startOffset,
+          sectionSizeInBytes
+        );
+
         parseTypeSection(numberOfTypes);
-        break;
+
+        const nodes = [];
+
+        return { nodes, metadata };
       }
 
       case sections.tableSection: {
@@ -1148,7 +1159,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseTableSection();
+        const metadata = t.sectionMetadata(
+          "table",
+          startOffset,
+          sectionSizeInBytes
+        );
+
+        const nodes = parseTableSection();
+
+        return { nodes, metadata };
       }
 
       case sections.importSection: {
@@ -1156,7 +1175,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseImportSection();
+        const metadata = t.sectionMetadata(
+          "import",
+          startOffset,
+          sectionSizeInBytes
+        );
+
+        const nodes = parseImportSection();
+
+        return { nodes, metadata };
       }
 
       case sections.funcSection: {
@@ -1164,8 +1191,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
+        const metadata = t.sectionMetadata(
+          "function",
+          startOffset,
+          sectionSizeInBytes
+        );
+
         parseFuncSection();
-        break;
+
+        const nodes = [];
+
+        return { nodes, metadata };
       }
 
       case sections.exportSection: {
@@ -1173,8 +1209,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
+        const metadata = t.sectionMetadata(
+          "export",
+          startOffset,
+          sectionSizeInBytes
+        );
+
         parseExportSection();
-        break;
+
+        const nodes = [];
+
+        return { nodes, metadata };
       }
 
       case sections.codeSection: {
@@ -1182,13 +1227,21 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
+        const metadata = t.sectionMetadata(
+          "code",
+          startOffset,
+          sectionSizeInBytes
+        );
+
         if (opts.ignoreCodeSection === true) {
           eatBytes(sectionSizeInBytes); // eat the entire section
-          return [];
+        } else {
+          parseCodeSection();
         }
 
-        parseCodeSection();
-        break;
+        const nodes = [];
+
+        return { nodes, metadata };
       }
 
       case sections.startSection: {
@@ -1196,7 +1249,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return [parseStartSection()];
+        const metadata = t.sectionMetadata(
+          "start",
+          startOffset,
+          sectionSizeInBytes
+        );
+
+        const nodes = [parseStartSection()];
+
+        return { nodes, metadata };
       }
 
       case sections.elemSection: {
@@ -1204,7 +1265,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseElemSection();
+        const metadata = t.sectionMetadata(
+          "element",
+          startOffset,
+          sectionSizeInBytes
+        );
+
+        const nodes = parseElemSection();
+
+        return { nodes, metadata };
       }
 
       case sections.globalSection: {
@@ -1212,7 +1281,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseGlobalSection();
+        const metadata = t.sectionMetadata(
+          "global",
+          startOffset,
+          sectionSizeInBytes
+        );
+
+        const nodes = parseGlobalSection();
+
+        return { nodes, metadata };
       }
 
       case sections.memorySection: {
@@ -1220,7 +1297,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseMemorySection();
+        const metadata = t.sectionMetadata(
+          "memory",
+          startOffset,
+          sectionSizeInBytes
+        );
+
+        const nodes = parseMemorySection();
+
+        return { nodes, metadata };
       }
 
       case sections.dataSection: {
@@ -1228,12 +1313,20 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
+        const metadata = t.sectionMetadata(
+          "data",
+          startOffset,
+          sectionSizeInBytes
+        );
+
         if (opts.ignoreDataSection === true) {
           eatBytes(sectionSizeInBytes); // eat the entire section
-          return [];
+          return { nodes: [], metadata };
         }
 
-        return parseDataSection();
+        const nodes = parseDataSection();
+
+        return { nodes, metadata };
       }
 
       case sections.customSection: {
@@ -1241,33 +1334,39 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
+        const nodes = [];
+        const metadata = t.sectionMetadata(
+          "custom",
+          startOffset,
+          sectionSizeInBytes
+        );
+
         // We don't need to parse it, just eat all the bytes
         eatBytes(sectionSizeInBytes);
 
-        break;
-      }
-
-      default: {
-        throw new CompileError(
-          "Unexpected section: " + JSON.stringify(sectionId)
-        );
+        return { nodes, metadata };
       }
     }
 
-    return [];
+    throw new CompileError("Unexpected section: " + JSON.stringify(sectionId));
   }
 
   parseModuleHeader();
   parseVersion();
 
   const moduleFields = [];
+  const moduleMetadata = {
+    sections: []
+  };
 
   /**
    * All the generate declaration are going to be stored in our state
    */
   while (offset < buf.length) {
-    const nodes = parseSection();
+    const { nodes, metadata } = parseSection();
+
     moduleFields.push(...nodes);
+    moduleMetadata.sections.push(metadata);
   }
 
   /**
@@ -1318,6 +1417,6 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   dumpSep("end of program");
 
-  const module = t.module(null, moduleFields);
+  const module = t.module(null, moduleFields, moduleMetadata);
   return t.program([module]);
 }

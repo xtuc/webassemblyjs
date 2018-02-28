@@ -119,7 +119,35 @@
             }
           }
         }
-      ]
+      ],
+      "metadata": {
+        "sections": [
+          {
+            "type": "SectionMetadata",
+            "section": "type",
+            "startOffset": 9,
+            "size": 7
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "function",
+            "startOffset": 18,
+            "size": 3
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "export",
+            "startOffset": 23,
+            "size": 17
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "code",
+            "startOffset": 42,
+            "size": 17
+          }
+        ]
+      }
     }
   ]
 }

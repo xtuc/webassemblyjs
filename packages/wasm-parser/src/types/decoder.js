@@ -66,4 +66,3 @@ type DecoderOpts = {
   ignoreDataSection: boolean,
   ignoreCodeSection: boolean
 };
-
