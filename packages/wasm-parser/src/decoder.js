@@ -345,6 +345,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     for (let i = 0; i < numberOfImports; i++) {
       dumpSep("import header " + i);
 
+      const startLoc = { line: -1, column: offset };
+
       /**
        * Module name
        */
@@ -417,7 +419,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new CompileError("Unsupported import of type: " + descrType);
       }
 
-      imports.push(t.moduleImport(moduleName.value, name.value, importDescr));
+      const endLoc = { line: -1, column: offset };
+
+      imports.push(
+        t.withLoc(
+          t.moduleImport(moduleName.value, name.value, importDescr),
+          endLoc,
+          startLoc
+        )
+      );
     }
 
     return imports;

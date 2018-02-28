@@ -21,6 +21,16 @@
               }
             ],
             "results": []
+          },
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 21
+            },
+            "end": {
+              "line": -1,
+              "column": 43
+            }
           }
         },
         {
@@ -31,6 +41,16 @@
             "type": "GlobalType",
             "valtype": "i32",
             "mutability": "const"
+          },
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 43
+            },
+            "end": {
+              "line": -1,
+              "column": 65
+            }
           }
         },
         {
