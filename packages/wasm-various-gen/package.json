@@ -1,5 +1,5 @@
 {
-  "name": "@webassemblyjs/wasm-gen",
+  "name": "@webassemblyjs/wasm-various-gen",
   "version": "1.0.0",
   "description": "Emit documentation/code for your WASM binary Edit",
   "keywords": [
