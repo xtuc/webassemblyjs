@@ -1,11 +1,16 @@
 // @flow
 
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
+
 export function encodeVersion(v: number): Array<Byte> {
-  return [v, 0x00, 0x00, 0x00];
+  const bytes = constants.moduleVersion;
+  bytes[0] = v;
+
+  return bytes;
 }
 
 export function encodeHeader(): Array<Byte> {
-  return [0x00, 0x61, 0x73, 0x6d];
+  return constants.magicModuleHeader;
 }
 
 export function encodeVec(elements: Array<Byte>): Array<Byte> {
@@ -14,13 +19,23 @@ export function encodeVec(elements: Array<Byte>): Array<Byte> {
 }
 
 export function encodeValtype(v: Valtype): Byte {
-  if (v === "i32") return 0x7f;
-  if (v === "i64") return 0x7e;
+  const byte = constants.valtypesByString[v];
+
+  if (typeof byte === "undefined") {
+    throw new Error("Unknown valtype: " + v);
+  }
+
+  return parseInt(byte, 10);
 }
 
 export function encodeMutability(v: Mutability): Byte {
-  if (v === "const") return 0x00;
-  if (v === "var") return 0x01;
+  const byte = constants.globalTypesByString[v];
+
+  if (typeof byte === "undefined") {
+    throw new Error("Unknown mutability: " + v);
+  }
+
+  return parseInt(byte, 10);
 }
 
 export function encodeUTF8Vec(str: string): Array<Byte> {

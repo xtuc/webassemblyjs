@@ -3,6 +3,15 @@ const illegalop = "illegal";
 const magicModuleHeader = [0x00, 0x61, 0x73, 0x6d];
 const moduleVersion = [0x01, 0x00, 0x00, 0x00];
 
+function invertMap(obj) {
+  const result = {};
+  const keys = Object.keys(obj);
+  for (let i = 0, length = keys.length; i < length; i++) {
+    result[obj[keys[i]]] = keys[i];
+  }
+  return result;
+}
+
 function createSymbolObject(
   name /*: string */,
   object /*: string */,
@@ -44,6 +53,8 @@ const valtypes = {
   0x7c: "f64"
 };
 
+const valtypesByString = invertMap(valtypes);
+
 const limitHasMaximum = {
   0x00: false,
   0x01: true
@@ -61,6 +72,8 @@ const globalTypes = {
   0x00: "const",
   0x01: "var"
 };
+
+const globalTypesByString = invertMap(globalTypes);
 
 const importTypes = {
   0x00: "func",
@@ -314,5 +327,7 @@ module.exports = {
   limitHasMaximum,
   tableTypes,
   globalTypes,
-  importTypes
+  importTypes,
+  valtypesByString,
+  globalTypesByString
 };

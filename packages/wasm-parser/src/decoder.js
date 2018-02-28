@@ -2,7 +2,6 @@
 
 import { CompileError } from "webassemblyjs/lib/errors";
 const t = require("@webassemblyjs/ast");
-
 const {
   importTypes,
   symbolsByByte,
@@ -16,7 +15,7 @@ const {
   valtypes,
   moduleVersion,
   sections
-} = require("./constants");
+} = require("@webassemblyjs/helper-wasm-bytecode");
 
 const {
   decodeInt32,
