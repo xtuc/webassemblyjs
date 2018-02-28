@@ -1,0 +1,9 @@
+{
+  "name": "@webassemblyjs/helper-leb128",
+  "version": "1.0.0",
+  "description": "LEB128 decoder and encoder",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

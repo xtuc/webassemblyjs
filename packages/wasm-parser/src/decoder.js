@@ -26,7 +26,7 @@ const {
   decodeInt64,
   decodeUInt64,
   MAX_NUMBER_OF_BYTE_U64
-} = require("./LEB128");
+} = require("@webassemblyjs/helper-leb128");
 
 const ieee754 = require("./ieee754");
 const { utf8ArrayToStr } = require("./utf8");

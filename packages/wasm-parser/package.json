@@ -18,6 +18,7 @@
   "dependencies": {
     "@webassemblyjs/ast": "1.0.0",
     "@webassemblyjs/wasm-parser": "1.0.0",
+    "@webassemblyjs/helper-leb128": "1.0.0",
     "webassemblyjs": "1.0.0"
   },
   "repository": {
