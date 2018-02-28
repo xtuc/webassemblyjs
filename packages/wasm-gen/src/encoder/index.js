@@ -57,7 +57,10 @@ export function encodeModuleImport(n: ModuleImport): Array<Byte> {
 
   if (n.descr.type === "GlobalType") {
     out.push(0x03);
+
+    // $FlowIgnore: GlobalType ensure that these props exists
     out.push(encodeValtype(n.descr.valtype));
+    // $FlowIgnore: GlobalType ensure that these props exists
     out.push(encodeMutability(n.descr.mutability));
   } else {
     throw new Error(
