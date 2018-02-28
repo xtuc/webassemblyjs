@@ -1,12 +1,14 @@
 // @flow
 
+type Cb = (type: string, path: NodePath<Node>) => void;
+
 function createPath(node: Node): NodePath<Node> {
   return {
     node
   };
 }
 
-function walk(n: Node, cb: (type: string, path: NodePath<Node>) => void) {
+function walk(n: Node, cb: Cb) {
   if (n.type === "Program") {
     cb(n.type, createPath(n));
 
@@ -151,10 +153,25 @@ function walk(n: Node, cb: (type: string, path: NodePath<Node>) => void) {
   }
 }
 
-export function traverse(n: Node, visitor: Object) {
+export function traverse(n: Node, visitors: Object) {
   walk(n, (type: string, path: NodePath<Node>) => {
-    if (typeof visitor[type] === "function") {
-      visitor[type](path);
+    if (typeof visitors[type] === "function") {
+      visitors[type](path);
+    }
+  });
+}
+
+export function traverseWithHooks(
+  n: Node,
+  visitors: Object,
+  before: Cb,
+  after: Cb
+) {
+  walk(n, (type: string, path: NodePath<Node>) => {
+    if (typeof visitors[type] === "function") {
+      before(type, path);
+      visitors[type](path);
+      after(type, path);
     }
   });
 }

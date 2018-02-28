@@ -530,5 +530,5 @@ export function elem(
   };
 }
 
-export { traverse } from "./traverse";
+export { traverse, traverseWithHooks } from "./traverse";
 export { signatures } from "./signatures";
