@@ -5,6 +5,20 @@ type Byte = Number;
 
 type NumericLiteral = FloatLiteral | NumberLiteral | LongNumberLiteral;
 
+type SectionName =
+  | "custom"
+  | "type"
+  | "import"
+  | "function"
+  | "table"
+  | "memory"
+  | "global"
+  | "export"
+  | "start"
+  | "element"
+  | "code"
+  | "data";
+
 type FloatLiteral = {
   type: "FloatLiteral",
   value: number,
@@ -121,7 +135,20 @@ interface Module {
   type: ModuleType;
   id: ?string;
   fields: ModuleFields;
+  metadata?: ModuleMetadata;
 }
+
+type ModuleMetadata = {
+  sections: Array<SectionMetadata>
+};
+
+type SectionMetadata = {
+  type: "SectionMetadata",
+  section: SectionName,
+
+  startOffset: number,
+  size: number
+};
 
 type BinaryModule = Module & {
   type: "BinaryModule",

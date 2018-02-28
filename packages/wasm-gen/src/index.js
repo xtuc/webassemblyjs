@@ -11,3 +11,5 @@ export function encodeNode(n: Node): Array<Byte> {
       throw new Error("Unsupported replacement for node of type: " + n.type);
   }
 }
+
+export const encodeU32 = encoder.encodeU32;

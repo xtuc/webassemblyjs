@@ -13,6 +13,11 @@ export function encodeHeader(): Array<Byte> {
   return constants.magicModuleHeader;
 }
 
+// FIXME(sven): implement unsigned LEB128 encoder here
+export function encodeU32(v: number): Array<Byte> {
+  return [v];
+}
+
 export function encodeVec(elements: Array<Byte>): Array<Byte> {
   const size = elements.length;
   return [size, ...elements];

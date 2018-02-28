@@ -1,8 +1,8 @@
 // @flow
 
-import { encodeNode } from "@webassemblyjs/wasm-gen";
+import { encodeNode, encodeU32 } from "@webassemblyjs/wasm-gen";
 import { decode } from "@webassemblyjs/wasm-parser";
-import { traverseWithHooks } from "@webassemblyjs/ast";
+import { traverseWithHooks, getSectionMetadata } from "@webassemblyjs/ast";
 
 function concatUint8Arrays(...arrays: Array<Uint8Array>) {
   let totalLength = 0;
@@ -27,13 +27,26 @@ const decoderOpts = {
   ignoreDataSection: true
 };
 
+export function overrideBytesInBuffer(
+  buffer: Uint8Array,
+  startLoc: number,
+  endLoc: number,
+  newBytes: Array<Byte>
+): Uint8Array {
+  const beforeBytes = buffer.slice(0, startLoc);
+  const afterBytes = buffer.slice(endLoc, buffer.length);
+
+  const replacement = Uint8Array.from(newBytes);
+
+  return concatUint8Arrays(beforeBytes, replacement, afterBytes);
+}
+
 export function replaceInBinary(
   ab: ArrayBuffer,
   visitors: Object
 ): ArrayBuffer {
   const nodesToUpdate = [];
 
-  // FIXME(sven): we are parsing two times the binary?
   const ast = decode(ab, decoderOpts);
 
   let uint8Buffer = new Uint8Array(ab);
@@ -59,16 +72,44 @@ export function replaceInBinary(
       );
     }
 
-    const beforeBytes = uint8Buffer.slice(0, node.loc.start.column);
-    const afterBytes = uint8Buffer.slice(node.loc.end.column, ab.byteLength);
-
     const replacementByteArray = encodeNode(node);
 
-    uint8Buffer = concatUint8Arrays(
-      beforeBytes,
-      Uint8Array.from(replacementByteArray),
-      afterBytes
+    /**
+     * Replace new node as bytes
+     */
+    uint8Buffer = overrideBytesInBuffer(
+      uint8Buffer,
+      node.loc.start.column,
+      node.loc.end.column,
+      replacementByteArray
     );
+
+    /**
+     * Update section size
+     */
+    if (node.type === "ModuleImport") {
+      const sectionMetadata = getSectionMetadata(ast, "import");
+
+      if (typeof sectionMetadata === "undefined") {
+        throw new Error("Section metadata not found");
+      }
+
+      const addedBytes =
+        replacementByteArray.length -
+        (node.loc.end.column - node.loc.start.column);
+
+      const newSectionSize = sectionMetadata.size + addedBytes;
+
+      // FIXME(sven): works if the section size is an u32 of 1 byte
+      uint8Buffer = overrideBytesInBuffer(
+        uint8Buffer,
+        sectionMetadata.startOffset,
+        sectionMetadata.startOffset + 1,
+        encodeU32(newSectionSize)
+      );
+
+      console.log(sectionMetadata);
+    }
   });
 
   return uint8Buffer.buffer;
