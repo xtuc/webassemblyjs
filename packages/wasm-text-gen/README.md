@@ -1,11 +1,11 @@
-# @webassemblyjs/wasm-gen
+# @webassemblyjs/wasm-text-gen
 
 > Emit documentation/code for your WASM binary
 
 ## Installation
 
 ```sh
-npm install -g @webassemblyjs/wasm-gen
+npm install -g @webassemblyjs/wasm-text-gen
 ```
 
 ## Usage
