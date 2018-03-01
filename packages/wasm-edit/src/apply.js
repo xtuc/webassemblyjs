@@ -40,9 +40,6 @@ export function applyToNodeToUpdate(
       replacementByteArray
     );
 
-    // FIXME(sven): update new node locations
-    // end = start + replacementByteArray.length
-
     /**
      * Update section size
      */
@@ -59,6 +56,10 @@ export function applyToNodeToUpdate(
         deltaBytes
       );
     }
+
+    // Update new node end position
+    // $FlowIgnore: assertNodeHasLoc ensures that
+    node.loc.end.column = node.loc.start.column + replacementByteArray.length;
   });
 
   return uint8Buffer;
@@ -145,8 +146,6 @@ export function applyToNodeToAdd(
           sectionBytes
         );
 
-        console.log("added bytes", sectionBytes, "at", start, end);
-
         // Add section into the AST for later lookups
         if (typeof ast.body[0].metadata === "object") {
           // $FlowIgnore: metadata can not be empty
@@ -163,9 +162,6 @@ export function applyToNodeToAdd(
       const start = sectionMetadata.startOffset + sectionMetadata.size + 1;
 
       const end = start;
-
-      console.log("new buffer length", uint8Buffer.length);
-      console.log("add node", newByteArray, "start", start, "end", end);
 
       uint8Buffer = overrideBytesInBuffer(
         uint8Buffer,

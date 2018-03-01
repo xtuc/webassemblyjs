@@ -96,10 +96,10 @@ interface SourceLocation {
 
 interface Node {
   type: any;
-  loc?: SourceLocation;
+  loc?: ?SourceLocation;
 
   // Internal property
-  _deleted?: boolean,
+  _deleted?: ?boolean,
 }
 
 interface Program {
@@ -274,13 +274,15 @@ type FuncImportDescr = {
 type ImportDescr = FuncImportDescr | GlobalType | Memory | Table;
 
 type ModuleImport = {
+  ...Node,
+
   type: "ModuleImport",
   module: string,
   name: string,
   descr: ImportDescr
 };
 
-type Table = Node & {
+type Table = {
   type: "Table",
   elementType: TableElementType,
   elements?: Array<Index>,

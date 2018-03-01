@@ -1,6 +1,7 @@
 // @flow
 
-const constants = require("@webassemblyjs/helper-wasm-bytecode");
+import constants from "@webassemblyjs/helper-wasm-bytecode";
+import * as leb from "@webassemblyjs/helper-leb128";
 
 export function encodeVersion(v: number): Array<Byte> {
   const bytes = constants.moduleVersion;
@@ -13,9 +14,8 @@ export function encodeHeader(): Array<Byte> {
   return constants.magicModuleHeader;
 }
 
-// FIXME(sven): implement unsigned LEB128 encoder here
 export function encodeU32(v: number): Array<Byte> {
-  return [v];
+  return leb.encodeU32(v).values();
 }
 
 export function encodeVec(elements: Array<Byte>): Array<Byte> {
