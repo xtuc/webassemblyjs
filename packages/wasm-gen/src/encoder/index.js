@@ -62,6 +62,21 @@ export function encodeModuleImport(n: ModuleImport): Array<Byte> {
     out.push(encodeValtype(n.descr.valtype));
     // $FlowIgnore: GlobalType ensure that these props exists
     out.push(encodeMutability(n.descr.mutability));
+  } else if (n.descr.type === "Memory") {
+    out.push(0x02);
+
+    if (typeof n.descr.limits.max === "number") {
+      out.push(0x01);
+
+      // $FlowIgnore: Memory ensure that these props exists
+      out.push(...encodeU32(n.descr.limits.min));
+      // $FlowIgnore: Memory ensure that these props exists
+      out.push(...encodeU32(n.descr.limits.max));
+    } else {
+      out.push(0x00);
+
+      out.push(...encodeU32(n.descr.limits.min));
+    }
   } else {
     throw new Error(
       "Unsupport operation: encode module import of type: " + n.descr.type

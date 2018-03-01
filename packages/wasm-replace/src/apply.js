@@ -8,7 +8,9 @@ import { overrideBytesInBuffer } from "./buffer";
 function assertNodeHasLoc(n: Node) {
   if (n.loc == null || n.loc.start == null || n.loc.end == null) {
     throw new Error(
-      `Internal failure: can not replace n (${n.type}) without loc information`
+      `Internal failure: can not replace node (${
+        n.type
+      }) without loc information`
     );
   }
 }

@@ -27,6 +27,12 @@ const fixtures = [
     name: "ModuleImport - should generate a mutable i64 global",
     node: t.moduleImport("a", "b", t.globalImportDescr("i64", "var")),
     expected: [0x01, 0x61, 0x01, 0x62, 0x03, 0x7e, 0x01]
+  },
+
+  {
+    name: "ModuleImport - should generate a memory export",
+    node: t.moduleImport("a", "b", t.memory(t.limits(2))),
+    expected: [0x01, 0x61, 0x01, 0x62, 0x02, 0x00, 0x02]
   }
 ];
 
