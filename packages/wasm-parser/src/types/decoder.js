@@ -42,7 +42,10 @@ type DecodedElementInExportSection = {
   type: ExportDescr,
   signature: ?DecodedModuleType,
   id: ?Index,
-  index: number
+  index: number,
+
+  startLoc: Position,
+  endLoc: Position
 };
 
 type DecodedElementInCodeSection = {

@@ -96,31 +96,36 @@
             "type": "SectionMetadata",
             "section": "type",
             "startOffset": 9,
-            "size": 8
+            "size": 8,
+            "vectorOfSize": 2
           },
           {
             "type": "SectionMetadata",
             "section": "import",
             "startOffset": 19,
-            "size": 45
+            "size": 45,
+            "vectorOfSize": 2
           },
           {
             "type": "SectionMetadata",
             "section": "function",
             "startOffset": 66,
-            "size": 2
+            "size": 2,
+            "vectorOfSize": 1
           },
           {
             "type": "SectionMetadata",
             "section": "start",
             "startOffset": 70,
-            "size": 1
+            "size": 1,
+            "vectorOfSize": -1
           },
           {
             "type": "SectionMetadata",
             "section": "code",
             "startOffset": 73,
-            "size": 8
+            "size": 8,
+            "vectorOfSize": 1
           }
         ]
       }
