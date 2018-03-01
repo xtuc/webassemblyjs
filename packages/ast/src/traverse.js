@@ -5,11 +5,13 @@ type Cb = (type: string, path: NodePath<Node>) => void;
 function removeNodeInBody(node: Node, fromNode: Node) {
   switch (fromNode.type) {
     case "Module":
+      // $FlowIgnore: type ensures that
       fromNode.fields = fromNode.fields.filter(n => n !== node);
       break;
 
     case "Program":
     case "Func":
+      // $FlowIgnore: type ensures that
       fromNode.body = fromNode.body.filter(n => n !== node);
       break;
 
@@ -22,7 +24,7 @@ function removeNodeInBody(node: Node, fromNode: Node) {
 
 function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
   function remove() {
-    if (parentPath === null) {
+    if (parentPath == null) {
       throw new Error("Can not remove root node");
     }
 

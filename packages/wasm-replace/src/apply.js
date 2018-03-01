@@ -6,7 +6,7 @@ import { resizeSectionByteSize, resizeSectionVecSize } from "./section";
 import { overrideBytesInBuffer } from "./buffer";
 
 function assertNodeHasLoc(n: Node) {
-  if (n.loc == null) {
+  if (n.loc == null || n.loc.start == null || n.loc.end == null) {
     throw new Error(
       `Internal failure: can not replace n (${n.type}) without loc information`
     );
@@ -28,7 +28,9 @@ export function applyToNodeToUpdate(
      */
     uint8Buffer = overrideBytesInBuffer(
       uint8Buffer,
+      // $FlowIgnore: assertNodeHasLoc ensures that
       node.loc.start.column,
+      // $FlowIgnore: assertNodeHasLoc ensures that
       node.loc.end.column,
       replacementByteArray
     );
@@ -41,6 +43,7 @@ export function applyToNodeToUpdate(
      */
     const deltaBytes =
       replacementByteArray.length -
+      // $FlowIgnore: assertNodeHasLoc ensures that
       (node.loc.end.column - node.loc.start.column);
 
     if (node.type === "ModuleImport") {
@@ -69,12 +72,15 @@ export function applyToNodeToDelete(
 
     uint8Buffer = overrideBytesInBuffer(
       uint8Buffer,
+      // $FlowIgnore: assertNodeHasLoc ensures that
       node.loc.start.column,
+      // $FlowIgnore: assertNodeHasLoc ensures that
       node.loc.end.column,
       replacement
     );
 
     // Update section size
+    // $FlowIgnore: assertNodeHasLoc ensures that
     const deltaBytes = -(node.loc.end.column - node.loc.start.column);
     const deltaElements = -1; // since we removed on element
 

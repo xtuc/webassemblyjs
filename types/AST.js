@@ -62,7 +62,7 @@ type ControlInstruction =
 
 type NodePath<T> = {
   node: T,
-  parentPath: ?NodePath<*>,
+  parentPath: ?NodePath<Node>,
   remove: () => void
 };
 
@@ -99,7 +99,7 @@ interface Node {
   loc?: SourceLocation;
 
   // Internal property
-  _deleted: boolean,
+  _deleted?: boolean,
 }
 
 interface Program {
