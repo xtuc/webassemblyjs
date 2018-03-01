@@ -152,7 +152,10 @@ type SectionMetadata = {
   section: SectionName,
 
   startOffset: number,
-  size: number
+  size: number,
+
+  // Size of the vector in the section (if any)
+  vectorOfSize: number
 };
 
 type BinaryModule = Module & {
