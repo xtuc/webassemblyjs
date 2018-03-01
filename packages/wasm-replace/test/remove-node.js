@@ -3,7 +3,6 @@ const {
   encodeVersion,
   encodeHeader
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
-const { decode } = require("@webassemblyjs/wasm-parser");
 
 const { replaceInBinary } = require("../lib");
 
