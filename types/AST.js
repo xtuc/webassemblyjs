@@ -61,7 +61,9 @@ type ControlInstruction =
   | "IfInstruction";
 
 type NodePath<T> = {
-  node: T
+  node: T,
+  parentPath: ?NodePath<*>,
+  remove: () => void
 };
 
 type Expression =
