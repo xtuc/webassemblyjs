@@ -1,5 +1,5 @@
 {
-  "name": "@webassemblyjs/wasm-replace",
+  "name": "@webassemblyjs/wasm-edit",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",

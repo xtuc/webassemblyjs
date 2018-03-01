@@ -1,4 +1,4 @@
-# @webassemblyjs/wasm-replace
+# @webassemblyjs/wasm-edit
 
 > Rewrite a WASM binary
 
@@ -7,7 +7,7 @@ Replace in-place an AST node in the binary.
 ## Installation
 
 ```sh
-npm install @webassemblyjs/wasm-replace
+npm install @webassemblyjs/wasm-edit
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ npm install @webassemblyjs/wasm-replace
 Update:
 
 ```js
-import { replaceInBinary } from "@webassemblyjs/wasm-replace";
+import { replaceInBinary } from "@webassemblyjs/wasm-edit";
 
 const binary = [/*...*/];
 
@@ -32,7 +32,7 @@ const newBinary = replaceInBinary(binary, visitors);
 Remove:
 
 ```js
-import { replaceInBinary } from "@webassemblyjs/wasm-replace";
+import { replaceInBinary } from "@webassemblyjs/wasm-edit";
 
 const binary = [/*...*/];
 
@@ -48,7 +48,7 @@ const newBinary = replaceInBinary(binary, visitors);
 Insert:
 
 ```js
-import { addInBinary } from "@webassemblyjs/wasm-replace";
+import { addInBinary } from "@webassemblyjs/wasm-edit";
 
 const binary = [/*...*/];
 
