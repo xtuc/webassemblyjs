@@ -15,8 +15,8 @@ function assertArrayBufferEqual(l, r) {
   assert.deepEqual(new Uint8Array(l), new Uint8Array(r));
 }
 
-describe("replace an import", () => {
-  it("should replace the import", () => {
+describe("replace a node", () => {
+  it("should replace the ModuleImport", () => {
     const actualBinary = makeBuffer(
       encodeHeader(),
       encodeVersion(1),
