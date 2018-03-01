@@ -1155,6 +1155,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const numberOfImports = numberOfImportsu32.value;
         eatBytes(numberOfImportsu32.nextIndex);
 
+        dump([numberOfImports], "number of imports");
+
         const metadata = t.sectionMetadata(
           "import",
           startOffset,

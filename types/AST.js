@@ -151,6 +151,7 @@ type SectionMetadata = {
   type: "SectionMetadata",
   section: SectionName,
 
+  // after the section id byte
   startOffset: number,
   size: number,
 

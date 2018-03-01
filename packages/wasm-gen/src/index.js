@@ -8,6 +8,10 @@ export function encodeNode(n: Node): Array<Byte> {
       // $FlowIgnore: ModuleImport ensure that the node is well formated
       return encoder.encodeModuleImport(n);
 
+    case "SectionMetadata":
+      // $FlowIgnore: SectionMetadata ensure that the node is well formated
+      return encoder.encodeSectionMetadata(n);
+
     default:
       throw new Error("Unsupported replacement for node of type: " + n.type);
   }

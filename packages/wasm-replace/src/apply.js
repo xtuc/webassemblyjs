@@ -1,9 +1,12 @@
 // @flow
 
 import { encodeNode } from "@webassemblyjs/wasm-gen";
+import { getSectionMetadata } from "@webassemblyjs/ast";
 
 import { resizeSectionByteSize, resizeSectionVecSize } from "./section";
 import { overrideBytesInBuffer } from "./buffer";
+
+const t = require("@webassemblyjs/ast");
 
 function assertNodeHasLoc(n: Node) {
   if (n.loc == null || n.loc.start == null || n.loc.end == null) {
@@ -84,7 +87,7 @@ export function applyToNodeToDelete(
     // Update section size
     // $FlowIgnore: assertNodeHasLoc ensures that
     const deltaBytes = -(node.loc.end.column - node.loc.start.column);
-    const deltaElements = -1; // since we removed on element
+    const deltaElements = -1; // since we removed an element
 
     if (node.type === "ModuleExport") {
       uint8Buffer = resizeSectionByteSize(
@@ -100,6 +103,97 @@ export function applyToNodeToDelete(
         "export",
         deltaElements
       );
+    }
+  });
+
+  return uint8Buffer;
+}
+
+export function applyToNodeToAdd(
+  ast: Program,
+  uint8Buffer: Uint8Array,
+  nodes: Array<Node>
+) {
+  nodes.forEach(node => {
+    const deltaElements = +1; // since we added an element
+
+    if (node.type === "ModuleImport") {
+      let sectionMetadata = getSectionMetadata(ast, "import");
+
+      // Section doesn't exists, we create an empty one
+      if (typeof sectionMetadata === "undefined") {
+        const start = uint8Buffer.length;
+        const end = start;
+
+        const size = 1; // 1 byte because of the empty vector
+        const vectorOfSize = 0;
+
+        sectionMetadata = t.sectionMetadata(
+          "import",
+          start + 1, // Ignore the section id in the AST
+          size,
+          vectorOfSize
+        );
+
+        const sectionBytes = encodeNode(sectionMetadata);
+
+        // FIXME(sven): sections must have a specific order, for now append it
+        uint8Buffer = overrideBytesInBuffer(
+          uint8Buffer,
+          start,
+          end,
+          sectionBytes
+        );
+
+        console.log("added bytes", sectionBytes, "at", start, end);
+
+        // Add section into the AST for later lookups
+        if (typeof ast.body[0].metadata === "object") {
+          // $FlowIgnore: metadata can not be empty
+          ast.body[0].metadata.sections.push(sectionMetadata);
+        }
+      }
+
+      /**
+       * Add nodes
+       */
+      const newByteArray = encodeNode(node);
+
+      // start at the end of the section
+      const start = sectionMetadata.startOffset + sectionMetadata.size + 1;
+
+      const end = start;
+
+      console.log("new buffer length", uint8Buffer.length);
+      console.log("add node", newByteArray, "start", start, "end", end);
+
+      uint8Buffer = overrideBytesInBuffer(
+        uint8Buffer,
+        start,
+        end,
+        newByteArray
+      );
+
+      const deltaBytes = newByteArray.length;
+
+      /**
+       * Update section
+       */
+      uint8Buffer = resizeSectionByteSize(
+        ast,
+        uint8Buffer,
+        "import",
+        deltaBytes
+      );
+
+      uint8Buffer = resizeSectionVecSize(
+        ast,
+        uint8Buffer,
+        "import",
+        deltaElements
+      );
+    } else {
+      throw new Error("Unsupport operation: insert node of type: " + node.type);
     }
   });
 

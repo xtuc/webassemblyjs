@@ -2,7 +2,11 @@
 
 import { decode } from "@webassemblyjs/wasm-parser";
 import { traverseWithHooks } from "@webassemblyjs/ast";
-import { applyToNodeToDelete, applyToNodeToUpdate } from "./apply";
+import {
+  applyToNodeToDelete,
+  applyToNodeToUpdate,
+  applyToNodeToAdd
+} from "./apply";
 
 function hashPath({ node }: NodePath<*>): string {
   return JSON.stringify(node);
@@ -42,6 +46,19 @@ export function replaceInBinary(
 
   uint8Buffer = applyToNodeToUpdate(ast, uint8Buffer, nodesToUpdate);
   uint8Buffer = applyToNodeToDelete(ast, uint8Buffer, nodesToDelete);
+
+  return uint8Buffer.buffer;
+}
+
+export function addInBinary(
+  ab: ArrayBuffer,
+  newNodes: Array<Node>
+): ArrayBuffer {
+  const ast = decode(ab, decoderOpts);
+
+  let uint8Buffer = new Uint8Array(ab);
+
+  uint8Buffer = applyToNodeToAdd(ast, uint8Buffer, newNodes);
 
   return uint8Buffer.buffer;
 }

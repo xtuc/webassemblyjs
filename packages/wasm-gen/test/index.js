@@ -30,9 +30,15 @@ const fixtures = [
   },
 
   {
-    name: "ModuleImport - should generate a memory export",
+    name: "should generate a memory ModuleImport",
     node: t.moduleImport("a", "b", t.memory(t.limits(2))),
     expected: [0x01, 0x61, 0x01, 0x62, 0x02, 0x00, 0x02]
+  },
+
+  {
+    name: "should generate an empty ImportSection",
+    node: t.sectionMetadata("import", 0, 1, 0),
+    expected: [0x02, 0x01, 0x00]
   }
 ];
 

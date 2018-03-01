@@ -13,6 +13,7 @@ npm install @webassemblyjs/wasm-replace
 ## Usage
 
 Update:
+
 ```js
 import { replaceInBinary } from "@webassemblyjs/wasm-replace";
 
@@ -29,6 +30,7 @@ const newBinary = replaceInBinary(binary, visitors);
 ```
 
 Remove:
+
 ```js
 import { replaceInBinary } from "@webassemblyjs/wasm-replace";
 
@@ -41,4 +43,16 @@ const visitors = {
 };
 
 const newBinary = replaceInBinary(binary, visitors);
+```
+
+Insert:
+
+```js
+import { addInBinary } from "@webassemblyjs/wasm-replace";
+
+const binary = [/*...*/];
+
+const newBinary = addInBinary(actualBinary, [
+  t.moduleImport("env", "mem", t.memory(t.limits(1)))
+]);
 ```

@@ -65,6 +65,7 @@ export function encodeModuleImport(n: ModuleImport): Array<Byte> {
   } else if (n.descr.type === "Memory") {
     out.push(0x02);
 
+    // $FlowIgnore: Memory ensure that these props exists
     if (typeof n.descr.limits.max === "number") {
       out.push(0x01);
 
@@ -75,12 +76,32 @@ export function encodeModuleImport(n: ModuleImport): Array<Byte> {
     } else {
       out.push(0x00);
 
+      // $FlowIgnore: Memory ensure that these props exists
       out.push(...encodeU32(n.descr.limits.min));
     }
   } else {
     throw new Error(
       "Unsupport operation: encode module import of type: " + n.descr.type
     );
+  }
+
+  return out;
+}
+
+export function encodeSectionMetadata(n: SectionMetadata): Array<Byte> {
+  const out = [];
+
+  switch (n.section) {
+    case "import":
+      out.push(2);
+      out.push(...encodeU32(n.size));
+      out.push(...encodeU32(n.vectorOfSize));
+      break;
+
+    default:
+      throw new Error(
+        "Unsupport operation: encode " + n.section + " section metadata"
+      );
   }
 
   return out;
