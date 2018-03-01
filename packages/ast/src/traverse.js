@@ -28,6 +28,8 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
 
     const parentNode = parentPath.node;
     removeNodeInBody(node, parentNode);
+
+    node._deleted = true;
   }
 
   return {
@@ -38,6 +40,10 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
 }
 
 function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
+  if (n._deleted === true) {
+    return;
+  }
+
   if (n.type === "Program") {
     const path = createPath(n, parentPath);
     cb(n.type, path);

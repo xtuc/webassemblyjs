@@ -91,12 +91,15 @@ interface Position {
 
 interface SourceLocation {
   start: Position;
-  // end: Position;
+  end?: Position;
 }
 
 interface Node {
   type: any;
   loc?: SourceLocation;
+
+  // Internal property
+  _deleted: boolean,
 }
 
 interface Program {

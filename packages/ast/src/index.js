@@ -88,13 +88,15 @@ export function module(
 export function sectionMetadata(
   section: SectionName,
   startOffset: number,
-  size: number
+  size: number,
+  vectorOfSize: number = -1
 ): SectionMetadata {
   return {
     type: "SectionMetadata",
     section,
     startOffset,
-    size
+    size,
+    vectorOfSize
   };
 }
 
