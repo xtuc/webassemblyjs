@@ -63,6 +63,8 @@ type ControlInstruction =
 type NodePath<T> = {
   node: T,
   parentPath: ?NodePath<Node>,
+
+  replaceWith: (Node) => void
   remove: () => void
 };
 

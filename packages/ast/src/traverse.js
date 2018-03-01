@@ -34,10 +34,17 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
     node._deleted = true;
   }
 
+  // TODO(sven): do it the good way, changing the node from the parent
+  function replaceWith(newNode: Node) {
+    Object.assign(node, newNode);
+  }
+
   return {
     node,
-    remove,
-    parentPath
+    parentPath,
+
+    replaceWith,
+    remove
   };
 }
 

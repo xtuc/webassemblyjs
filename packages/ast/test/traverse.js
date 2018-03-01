@@ -92,4 +92,19 @@ describe("AST traverse", () => {
       assert.lengthOf(func.body, 0);
     });
   });
+
+  describe("NodePath replace", () => {
+    it("should remove func in module", () => {
+      const func = t.func(null, [], [], [t.instruction("nop")]);
+
+      traverse(func, {
+        Instr(path) {
+          const newNode = t.callInstruction(t.indexLiteral(0));
+          path.replaceWith(newNode);
+        }
+      });
+
+      assert.equal(func.body[0].type, "CallInstruction");
+    });
+  });
 });
