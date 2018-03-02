@@ -83,18 +83,18 @@ const importTypes = {
 };
 
 const sections = {
-  customSection: 0,
-  typeSection: 1,
-  importSection: 2,
-  funcSection: 3,
-  tableSection: 4,
-  memorySection: 5,
-  globalSection: 6,
-  exportSection: 7,
-  startSection: 8,
-  elemSection: 9,
-  codeSection: 10,
-  dataSection: 11
+  custom: 0,
+  type: 1,
+  import: 2,
+  func: 3,
+  table: 4,
+  memory: 5,
+  global: 6,
+  export: 7,
+  start: 8,
+  elem: 9,
+  code: 10,
+  data: 11
 };
 
 const symbolsByByte = {
