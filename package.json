@@ -2,7 +2,10 @@
   "private": true,
   "scripts": {
     "test": "make test",
-    "build": "make build"
+    "build": "make build",
+    "bs:build": "bsb -make-world",
+    "bs:watch": "bsb -make-world -w",
+    "bs:clean": "bsb -clean-world"
   },
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
@@ -12,6 +15,7 @@
     "@babel/preset-env": "^7.0.0-beta.34",
     "@babel/preset-flow": "^7.0.0-beta.34",
     "babel-eslint": "^8.0.3",
+    "bs-platform": "^2.2.2",
     "chai": "^4.1.2",
     "eslint": "^4.12.1",
     "eslint-config-prettier": "^2.9.0",
@@ -24,10 +28,10 @@
     "glob": "^7.1.2",
     "http-server": "^0.10.0",
     "jest-diff": "^21.2.1",
+    "lerna": "^2.9.0",
     "markdown-to-html": "0.0.13",
     "mocha": "^4.0.1",
     "performance-now": "^2.1.0",
-    "prettier": "^1.9.2",
-    "lerna": "^2.9.0"
+    "prettier": "^1.9.2"
   }
 }
