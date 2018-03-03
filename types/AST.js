@@ -64,7 +64,7 @@ type NodePath<T> = {
   node: T,
   parentPath: ?NodePath<Node>,
 
-  replaceWith: (Node) => void
+  replaceWith: Node => void,
   remove: () => void
 };
 
@@ -101,7 +101,7 @@ interface Node {
   loc?: ?SourceLocation;
 
   // Internal property
-  _deleted?: ?boolean,
+  _deleted?: ?boolean;
 }
 
 interface Program {

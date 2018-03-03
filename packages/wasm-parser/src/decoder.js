@@ -1100,7 +1100,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     eatBytes(u32.nextIndex);
 
     switch (sectionId) {
-      case sections.typeSection: {
+      case sections.type: {
         dumpSep("section Type");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1123,7 +1123,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.tableSection: {
+      case sections.table: {
         dumpSep("section Table");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1146,7 +1146,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.importSection: {
+      case sections.import: {
         dumpSep("section Import");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1169,7 +1169,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.funcSection: {
+      case sections.func: {
         dumpSep("section Function");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1192,7 +1192,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.exportSection: {
+      case sections.export: {
         dumpSep("section Export");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1215,7 +1215,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.codeSection: {
+      case sections.code: {
         dumpSep("section Code");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1243,7 +1243,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.startSection: {
+      case sections.start: {
         dumpSep("section Start");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1259,7 +1259,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.elemSection: {
+      case sections.elem: {
         dumpSep("section Element");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1280,7 +1280,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.globalSection: {
+      case sections.global: {
         dumpSep("section Global");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1301,7 +1301,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.memorySection: {
+      case sections.memory: {
         dumpSep("section Memory");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1322,7 +1322,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.dataSection: {
+      case sections.data: {
         dumpSep("section Data");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1348,7 +1348,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         }
       }
 
-      case sections.customSection: {
+      case sections.custom: {
         dumpSep("section Custom");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
