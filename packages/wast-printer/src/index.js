@@ -1,5 +1,4 @@
 // @flow
-/* eslint flowtype-errors/show-errors: warn */
 import Long from "long";
 
 const compact = false;
@@ -31,11 +30,11 @@ function printProgram(n: Program, depth: number): string {
     }
 
     if (child.type === "BlockComment") {
-      acc += printBlockComment(child, depth + 1);
+      acc += printBlockComment(child);
     }
 
     if (child.type === "LeadingComment") {
-      acc += printLeadingComment(child, depth + 1);
+      acc += printLeadingComment(child);
     }
 
     if (compact === false) {
@@ -52,7 +51,7 @@ function printModule(n: Module, depth: number): string {
 
   if (typeof n.id === "string") {
     out += space;
-    out += printIdentifier(n.id);
+    out += n.id;
   }
 
   out += space;
@@ -71,7 +70,7 @@ function printModule(n: Module, depth: number): string {
     }
 
     if (field.type === "Table") {
-      out += printTable(field, depth + 1);
+      out += printTable(field);
     }
 
     if (field.type === "Global") {
@@ -91,15 +90,15 @@ function printModule(n: Module, depth: number): string {
     }
 
     if (field.type === "BlockComment") {
-      out += printBlockComment(field, depth + 1);
+      out += printBlockComment(field);
     }
 
     if (field.type === "LeadingComment") {
-      out += printLeadingComment(field, depth + 1);
+      out += printLeadingComment(field);
     }
 
     if (field.type === "Start") {
-      out += printStart(field, depth + 1);
+      out += printStart(field);
     }
 
     if (compact === false) {
@@ -112,7 +111,7 @@ function printModule(n: Module, depth: number): string {
   return out;
 }
 
-function printStart(n: Start /*, depth: number*/): string {
+function printStart(n: Start): string {
   let out = "";
 
   out += "(";
@@ -124,7 +123,7 @@ function printStart(n: Start /*, depth: number*/): string {
   return out;
 }
 
-function printLeadingComment(n: LeadingComment /*, depth: number*/): string {
+function printLeadingComment(n: LeadingComment): string {
   // Don't print leading comments in compact mode
   if (compact === true) {
     return "";
@@ -140,7 +139,7 @@ function printLeadingComment(n: LeadingComment /*, depth: number*/): string {
   return out;
 }
 
-function printBlockComment(n: BlockComment /*, depth: number*/): string {
+function printBlockComment(n: BlockComment): string {
   // Don't print block comments in compact mode
   if (compact === true) {
     return "";
@@ -157,7 +156,7 @@ function printBlockComment(n: BlockComment /*, depth: number*/): string {
   return out;
 }
 
-function printModuleImportDescr(n: ImportDescr, depth: number): string {
+function printModuleImportDescr(n: ImportDescr): string {
   let out = "";
 
   if (n.type === "FuncImportDescr") {
@@ -173,7 +172,7 @@ function printModuleImportDescr(n: ImportDescr, depth: number): string {
       out += "param";
       out += space;
 
-      out += printFuncParam(param, depth);
+      out += printFuncParam(param);
       out += ")";
     });
 
@@ -195,18 +194,18 @@ function printModuleImportDescr(n: ImportDescr, depth: number): string {
     out += "global";
     out += space;
 
-    out += printGlobalType(n, depth);
+    out += printGlobalType(n);
     out += ")";
   }
 
   if (n.type === "Table") {
-    out += printTable(n, depth);
+    out += printTable(n);
   }
 
   return out;
 }
 
-function printModuleImport(n: ModuleImport /*, depth: number*/): string {
+function printModuleImport(n: ModuleImport): string {
   let out = "";
 
   out += "(";
@@ -226,7 +225,7 @@ function printModuleImport(n: ModuleImport /*, depth: number*/): string {
   return out;
 }
 
-function printGlobalType(n: GlobalType /*, depth: number*/): string {
+function printGlobalType(n: GlobalType): string {
   let out = "";
 
   if (n.mutability === "var") {
@@ -242,7 +241,7 @@ function printGlobalType(n: GlobalType /*, depth: number*/): string {
   return out;
 }
 
-function printGlobal(n: Global /*, depth: number*/): string {
+function printGlobal(n: Global, depth: number): string {
   let out = "";
 
   out += "(";
@@ -259,7 +258,7 @@ function printGlobal(n: Global /*, depth: number*/): string {
   out += space;
 
   n.init.forEach(i => {
-    out += printInstruction(i);
+    out += printInstruction(i, depth + 1);
   });
 
   out += ")";
@@ -267,7 +266,7 @@ function printGlobal(n: Global /*, depth: number*/): string {
   return out;
 }
 
-function printTable(n: Table /*, depth: number*/): string {
+function printTable(n: Table): string {
   let out = "";
 
   out += "(";
@@ -289,7 +288,7 @@ function printTable(n: Table /*, depth: number*/): string {
   return out;
 }
 
-function printFuncParam(n: FuncParam /*, depth: number*/): string {
+function printFuncParam(n: FuncParam): string {
   let out = "";
 
   if (typeof n.id === "string") {
@@ -321,7 +320,7 @@ function printFunc(n: Func, depth: number): string {
     out += "param";
     out += space;
 
-    out += printFuncParam(param, depth);
+    out += printFuncParam(param);
 
     out += ")";
   });
@@ -360,23 +359,30 @@ function printFunc(n: Func, depth: number): string {
 }
 
 function printInstruction(n: Instruction, depth: number): string {
-  let out = "";
+  switch (n.type) {
+    case "Instr":
+      // $FlowIgnore
+      return printGenericInstruction(n);
 
-  if (n.type === "Instr") {
-    out += printGenericInstruction(n, depth + 1);
-  } else if (n.type === "BlockInstruction") {
-    out += printBlockInstruction(n, depth + 1);
-  } else if (n.type === "IfInstruction") {
-    out += printIfInstruction(n, depth + 1);
-  } else if (n.type === "CallInstruction") {
-    out += printCallInstruction(n, depth + 1);
-  } else if (n.type === "LoopInstruction") {
-    out += printLoopInstruction(n, depth + 1);
-  } else {
-    throw new Error("Unsupported instruction: " + n.type);
+    case "BlockInstruction":
+      // $FlowIgnore
+      return printBlockInstruction(n, depth + 1);
+
+    case "IfInstruction":
+      // $FlowIgnore
+      return printIfInstruction(n, depth + 1);
+
+    case "CallInstruction":
+      // $FlowIgnore
+      return printCallInstruction(n, depth + 1);
+
+    case "LoopInstruction":
+      // $FlowIgnore
+      return printLoopInstruction(n, depth + 1);
+
+    default:
+      throw new Error("Unsupported instruction: " + String(n.type));
   }
-
-  return out;
 }
 
 function printLoopInstruction(n: LoopInstruction, depth: number): string {
@@ -589,9 +595,7 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
   return out;
 }
 
-function printGenericInstruction(
-  n: GenericInstruction /*, depth: number*/
-): string {
+function printGenericInstruction(n: GenericInstruction): string {
   let out = "";
 
   out += "(";
@@ -724,7 +728,7 @@ function printLimit(n: Limit): string {
 
   if (n.max != null) {
     out += space;
-    out += n.max;
+    out += String(n.max);
   }
 
   return out;

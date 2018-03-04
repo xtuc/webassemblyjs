@@ -5,19 +5,17 @@ type Cb = (type: string, path: NodePath<Node>) => void;
 function removeNodeInBody(node: Node, fromNode: Node) {
   switch (fromNode.type) {
     case "Module":
-      // $FlowIgnore: type ensures that
       fromNode.fields = fromNode.fields.filter(n => n !== node);
       break;
 
     case "Program":
     case "Func":
-      // $FlowIgnore: type ensures that
       fromNode.body = fromNode.body.filter(n => n !== node);
       break;
 
     default:
       throw new Error(
-        "Unsupported operation: removing node of type: " + fromNode.type
+        "Unsupported operation: removing node of type: " + String(fromNode.type)
       );
   }
 }
@@ -36,6 +34,7 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
 
   // TODO(sven): do it the good way, changing the node from the parent
   function replaceWith(newNode: Node) {
+    // $FlowIgnore
     Object.assign(node, newNode);
   }
 
@@ -53,124 +52,142 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
     return;
   }
 
-  if (n.type === "Program") {
-    const path = createPath(n, parentPath);
-    cb(n.type, path);
+  switch (n.type) {
+    case "Program": {
+      const path = createPath(n, parentPath);
+      cb(n.type, path);
 
-    // $FlowIgnore
-    n.body.forEach(x => walk(x, cb, path));
-  }
+      n.body.forEach(x => walk(x, cb, path));
 
-  if (
-    n.type === "SectionMetadata" ||
-    n.type === "ModuleExport" ||
-    n.type === "Data" ||
-    n.type === "Memory" ||
-    n.type === "Elem" ||
-    n.type === "Identifier"
-  ) {
-    cb(n.type, createPath(n, parentPath));
-  }
-
-  if (n.type === "Module") {
-    const path = createPath(n, parentPath);
-    cb(n.type, path);
-
-    if (typeof n.fields !== "undefined") {
-      // $FlowIgnore
-      n.fields.forEach(x => walk(x, cb, path));
+      break;
     }
 
-    if (typeof n.metadata !== "undefined") {
-      // $FlowIgnore
-      n.metadata.sections.forEach(x => walk(x, cb, path));
-    }
-  }
+    case "SectionMetadata":
+    case "ModuleExport":
+    case "Data":
+    case "Memory":
+    case "Elem":
+    case "NumberLiteral":
+    case "FloatLiteral":
+    case "BinaryModule":
+    case "LeadingComment":
+    case "BlockComment":
+    case "Identifier": {
+      cb(n.type, createPath(n, parentPath));
 
-  if (n.type === "Start" || n.type === "CallInstruction") {
-    const path = createPath(n, parentPath);
-    cb(n.type, path);
-
-    // $FlowIgnore
-    walk(n.index, cb, path);
-  }
-
-  if (n.type === "ModuleImport") {
-    cb(n.type, createPath(n, parentPath));
-
-    // $FlowIgnore
-    cb(n.descr.type, createPath(n.descr, parentPath));
-  }
-
-  if (n.type === "Table" || n.type === "Global") {
-    const path = createPath(n, parentPath);
-    cb(n.type, path);
-
-    if (n.name != null) {
-      // $FlowIgnore
-      walk(n.name, cb, path);
-    }
-  }
-
-  if (n.type === "IfInstruction") {
-    const path = createPath(n, parentPath);
-    cb(n.type, path);
-
-    // $FlowIgnore
-    n.test.forEach(x => walk(x, cb, path));
-    // $FlowIgnore
-    walk(n.testLabel, cb, path);
-    // $FlowIgnore
-    n.consequent.forEach(x => walk(x, cb, path));
-    // $FlowIgnore
-    n.alternate.forEach(x => walk(x, cb, path));
-  }
-
-  if (n.type === "Instr") {
-    const path = createPath(n, parentPath);
-    cb(n.type, path);
-
-    // $FlowIgnore
-    n.args.forEach(x => walk(x, cb, path));
-  }
-
-  if (n.type === "BlockInstruction" || n.type === "LoopInstruction") {
-    const path = createPath(n, parentPath);
-    cb(n.type, path);
-
-    if (n.label != null) {
-      // $FlowIgnore
-      walk(n.label, cb, path);
+      break;
     }
 
-    // $FlowIgnore
-    n.instr.forEach(x => walk(x, cb, path));
-  }
+    case "Module": {
+      const path = createPath(n, parentPath);
+      cb(n.type, path);
 
-  if (n.type === "IfInstruction") {
-    const path = createPath(n, parentPath);
-    cb(n.type, path);
+      if (typeof n.fields !== "undefined") {
+        n.fields.forEach(x => walk(x, cb, path));
+      }
 
-    // $FlowIgnore
-    walk(n.testLabel, cb, path);
+      if (typeof n.metadata !== "undefined") {
+        // $FlowIgnore
+        n.metadata.sections.forEach(x => walk(x, cb, path));
+      }
 
-    // $FlowIgnore
-    n.consequent.forEach(x => walk(x, cb, path));
-    // $FlowIgnore
-    n.alternate.forEach(x => walk(x, cb, path));
-  }
-
-  if (n.type === "Func") {
-    const path = createPath(n, parentPath);
-    cb(n.type, path);
-
-    // $FlowIgnore
-    n.body.forEach(x => walk(x, cb, path));
-
-    if (n.name != null) {
-      // $FlowIgnore
-      walk(n.name, cb, path);
+      break;
     }
+
+    case "Start":
+    case "CallInstruction": {
+      const path = createPath(n, parentPath);
+      // $FlowIgnore
+      cb(n.type, path);
+
+      // $FlowIgnore
+      walk(n.index, cb, path);
+
+      break;
+    }
+
+    case "ModuleImport": {
+      cb(n.type, createPath(n, parentPath));
+
+      cb(n.descr.type, createPath(n.descr, parentPath));
+
+      break;
+    }
+
+    case "Table":
+    case "Global": {
+      const path = createPath(n, parentPath);
+      cb(n.type, path);
+
+      if (n.name != null) {
+        walk(n.name, cb, path);
+      }
+
+      break;
+    }
+
+    case "IfInstruction": {
+      const path = createPath(n, parentPath);
+
+      // $FlowIgnore
+      cb(n.type, path);
+
+      // $FlowIgnore
+      n.test.forEach(x => walk(x, cb, path));
+      // $FlowIgnore
+      n.consequent.forEach(x => walk(x, cb, path));
+      // $FlowIgnore
+      n.alternate.forEach(x => walk(x, cb, path));
+
+      // $FlowIgnore
+      walk(n.testLabel, cb, path);
+
+      break;
+    }
+
+    case "Instr": {
+      const path = createPath(n, parentPath);
+      // $FlowIgnore
+      cb(n.type, path);
+
+      // $FlowIgnore
+      n.args.forEach(x => walk(x, cb, path));
+
+      break;
+    }
+
+    case "BlockInstruction":
+    case "LoopInstruction": {
+      const path = createPath(n, parentPath);
+      // $FlowIgnore
+      cb(n.type, path);
+
+      if (n.label != null) {
+        // $FlowIgnore
+        walk(n.label, cb, path);
+      }
+
+      // $FlowIgnore
+      n.instr.forEach(x => walk(x, cb, path));
+
+      break;
+    }
+
+    case "Func": {
+      const path = createPath(n, parentPath);
+      cb(n.type, path);
+
+      n.body.forEach(x => walk(x, cb, path));
+
+      if (n.name != null) {
+        walk(n.name, cb, path);
+      }
+
+      break;
+    }
+
+    default:
+      throw new Error("Unknown node encounter of type: " + String(n.type));
   }
 }
 

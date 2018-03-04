@@ -1,4 +1,5 @@
 // @flow
+/* eslint no-unused-vars: off */
 
 type CompiledModule = {
   _ast: Program,
@@ -22,7 +23,7 @@ type Hostfunc = any;
 
 type MemoryDescriptor = {
   initial: number,
-  maximum?: number
+  maximum?: ?number
 };
 
 interface MemoryInstance {

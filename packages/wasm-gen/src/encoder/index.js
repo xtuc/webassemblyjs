@@ -57,34 +57,41 @@ export function encodeModuleImport(n: ModuleImport): Array<Byte> {
   out.push(...encodeUTF8Vec(n.module));
   out.push(...encodeUTF8Vec(n.name));
 
-  if (n.descr.type === "GlobalType") {
-    out.push(0x03);
+  switch (n.descr.type) {
+    case "GlobalType": {
+      out.push(0x03);
 
-    // $FlowIgnore: GlobalType ensure that these props exists
-    out.push(encodeValtype(n.descr.valtype));
-    // $FlowIgnore: GlobalType ensure that these props exists
-    out.push(encodeMutability(n.descr.mutability));
-  } else if (n.descr.type === "Memory") {
-    out.push(0x02);
-
-    // $FlowIgnore: Memory ensure that these props exists
-    if (typeof n.descr.limits.max === "number") {
-      out.push(0x01);
-
-      // $FlowIgnore: Memory ensure that these props exists
-      out.push(...encodeU32(n.descr.limits.min));
-      // $FlowIgnore: Memory ensure that these props exists
-      out.push(...encodeU32(n.descr.limits.max));
-    } else {
-      out.push(0x00);
-
-      // $FlowIgnore: Memory ensure that these props exists
-      out.push(...encodeU32(n.descr.limits.min));
+      // $FlowIgnore: GlobalType ensure that these props exists
+      out.push(encodeValtype(n.descr.valtype));
+      // $FlowIgnore: GlobalType ensure that these props exists
+      out.push(encodeMutability(n.descr.mutability));
+      break;
     }
-  } else {
-    throw new Error(
-      "Unsupport operation: encode module import of type: " + n.descr.type
-    );
+
+    case "Memory": {
+      out.push(0x02);
+
+      // $FlowIgnore: Memory ensure that these props exists
+      if (typeof n.descr.limits.max === "number") {
+        out.push(0x01);
+
+        // $FlowIgnore: Memory ensure that these props exists
+        out.push(...encodeU32(n.descr.limits.min));
+        // $FlowIgnore: Memory ensure that these props exists
+        out.push(...encodeU32(n.descr.limits.max));
+      } else {
+        out.push(0x00);
+
+        // $FlowIgnore: Memory ensure that these props exists
+        out.push(...encodeU32(n.descr.limits.min));
+      }
+      break;
+    }
+
+    default:
+      throw new Error(
+        "Unsupport operation: encode module import of type: " + n.descr.type
+      );
   }
 
   return out;

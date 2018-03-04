@@ -1,10 +1,10 @@
 // @flow
 
 import { traverse } from "@webassemblyjs/ast";
-import { Memory } from "./memory";
+import * as WebAssemblyMemory from "./memory";
 
 const { RuntimeError, LinkError, CompileError } = require("../../../errors");
-const { Table } = require("./table");
+const WebAssemblyTable = require("./table");
 const func = require("./func");
 const externvalue = require("./extern");
 const global = require("./global");
@@ -98,10 +98,8 @@ function instantiateImports(
     ModuleImport({ node }: NodePath<ModuleImport>) {
       switch (node.descr.type) {
         case "FuncImportDescr":
-          // $FlowIgnore
           return handleFuncImport(node, node.descr);
         case "GlobalType":
-          // $FlowIgnore
           return handleGlobalImport(node, node.descr);
         case "Memory":
           return handleMemoryImport(node);
@@ -126,7 +124,7 @@ function instantiateDataSections(
     Data({ node }: NodePath<Data>) {
       const memIndex = node.memoryIndex.value;
       const memoryAddr = moduleInstance.memaddrs[memIndex];
-      const memory: Memory = allocator.get(memoryAddr);
+      const memory = allocator.get(memoryAddr);
       const buffer = new Uint8Array(memory.buffer);
 
       let offset: number;
@@ -184,12 +182,10 @@ function instantiateInternals(
     },
 
     Table({ node }: NodePath<Table>) {
-      // $FlowIgnore: see type Table in src/types/AST.js
       const initial = node.limits.min;
-      // $FlowIgnore: see type Table in src/types/AST.js
       const element = node.elementType;
 
-      const tableinstance = new Table({ initial, element });
+      const tableinstance = new WebAssemblyTable.Table({ initial, element });
 
       const addr = allocator.malloc(1 /* size of the tableinstance struct */);
       allocator.set(addr, tableinstance);
@@ -198,7 +194,6 @@ function instantiateInternals(
 
       if (node.name != null) {
         if (node.name.type === "Identifier") {
-          // $FlowIgnore
           internals.instantiatedTables[node.name.value] = addr;
         }
       }
@@ -228,15 +223,17 @@ function instantiateInternals(
         return;
       }
 
-      // $FlowIgnore: see type Memory in src/types/AST.js
       const { min, max } = node.limits;
 
-      const memoryDescriptor = {
-        initial: min,
-        maximum: max
+      const memoryDescriptor: MemoryDescriptor = {
+        initial: min
       };
 
-      const memoryinstance = new Memory(memoryDescriptor);
+      if (typeof max === "number") {
+        memoryDescriptor.maximum = max;
+      }
+
+      const memoryinstance = new WebAssemblyMemory.Memory(memoryDescriptor);
 
       const addr = allocator.malloc(1 /* size of the memoryinstance struct */);
       allocator.set(addr, memoryinstance);

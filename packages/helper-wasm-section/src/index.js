@@ -15,6 +15,8 @@ export function getSectionForNode(n: Node): SectionName {
       return "export";
 
     default:
-      throw new Error("Unsupported input in getSectionForNode: " + n.type);
+      throw new Error(
+        "Unsupported input in getSectionForNode: " + String(n.type)
+      );
   }
 }
