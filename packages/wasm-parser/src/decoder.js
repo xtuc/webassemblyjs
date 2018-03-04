@@ -72,6 +72,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   let offset = 0;
 
+  function getPosition(): Position {
+    return { line: -1, column: offset };
+  }
+
   function dump(b: Array<Byte>, msg: any) {
     if (opts.dump === false) return;
 
@@ -340,7 +344,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     for (let i = 0; i < numberOfImports; i++) {
       dumpSep("import header " + i);
 
-      const startLoc = { line: -1, column: offset };
+      const startLoc = getPosition();
 
       /**
        * Module name
@@ -414,7 +418,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new CompileError("Unsupported import of type: " + descrType);
       }
 
-      const endLoc = { line: -1, column: offset };
+      const endLoc = getPosition();
 
       imports.push(
         t.withLoc(
@@ -461,7 +465,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     // Parse vector of exports
     for (let i = 0; i < numberOfExport; i++) {
-      const startLoc = { line: -1, column: offset };
+      const startLoc = getPosition();
 
       /**
        * Name
@@ -523,7 +527,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return;
       }
 
-      const endLoc = { line: -1, column: offset };
+      const endLoc = getPosition();
 
       state.elementsInExportSection.push({
         name: name.value,
@@ -597,6 +601,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   function parseInstructionBlock(code: Array<Instruction>) {
     while (true) {
+      const startLoc = getPosition();
+
       let instructionAlreadyCreated = false;
 
       const instructionByte = readByte();
@@ -838,7 +844,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
             t.objectInstruction(instruction.name, instruction.object, args)
           );
         } else {
-          code.push(t.instruction(instruction.name, args));
+          const endLoc = getPosition();
+
+          const node = t.withLoc(
+            t.instruction(instruction.name, args),
+            endLoc,
+            startLoc
+          );
+
+          code.push(node);
         }
       }
     }

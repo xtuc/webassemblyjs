@@ -31,7 +31,17 @@
                   "type": "NumberLiteral",
                   "value": 0
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": -1,
+                  "column": 46
+                },
+                "end": {
+                  "line": -1,
+                  "column": 48
+                }
+              }
             },
             {
               "type": "Instr",
@@ -41,7 +51,17 @@
                   "type": "NumberLiteral",
                   "value": 1
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": -1,
+                  "column": 48
+                },
+                "end": {
+                  "line": -1,
+                  "column": 50
+                }
+              }
             },
             {
               "type": "Instr",
@@ -77,7 +97,17 @@
                   "type": "NumberLiteral",
                   "value": 0
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": -1,
+                  "column": 54
+                },
+                "end": {
+                  "line": -1,
+                  "column": 56
+                }
+              }
             },
             {
               "type": "Instr",
@@ -87,7 +117,17 @@
                   "type": "NumberLiteral",
                   "value": 1
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": -1,
+                  "column": 56
+                },
+                "end": {
+                  "line": -1,
+                  "column": 58
+                }
+              }
             },
             {
               "type": "Instr",
