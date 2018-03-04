@@ -17,6 +17,9 @@
   "license": "GPL-2.0",
   "dependencies": {
     "@webassemblyjs/wasm-gen": "1.0.0",
+    "@webassemblyjs/helper-wasm-section": "1.0.0",
+    "@webassemblyjs/helper-buffer": "1.0.0",
+    "@webassemblyjs/helper-wasm-bytecode": "1.0.0",
     "@webassemblyjs/ast": "1.0.0",
     "@webassemblyjs/wasm-parser": "1.0.0"
   }

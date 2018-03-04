@@ -2,11 +2,12 @@
 
 import { encodeNode } from "@webassemblyjs/wasm-gen";
 import { getSectionMetadata } from "@webassemblyjs/ast";
-
-import { resizeSectionByteSize, resizeSectionVecSize } from "./section";
-import { overrideBytesInBuffer } from "./buffer";
-
-const t = require("@webassemblyjs/ast");
+import {
+  resizeSectionByteSize,
+  resizeSectionVecSize,
+  createEmptySection
+} from "@webassemblyjs/helper-wasm-section";
+import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
 function assertNodeHasLoc(n: Node) {
   if (n.loc == null || n.loc.start == null || n.loc.end == null) {
@@ -123,34 +124,10 @@ export function applyToNodeToAdd(
 
       // Section doesn't exists, we create an empty one
       if (typeof sectionMetadata === "undefined") {
-        const start = uint8Buffer.length;
-        const end = start;
+        const res = createEmptySection(ast, uint8Buffer, "import");
 
-        const size = 1; // 1 byte because of the empty vector
-        const vectorOfSize = 0;
-
-        sectionMetadata = t.sectionMetadata(
-          "import",
-          start + 1, // Ignore the section id in the AST
-          size,
-          vectorOfSize
-        );
-
-        const sectionBytes = encodeNode(sectionMetadata);
-
-        // FIXME(sven): sections must have a specific order, for now append it
-        uint8Buffer = overrideBytesInBuffer(
-          uint8Buffer,
-          start,
-          end,
-          sectionBytes
-        );
-
-        // Add section into the AST for later lookups
-        if (typeof ast.body[0].metadata === "object") {
-          // $FlowIgnore: metadata can not be empty
-          ast.body[0].metadata.sections.push(sectionMetadata);
-        }
+        uint8Buffer = res.uint8Buffer;
+        sectionMetadata = res.sectionMetadata;
       }
 
       /**

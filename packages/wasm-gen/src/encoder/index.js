@@ -15,7 +15,9 @@ export function encodeHeader(): Array<Byte> {
 }
 
 export function encodeU32(v: number): Array<Byte> {
-  return leb.encodeU32(v).values();
+  const uint8view = new Uint8Array(leb.encodeU32(v));
+  const array = [...uint8view];
+  return array;
 }
 
 export function encodeVec(elements: Array<Byte>): Array<Byte> {

@@ -1,16 +1,19 @@
 // @flow
 
 function concatUint8Arrays(...arrays: Array<Uint8Array>) {
-  let totalLength = 0;
-  for (const arr of arrays) {
-    totalLength += arr.length;
-  }
+  const totalLength = arrays.reduce((a, b) => a + b.length, 0);
   const result = new Uint8Array(totalLength);
+
   let offset = 0;
   for (const arr of arrays) {
+    if (arr instanceof Uint8Array === false) {
+      throw new Error("arr must be of type Uint8Array");
+    }
+
     result.set(arr, offset);
     offset += arr.length;
   }
+
   return result;
 }
 
@@ -23,7 +26,7 @@ export function overrideBytesInBuffer(
   const beforeBytes = buffer.slice(0, startLoc);
   const afterBytes = buffer.slice(endLoc, buffer.length);
 
-  // Remplacement is empty, we can omit it
+  // replacement is empty, we can omit it
   if (newBytes.length === 0) {
     return concatUint8Arrays(beforeBytes, afterBytes);
   }
@@ -31,4 +34,9 @@ export function overrideBytesInBuffer(
   const replacement = Uint8Array.from(newBytes);
 
   return concatUint8Arrays(beforeBytes, replacement, afterBytes);
+}
+
+export function makeBuffer(...splitedBytes: Array<Array<Byte>>) {
+  const bytes = [].concat.apply([], splitedBytes);
+  return new Uint8Array(bytes).buffer;
 }

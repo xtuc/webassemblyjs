@@ -4,13 +4,9 @@ const {
   encodeVersion,
   encodeHeader
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
+const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 
 const { addInBinary } = require("../lib");
-
-function makeBuffer(...splitedBytes) {
-  const bytes = [].concat.apply([], splitedBytes);
-  return new Uint8Array(bytes).buffer;
-}
 
 function assertArrayBufferEqual(l, r) {
   assert.deepEqual(new Uint8Array(l), new Uint8Array(r));
