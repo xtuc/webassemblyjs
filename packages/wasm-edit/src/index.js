@@ -17,10 +17,7 @@ const decoderOpts = {
   ignoreDataSection: true
 };
 
-export function edit(
-  ab: ArrayBuffer,
-  visitors: Object
-): ArrayBuffer {
+export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
   const nodesToDelete = [];
   const nodesToUpdate = [];
 
@@ -56,10 +53,7 @@ export function edit(
   return uint8Buffer.buffer;
 }
 
-export function add(
-  ab: ArrayBuffer,
-  newNodes: Array<Node>
-): ArrayBuffer {
+export function add(ab: ArrayBuffer, newNodes: Array<Node>): ArrayBuffer {
   const ast = decode(ab, decoderOpts);
 
   let uint8Buffer = new Uint8Array(ab);
