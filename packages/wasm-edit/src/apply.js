@@ -5,7 +5,8 @@ import { getSectionMetadata } from "@webassemblyjs/ast";
 import {
   resizeSectionByteSize,
   resizeSectionVecSize,
-  createEmptySection
+  createEmptySection,
+  getSectionForNode
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
@@ -111,22 +112,6 @@ export function applyToNodeToDelete(
   });
 
   return uint8Buffer;
-}
-
-function getSectionForNode(n: Node): SectionName {
-  switch (n.type) {
-    case "ModuleImport":
-      return "import";
-
-    case "CallInstruction":
-      return "code";
-
-    case "ModuleExport":
-      return "export";
-
-    default:
-      throw new Error("Unsupported input in getSectionForNode: " + n.type);
-  }
 }
 
 export function applyToNodeToAdd(
