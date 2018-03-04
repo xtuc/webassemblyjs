@@ -2,28 +2,29 @@
 
 import { encodeU32 } from "@webassemblyjs/wasm-gen";
 import { getSectionMetadata } from "@webassemblyjs/ast";
-
-import { overrideBytesInBuffer } from "./buffer";
+import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
 export function resizeSectionByteSize(
   ast: Program,
   uint8Buffer: Uint8Array,
   section: SectionName,
   deltaBytes: number
-) {
+): Uint8Array {
   const sectionMetadata = getSectionMetadata(ast, section);
 
   if (typeof sectionMetadata === "undefined") {
     throw new Error("Section metadata not found");
   }
 
+  // Encode the current value to know the number of bytes to override
+  const oldSizeInBytes = encodeU32(sectionMetadata.size);
+
   const newSectionSize = sectionMetadata.size + deltaBytes;
 
-  // FIXME(sven): works if the section size is an u32 of 1 byte
   return overrideBytesInBuffer(
     uint8Buffer,
     sectionMetadata.startOffset,
-    sectionMetadata.startOffset + 1,
+    sectionMetadata.startOffset + oldSizeInBytes.length,
     encodeU32(newSectionSize)
   );
 }
@@ -33,7 +34,7 @@ export function resizeSectionVecSize(
   uint8Buffer: Uint8Array,
   section: SectionName,
   deltaElements: number
-) {
+): Uint8Array {
   const sectionMetadata = getSectionMetadata(ast, section);
 
   if (typeof sectionMetadata === "undefined") {
@@ -45,10 +46,18 @@ export function resizeSectionVecSize(
     return uint8Buffer;
   }
 
+  // Encode the current value to know the number of bytes to override
+  const oldSizeInBytes = encodeU32(sectionMetadata.vectorOfSize);
+
   const newValue = sectionMetadata.vectorOfSize + deltaElements;
   const newBytes = encodeU32(newValue);
 
   const start = sectionMetadata.startOffset + 1;
 
-  return overrideBytesInBuffer(uint8Buffer, start, start + 1, newBytes);
+  return overrideBytesInBuffer(
+    uint8Buffer,
+    start,
+    start + oldSizeInBytes.length,
+    newBytes
+  );
 }
