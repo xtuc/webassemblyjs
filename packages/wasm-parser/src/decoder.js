@@ -2,7 +2,6 @@
 
 import { CompileError } from "webassemblyjs/lib/errors";
 const t = require("@webassemblyjs/ast");
-
 const {
   importTypes,
   symbolsByByte,
@@ -16,7 +15,7 @@ const {
   valtypes,
   moduleVersion,
   sections
-} = require("./constants");
+} = require("@webassemblyjs/helper-wasm-bytecode");
 
 const {
   decodeInt32,
@@ -26,7 +25,7 @@ const {
   decodeInt64,
   decodeUInt64,
   MAX_NUMBER_OF_BYTE_U64
-} = require("./LEB128");
+} = require("@webassemblyjs/helper-leb128");
 
 const ieee754 = require("./ieee754");
 const { utf8ArrayToStr } = require("./utf8");
@@ -72,6 +71,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   let offset = 0;
+
+  function getPosition(): Position {
+    return { line: -1, column: offset };
+  }
 
   function dump(b: Array<Byte>, msg: any) {
     if (opts.dump === false) return;
@@ -335,15 +338,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // Import section
   // https://webassembly.github.io/spec/binary/modules.html#binary-importsec
-  function parseImportSection() {
+  function parseImportSection(numberOfImports: number) {
     const imports = [];
-
-    const numberOfImportsu32 = readU32();
-    const numberOfImports = numberOfImportsu32.value;
-    eatBytes(numberOfImportsu32.nextIndex);
 
     for (let i = 0; i < numberOfImports; i++) {
       dumpSep("import header " + i);
+
+      const startLoc = getPosition();
 
       /**
        * Module name
@@ -417,7 +418,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new CompileError("Unsupported import of type: " + descrType);
       }
 
-      imports.push(t.moduleImport(moduleName.value, name.value, importDescr));
+      const endLoc = getPosition();
+
+      imports.push(
+        t.withLoc(
+          t.moduleImport(moduleName.value, name.value, importDescr),
+          endLoc,
+          startLoc
+        )
+      );
     }
 
     return imports;
@@ -425,11 +434,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // Function section
   // https://webassembly.github.io/spec/binary/modules.html#function-section
-  function parseFuncSection() {
-    const numberOfFunctionsu32 = readU32();
-    const numberOfFunctions = numberOfFunctionsu32.value;
-    eatBytes(numberOfFunctionsu32.nextIndex);
-
+  function parseFuncSection(numberOfFunctions: number) {
     for (let i = 0; i < numberOfFunctions; i++) {
       const indexU32 = readU32();
       const typeindex = indexU32.value;
@@ -455,15 +460,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // Export section
   // https://webassembly.github.io/spec/binary/modules.html#export-section
-  function parseExportSection() {
-    const u32 = readU32();
-    const numberOfExport = u32.value;
-    eatBytes(u32.nextIndex);
-
+  function parseExportSection(numberOfExport: number) {
     dump([numberOfExport], "num exports");
 
     // Parse vector of exports
     for (let i = 0; i < numberOfExport; i++) {
+      const startLoc = getPosition();
+
       /**
        * Name
        */
@@ -524,23 +527,23 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return;
       }
 
+      const endLoc = getPosition();
+
       state.elementsInExportSection.push({
         name: name.value,
         type: exportTypes[typeIndex],
         signature,
         id,
-        index
+        index,
+        endLoc,
+        startLoc
       });
     }
   }
 
   // Code section
   // https://webassembly.github.io/spec/binary/modules.html#code-section
-  function parseCodeSection() {
-    const u32 = readU32();
-    const numberOfFuncs = u32.value;
-    eatBytes(u32.nextIndex);
-
+  function parseCodeSection(numberOfFuncs: number) {
     dump([numberOfFuncs], "number functions");
 
     // Parse vector of function
@@ -598,6 +601,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   function parseInstructionBlock(code: Array<Instruction>) {
     while (true) {
+      const startLoc = getPosition();
+
       let instructionAlreadyCreated = false;
 
       const instructionByte = readByte();
@@ -839,7 +844,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
             t.objectInstruction(instruction.name, instruction.object, args)
           );
         } else {
-          code.push(t.instruction(instruction.name, args));
+          const endLoc = getPosition();
+
+          const node = t.withLoc(
+            t.instruction(instruction.name, args),
+            endLoc,
+            startLoc
+          );
+
+          code.push(node);
         }
       }
     }
@@ -889,14 +902,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
-  function parseTableSection() {
+  function parseTableSection(numberOfTable: number) {
     const tables = [];
-
-    const u32 = readU32();
-    const numberOfTable = u32.value;
-    eatBytes(u32.nextIndex);
-
-    dump([numberOfTable], "num tables");
 
     for (let i = 0; i < numberOfTable; i++) {
       const tableNode = parseTableType();
@@ -933,12 +940,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return t.globalType(type, globalType);
   }
 
-  function parseGlobalSection() {
+  function parseGlobalSection(numberOfGlobals: number) {
     const globals = [];
-
-    const numberOfGlobalsu32 = readU32();
-    const numberOfGlobals = numberOfGlobalsu32.value;
-    eatBytes(numberOfGlobalsu32.nextIndex);
 
     dump([numberOfGlobals], "num globals");
 
@@ -958,12 +961,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return globals;
   }
 
-  function parseElemSection() {
+  function parseElemSection(numberOfElements: number) {
     const elems = [];
-
-    const numberOfElementsu32 = readU32();
-    const numberOfElements = numberOfElementsu32.value;
-    eatBytes(numberOfElementsu32.nextIndex);
 
     dump([numberOfElements], "num elements");
 
@@ -1038,12 +1037,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#memory-section
-  function parseMemorySection() {
+  function parseMemorySection(numberOfElements: number) {
     const memories = [];
-
-    const numberOfElementsu32 = readU32();
-    const numberOfElements = numberOfElementsu32.value;
-    eatBytes(numberOfElementsu32.nextIndex);
 
     dump([numberOfElements], "num elements");
 
@@ -1069,12 +1064,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#data-section
-  function parseDataSection() {
+  function parseDataSection(numberOfElements: number) {
     const dataEntries = [];
-
-    const numberOfElementsu32 = readU32();
-    const numberOfElements = numberOfElementsu32.value;
-    eatBytes(numberOfElementsu32.nextIndex);
 
     dump([numberOfElements], "num elements");
 
@@ -1112,16 +1103,18 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
-  function parseSection(): Array<Node> {
+  function parseSection(): { nodes: Array<Node>, metadata: SectionMetadata } {
     const sectionId = readByte();
     eatBytes(1);
+
+    const startOffset = offset;
 
     const u32 = readU32();
     const sectionSizeInBytes = u32.value;
     eatBytes(u32.nextIndex);
 
     switch (sectionId) {
-      case sections.typeSection: {
+      case sections.type: {
         dumpSep("section Type");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1130,135 +1123,283 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const numberOfTypes = u32.value;
         eatBytes(u32.nextIndex);
 
+        const metadata = t.sectionMetadata(
+          "type",
+          startOffset,
+          sectionSizeInBytes,
+          numberOfTypes
+        );
+
         parseTypeSection(numberOfTypes);
-        break;
+
+        const nodes = [];
+
+        return { nodes, metadata };
       }
 
-      case sections.tableSection: {
+      case sections.table: {
         dumpSep("section Table");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseTableSection();
+        const u32 = readU32();
+        const numberOfTable = u32.value;
+        eatBytes(u32.nextIndex);
+
+        dump([numberOfTable], "num tables");
+
+        const metadata = t.sectionMetadata(
+          "table",
+          startOffset,
+          sectionSizeInBytes,
+          numberOfTable
+        );
+
+        const nodes = parseTableSection(numberOfTable);
+
+        return { nodes, metadata };
       }
 
-      case sections.importSection: {
+      case sections.import: {
         dumpSep("section Import");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseImportSection();
+        const numberOfImportsu32 = readU32();
+        const numberOfImports = numberOfImportsu32.value;
+        eatBytes(numberOfImportsu32.nextIndex);
+
+        dump([numberOfImports], "number of imports");
+
+        const metadata = t.sectionMetadata(
+          "import",
+          startOffset,
+          sectionSizeInBytes,
+          numberOfImports
+        );
+
+        const nodes = parseImportSection(numberOfImports);
+
+        return { nodes, metadata };
       }
 
-      case sections.funcSection: {
+      case sections.func: {
         dumpSep("section Function");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        parseFuncSection();
-        break;
+        const numberOfFunctionsu32 = readU32();
+        const numberOfFunctions = numberOfFunctionsu32.value;
+        eatBytes(numberOfFunctionsu32.nextIndex);
+
+        const metadata = t.sectionMetadata(
+          "function",
+          startOffset,
+          sectionSizeInBytes,
+          numberOfFunctions
+        );
+
+        parseFuncSection(numberOfFunctions);
+
+        const nodes = [];
+
+        return { nodes, metadata };
       }
 
-      case sections.exportSection: {
+      case sections.export: {
         dumpSep("section Export");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        parseExportSection();
-        break;
+        const u32 = readU32();
+        const numberOfExport = u32.value;
+        eatBytes(u32.nextIndex);
+
+        const metadata = t.sectionMetadata(
+          "export",
+          startOffset,
+          sectionSizeInBytes,
+          numberOfExport
+        );
+
+        parseExportSection(numberOfExport);
+
+        const nodes = [];
+
+        return { nodes, metadata };
       }
 
-      case sections.codeSection: {
+      case sections.code: {
         dumpSep("section Code");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
+        const metadata = t.sectionMetadata(
+          "code",
+          startOffset,
+          sectionSizeInBytes
+        );
+
         if (opts.ignoreCodeSection === true) {
           eatBytes(sectionSizeInBytes); // eat the entire section
-          return [];
+        } else {
+          const u32 = readU32();
+          const numberOfFuncs = u32.value;
+          eatBytes(u32.nextIndex);
+
+          metadata.vectorOfSize = numberOfFuncs;
+
+          parseCodeSection(numberOfFuncs);
         }
 
-        parseCodeSection();
-        break;
+        const nodes = [];
+
+        return { nodes, metadata };
       }
 
-      case sections.startSection: {
+      case sections.start: {
         dumpSep("section Start");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return [parseStartSection()];
+        const metadata = t.sectionMetadata(
+          "start",
+          startOffset,
+          sectionSizeInBytes
+        );
+
+        const nodes = [parseStartSection()];
+
+        return { nodes, metadata };
       }
 
-      case sections.elemSection: {
+      case sections.elem: {
         dumpSep("section Element");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseElemSection();
+        const numberOfElementsu32 = readU32();
+        const numberOfElements = numberOfElementsu32.value;
+        eatBytes(numberOfElementsu32.nextIndex);
+
+        const metadata = t.sectionMetadata(
+          "element",
+          startOffset,
+          sectionSizeInBytes,
+          numberOfElements
+        );
+
+        const nodes = parseElemSection(numberOfElements);
+
+        return { nodes, metadata };
       }
 
-      case sections.globalSection: {
+      case sections.global: {
         dumpSep("section Global");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseGlobalSection();
+        const numberOfGlobalsu32 = readU32();
+        const numberOfGlobals = numberOfGlobalsu32.value;
+        eatBytes(numberOfGlobalsu32.nextIndex);
+
+        const metadata = t.sectionMetadata(
+          "global",
+          startOffset,
+          sectionSizeInBytes,
+          numberOfGlobals
+        );
+
+        const nodes = parseGlobalSection(numberOfGlobals);
+
+        return { nodes, metadata };
       }
 
-      case sections.memorySection: {
+      case sections.memory: {
         dumpSep("section Memory");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        return parseMemorySection();
+        const numberOfElementsu32 = readU32();
+        const numberOfElements = numberOfElementsu32.value;
+        eatBytes(numberOfElementsu32.nextIndex);
+
+        const metadata = t.sectionMetadata(
+          "memory",
+          startOffset,
+          sectionSizeInBytes,
+          numberOfElements
+        );
+
+        const nodes = parseMemorySection(numberOfElements);
+
+        return { nodes, metadata };
       }
 
-      case sections.dataSection: {
+      case sections.data: {
         dumpSep("section Data");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
+        const metadata = t.sectionMetadata(
+          "data",
+          startOffset,
+          sectionSizeInBytes
+        );
+
         if (opts.ignoreDataSection === true) {
           eatBytes(sectionSizeInBytes); // eat the entire section
-          return [];
-        }
+          return { nodes: [], metadata };
+        } else {
+          const numberOfElementsu32 = readU32();
+          const numberOfElements = numberOfElementsu32.value;
+          eatBytes(numberOfElementsu32.nextIndex);
 
-        return parseDataSection();
+          metadata.vectorOfSize = numberOfElements;
+
+          const nodes = parseDataSection(numberOfElements);
+          return { nodes, metadata };
+        }
       }
 
-      case sections.customSection: {
+      case sections.custom: {
         dumpSep("section Custom");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
+        const nodes = [];
+        const metadata = t.sectionMetadata(
+          "custom",
+          startOffset,
+          sectionSizeInBytes
+        );
+
         // We don't need to parse it, just eat all the bytes
         eatBytes(sectionSizeInBytes);
 
-        break;
-      }
-
-      default: {
-        throw new CompileError(
-          "Unexpected section: " + JSON.stringify(sectionId)
-        );
+        return { nodes, metadata };
       }
     }
 
-    return [];
+    throw new CompileError("Unexpected section: " + JSON.stringify(sectionId));
   }
 
   parseModuleHeader();
   parseVersion();
 
   const moduleFields = [];
+  const moduleMetadata = {
+    sections: []
+  };
 
   /**
    * All the generate declaration are going to be stored in our state
    */
   while (offset < buf.length) {
-    const nodes = parseSection();
+    const { nodes, metadata } = parseSection();
+
     moduleFields.push(...nodes);
+    moduleMetadata.sections.push(metadata);
   }
 
   /**
@@ -1301,7 +1442,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
        */
       if (moduleExport.id != null) {
         moduleFields.push(
-          t.moduleExport(moduleExport.name, moduleExport.type, moduleExport.id)
+          t.withLoc(
+            t.moduleExport(
+              moduleExport.name,
+              moduleExport.type,
+              moduleExport.id
+            ),
+            moduleExport.endLoc,
+            moduleExport.startLoc
+          )
         );
       }
     }
@@ -1309,6 +1458,6 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   dumpSep("end of program");
 
-  const module = t.module(null, moduleFields);
+  const module = t.module(null, moduleFields, moduleMetadata);
   return t.program([module]);
 }

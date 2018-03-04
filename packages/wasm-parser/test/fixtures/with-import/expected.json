@@ -19,6 +19,16 @@
             "results": [
               "i32"
             ]
+          },
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 23
+            },
+            "end": {
+              "line": -1,
+              "column": 44
+            }
           }
         },
         {
@@ -44,7 +54,17 @@
                   "type": "NumberLiteral",
                   "value": 0
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": -1,
+                  "column": 68
+                },
+                "end": {
+                  "line": -1,
+                  "column": 70
+                }
+              }
             },
             {
               "type": "CallInstruction",
@@ -71,9 +91,58 @@
               "type": "Identifier",
               "value": "func_1"
             }
+          },
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 51
+            },
+            "end": {
+              "line": -1,
+              "column": 63
+            }
           }
         }
-      ]
+      ],
+      "metadata": {
+        "sections": [
+          {
+            "type": "SectionMetadata",
+            "section": "type",
+            "startOffset": 9,
+            "size": 10,
+            "vectorOfSize": 2
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "import",
+            "startOffset": 21,
+            "size": 22,
+            "vectorOfSize": 1
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "function",
+            "startOffset": 45,
+            "size": 2,
+            "vectorOfSize": 1
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "export",
+            "startOffset": 49,
+            "size": 13,
+            "vectorOfSize": 1
+          },
+          {
+            "type": "SectionMetadata",
+            "section": "code",
+            "startOffset": 64,
+            "size": 9,
+            "vectorOfSize": 1
+          }
+        ]
+      }
     }
   ]
 }

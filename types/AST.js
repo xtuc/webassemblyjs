@@ -5,6 +5,20 @@ type Byte = Number;
 
 type NumericLiteral = FloatLiteral | NumberLiteral | LongNumberLiteral;
 
+type SectionName =
+  | "custom"
+  | "type"
+  | "import"
+  | "function"
+  | "table"
+  | "memory"
+  | "global"
+  | "export"
+  | "start"
+  | "element"
+  | "code"
+  | "data";
+
 type FloatLiteral = {
   type: "FloatLiteral",
   value: number,
@@ -47,7 +61,11 @@ type ControlInstruction =
   | "IfInstruction";
 
 type NodePath<T> = {
-  node: T
+  node: T,
+  parentPath: ?NodePath<Node>,
+
+  replaceWith: Node => void,
+  remove: () => void
 };
 
 type Expression =
@@ -75,12 +93,15 @@ interface Position {
 
 interface SourceLocation {
   start: Position;
-  // end: Position;
+  end?: Position;
 }
 
 interface Node {
   type: any;
-  loc?: SourceLocation;
+  loc?: ?SourceLocation;
+
+  // Internal property
+  _deleted?: ?boolean;
 }
 
 interface Program {
@@ -121,7 +142,24 @@ interface Module {
   type: ModuleType;
   id: ?string;
   fields: ModuleFields;
+  metadata?: ModuleMetadata;
 }
+
+type ModuleMetadata = {
+  sections: Array<SectionMetadata>
+};
+
+type SectionMetadata = {
+  type: "SectionMetadata",
+  section: SectionName,
+
+  // after the section id byte
+  startOffset: number,
+  size: number,
+
+  // Size of the vector in the section (if any)
+  vectorOfSize: number
+};
 
 type BinaryModule = Module & {
   type: "BinaryModule",
@@ -238,13 +276,15 @@ type FuncImportDescr = {
 type ImportDescr = FuncImportDescr | GlobalType | Memory | Table;
 
 type ModuleImport = {
+  ...Node,
+
   type: "ModuleImport",
   module: string,
   name: string,
   descr: ImportDescr
 };
 
-type Table = Node & {
+type Table = {
   type: "Table",
   elementType: TableElementType,
   elements?: Array<Index>,

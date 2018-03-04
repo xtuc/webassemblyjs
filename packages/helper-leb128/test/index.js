@@ -2,7 +2,7 @@
 
 const { assert } = require("chai");
 
-const { decodeUInt32 } = require("../lib/LEB128");
+const { decodeUInt32 } = require("../lib");
 
 describe("LEB128", () => {
   describe("should decode an u32", () => {

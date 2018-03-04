@@ -1,7 +1,7 @@
 {
-  "name": "@webassemblyjs/wasm-gen",
+  "name": "@webassemblyjs/helper-buffer",
   "version": "1.0.0",
-  "description": "",
+  "description": "Buffer manipulation utility",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,10 +14,5 @@
     "access": "public"
   },
   "author": "Sven Sauleau",
-  "license": "GPL-2.0",
-  "dependencies": {
-    "@webassemblyjs/ast": "1.0.0",
-    "@webassemblyjs/helper-wasm-bytecode": "1.0.0",
-    "@webassemblyjs/helper-leb128": "1.0.0"
-  }
+  "license": "GPL-2.0"
 }

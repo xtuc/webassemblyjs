@@ -1,25 +1,24 @@
-const { decode } = require("@webassemblyjs/wasm-parser");
+// @flow
 
-const printText = require("./printers/text");
-const printMarkdown = require("./printers/markdown");
-const printJavaScript = require("./printers/javascript");
+import * as encoder from "./encoder";
 
-module.exports = function(buff, { out, url }) {
-  const ast = decode(buff);
+export function encodeNode(n: Node): Array<Byte> {
+  switch (n.type) {
+    case "ModuleImport":
+      // $FlowIgnore: ModuleImport ensure that the node is well formated
+      return encoder.encodeModuleImport(n);
 
-  switch (out) {
-    case "text":
-      return printText(ast);
+    case "SectionMetadata":
+      // $FlowIgnore: SectionMetadata ensure that the node is well formated
+      return encoder.encodeSectionMetadata(n);
 
-    case "md":
-    case "markdown":
-      return printMarkdown(ast);
-
-    case "js":
-    case "javascript":
-      return printJavaScript(ast, { url });
+    case "CallInstruction":
+      // $FlowIgnore: SectionMetadata ensure that the node is well formated
+      return encoder.encodeCallInstruction(n);
 
     default:
-      throw new Error("Unsupported output: " + out);
+      throw new Error("Unsupported encoding for node of type: " + n.type);
   }
-};
+}
+
+export const encodeU32 = encoder.encodeU32;
