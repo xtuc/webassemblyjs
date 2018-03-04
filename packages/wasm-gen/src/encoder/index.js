@@ -108,3 +108,19 @@ export function encodeSectionMetadata(n: SectionMetadata): Array<Byte> {
 
   return out;
 }
+
+export function encodeCallInstruction(n: CallInstruction): Array<Byte> {
+  const out = [];
+
+  if (n.index.type !== "NumberLiteral") {
+    throw new Error(
+      "Unsupported index for CallInstruction of type: " + n.index.type
+    );
+  }
+
+  out.push(0x10);
+  // $FlowIgnore
+  out.push(...encodeU32(n.index.value));
+
+  return out;
+}

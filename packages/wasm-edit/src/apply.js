@@ -27,6 +27,7 @@ export function applyToNodeToUpdate(
   nodes.forEach(node => {
     assertNodeHasLoc(node);
 
+    const sectionName = getSectionForNode(node);
     const replacementByteArray = encodeNode(node);
 
     /**
@@ -49,14 +50,12 @@ export function applyToNodeToUpdate(
       // $FlowIgnore: assertNodeHasLoc ensures that
       (node.loc.end.column - node.loc.start.column);
 
-    if (node.type === "ModuleImport") {
-      uint8Buffer = resizeSectionByteSize(
-        ast,
-        uint8Buffer,
-        "import",
-        deltaBytes
-      );
-    }
+    uint8Buffer = resizeSectionByteSize(
+      ast,
+      uint8Buffer,
+      sectionName,
+      deltaBytes
+    );
 
     // Update new node end position
     // $FlowIgnore: assertNodeHasLoc ensures that
@@ -71,8 +70,12 @@ export function applyToNodeToDelete(
   uint8Buffer: Uint8Array,
   nodes: Array<Node>
 ) {
+  const deltaElements = -1; // since we removed an element
+
   nodes.forEach(node => {
     assertNodeHasLoc(node);
+
+    const sectionName = getSectionForNode(node);
 
     // replacement is nothing
     const replacement = [];
@@ -86,29 +89,44 @@ export function applyToNodeToDelete(
       replacement
     );
 
-    // Update section size
+    /**
+     * Update section
+     */
     // $FlowIgnore: assertNodeHasLoc ensures that
     const deltaBytes = -(node.loc.end.column - node.loc.start.column);
-    const deltaElements = -1; // since we removed an element
 
-    if (node.type === "ModuleExport") {
-      uint8Buffer = resizeSectionByteSize(
-        ast,
-        uint8Buffer,
-        "export",
-        deltaBytes
-      );
+    uint8Buffer = resizeSectionByteSize(
+      ast,
+      uint8Buffer,
+      sectionName,
+      deltaBytes
+    );
 
-      uint8Buffer = resizeSectionVecSize(
-        ast,
-        uint8Buffer,
-        "export",
-        deltaElements
-      );
-    }
+    uint8Buffer = resizeSectionVecSize(
+      ast,
+      uint8Buffer,
+      sectionName,
+      deltaElements
+    );
   });
 
   return uint8Buffer;
+}
+
+function getSectionForNode(n: Node): SectionName {
+  switch (n.type) {
+    case "ModuleImport":
+      return "import";
+
+    case "CallInstruction":
+      return "code";
+
+    case "ModuleExport":
+      return "export";
+
+    default:
+      throw new Error("Unsupported input in getSectionForNode: " + n.type);
+  }
 }
 
 export function applyToNodeToAdd(
@@ -116,58 +134,51 @@ export function applyToNodeToAdd(
   uint8Buffer: Uint8Array,
   nodes: Array<Node>
 ) {
+  const deltaElements = +1; // since we added an element
+
   nodes.forEach(node => {
-    const deltaElements = +1; // since we added an element
+    const sectionName = getSectionForNode(node);
 
-    if (node.type === "ModuleImport") {
-      let sectionMetadata = getSectionMetadata(ast, "import");
+    let sectionMetadata = getSectionMetadata(ast, sectionName);
 
-      // Section doesn't exists, we create an empty one
-      if (typeof sectionMetadata === "undefined") {
-        const res = createEmptySection(ast, uint8Buffer, "import");
+    // Section doesn't exists, we create an empty one
+    if (typeof sectionMetadata === "undefined") {
+      const res = createEmptySection(ast, uint8Buffer, sectionName);
 
-        uint8Buffer = res.uint8Buffer;
-        sectionMetadata = res.sectionMetadata;
-      }
-
-      /**
-       * Add nodes
-       */
-      const newByteArray = encodeNode(node);
-
-      // start at the end of the section
-      const start = sectionMetadata.startOffset + sectionMetadata.size + 1;
-
-      const end = start;
-
-      uint8Buffer = overrideBytesInBuffer(
-        uint8Buffer,
-        start,
-        end,
-        newByteArray
-      );
-
-      const deltaBytes = newByteArray.length;
-
-      /**
-       * Update section
-       */
-      uint8Buffer = resizeSectionByteSize(
-        ast,
-        uint8Buffer,
-        "import",
-        deltaBytes
-      );
-
-      uint8Buffer = resizeSectionVecSize(
-        ast,
-        uint8Buffer,
-        "import",
-        deltaElements
-      );
-    } else {
-      throw new Error("Unsupport operation: insert node of type: " + node.type);
+      uint8Buffer = res.uint8Buffer;
+      sectionMetadata = res.sectionMetadata;
     }
+
+    /**
+     * Add nodes
+     */
+    const newByteArray = encodeNode(node);
+
+    // start at the end of the section
+    const start = sectionMetadata.startOffset + sectionMetadata.size + 1;
+
+    const end = start;
+
+    uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
+
+    const deltaBytes = newByteArray.length;
+
+    /**
+     * Update section
+     */
+    uint8Buffer = resizeSectionByteSize(
+      ast,
+      uint8Buffer,
+      sectionName,
+      deltaBytes
+    );
+
+    uint8Buffer = resizeSectionVecSize(
+      ast,
+      uint8Buffer,
+      sectionName,
+      deltaElements
+    );
   });
 
   return uint8Buffer;

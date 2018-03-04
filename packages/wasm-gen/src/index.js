@@ -12,8 +12,12 @@ export function encodeNode(n: Node): Array<Byte> {
       // $FlowIgnore: SectionMetadata ensure that the node is well formated
       return encoder.encodeSectionMetadata(n);
 
+    case "CallInstruction":
+      // $FlowIgnore: SectionMetadata ensure that the node is well formated
+      return encoder.encodeCallInstruction(n);
+
     default:
-      throw new Error("Unsupported replacement for node of type: " + n.type);
+      throw new Error("Unsupported encoding for node of type: " + n.type);
   }
 }
 

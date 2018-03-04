@@ -29,6 +29,23 @@ const visitors = {
 const newBinary = replaceInBinary(binary, visitors);
 ```
 
+Replace:
+
+```js
+import { replaceInBinary } from "@webassemblyjs/wasm-edit";
+
+const binary = [/*...*/];
+
+const visitors = {
+  Instr(path) {
+    const newNode = t.callInstruction(t.indexLiteral(0));
+    path.replaceWith(newNode);
+  }
+};
+
+const newBinary = replaceInBinary(binary, visitors);
+```
+
 Remove:
 
 ```js

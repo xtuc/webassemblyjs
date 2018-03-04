@@ -24,6 +24,12 @@ export function replaceInBinary(
   const nodesToDelete = [];
   const nodesToUpdate = [];
 
+  if (typeof visitors.Instr === "function") {
+    decoderOpts.ignoreCodeSection = false;
+
+    console.warn("Decoding the code section has been enabled.");
+  }
+
   const ast = decode(ab, decoderOpts);
 
   let uint8Buffer = new Uint8Array(ab);

@@ -39,6 +39,12 @@ const fixtures = [
     name: "should generate an empty ImportSection",
     node: t.sectionMetadata("import", 0, 1, 0),
     expected: [0x02, 0x01, 0x00]
+  },
+
+  {
+    name: "should generate a CallInstruction",
+    node: t.callInstruction(t.indexLiteral(0)),
+    expected: [0x10, 0x00]
   }
 ];
 
