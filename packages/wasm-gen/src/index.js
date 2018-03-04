@@ -18,7 +18,7 @@ export function encodeNode(n: Node): Array<Byte> {
 
     default:
       throw new Error(
-        "Unsupported encoding for node of type: " + String(n.type)
+        "Unsupported encoding for node of type: " + JSON.stringify(n.type)
       );
   }
 }

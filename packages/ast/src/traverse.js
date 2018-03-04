@@ -187,7 +187,9 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
     }
 
     default:
-      throw new Error("Unknown node encounter of type: " + String(n.type));
+      throw new Error(
+        "Unknown node encounter of type: " + JSON.stringify(n.type)
+      );
   }
 }
 

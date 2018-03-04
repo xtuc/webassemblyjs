@@ -13,7 +13,7 @@ import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 function assertNodeHasLoc(n: Node) {
   if (n.loc == null || n.loc.start == null || n.loc.end == null) {
     throw new Error(
-      `Internal failure: can not replace node (${String(
+      `Internal failure: can not replace node (${JSON.stringify(
         n.type
       )}) without loc information`
     );

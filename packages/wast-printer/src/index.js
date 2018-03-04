@@ -381,7 +381,7 @@ function printInstruction(n: Instruction, depth: number): string {
       return printLoopInstruction(n, depth + 1);
 
     default:
-      throw new Error("Unsupported instruction: " + String(n.type));
+      throw new Error("Unsupported instruction: " + JSON.stringify(n.type));
   }
 }
 
