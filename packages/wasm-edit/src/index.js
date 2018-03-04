@@ -17,7 +17,7 @@ const decoderOpts = {
   ignoreDataSection: true
 };
 
-export function replaceInBinary(
+export function edit(
   ab: ArrayBuffer,
   visitors: Object
 ): ArrayBuffer {
@@ -56,7 +56,7 @@ export function replaceInBinary(
   return uint8Buffer.buffer;
 }
 
-export function addInBinary(
+export function add(
   ab: ArrayBuffer,
   newNodes: Array<Node>
 ): ArrayBuffer {

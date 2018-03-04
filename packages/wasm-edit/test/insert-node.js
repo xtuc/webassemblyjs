@@ -6,7 +6,7 @@ const {
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 
-const { addInBinary } = require("../lib");
+const { add } = require("../lib");
 
 function assertArrayBufferEqual(l, r) {
   assert.deepEqual(new Uint8Array(l), new Uint8Array(r));
@@ -17,7 +17,7 @@ describe("insert a node", () => {
     // (module)
     const actualBinary = makeBuffer(encodeHeader(), encodeVersion(1));
 
-    const newBinary = addInBinary(actualBinary, [
+    const newBinary = add(actualBinary, [
       t.moduleImport("a", "b", t.memory(t.limits(1)))
     ]);
 

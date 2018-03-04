@@ -15,7 +15,7 @@ npm install @webassemblyjs/wasm-edit
 Update:
 
 ```js
-import { replaceInBinary } from "@webassemblyjs/wasm-edit";
+import { edit } from "@webassemblyjs/wasm-edit";
 
 const binary = [/*...*/];
 
@@ -26,13 +26,13 @@ const visitors = {
   }
 };
 
-const newBinary = replaceInBinary(binary, visitors);
+const newBinary = edit(binary, visitors);
 ```
 
 Replace:
 
 ```js
-import { replaceInBinary } from "@webassemblyjs/wasm-edit";
+import { edit } from "@webassemblyjs/wasm-edit";
 
 const binary = [/*...*/];
 
@@ -43,13 +43,13 @@ const visitors = {
   }
 };
 
-const newBinary = replaceInBinary(binary, visitors);
+const newBinary = edit(binary, visitors);
 ```
 
 Remove:
 
 ```js
-import { replaceInBinary } from "@webassemblyjs/wasm-edit";
+import { edit } from "@webassemblyjs/wasm-edit";
 
 const binary = [/*...*/];
 
@@ -59,17 +59,17 @@ const visitors = {
   }
 };
 
-const newBinary = replaceInBinary(binary, visitors);
+const newBinary = edit(binary, visitors);
 ```
 
 Insert:
 
 ```js
-import { addInBinary } from "@webassemblyjs/wasm-edit";
+import { add } from "@webassemblyjs/wasm-edit";
 
 const binary = [/*...*/];
 
-const newBinary = addInBinary(actualBinary, [
+const newBinary = add(actualBinary, [
   t.moduleImport("env", "mem", t.memory(t.limits(1)))
 ]);
 ```

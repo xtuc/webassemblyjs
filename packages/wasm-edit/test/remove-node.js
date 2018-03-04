@@ -4,7 +4,7 @@ const {
   encodeHeader
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 
-const { replaceInBinary } = require("../lib");
+const { edit } = require("../lib");
 
 function makeBuffer(...splitedBytes) {
   const bytes = [].concat.apply([], splitedBytes);
@@ -28,7 +28,7 @@ describe("remove a node", () => {
       [7, 0x05, 0x01, 0x01, 0x6d, 0x02, 0x00]
     );
 
-    const newBinary = replaceInBinary(actualBinary, {
+    const newBinary = edit(actualBinary, {
       ModuleExport(path) {
         path.remove();
       }

@@ -6,7 +6,7 @@ const {
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const t = require("@webassemblyjs/ast");
 
-const { replaceInBinary } = require("../lib");
+const { edit } = require("../lib");
 
 function assertArrayBufferEqual(l, r) {
   assert.deepEqual(new Uint8Array(l), new Uint8Array(r));
@@ -21,7 +21,7 @@ describe("replace a node", () => {
       [0x7f, 0x00]
     );
 
-    const newBinary = replaceInBinary(actualBinary, {
+    const newBinary = edit(actualBinary, {
       ModuleImport({ node }) {
         node.module = "foo";
         node.name = "bar";
@@ -53,7 +53,7 @@ describe("replace a node", () => {
       [/* get_global */ 0x23, 0x00, 0x0b]
     );
 
-    const newBinary = replaceInBinary(actualBinary, {
+    const newBinary = edit(actualBinary, {
       Instr(path) {
         const newNode = t.callInstruction(t.indexLiteral(0));
         path.replaceWith(newNode);
