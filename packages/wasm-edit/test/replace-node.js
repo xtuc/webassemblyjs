@@ -5,7 +5,6 @@ const {
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const t = require("@webassemblyjs/ast");
-const {decode} = require("@webassemblyjs/wasm-parser");
 
 const { replaceInBinary } = require("../lib");
 
