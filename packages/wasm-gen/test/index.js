@@ -65,4 +65,12 @@ describe("wasm gen", () => {
 
     assert.deepEqual(actual, expected);
   });
+
+  it("should encode an u32 of one byte", () => {
+    assert.deepEqual(encoder.encodeU32(5), [0x05]);
+  });
+
+  it("should encode an u32 of multiple bytes", () => {
+    assert.deepEqual(encoder.encodeU32(0xff1), [241, 31]);
+  });
 });
