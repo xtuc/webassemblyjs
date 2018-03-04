@@ -1,6 +1,12 @@
 // @flow
+/* eslint no-unused-vars: off */
 
 type Byte = number;
+
+type VariableLengthValue = {
+  value: number,
+  nextIndex: number
+};
 
 interface Type {
   value: number;

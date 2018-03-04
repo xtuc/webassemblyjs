@@ -1,4 +1,5 @@
 // @flow
+/* eslint no-unused-vars: off */
 
 type U32Literal = NumberLiteral;
 type Byte = Number;
@@ -20,6 +21,8 @@ type SectionName =
   | "data";
 
 type FloatLiteral = {
+  ...BaseNode,
+
   type: "FloatLiteral",
   value: number,
   nan?: boolean,
@@ -68,6 +71,42 @@ type NodePath<T> = {
   remove: () => void
 };
 
+type Node =
+  | Program
+  | FloatLiteral
+  | Program
+  | StringLiteral
+  | NumberLiteral
+  | LongNumberLiteral
+  | Identifier
+  | Module
+  | SectionMetadata
+  | BinaryModule
+  | QuoteModule
+  | Func
+  | IfInstruction
+  | TypeInstruction
+  | LoopInstruction
+  | BlockInstruction
+  | CallInstruction
+  | CallIndirectInstruction
+  | ObjectInstruction
+  | GenericInstruction
+  | ModuleExport
+  | Limit
+  | FuncImportDescr
+  | ModuleImport
+  | Table
+  | Memory
+  | Data
+  | Global
+  | GlobalType
+  | LeadingComment
+  | BlockComment
+  | ValtypeLiteral
+  | Start
+  | Elem;
+
 type Expression =
   | Identifier
   | NumericLiteral
@@ -81,56 +120,66 @@ type TableElementType = "anyfunc";
  * AST types
  */
 
-interface LongNumber {
-  high: number;
-  low: number;
-}
+type LongNumber = {
+  high: number,
+  low: number
+};
 
-interface Position {
-  line: number;
-  column: number;
-}
+type Position = {
+  line: number,
+  column: number
+};
 
-interface SourceLocation {
-  start: Position;
-  end?: Position;
-}
+type SourceLocation = {
+  start: Position,
+  end?: Position
+};
 
-interface Node {
-  type: any;
-  loc?: ?SourceLocation;
+type BaseNode = {
+  type: string,
+  loc?: ?SourceLocation,
 
   // Internal property
-  _deleted?: ?boolean;
-}
+  _deleted?: ?boolean
+};
 
-interface Program {
-  type: "Program";
-  body: Array<Node>;
-}
+type Program = {
+  ...BaseNode,
+
+  type: "Program",
+  body: Array<Node>
+};
 
 /**
  * Concrete values
  */
-interface StringLiteral {
-  type: "StringLiteral";
-  value: string;
-}
+type StringLiteral = {
+  ...BaseNode,
 
-interface NumberLiteral {
-  type: "NumberLiteral";
-  value: number;
-}
+  type: "StringLiteral",
+  value: string
+};
 
-interface LongNumberLiteral {
-  type: "LongNumberLiteral";
-  value: LongNumber;
-}
+type NumberLiteral = {
+  ...BaseNode,
 
-interface Identifier {
-  type: "Identifier";
-  value: string;
-}
+  type: "NumberLiteral",
+  value: number
+};
+
+type LongNumberLiteral = {
+  ...BaseNode,
+
+  type: "LongNumberLiteral",
+  value: LongNumber
+};
+
+type Identifier = {
+  ...BaseNode,
+
+  type: "Identifier",
+  value: string
+};
 
 /**
  * Module structure
@@ -138,18 +187,22 @@ interface Identifier {
 
 type ModuleFields = Array<Node>;
 
-interface Module {
-  type: ModuleType;
-  id: ?string;
-  fields: ModuleFields;
-  metadata?: ModuleMetadata;
-}
+type Module = {
+  ...BaseNode,
+
+  type: ModuleType,
+  id: ?string,
+  fields: ModuleFields,
+  metadata?: ModuleMetadata
+};
 
 type ModuleMetadata = {
   sections: Array<SectionMetadata>
 };
 
 type SectionMetadata = {
+  ...BaseNode,
+
   type: "SectionMetadata",
   section: SectionName,
 
@@ -161,12 +214,16 @@ type SectionMetadata = {
   vectorOfSize: number
 };
 
-type BinaryModule = Module & {
+type BinaryModule = {
+  ...Module,
+
   type: "BinaryModule",
   blob: Array<string>
 };
 
-type QuoteModule = Module & {
+type QuoteModule = {
+  ...Module,
+
   type: "QuoteModule",
   string: Array<string>
 };
@@ -176,19 +233,21 @@ type FuncParam = {
   valtype: Valtype
 };
 
-interface Func {
-  type: "Func";
+type Func = {
+  ...BaseNode,
+
+  type: "Func",
 
   // Only in WAST
-  name: ?Index;
+  name: ?Index,
 
-  params: Array<FuncParam>;
-  result: Array<Valtype>;
-  body: Array<Instruction>;
+  params: Array<FuncParam>,
+  result: Array<Valtype>,
+  body: Array<Instruction>,
 
   // Means that it has been imported from the outside js
-  isExternal?: boolean;
-}
+  isExternal?: boolean
+};
 
 /**
  * Instructions
@@ -203,6 +262,8 @@ type Instruction =
   | ObjectInstruction;
 
 type GenericInstruction = {
+  ...BaseNode,
+
   type: InstructionType,
   id: string,
   args: Array<Expression>,
@@ -211,11 +272,15 @@ type GenericInstruction = {
   namedArgs?: Object
 };
 
-type ObjectInstruction = GenericInstruction & {
+type ObjectInstruction = {
+  ...GenericInstruction,
+
   object: Valtype
 };
 
 type LoopInstruction = {
+  ...BaseNode,
+
   type: "LoopInstruction",
   label: ?Identifier,
   resulttype: ?Valtype,
@@ -223,6 +288,8 @@ type LoopInstruction = {
 };
 
 type BlockInstruction = {
+  ...BaseNode,
+
   type: "BlockInstruction",
   label: ?Identifier,
   instr: Array<Instruction>,
@@ -230,6 +297,8 @@ type BlockInstruction = {
 };
 
 type IfInstruction = {
+  ...BaseNode,
+
   type: "IfInstruction",
   testLabel: Identifier, // only for WAST
   result: ?Valtype,
@@ -239,34 +308,44 @@ type IfInstruction = {
 };
 
 type CallInstruction = {
+  ...BaseNode,
+
   type: "CallInstruction",
   index: Index,
   instrArgs?: Array<Expression> // only for WAST
 };
 
 type CallIndirectInstruction = {
+  ...BaseNode,
+
   type: "CallIndirectInstruction",
   params: Array<FuncParam>,
   results: Array<Valtype>,
   intrs: Array<Expression>
 };
 
-interface ModuleExport {
-  type: "ModuleExport";
-  name: string;
+type ModuleExport = {
+  ...BaseNode,
+
+  type: "ModuleExport",
+  name: string,
   descr: {
     type: ExportDescr,
     id: Index
-  };
-}
+  }
+};
 
 type Limit = {
+  ...BaseNode,
+
   type: "Limit",
   min: number,
   max?: number
 };
 
 type FuncImportDescr = {
+  ...BaseNode,
+
   type: "FuncImportDescr",
   id: Identifier,
   params: Array<FuncParam>,
@@ -276,7 +355,7 @@ type FuncImportDescr = {
 type ImportDescr = FuncImportDescr | GlobalType | Memory | Table;
 
 type ModuleImport = {
-  ...Node,
+  ...BaseNode,
 
   type: "ModuleImport",
   module: string,
@@ -285,6 +364,8 @@ type ModuleImport = {
 };
 
 type Table = {
+  ...BaseNode,
+
   type: "Table",
   elementType: TableElementType,
   elements?: Array<Index>,
@@ -293,6 +374,8 @@ type Table = {
 };
 
 type Memory = {
+  ...BaseNode,
+
   type: "Memory",
   limits: Limit,
   id: ?Index
@@ -304,6 +387,8 @@ type ByteArray = {
 };
 
 type Data = {
+  ...BaseNode,
+
   type: "Data",
   memoryIndex: Memidx,
   offset: Instruction,
@@ -311,6 +396,8 @@ type Data = {
 };
 
 type Global = {
+  ...BaseNode,
+
   type: "Global",
   globalType: GlobalType,
   init: Array<Instruction>,
@@ -318,27 +405,37 @@ type Global = {
 };
 
 type GlobalType = {
+  ...BaseNode,
+
   type: "GlobalType",
   valtype: Valtype,
   mutability: Mutability
 };
 
 type LeadingComment = {
+  ...BaseNode,
+
   type: "LeadingComment",
   value: string
 };
 
 type BlockComment = {
+  ...BaseNode,
+
   type: "BlockComment",
   value: string
 };
 
 type ValtypeLiteral = {
+  ...BaseNode,
+
   type: "ValtypeLiteral",
   name: Valtype
 };
 
 type TypeInstruction = {
+  ...BaseNode,
+
   type: "TypeInstruction",
   id: ?Index,
   functype: {
@@ -348,11 +445,15 @@ type TypeInstruction = {
 };
 
 type Start = {
+  ...BaseNode,
+
   type: "Start",
   index: Index
 };
 
 type Elem = {
+  ...BaseNode,
+
   type: "Elem",
   table: Index,
 

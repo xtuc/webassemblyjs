@@ -1,4 +1,5 @@
 // @flow
+/* eslint no-unused-vars: off */
 
 type Bytes = number;
 
