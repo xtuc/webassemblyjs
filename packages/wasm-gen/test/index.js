@@ -36,6 +36,34 @@ const fixtures = [
   },
 
   {
+    name: "should generate a func(): i32 ModuleImport",
+    node: t.moduleImport(
+      "a",
+      "b",
+      t.funcImportDescr(t.indexLiteral(0), [], ["i32"])
+    ),
+    expected: [0x01, 0x61, 0x01, 0x62, 0x00, 0x00]
+  },
+
+  {
+    name: "should generate func type func(): i32",
+    node: t.typeInstructionFunc([], ["i32"]),
+    expected: [0x60, 0x00, 0x01, 0x7f]
+  },
+
+  {
+    name: "should generate func type func(i32)",
+    node: t.typeInstructionFunc([t.funcParam("i32")], []),
+    expected: [0x60, 0x01, 0x7f, 0x00]
+  },
+
+  {
+    name: "should generate func type func(i32): i32",
+    node: t.typeInstructionFunc([t.funcParam("i32")], ["i32"]),
+    expected: [0x60, 0x01, 0x7f, 0x01, 0x7f]
+  },
+
+  {
     name: "should generate an empty ImportSection",
     node: t.sectionMetadata("import", 0, 1, 0),
     expected: [0x02, 0x01, 0x00]

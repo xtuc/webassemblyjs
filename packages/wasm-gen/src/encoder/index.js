@@ -94,6 +94,18 @@ export function encodeModuleImport(n: ModuleImport): Array<Byte> {
       break;
     }
 
+    case "FuncImportDescr": {
+      out.push(0x00);
+
+      // $FlowIgnore
+      assertNotIdentifierNode(n.descr.id);
+
+      // $FlowIgnore
+      out.push(...encodeU32(n.descr.id.value));
+
+      break;
+    }
+
     default:
       throw new Error(
         "Unsupport operation: encode module import of type: " + n.descr.type
@@ -157,6 +169,18 @@ export function encodeModuleExport(n: ModuleExport): Array<Byte> {
 
   // $FlowIgnore
   out.push(...encodeU32(n.descr.id.value));
+
+  return out;
+}
+
+export function encodeTypeInstruction(n: TypeInstruction): Array<Byte> {
+  const out = [0x60];
+
+  const params = n.functype.params.map(x => x.valtype).map(encodeValtype);
+  const results = n.functype.result.map(encodeValtype);
+
+  out.push(...encodeVec(params));
+  out.push(...encodeVec(results));
 
   return out;
 }
