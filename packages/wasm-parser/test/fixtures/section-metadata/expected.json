@@ -63,7 +63,7 @@
           },
           {
             "type": "SectionMetadata",
-            "section": "function",
+            "section": "func",
             "startOffset": 15,
             "size": 2,
             "vectorOfSize": 1

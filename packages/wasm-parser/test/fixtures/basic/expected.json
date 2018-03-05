@@ -191,7 +191,7 @@
           },
           {
             "type": "SectionMetadata",
-            "section": "function",
+            "section": "func",
             "startOffset": 18,
             "size": 3,
             "vectorOfSize": 2

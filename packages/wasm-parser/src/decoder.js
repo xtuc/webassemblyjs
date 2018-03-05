@@ -1194,7 +1194,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         eatBytes(numberOfFunctionsu32.nextIndex);
 
         const metadata = t.sectionMetadata(
-          "function",
+          "func",
           startOffset,
           sectionSizeInBytes,
           numberOfFunctions
