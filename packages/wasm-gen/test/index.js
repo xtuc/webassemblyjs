@@ -48,7 +48,7 @@ const fixtures = [
   },
 
   {
-    name: "should generate a ModuleExport of func 0",
+    name: "should generate a ModuleExport of func 1",
     node: t.moduleExport("a", "Func", t.indexLiteral(1)),
     expected: [0x01, 0x61, 0x00, 0x01]
   }
