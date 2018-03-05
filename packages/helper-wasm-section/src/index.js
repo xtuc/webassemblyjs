@@ -2,6 +2,7 @@
 
 export { resizeSectionByteSize, resizeSectionVecSize } from "./resize";
 export { createEmptySection } from "./create";
+export { removeSection } from "./remove";
 
 export function getSectionForNode(n: Node): SectionName {
   switch (n.type) {
@@ -13,6 +14,9 @@ export function getSectionForNode(n: Node): SectionName {
 
     case "ModuleExport":
       return "export";
+
+    case "Start":
+      return "start";
 
     default:
       throw new Error(

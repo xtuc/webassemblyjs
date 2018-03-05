@@ -6,6 +6,7 @@ import {
   resizeSectionByteSize,
   resizeSectionVecSize,
   createEmptySection,
+  removeSection,
   getSectionForNode
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
@@ -78,6 +79,16 @@ export function applyToNodeToDelete(
 
     const sectionName = getSectionForNode(node);
 
+    if (sectionName === "start") {
+      /**
+       * The start section only contains one element,
+       * we need to remove the whole section
+       */
+
+      uint8Buffer = removeSection(ast, uint8Buffer, "start");
+      return;
+    }
+
     // replacement is nothing
     const replacement = [];
 
@@ -93,6 +104,7 @@ export function applyToNodeToDelete(
     /**
      * Update section
      */
+
     // $FlowIgnore: assertNodeHasLoc ensures that
     const deltaBytes = -(node.loc.end.column - node.loc.start.column);
 

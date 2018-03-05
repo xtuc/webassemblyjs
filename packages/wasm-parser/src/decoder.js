@@ -1055,13 +1055,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-startsec
   function parseStartSection() {
+    const startLoc = getPosition();
+
     const u32 = readU32();
     const startFuncIndex = u32.value;
     eatBytes(u32.nextIndex);
 
     dump([startFuncIndex], "index");
 
-    return t.start(t.indexLiteral(startFuncIndex));
+    const endLoc = getPosition();
+
+    return t.withLoc(t.start(t.indexLiteral(startFuncIndex)), endLoc, startLoc);
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#data-section

@@ -10,7 +10,8 @@ const constants = require("@webassemblyjs/helper-wasm-bytecode");
 const {
   resizeSectionVecSize,
   resizeSectionByteSize,
-  createEmptySection
+  createEmptySection,
+  removeSection
 } = require("../lib");
 
 const section = "import";
@@ -120,5 +121,37 @@ describe("resize", () => {
     );
 
     assert.deepEqual(new Uint8Array(newBinary), new Uint8Array(expectedBinary));
+  });
+});
+
+describe("remove", () => {
+  it("should remove the start section", () => {
+    const sectionName = "start";
+
+    const actual = new Uint8Array(
+      makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
+        [constants.sections.func, 0x02, 0x01, 0x00],
+        [constants.sections.start, 0x01, 0x00],
+        [constants.sections.code, 0x04, 0x01, 0x02, 0x00, 0x0b]
+      )
+    );
+
+    const expected = new Uint8Array(
+      makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
+        [constants.sections.func, 0x02, 0x01, 0x00],
+        [constants.sections.code, 0x04, 0x01, 0x02, 0x00, 0x0b]
+      )
+    );
+
+    const ast = decode(actual);
+    const newBin = removeSection(ast, actual, sectionName);
+
+    assert.deepEqual(newBin, expected);
   });
 });
