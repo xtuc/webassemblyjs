@@ -5,6 +5,7 @@ const {
 const { assert } = require("chai");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
 
 const {
   resizeSectionVecSize,
@@ -39,6 +40,36 @@ describe("create", () => {
     assert.equal(res.sectionMetadata.section, sectionName);
     assert.equal(res.sectionMetadata.startOffset, 9);
     assert.equal(res.sectionMetadata.size, 1);
+  });
+
+  it("should create an section and preserve section order", () => {
+    const sectionName = "func";
+
+    const actual = new Uint8Array(
+      makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.type, 0x01, 0x00],
+        [constants.sections.import, 0x01, 0x00],
+        [constants.sections.global, 0x01, 0x00]
+      )
+    );
+
+    const expected = new Uint8Array(
+      makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.type, 0x01, 0x00],
+        [constants.sections.import, 0x01, 0x00],
+        [constants.sections.func, 0x01, 0x00],
+        [constants.sections.global, 0x01, 0x00]
+      )
+    );
+
+    const ast = decode(actual);
+    const res = createEmptySection(ast, actual, sectionName);
+
+    assert.deepEqual(res.uint8Buffer, expected);
   });
 });
 
