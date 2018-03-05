@@ -390,9 +390,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const signature = state.typesInModule[typeindex];
 
         if (typeof signature === "undefined") {
-          throw new CompileError(
-            "function signature not found in type section"
-          );
+          throw new CompileError(`function signature not found (${typeindex})`);
         }
 
         const id = t.identifier(`${moduleName.value}.${name.value}`);
@@ -447,7 +445,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const signature = state.typesInModule[typeindex];
 
       if (typeof signature === "undefined") {
-        throw new CompileError("function signature not found");
+        throw new CompileError(`function signature not found (${typeindex})`);
       }
 
       const id = t.identifier(getUniqueName("func"));

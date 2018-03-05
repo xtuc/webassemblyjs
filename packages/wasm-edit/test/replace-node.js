@@ -5,8 +5,9 @@ const {
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const t = require("@webassemblyjs/ast");
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
 
-const { edit } = require("../lib");
+const { add, edit } = require("../lib");
 
 function assertArrayBufferEqual(l, r) {
   assert.deepEqual(new Uint8Array(l), new Uint8Array(r));
@@ -36,6 +37,47 @@ describe("replace a node", () => {
     );
 
     assertArrayBufferEqual(newBinary, expectedBinary);
+  });
+
+  it("should replace the ModuleImport with a new FuncImportDescr", () => {
+    // (module
+    //   (global $a.b (import "a" "b") i32)
+    // )
+    let actualBinary = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.import, 0x08, 0x01, 0x01, 0x61, 0x01, 0x62, 0x03],
+      [0x7f, 0x00]
+    );
+
+    const funcType = t.typeInstructionFunc([], ["i32"]);
+    const funcTypeIndex = t.indexLiteral(0); // we have only one type
+
+    // Add func type to have a valid wasm
+    actualBinary = add(actualBinary, [funcType]);
+
+    actualBinary = edit(actualBinary, {
+      ModuleImport({ node }) {
+        node.descr = t.funcImportDescr(
+          funcTypeIndex,
+          funcType.functype.params,
+          funcType.functype.results
+        );
+      }
+    });
+
+    // (module
+    //   (func $a.b (import "a" "b") (result i32))
+    // )
+    const expectedBinary = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.type, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7f],
+      [constants.sections.import, 0x07, 0x01, 0x01, 0x61, 0x01, 0x62, 0x00],
+      [0x00]
+    );
+
+    assertArrayBufferEqual(actualBinary, expectedBinary);
   });
 
   it("should replace the Instruction to a CallInstruction", () => {

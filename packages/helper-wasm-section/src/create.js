@@ -44,7 +44,10 @@ export function createEmptySection(
   let start, end;
 
   if (lastSection == null) {
-    start = uint8Buffer.length;
+    /**
+     * It's the first section
+     */
+    start = 8 /* wasm header size */;
     end = start;
   } else {
     start = lastSection.startOffset + lastSection.size + 1;

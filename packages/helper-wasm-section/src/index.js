@@ -18,6 +18,9 @@ export function getSectionForNode(n: Node): SectionName {
     case "Start":
       return "start";
 
+    case "TypeInstruction":
+      return "type";
+
     default:
       throw new Error(
         "Unsupported input in getSectionForNode: " + JSON.stringify(n.type)
