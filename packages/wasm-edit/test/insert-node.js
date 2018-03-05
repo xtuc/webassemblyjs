@@ -5,6 +5,7 @@ const {
   encodeHeader
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
 
 const { add } = require("../lib");
 
@@ -59,9 +60,10 @@ describe("insert a node", () => {
     const expectedBinary = makeBuffer(
       encodeHeader(),
       encodeVersion(1),
-      [0x01, 0x04, 0x01, 0x60, 0x00, 0x00, 0x03, 0x02, 0x01, 0x00],
-      /* code section */ [0x0a, 0x04, 0x01, 0x02, 0x00, 0x0b],
-      /* export section */ [0x07, 0x05, 0x01, 0x01, 0x61, 0x00, 0x00]
+      [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
+      [constants.sections.func, 0x02, 0x01, 0x00],
+      [constants.sections.export, 0x05, 0x01, 0x01, 0x61, 0x00, 0x00],
+      [constants.sections.code, 0x04, 0x01, 0x02, 0x00, 0x0b]
     );
 
     it("should insert the node with existing empty section", () => {
@@ -71,10 +73,10 @@ describe("insert a node", () => {
       const actual = makeBuffer(
         encodeHeader(),
         encodeVersion(1),
-        [0x01, 0x04, 0x01, 0x60, 0x00, 0x00],
-        [0x03, 0x02, 0x01, 0x00],
-        /* code section */ [0x0a, 0x04, 0x01, 0x02, 0x00, 0x0b],
-        /* empty export section */ [0x07, 0x01, 0x00]
+        [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
+        [constants.sections.func, 0x02, 0x01, 0x00],
+        [constants.sections.export, 0x01, 0x00],
+        [constants.sections.code, 0x04, 0x01, 0x02, 0x00, 0x0b]
       );
 
       const newBinary = add(actual, [
@@ -91,9 +93,9 @@ describe("insert a node", () => {
       const actual = makeBuffer(
         encodeHeader(),
         encodeVersion(1),
-        [0x01, 0x04, 0x01, 0x60, 0x00, 0x00],
-        [0x03, 0x02, 0x01, 0x00],
-        [0x0a, 0x04, 0x01, 0x02, 0x00, 0x0b]
+        [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
+        [constants.sections.func, 0x02, 0x01, 0x00],
+        [constants.sections.code, 0x04, 0x01, 0x02, 0x00, 0x0b]
       );
 
       const newBinary = add(actual, [
@@ -101,6 +103,33 @@ describe("insert a node", () => {
       ]);
 
       assertArrayBufferEqual(newBinary, expectedBinary);
+    });
+
+    it("should export a function in WebAssembly", function() {
+      if (typeof WebAssembly === "undefined") {
+        console.warn("WebAssembly not available; skiping test");
+        return this.skip();
+      }
+
+      // (module
+      //   (func)
+      // )
+      const actual = makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
+        [constants.sections.func, 0x02, 0x01, 0x00],
+        [constants.sections.code, 0x04, 0x01, 0x02, 0x00, 0x0b]
+      );
+
+      const newBinary = add(actual, [
+        t.moduleExport("a", "Func", t.indexLiteral(0))
+      ]);
+
+      return WebAssembly.instantiate(newBinary).then(m => {
+        assert.isOk(m.instance.exports.a);
+        assert.typeOf(m.instance.exports.a, "function");
+      });
     });
   });
 });
