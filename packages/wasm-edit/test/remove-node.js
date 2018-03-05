@@ -3,6 +3,7 @@ const {
   encodeVersion,
   encodeHeader
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
 
 const { edit } = require("../lib");
 
@@ -40,8 +41,42 @@ describe("remove a node", () => {
     const expectedBinary = makeBuffer(
       encodeHeader(),
       encodeVersion(1),
-      [5, 0x03, 0x01, 0x00, 0x00],
-      /*empty export section*/ [7, 0x01, 0x00]
+      [constants.sections.memory, 0x03, 0x01, 0x00, 0x00],
+      [constants.sections.export, 0x01, 0x00]
+    );
+
+    assertArrayBufferEqual(newBinary, expectedBinary);
+  });
+
+  it("should remove the Start", () => {
+    // (module
+    //   (func)
+    //   (start 0)
+    // )
+    const actualBinary = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
+      [constants.sections.func, 0x02, 0x01, 0x00],
+      [constants.sections.start, 0x01, 0x00],
+      [constants.sections.code, 0x04, 0x01, 0x02, 0x00, 0x0b]
+    );
+
+    const newBinary = edit(actualBinary, {
+      Start(path) {
+        path.remove();
+      }
+    });
+
+    // (module
+    //   (func)
+    // )
+    const expectedBinary = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
+      [constants.sections.func, 0x02, 0x01, 0x00],
+      [constants.sections.code, 0x04, 0x01, 0x02, 0x00, 0x0b]
     );
 
     assertArrayBufferEqual(newBinary, expectedBinary);
