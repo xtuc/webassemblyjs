@@ -3,6 +3,12 @@
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 import * as leb from "@webassemblyjs/helper-leb128";
 
+function assertNotIdentifierNode(n: Node) {
+  if (n.type === "Identifier") {
+    throw new Error("Unsupported node Identifier");
+  }
+}
+
 export function encodeVersion(v: number): Array<Byte> {
   const bytes = constants.moduleVersion;
   bytes[0] = v;
@@ -100,18 +106,23 @@ export function encodeModuleImport(n: ModuleImport): Array<Byte> {
 export function encodeSectionMetadata(n: SectionMetadata): Array<Byte> {
   const out = [];
 
-  switch (n.section) {
-    case "import":
-      out.push(2);
-      out.push(...encodeU32(n.size));
-      out.push(...encodeU32(n.vectorOfSize));
-      break;
+  const sectionId = constants.sections[n.section];
 
-    default:
-      throw new Error(
-        "Unsupport operation: encode " + n.section + " section metadata"
-      );
+  if (typeof sectionId === "undefined") {
+    throw new Error("Unknown section: " + n.section);
   }
+
+  if (n.section === "start") {
+    /**
+     * This is not implemented yet because it's a special case which
+     * doesn't have a vector in its section.
+     */
+    throw new Error("Unsupported section encoding of type start");
+  }
+
+  out.push(sectionId);
+  out.push(...encodeU32(n.size));
+  out.push(...encodeU32(n.vectorOfSize));
 
   return out;
 }
@@ -119,15 +130,33 @@ export function encodeSectionMetadata(n: SectionMetadata): Array<Byte> {
 export function encodeCallInstruction(n: CallInstruction): Array<Byte> {
   const out = [];
 
-  if (n.index.type !== "NumberLiteral") {
-    throw new Error(
-      "Unsupported index for CallInstruction of type: " + n.index.type
-    );
-  }
+  assertNotIdentifierNode(n.index);
 
   out.push(0x10);
   // $FlowIgnore
   out.push(...encodeU32(n.index.value));
+
+  return out;
+}
+
+export function encodeModuleExport(n: ModuleExport): Array<Byte> {
+  const out = [];
+
+  assertNotIdentifierNode(n.descr.id);
+
+  const exportTypeByteString = constants.exportTypesByName[n.descr.type];
+
+  if (typeof exportTypeByteString === "undefined") {
+    throw new Error("Unknown export of type: " + n.descr.type);
+  }
+
+  const exportTypeByte = parseInt(exportTypeByteString, 10);
+
+  out.push(...encodeUTF8Vec(n.name));
+  out.push(exportTypeByte);
+
+  // $FlowIgnore
+  out.push(...encodeU32(n.descr.id.value));
 
   return out;
 }

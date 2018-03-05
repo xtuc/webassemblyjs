@@ -10,7 +10,7 @@ type SectionName =
   | "custom"
   | "type"
   | "import"
-  | "function"
+  | "func"
   | "table"
   | "memory"
   | "global"

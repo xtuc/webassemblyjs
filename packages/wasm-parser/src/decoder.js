@@ -435,6 +435,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   // Function section
   // https://webassembly.github.io/spec/binary/modules.html#function-section
   function parseFuncSection(numberOfFunctions: number) {
+    dump([numberOfFunctions], "num funcs");
+
     for (let i = 0; i < numberOfFunctions; i++) {
       const indexU32 = readU32();
       const typeindex = indexU32.value;
@@ -1192,7 +1194,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         eatBytes(numberOfFunctionsu32.nextIndex);
 
         const metadata = t.sectionMetadata(
-          "function",
+          "func",
           startOffset,
           sectionSizeInBytes,
           numberOfFunctions

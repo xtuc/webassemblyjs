@@ -16,6 +16,10 @@ export function encodeNode(n: Node): Array<Byte> {
       // $FlowIgnore: SectionMetadata ensure that the node is well formated
       return encoder.encodeCallInstruction(n);
 
+    case "ModuleExport":
+      // $FlowIgnore: SectionMetadata ensure that the node is well formated
+      return encoder.encodeModuleExport(n);
+
     default:
       throw new Error(
         "Unsupported encoding for node of type: " + JSON.stringify(n.type)

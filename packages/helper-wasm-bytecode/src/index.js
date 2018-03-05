@@ -46,6 +46,8 @@ const exportTypes = {
   0x03: "Global"
 };
 
+const exportTypesByName = invertMap(exportTypes);
+
 const valtypes = {
   0x7f: "i32",
   0x7e: "i64",
@@ -329,5 +331,6 @@ module.exports = {
   globalTypes,
   importTypes,
   valtypesByString,
-  globalTypesByString
+  globalTypesByString,
+  exportTypesByName
 };
