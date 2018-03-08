@@ -57,6 +57,23 @@ export function encodeUTF8Vec(str: string): Array<Byte> {
   return encodeVec(charCodes);
 }
 
+export function encodeLimits(n: Limit): Array<Byte> {
+  const out = [];
+
+  if (typeof n.max === "number") {
+    out.push(0x01);
+    out.push(...encodeU32(n.min));
+
+    // $FlowIgnore: ensured by the typeof
+    out.push(...encodeU32(n.max));
+  } else {
+    out.push(0x00);
+    out.push(...encodeU32(n.min));
+  }
+
+  return out;
+}
+
 export function encodeModuleImport(n: ModuleImport): Array<Byte> {
   const out = [];
 
@@ -77,20 +94,20 @@ export function encodeModuleImport(n: ModuleImport): Array<Byte> {
     case "Memory": {
       out.push(0x02);
 
-      // $FlowIgnore: Memory ensure that these props exists
-      if (typeof n.descr.limits.max === "number") {
-        out.push(0x01);
+      // $FlowIgnore
+      out.push(...encodeLimits(n.descr.limits));
 
-        // $FlowIgnore: Memory ensure that these props exists
-        out.push(...encodeU32(n.descr.limits.min));
-        // $FlowIgnore: Memory ensure that these props exists
-        out.push(...encodeU32(n.descr.limits.max));
-      } else {
-        out.push(0x00);
+      break;
+    }
 
-        // $FlowIgnore: Memory ensure that these props exists
-        out.push(...encodeU32(n.descr.limits.min));
-      }
+    case "Table": {
+      out.push(0x01);
+
+      out.push(0x70); // element type
+
+      // $FlowIgnore
+      out.push(...encodeLimits(n.descr.limits));
+
       break;
     }
 
@@ -145,6 +162,18 @@ export function encodeCallInstruction(n: CallInstruction): Array<Byte> {
   assertNotIdentifierNode(n.index);
 
   out.push(0x10);
+  // $FlowIgnore
+  out.push(...encodeU32(n.index.value));
+
+  return out;
+}
+
+export function encodeCallIndirectInstruction(n: CallInstruction): Array<Byte> {
+  const out = [];
+
+  assertNotIdentifierNode(n.index);
+
+  out.push(0x11);
   // $FlowIgnore
   out.push(...encodeU32(n.index.value));
 

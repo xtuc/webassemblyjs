@@ -535,6 +535,15 @@ export function callIndirectInstruction(
   };
 }
 
+export function callIndirectInstructionIndex(
+  index: Index
+): CallIndirectInstruction {
+  return {
+    type: "CallIndirectInstruction",
+    index
+  };
+}
+
 export function start(index: Index): Start {
   return {
     type: "Start",

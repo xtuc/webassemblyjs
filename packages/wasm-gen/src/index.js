@@ -16,6 +16,10 @@ export function encodeNode(n: Node): Array<Byte> {
       // $FlowIgnore: SectionMetadata ensure that the node is well formated
       return encoder.encodeCallInstruction(n);
 
+    case "CallIndirectInstruction":
+      // $FlowIgnore: SectionMetadata ensure that the node is well formated
+      return encoder.encodeCallIndirectInstruction(n);
+
     case "TypeInstruction":
       return encoder.encodeTypeInstruction(n);
 

@@ -76,9 +76,27 @@ const fixtures = [
   },
 
   {
+    name: "should generate a CallIndirectInstruction",
+    node: t.callIndirectInstructionIndex(t.indexLiteral(10)),
+    expected: [0x11, 0x0a]
+  },
+
+  {
     name: "should generate a ModuleExport of func 1",
     node: t.moduleExport("a", "Func", t.indexLiteral(1)),
     expected: [0x01, 0x61, 0x00, 0x01]
+  },
+
+  {
+    name: "should generate a ModuleImport of Table with min 2",
+    node: t.moduleImport("a", "b", t.table("anyfunc", t.limits(2))),
+    expected: [0x01, 0x61, 0x01, 0x62, 0x01, 0x70, 0x00, 0x02]
+  },
+
+  {
+    name: "should generate a ModuleImport of Table with min 2 and max 10",
+    node: t.moduleImport("a", "b", t.table("anyfunc", t.limits(2, 10))),
+    expected: [0x01, 0x61, 0x01, 0x62, 0x01, 0x70, 0x01, 0x02, 0x0a]
   }
 ];
 

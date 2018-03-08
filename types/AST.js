@@ -319,9 +319,14 @@ type CallIndirectInstruction = {
   ...BaseNode,
 
   type: "CallIndirectInstruction",
-  params: Array<FuncParam>,
-  results: Array<Valtype>,
-  intrs: Array<Expression>
+
+  // WAST
+  params?: Array<FuncParam>,
+  results?: Array<Valtype>,
+  intrs?: Array<Expression>,
+
+  // WAT
+  index?: Index
 };
 
 type ModuleExport = {
