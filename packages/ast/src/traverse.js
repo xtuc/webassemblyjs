@@ -106,6 +106,19 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
       break;
     }
 
+    case "CallIndirectInstruction": {
+      const path = createPath(n, parentPath);
+      // $FlowIgnore
+      cb(n.type, path);
+
+      if (n.index != null) {
+        // $FlowIgnore
+        walk(n.index, cb, path);
+      }
+
+      break;
+    }
+
     case "ModuleImport": {
       cb(n.type, createPath(n, parentPath));
 

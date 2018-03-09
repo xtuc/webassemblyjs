@@ -168,9 +168,12 @@ export function encodeCallInstruction(n: CallInstruction): Array<Byte> {
   return out;
 }
 
-export function encodeCallIndirectInstruction(n: CallInstruction): Array<Byte> {
+export function encodeCallIndirectInstruction(
+  n: CallIndirectInstruction
+): Array<Byte> {
   const out = [];
 
+  // $FlowIgnore
   assertNotIdentifierNode(n.index);
 
   out.push(0x11);
