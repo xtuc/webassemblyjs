@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-buffer",
-  "version": "1.1.2-y.4",
+  "version": "1.1.2-y.5",
   "description": "Buffer manipulation utility",
   "main": "lib/index.js",
   "scripts": {

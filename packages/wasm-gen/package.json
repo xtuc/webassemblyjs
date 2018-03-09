@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-gen",
-  "version": "1.1.2-y.4",
+  "version": "1.1.2-y.5",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -16,8 +16,8 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/ast": "1.1.2-y.4",
-    "@webassemblyjs/helper-leb128": "1.1.2-y.4",
-    "@webassemblyjs/helper-wasm-bytecode": "1.1.2-y.4"
+    "@webassemblyjs/ast": "1.1.2-y.5",
+    "@webassemblyjs/helper-leb128": "1.1.2-y.5",
+    "@webassemblyjs/helper-wasm-bytecode": "1.1.2-y.5"
   }
 }
