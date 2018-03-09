@@ -78,7 +78,7 @@ const fixtures = [
   {
     name: "should generate a CallIndirectInstruction",
     node: t.callIndirectInstructionIndex(t.indexLiteral(10)),
-    expected: [0x11, 0x0a]
+    expected: [0x11, 0x0a, 0x00]
   },
 
   {

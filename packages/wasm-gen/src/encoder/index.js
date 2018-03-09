@@ -180,6 +180,9 @@ export function encodeCallIndirectInstruction(
   // $FlowIgnore
   out.push(...encodeU32(n.index.value));
 
+  // add a reserved byte
+  out.push(0x00);
+
   return out;
 }
 
