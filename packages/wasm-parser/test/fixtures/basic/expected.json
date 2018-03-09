@@ -69,7 +69,20 @@
               "object": "i32",
               "args": []
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 44
+            },
+            "end": {
+              "line": -1,
+              "column": 52
+            }
+          },
+          "metadata": {
+            "bodySize": 7
+          }
         },
         {
           "type": "Func",
@@ -135,7 +148,20 @@
               "object": "i32",
               "args": []
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 52
+            },
+            "end": {
+              "line": -1,
+              "column": 60
+            }
+          },
+          "metadata": {
+            "bodySize": 7
+          }
         },
         {
           "type": "ModuleExport",

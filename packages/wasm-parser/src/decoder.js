@@ -548,6 +548,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     // Parse vector of function
     for (let i = 0; i < numberOfFuncs; i++) {
+      const startLoc = getPosition();
+
       dumpSep("function body " + i);
 
       // the u32 size of the function code in bytes
@@ -592,9 +594,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       // Decode instructions until the end
       parseInstructionBlock(code);
 
+      const endLoc = getPosition();
+
       state.elementsInCodeSection.push({
         code,
-        locals
+        locals,
+
+        endLoc,
+        startLoc,
+        bodySize: bodySizeU32.value
       });
     }
   }
@@ -1428,10 +1436,18 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     funcIndex++;
 
-    const funcNode = t.func(func.id, params, result, body);
+    let funcNode = t.func(func.id, params, result, body);
 
     if (func.isExternal === true) {
       funcNode.isExternal = func.isExternal;
+    }
+
+    // Add function position in the binary if possible
+    if (opts.ignoreCodeSection === false) {
+      const { startLoc, endLoc, bodySize } = decodedElementInCodeSection;
+
+      funcNode = t.withLoc(funcNode, endLoc, startLoc);
+      funcNode.metadata = { bodySize };
     }
 
     moduleFields.push(funcNode);

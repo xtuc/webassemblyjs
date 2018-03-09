@@ -38,7 +38,20 @@
           },
           "params": [],
           "result": [],
-          "body": []
+          "body": [],
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 37
+            },
+            "end": {
+              "line": -1,
+              "column": 40
+            }
+          },
+          "metadata": {
+            "bodySize": 2
+          }
         },
         {
           "type": "ModuleExport",

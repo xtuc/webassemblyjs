@@ -246,7 +246,11 @@ type Func = {
   body: Array<Instruction>,
 
   // Means that it has been imported from the outside js
-  isExternal?: boolean
+  isExternal?: boolean,
+
+  metadata?: {
+    bodySize: number
+  }
 };
 
 /**

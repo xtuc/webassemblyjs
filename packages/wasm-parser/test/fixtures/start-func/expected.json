@@ -107,7 +107,20 @@
                 "value": 0
               }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 75
+            },
+            "end": {
+              "line": -1,
+              "column": 82
+            }
+          },
+          "metadata": {
+            "bodySize": 6
+          }
         }
       ],
       "metadata": {
