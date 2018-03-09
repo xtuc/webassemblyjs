@@ -1,7 +1,8 @@
 // @flow
 
 import { decode } from "@webassemblyjs/wasm-parser";
-import { cloneNode, traverseWithHooks } from "@webassemblyjs/ast";
+import { traverseWithHooks } from "@webassemblyjs/ast";
+import { cloneNode } from "@webassemblyjs/ast/lib/clone";
 import {
   applyToNodeToDelete,
   applyToNodeToUpdate,
@@ -43,8 +44,6 @@ export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
       // $FlowIgnore
     } else if (hashNode(nodeBefore) !== hashNode(path.node)) {
       nodesToUpdate.push([nodeBefore, path.node]);
-    } else {
-      console.log(hashNode(nodeBefore), hashNode(path.node));
     }
   }
 
