@@ -220,16 +220,93 @@ export function encodeTypeInstruction(n: TypeInstruction): Array<Byte> {
   return out;
 }
 
-// FIXME(sven): find a better way for doing that
-export function encodeInstr(n: Instruction) {
-  switch (n.id) {
-    case "get_global":
-      return [0x23, ...encodeU32(n.args[0].value)];
-    case "set_global":
-      return [0x24, ...encodeU32(n.args[0].value)];
-    default:
-      throw new Error(
-        "encodeInstr: unknown instruction " + JSON.stringify(n.id)
-      );
+export function encodeInstr(
+  n: GenericInstruction | ObjectInstruction
+): Array<Byte> {
+  const out = [];
+
+  let instructionName = n.id;
+
+  if (typeof n.object === "string") {
+    instructionName = `${n.object}.${n.id}`;
   }
+
+  const byteString = constants.symbolsByName[instructionName];
+
+  if (typeof byteString === "undefined") {
+    throw new Error(
+      "encodeInstr: unknown instruction " + JSON.stringify(instructionName)
+    );
+  }
+
+  const byte = parseInt(byteString, 10);
+
+  out.push(byte);
+
+  if (n.args) {
+    n.args.forEach(arg => {
+      if (arg.type === "NumberLiteral") {
+        out.push(...encodeU32(arg.value));
+      } else {
+        throw new Error(
+          "Unsupported instruction argument encoding " +
+            JSON.stringify(arg.type)
+        );
+      }
+    });
+  }
+
+  return out;
+}
+
+function encodeExpr(instrs: Array<Instruction>): Array<Byte> {
+  const out = [];
+
+  instrs.forEach(instr => {
+    // $FlowIgnore
+    const n = encodeInstr(instr);
+
+    out.push(...n);
+  });
+
+  out.push(0x0b); // end
+
+  return out;
+}
+
+export function encodeGlobal(n: Global): Array<Byte> {
+  const out = [];
+
+  const { valtype, mutability } = n.globalType;
+
+  out.push(encodeValtype(valtype));
+  out.push(encodeMutability(mutability));
+
+  out.push(...encodeExpr(n.init));
+
+  return out;
+}
+
+export function encodeFuncBody(n: Func): Array<Byte> {
+  const out = [];
+
+  out.push(-1); // temporary function body size
+
+  // FIXME(sven): get the func locals?
+  const localBytes = encodeVec([]);
+  out.push(...localBytes);
+
+  const funcBodyBytes = encodeExpr(n.body);
+  out[0] = funcBodyBytes.length + localBytes.length;
+
+  out.push(...funcBodyBytes);
+
+  return out;
+}
+
+export function encodeIndexInFuncSection(n: IndexInFuncSection): Array<Byte> {
+  assertNotIdentifierNode(n.index);
+
+  // $FlowIgnore
+  return encodeU32(n.index.value);
 }

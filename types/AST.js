@@ -105,7 +105,8 @@ type Node =
   | BlockComment
   | ValtypeLiteral
   | Start
-  | Elem;
+  | Elem
+  | IndexInFuncSection;
 
 type Expression =
   | Identifier
@@ -470,4 +471,11 @@ type Elem = {
   offset: Array<Instruction>,
 
   funcs: Array<Index>
+};
+
+type IndexInFuncSection = {
+  ...BaseNode,
+
+  type: "IndexInFuncSection",
+  index: Index
 };

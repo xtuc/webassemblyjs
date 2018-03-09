@@ -14,19 +14,14 @@ function hashNode(node: Node): string {
 }
 
 const decoderOpts = {
-  ignoreCodeSection: true,
+  // FIXME(sven): detection based on the Instr doesn't work for add()
+  // ignoreCodeSection: true,
   ignoreDataSection: true
 };
 
 export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
   const nodesToDelete = [];
   const nodesToUpdate: Array<[Node /* old */, Node /* new */]> = [];
-
-  if (typeof visitors.Instr === "function") {
-    decoderOpts.ignoreCodeSection = false;
-
-    console.warn("Decoding the code section has been enabled.");
-  }
 
   const ast = decode(ab, decoderOpts);
 

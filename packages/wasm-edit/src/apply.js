@@ -12,6 +12,8 @@ import {
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
+const t = require("@webassemblyjs/ast");
+
 function assertNodeHasLoc(n: Node) {
   if (n.loc == null || n.loc.start == null || n.loc.end == null) {
     throw new Error(
@@ -208,11 +210,11 @@ export function applyToNodeToAdd(
 
     uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
 
-    const deltaBytes = newByteArray.length;
-
     /**
      * Update section
      */
+    const deltaBytes = newByteArray.length;
+
     uint8Buffer = resizeSectionByteSize(
       ast,
       uint8Buffer,

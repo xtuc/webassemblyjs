@@ -564,6 +564,13 @@ export function elem(
   };
 }
 
+export function indexInFuncSection(index: Index): IndexInFuncSection {
+  return {
+    type: "IndexInFuncSection",
+    index
+  };
+}
+
 export { traverse, traverseWithHooks } from "./traverse";
 export { signatures } from "./signatures";
 export { getSectionMetadata } from "./utils";
