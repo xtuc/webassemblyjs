@@ -219,3 +219,17 @@ export function encodeTypeInstruction(n: TypeInstruction): Array<Byte> {
 
   return out;
 }
+
+// FIXME(sven): find a better way for doing that
+export function encodeInstr(n: Instruction) {
+  switch (n.id) {
+    case "get_global":
+      return [0x23, ...encodeU32(n.args[0].value)];
+    case "set_global":
+      return [0x24, ...encodeU32(n.args[0].value)];
+    default:
+      throw new Error(
+        "encodeInstr: unknown instruction " + JSON.stringify(n.id)
+      );
+  }
+}

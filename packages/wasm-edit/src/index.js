@@ -1,14 +1,14 @@
 // @flow
 
 import { decode } from "@webassemblyjs/wasm-parser";
-import { traverseWithHooks } from "@webassemblyjs/ast";
+import { cloneNode, traverseWithHooks } from "@webassemblyjs/ast";
 import {
   applyToNodeToDelete,
   applyToNodeToUpdate,
   applyToNodeToAdd
 } from "./apply";
 
-function hashPath({ node }: NodePath<*>): string {
+function hashNode(node: Node): string {
   return JSON.stringify(node);
 }
 
@@ -19,7 +19,7 @@ const decoderOpts = {
 
 export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
   const nodesToDelete = [];
-  const nodesToUpdate = [];
+  const nodesToUpdate: Array<[Node /* old */, Node /* new */]> = [];
 
   if (typeof visitors.Instr === "function") {
     decoderOpts.ignoreCodeSection = false;
@@ -31,17 +31,20 @@ export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
 
   let uint8Buffer = new Uint8Array(ab);
 
-  let nodeBeforeHash = "";
+  let nodeBefore;
 
   function before(type: string, path: NodePath<*>) {
-    nodeBeforeHash = hashPath(path);
+    nodeBefore = cloneNode(path.node);
   }
 
   function after(type: string, path: NodePath<*>) {
     if (path.node._deleted === true) {
       nodesToDelete.push(path.node);
-    } else if (nodeBeforeHash !== hashPath(path)) {
-      nodesToUpdate.push(path.node);
+      // $FlowIgnore
+    } else if (hashNode(nodeBefore) !== hashNode(path.node)) {
+      nodesToUpdate.push([nodeBefore, path.node]);
+    } else {
+      console.log(hashNode(nodeBefore), hashNode(path.node));
     }
   }
 

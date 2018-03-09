@@ -23,6 +23,9 @@ export function encodeNode(n: Node): Array<Byte> {
     case "TypeInstruction":
       return encoder.encodeTypeInstruction(n);
 
+    case "Instr":
+      return encoder.encodeInstr(n);
+
     case "ModuleExport":
       // $FlowIgnore: SectionMetadata ensure that the node is well formated
       return encoder.encodeModuleExport(n);

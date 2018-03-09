@@ -97,6 +97,18 @@ const fixtures = [
     name: "should generate a ModuleImport of Table with min 2 and max 10",
     node: t.moduleImport("a", "b", t.table("anyfunc", t.limits(2, 10))),
     expected: [0x01, 0x61, 0x01, 0x62, 0x01, 0x70, 0x01, 0x02, 0x0a]
+  },
+
+  {
+    name: "should generate a Instr: get_global 1",
+    node: t.instruction("get_global", [t.indexLiteral(1)]),
+    expected: [0x23, 0x01]
+  },
+
+  {
+    name: "should generate a Instr: set_global 1",
+    node: t.instruction("set_global", [t.indexLiteral(1)]),
+    expected: [0x24, 0x01]
   }
 ];
 

@@ -1,7 +1,8 @@
 // @flow
 
 import { encodeNode } from "@webassemblyjs/wasm-gen";
-import { getSectionMetadata } from "@webassemblyjs/ast";
+import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
+import { getSectionMetadata, traverse } from "@webassemblyjs/ast";
 import {
   resizeSectionByteSize,
   resizeSectionVecSize,
@@ -24,13 +25,13 @@ function assertNodeHasLoc(n: Node) {
 export function applyToNodeToUpdate(
   ast: Program,
   uint8Buffer: Uint8Array,
-  nodes: Array<Node>
+  nodes: Array<[Node, Node]>
 ) {
-  nodes.forEach(node => {
-    assertNodeHasLoc(node);
+  nodes.forEach(([oldNode, newNode]) => {
+    assertNodeHasLoc(oldNode);
 
-    const sectionName = getSectionForNode(node);
-    const replacementByteArray = encodeNode(node);
+    const sectionName = getSectionForNode(newNode);
+    const replacementByteArray = encodeNode(newNode);
 
     /**
      * Replace new node as bytes
@@ -38,11 +39,51 @@ export function applyToNodeToUpdate(
     uint8Buffer = overrideBytesInBuffer(
       uint8Buffer,
       // $FlowIgnore: assertNodeHasLoc ensures that
-      node.loc.start.column,
+      oldNode.loc.start.column,
       // $FlowIgnore: assertNodeHasLoc ensures that
-      node.loc.end.column,
+      oldNode.loc.end.column,
       replacementByteArray
     );
+
+    /**
+     * Update function body size if needed
+     */
+    if (sectionName === "code") {
+      // Find the parent func
+      traverse(ast, {
+        Func({ node }) {
+          const funcHasThisIntr =
+            node.body.find(n => n === newNode) !== undefined;
+
+          // Update func's body size if needed
+          if (funcHasThisIntr === true) {
+            // These are the old functions locations informations
+            assertNodeHasLoc(node);
+
+            const oldNodeSize = encodeNode(oldNode).length;
+            const bodySizeDeltaBytes =
+              replacementByteArray.length - oldNodeSize;
+
+            if (bodySizeDeltaBytes !== 0) {
+              const newValue = node.metadata.bodySize + bodySizeDeltaBytes;
+              const newByteArray = encodeU32(newValue);
+
+              // function body size byte
+              // FIXME(sven): only handles one byte u32
+              const start = node.loc.start.column;
+              const end = start + 1;
+
+              uint8Buffer = overrideBytesInBuffer(
+                uint8Buffer,
+                start,
+                end,
+                newByteArray
+              );
+            }
+          }
+        }
+      });
+    }
 
     /**
      * Update section size
@@ -50,7 +91,7 @@ export function applyToNodeToUpdate(
     const deltaBytes =
       replacementByteArray.length -
       // $FlowIgnore: assertNodeHasLoc ensures that
-      (node.loc.end.column - node.loc.start.column);
+      (oldNode.loc.end.column - oldNode.loc.start.column);
 
     uint8Buffer = resizeSectionByteSize(
       ast,
@@ -59,9 +100,18 @@ export function applyToNodeToUpdate(
       deltaBytes
     );
 
+    // Init location informations
+    newNode.loc = {
+      start: { line: -1, column: -1 },
+      end: { line: -1, column: -1 }
+    };
+
     // Update new node end position
     // $FlowIgnore: assertNodeHasLoc ensures that
-    node.loc.end.column = node.loc.start.column + replacementByteArray.length;
+    newNode.loc.start.column = oldNode.loc.start.column;
+    newNode.loc.end.column =
+      // $FlowIgnore: assertNodeHasLoc ensures that
+      oldNode.loc.start.column + replacementByteArray.length;
   });
 
   return uint8Buffer;

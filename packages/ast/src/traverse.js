@@ -34,6 +34,10 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
 
   // TODO(sven): do it the good way, changing the node from the parent
   function replaceWith(newNode: Node) {
+    // Remove all the keys first
+    // $FlowIgnore
+    Object.keys(node).forEach(k => delete node[k]);
+
     // $FlowIgnore
     Object.assign(node, newNode);
   }
@@ -164,7 +168,9 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
       cb(n.type, path);
 
       // $FlowIgnore
-      n.args.forEach(x => walk(x, cb, path));
+      if (typeof n.args === "object") {
+        n.args.forEach(x => walk(x, cb, path));
+      }
 
       break;
     }
