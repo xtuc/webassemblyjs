@@ -555,7 +555,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const bodySizeU32 = readU32();
       eatBytes(bodySizeU32.nextIndex);
 
-      dump([0x0], "function body size (guess)");
+      dump([bodySizeU32.value], "function body size");
 
       const code: Array<Instruction> = [];
 
