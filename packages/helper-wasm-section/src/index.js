@@ -10,6 +10,7 @@ export function getSectionForNode(n: Node): SectionName {
       return "import";
 
     case "CallInstruction":
+    case "CallIndirectInstruction":
       return "code";
 
     case "ModuleExport":
