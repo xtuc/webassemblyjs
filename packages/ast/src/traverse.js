@@ -73,6 +73,7 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
     case "Elem":
     case "NumberLiteral":
     case "FloatLiteral":
+    case "LongNumberLiteral":
     case "BinaryModule":
     case "LeadingComment":
     case "BlockComment":
