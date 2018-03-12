@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-parser",
-  "version": "1.1.2-y.7",
+  "version": "1.1.2-y.8",
   "keywords": [
     "webassembly",
     "javascript",
@@ -16,11 +16,11 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/ast": "1.1.2-y.7",
-    "@webassemblyjs/helper-leb128": "1.1.2-y.7",
-    "@webassemblyjs/helper-wasm-bytecode": "1.1.2-y.7",
-    "@webassemblyjs/wasm-parser": "1.1.2-y.7",
-    "webassemblyjs": "1.1.2-y.7"
+    "@webassemblyjs/ast": "1.1.2-y.8",
+    "@webassemblyjs/helper-leb128": "1.1.2-y.8",
+    "@webassemblyjs/helper-wasm-bytecode": "1.1.2-y.8",
+    "@webassemblyjs/wasm-parser": "1.1.2-y.8",
+    "webassemblyjs": "1.1.2-y.8"
   },
   "repository": {
     "type": "git",
