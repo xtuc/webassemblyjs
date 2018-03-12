@@ -12,8 +12,6 @@ import {
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-const t = require("@webassemblyjs/ast");
-
 function assertNodeHasLoc(n: Node) {
   if (n.loc == null || n.loc.start == null || n.loc.end == null) {
     throw new Error(

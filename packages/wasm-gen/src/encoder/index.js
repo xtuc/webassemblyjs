@@ -2,6 +2,7 @@
 
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 import * as leb from "@webassemblyjs/helper-leb128";
+import { encodeNode } from "../index";
 
 function assertNotIdentifierNode(n: Node) {
   if (n.type === "Identifier") {
@@ -162,6 +163,7 @@ export function encodeCallInstruction(n: CallInstruction): Array<Byte> {
   assertNotIdentifierNode(n.index);
 
   out.push(0x10);
+
   // $FlowIgnore
   out.push(...encodeU32(n.index.value));
 
@@ -264,7 +266,7 @@ function encodeExpr(instrs: Array<Instruction>): Array<Byte> {
 
   instrs.forEach(instr => {
     // $FlowIgnore
-    const n = encodeInstr(instr);
+    const n = encodeNode(instr);
 
     out.push(...n);
   });
