@@ -3,11 +3,7 @@
 import { decode } from "@webassemblyjs/wasm-parser";
 import { traverseWithHooks } from "@webassemblyjs/ast";
 import { cloneNode } from "@webassemblyjs/ast/lib/clone";
-import {
-  applyToNodeToDelete,
-  applyToNodeToUpdate,
-  applyToNodeToAdd
-} from "./apply";
+import { applyOperations } from "./apply";
 
 function hashNode(node: Node): string {
   return JSON.stringify(node);
@@ -20,8 +16,7 @@ const decoderOpts = {
 };
 
 export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
-  const nodesToDelete = [];
-  const nodesToUpdate: Array<[Node /* old */, Node /* new */]> = [];
+  const operations: Array<Operation> = [];
 
   const ast = decode(ab, decoderOpts);
 
@@ -35,17 +30,23 @@ export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
 
   function after(type: string, path: NodePath<*>) {
     if (path.node._deleted === true) {
-      nodesToDelete.push(path.node);
+      operations.push({
+        kind: "delete",
+        node: path.node
+      });
       // $FlowIgnore
     } else if (hashNode(nodeBefore) !== hashNode(path.node)) {
-      nodesToUpdate.push([nodeBefore, path.node]);
+      operations.push({
+        kind: "update",
+        oldNode: nodeBefore,
+        node: path.node
+      });
     }
   }
 
   traverseWithHooks(ast, visitors, before, after);
 
-  uint8Buffer = applyToNodeToUpdate(ast, uint8Buffer, nodesToUpdate);
-  uint8Buffer = applyToNodeToDelete(ast, uint8Buffer, nodesToDelete);
+  uint8Buffer = applyOperations(ast, uint8Buffer, operations);
 
   return uint8Buffer.buffer;
 }
@@ -55,7 +56,12 @@ export function add(ab: ArrayBuffer, newNodes: Array<Node>): ArrayBuffer {
 
   let uint8Buffer = new Uint8Array(ab);
 
-  uint8Buffer = applyToNodeToAdd(ast, uint8Buffer, newNodes);
+  const operations = newNodes.map(n => ({
+    kind: "add",
+    node: n
+  }));
+
+  uint8Buffer = applyOperations(ast, uint8Buffer, operations);
 
   return uint8Buffer.buffer;
 }

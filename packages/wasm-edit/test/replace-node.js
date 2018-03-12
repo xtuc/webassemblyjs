@@ -160,4 +160,46 @@ describe("replace a node", () => {
 
     assertArrayBufferEqual(newBinary, expectedBinary);
   });
+
+  it("should update all TypeInstructions (implies updating the underlying AST)", () => {
+    // (module
+    //   (type $a (func (result i32)))
+    //   (type $b (func (result i32)))
+    // )
+    const actualBinary = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.type, 0x09, 0x02, 0x60, 0x00, 0x01, 0x7f],
+      [0x60, 0x00, 0x01, 0x7f]
+    );
+
+    const newBinary = edit(actualBinary, {
+      TypeInstruction(path) {
+        const params = [
+          t.funcParam("i32"),
+          t.funcParam("i32"),
+          t.funcParam("i32"),
+          t.funcParam("i32")
+        ];
+
+        const results = [];
+
+        const newNode = t.typeInstructionFunc(params, results);
+        path.replaceWith(newNode);
+      }
+    });
+
+    // (module
+    //   (type $a (func (param i32 i32 i32) (result i32)))
+    //   (type $b (func (param i32 i32 i32) (result i32)))
+    // )
+    const expectedBinary = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.type, 0x0f, 0x02, 0x60, 0x04, 0x7f, 0x7f, 0x7f, 0x7f],
+      [0x00, 0x60, 0x04, 0x7f, 0x7f, 0x7f, 0x7f, 0x00]
+    );
+
+    assertArrayBufferEqual(newBinary, expectedBinary);
+  });
 });

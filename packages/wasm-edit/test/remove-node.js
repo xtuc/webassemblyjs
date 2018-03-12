@@ -81,4 +81,32 @@ describe("remove a node", () => {
 
     assertArrayBufferEqual(newBinary, expectedBinary);
   });
+
+  it("should remove all the types (implies updating the underlying AST)", () => {
+    // (module
+    //   (type $a (func (result i32)))
+    //   (type $b (func (result i32)))
+    // )
+    const actualBinary = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.type, 0x09, 0x02, 0x60, 0x00, 0x01, 0x7f],
+      [0x60, 0x00, 0x01, 0x7f]
+    );
+
+    const newBinary = edit(actualBinary, {
+      TypeInstruction(path) {
+        path.remove();
+      }
+    });
+
+    // (module)
+    const expectedBinary = makeBuffer(encodeHeader(), encodeVersion(1), [
+      constants.sections.type,
+      0x01,
+      0x00
+    ]);
+
+    assertArrayBufferEqual(newBinary, expectedBinary);
+  });
 });

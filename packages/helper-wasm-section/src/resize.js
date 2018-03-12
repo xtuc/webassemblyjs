@@ -21,6 +21,9 @@ export function resizeSectionByteSize(
 
   const newSectionSize = sectionMetadata.size + deltaBytes;
 
+  // Update AST
+  sectionMetadata.size = newSectionSize;
+
   return overrideBytesInBuffer(
     uint8Buffer,
     sectionMetadata.startOffset,
@@ -53,6 +56,9 @@ export function resizeSectionVecSize(
   const newBytes = encodeU32(newValue);
 
   const start = sectionMetadata.startOffset + 1;
+
+  // Update AST
+  sectionMetadata.vectorOfSize = newValue;
 
   return overrideBytesInBuffer(
     uint8Buffer,
