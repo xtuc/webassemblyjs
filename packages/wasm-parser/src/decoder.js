@@ -315,6 +315,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     dump([numberOfTypes], "num types");
 
     for (let i = 0; i < numberOfTypes; i++) {
+      const startLoc = getPosition();
+
       dumpSep("type " + i);
 
       const type = readByte();
@@ -328,7 +330,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const result: Array<Valtype> = parseVec(b => valtypes[b]);
 
-        typeInstructionNodes.push(t.typeInstructionFunc(params, result));
+        const endLoc = getPosition();
+
+        typeInstructionNodes.push(
+          t.withLoc(t.typeInstructionFunc(params, result), endLoc, startLoc)
+        );
 
         state.typesInModule.push({
           params,
