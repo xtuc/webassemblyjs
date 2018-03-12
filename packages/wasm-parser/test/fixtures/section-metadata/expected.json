@@ -6,6 +6,13 @@
       "id": null,
       "fields": [
         {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [],
+            "result": []
+          }
+        },
+        {
           "type": "Table",
           "elementType": "anyfunc",
           "limits": {

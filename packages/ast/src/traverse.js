@@ -144,6 +144,17 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
       break;
     }
 
+    case "TypeInstruction": {
+      const path = createPath(n, parentPath);
+      cb(n.type, path);
+
+      if (n.id != null) {
+        walk(n.id, cb, path);
+      }
+
+      break;
+    }
+
     case "IfInstruction": {
       const path = createPath(n, parentPath);
 

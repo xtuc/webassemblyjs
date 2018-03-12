@@ -6,6 +6,22 @@
       "id": null,
       "fields": [
         {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [
+              {
+                "valtype": "i32"
+              },
+              {
+                "valtype": "i32"
+              }
+            ],
+            "result": [
+              "i32"
+            ]
+          }
+        },
+        {
           "type": "Func",
           "name": {
             "type": "Identifier",

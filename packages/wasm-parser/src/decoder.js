@@ -310,6 +310,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   // Type section
   // https://webassembly.github.io/spec/binary/modules.html#binary-typesec
   function parseTypeSection(numberOfTypes: number) {
+    const typeInstructionNodes = [];
+
     dump([numberOfTypes], "num types");
 
     for (let i = 0; i < numberOfTypes; i++) {
@@ -326,6 +328,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const result: Array<Valtype> = parseVec(b => valtypes[b]);
 
+        typeInstructionNodes.push(t.typeInstructionFunc(params, result));
+
         state.typesInModule.push({
           params,
           result
@@ -334,6 +338,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new Error("Unsupported type: " + toHex(type));
       }
     }
+
+    return typeInstructionNodes;
   }
 
   // Import section
@@ -1141,9 +1147,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           numberOfTypes
         );
 
-        parseTypeSection(numberOfTypes);
-
-        const nodes = [];
+        const nodes = parseTypeSection(numberOfTypes);
 
         return { nodes, metadata };
       }

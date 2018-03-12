@@ -6,6 +6,28 @@
       "id": null,
       "fields": [
         {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [],
+            "result": [
+              "i32"
+            ]
+          }
+        },
+        {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [
+              {
+                "valtype": "i32"
+              }
+            ],
+            "result": [
+              "i32"
+            ]
+          }
+        },
+        {
           "type": "ModuleImport",
           "module": "./module",
           "name": "getNumber",

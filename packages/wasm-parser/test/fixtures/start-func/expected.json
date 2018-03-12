@@ -6,6 +6,24 @@
       "id": null,
       "fields": [
         {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [
+              {
+                "valtype": "i32"
+              }
+            ],
+            "result": []
+          }
+        },
+        {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [],
+            "result": []
+          }
+        },
+        {
           "type": "ModuleImport",
           "module": "./tracker",
           "name": "trackWasm",
