@@ -1,7 +1,7 @@
 {
   "name": "@webassemblyjs/wasm-gen",
   "version": "1.1.2-y.9",
-  "description": "",
+  "description": "WebAssembly binary format printer",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
