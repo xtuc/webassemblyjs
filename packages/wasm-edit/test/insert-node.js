@@ -217,5 +217,28 @@ describe("insert a node", () => {
 
       assertArrayBufferEqual(newBinary, expectedBinary);
     });
+
+    it("should insert the node after another function", () => {
+      // It's the second func
+      const funcindex = t.indexInFuncSection(t.indexLiteral(1));
+
+      const newBinary = add(expectedBinary, [func, funcindex, functype]);
+
+      // (module
+      //   (func (result i32) (i32.const 1))
+      //   (func (result i32) (i32.const 1))
+      // )
+      const expectedBinary2 = makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.type, 0x09, 0x02, 0x60, 0x00, 0x01, 0x7f],
+        [0x60, 0x00, 0x01, 0x7f],
+        [constants.sections.func, 0x03, 0x02, 0x00, 0x01],
+        [constants.sections.code, 0x0b, 0x02, 0x04, 0x00, 0x41, 0x01, 0x0b],
+        [0x04, 0x00, 0x41, 0x01, 0x0b]
+      );
+
+      assertArrayBufferEqual(newBinary, expectedBinary2);
+    });
   });
 });
