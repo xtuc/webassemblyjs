@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/ast",
-  "version": "1.1.2-y.10",
+  "version": "1.2.0",
   "description": "AST utils for webassemblyjs",
   "keywords": [
     "webassembly",
@@ -11,9 +11,9 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/wast-parser": "1.1.2-y.10",
+    "@webassemblyjs/wast-parser": "1.2.0",
     "webassembly-floating-point-hex-parser": "0.1.2",
-    "webassemblyjs": "1.1.2-y.10"
+    "webassemblyjs": "1.2.0"
   },
   "repository": {
     "type": "git",
