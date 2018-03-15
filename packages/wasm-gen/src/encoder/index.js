@@ -230,7 +230,7 @@ export function encodeInstr(
   let instructionName = n.id;
 
   if (typeof n.object === "string") {
-    instructionName = `${n.object}.${n.id}`;
+    instructionName = `${n.object}.${String(n.id)}`;
   }
 
   const byteString = constants.symbolsByName[instructionName];

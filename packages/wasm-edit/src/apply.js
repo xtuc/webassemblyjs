@@ -29,10 +29,12 @@ function assertNodeHasLoc(n: Node) {
   }
 }
 
-function shiftLocNodeByDelta(node: Node, delta: number): Array<Node> {
+function shiftLocNodeByDelta(node: Node, delta: number) {
   assertNodeHasLoc(node);
 
+  // $FlowIgnore: assertNodeHasLoc ensures that
   node.loc.start.column += delta;
+  // $FlowIgnore: assertNodeHasLoc ensures that
   node.loc.end.column += delta;
 }
 
@@ -116,6 +118,7 @@ function applyUpdate(
   // Update new node end position
   // $FlowIgnore: assertNodeHasLoc ensures that
   newNode.loc.start.column = oldNode.loc.start.column;
+  // $FlowIgnore: assertNodeHasLoc ensures that
   newNode.loc.end.column =
     // $FlowIgnore: assertNodeHasLoc ensures that
     oldNode.loc.start.column + replacementByteArray.length;
@@ -237,10 +240,12 @@ export function applyOperations(
       ops.forEach(op => {
         switch (op.kind) {
           case "update":
-            return shiftLocNodeByDelta(op.oldNode, state.deltaBytes);
+            shiftLocNodeByDelta(op.oldNode, state.deltaBytes);
+            break;
 
           case "delete":
-            return shiftLocNodeByDelta(op.node, state.deltaBytes);
+            shiftLocNodeByDelta(op.node, state.deltaBytes);
+            break;
         }
       });
 
