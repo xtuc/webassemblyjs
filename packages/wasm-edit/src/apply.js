@@ -12,6 +12,8 @@ import {
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
+const debug = require("debug")("wasm");
+
 type State = {
   uint8Buffer: Uint8Array,
 
@@ -193,6 +195,8 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
   const start = sectionMetadata.startOffset + sectionMetadata.size + 1;
 
   const end = start;
+
+  debug("add node=%s section=%s after=%d", node.type, sectionName, start);
 
   uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
 

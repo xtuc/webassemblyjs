@@ -5,6 +5,7 @@ import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 const t = require("@webassemblyjs/ast");
+const debug = require("debug")("wasm");
 
 type Res = { uint8Buffer: Uint8Array, sectionMetadata: SectionMetadata };
 
@@ -49,9 +50,19 @@ export function createEmptySection(
      */
     start = 8 /* wasm header size */;
     end = start;
+
+    debug("create empty section=%s start=%d end=%d", section, start, end);
   } else {
     start = lastSection.startOffset + lastSection.size + 1;
     end = start;
+
+    debug(
+      "create empty section=%s after=%s start=%d end=%d",
+      section,
+      lastSection.section,
+      start,
+      end
+    );
   }
 
   const size = 1; // empty vector

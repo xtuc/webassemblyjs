@@ -1294,7 +1294,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata };
       }
 
-      case sections.elem: {
+      case sections.element: {
         dumpSep("section Element");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");

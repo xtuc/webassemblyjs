@@ -94,7 +94,7 @@ const sections = {
   global: 6,
   export: 7,
   start: 8,
-  elem: 9,
+  element: 9,
   code: 10,
   data: 11
 };
