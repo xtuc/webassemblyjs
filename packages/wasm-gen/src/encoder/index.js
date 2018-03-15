@@ -2,6 +2,7 @@
 
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 import * as leb from "@webassemblyjs/helper-leb128";
+import { encodeNode } from "../index";
 
 function assertNotIdentifierNode(n: Node) {
   if (n.type === "Identifier") {
@@ -57,6 +58,23 @@ export function encodeUTF8Vec(str: string): Array<Byte> {
   return encodeVec(charCodes);
 }
 
+export function encodeLimits(n: Limit): Array<Byte> {
+  const out = [];
+
+  if (typeof n.max === "number") {
+    out.push(0x01);
+    out.push(...encodeU32(n.min));
+
+    // $FlowIgnore: ensured by the typeof
+    out.push(...encodeU32(n.max));
+  } else {
+    out.push(0x00);
+    out.push(...encodeU32(n.min));
+  }
+
+  return out;
+}
+
 export function encodeModuleImport(n: ModuleImport): Array<Byte> {
   const out = [];
 
@@ -77,20 +95,20 @@ export function encodeModuleImport(n: ModuleImport): Array<Byte> {
     case "Memory": {
       out.push(0x02);
 
-      // $FlowIgnore: Memory ensure that these props exists
-      if (typeof n.descr.limits.max === "number") {
-        out.push(0x01);
+      // $FlowIgnore
+      out.push(...encodeLimits(n.descr.limits));
 
-        // $FlowIgnore: Memory ensure that these props exists
-        out.push(...encodeU32(n.descr.limits.min));
-        // $FlowIgnore: Memory ensure that these props exists
-        out.push(...encodeU32(n.descr.limits.max));
-      } else {
-        out.push(0x00);
+      break;
+    }
 
-        // $FlowIgnore: Memory ensure that these props exists
-        out.push(...encodeU32(n.descr.limits.min));
-      }
+    case "Table": {
+      out.push(0x01);
+
+      out.push(0x70); // element type
+
+      // $FlowIgnore
+      out.push(...encodeLimits(n.descr.limits));
+
       break;
     }
 
@@ -145,8 +163,27 @@ export function encodeCallInstruction(n: CallInstruction): Array<Byte> {
   assertNotIdentifierNode(n.index);
 
   out.push(0x10);
+
   // $FlowIgnore
   out.push(...encodeU32(n.index.value));
+
+  return out;
+}
+
+export function encodeCallIndirectInstruction(
+  n: CallIndirectInstruction
+): Array<Byte> {
+  const out = [];
+
+  // $FlowIgnore
+  assertNotIdentifierNode(n.index);
+
+  out.push(0x11);
+  // $FlowIgnore
+  out.push(...encodeU32(n.index.value));
+
+  // add a reserved byte
+  out.push(0x00);
 
   return out;
 }
@@ -183,4 +220,95 @@ export function encodeTypeInstruction(n: TypeInstruction): Array<Byte> {
   out.push(...encodeVec(results));
 
   return out;
+}
+
+export function encodeInstr(
+  n: GenericInstruction | ObjectInstruction
+): Array<Byte> {
+  const out = [];
+
+  let instructionName = n.id;
+
+  if (typeof n.object === "string") {
+    instructionName = `${n.object}.${String(n.id)}`;
+  }
+
+  const byteString = constants.symbolsByName[instructionName];
+
+  if (typeof byteString === "undefined") {
+    throw new Error(
+      "encodeInstr: unknown instruction " + JSON.stringify(instructionName)
+    );
+  }
+
+  const byte = parseInt(byteString, 10);
+
+  out.push(byte);
+
+  if (n.args) {
+    n.args.forEach(arg => {
+      if (arg.type === "NumberLiteral") {
+        out.push(...encodeU32(arg.value));
+      } else {
+        throw new Error(
+          "Unsupported instruction argument encoding " +
+            JSON.stringify(arg.type)
+        );
+      }
+    });
+  }
+
+  return out;
+}
+
+function encodeExpr(instrs: Array<Instruction>): Array<Byte> {
+  const out = [];
+
+  instrs.forEach(instr => {
+    // $FlowIgnore
+    const n = encodeNode(instr);
+
+    out.push(...n);
+  });
+
+  out.push(0x0b); // end
+
+  return out;
+}
+
+export function encodeGlobal(n: Global): Array<Byte> {
+  const out = [];
+
+  const { valtype, mutability } = n.globalType;
+
+  out.push(encodeValtype(valtype));
+  out.push(encodeMutability(mutability));
+
+  out.push(...encodeExpr(n.init));
+
+  return out;
+}
+
+export function encodeFuncBody(n: Func): Array<Byte> {
+  const out = [];
+
+  out.push(-1); // temporary function body size
+
+  // FIXME(sven): get the func locals?
+  const localBytes = encodeVec([]);
+  out.push(...localBytes);
+
+  const funcBodyBytes = encodeExpr(n.body);
+  out[0] = funcBodyBytes.length + localBytes.length;
+
+  out.push(...funcBodyBytes);
+
+  return out;
+}
+
+export function encodeIndexInFuncSection(n: IndexInFuncSection): Array<Byte> {
+  assertNotIdentifierNode(n.index);
+
+  // $FlowIgnore
+  return encodeU32(n.index.value);
 }

@@ -6,6 +6,44 @@
       "id": null,
       "fields": [
         {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [
+              {
+                "valtype": "i32"
+              }
+            ],
+            "result": []
+          },
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 11
+            },
+            "end": {
+              "line": -1,
+              "column": 15
+            }
+          }
+        },
+        {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [],
+            "result": []
+          },
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 15
+            },
+            "end": {
+              "line": -1,
+              "column": 18
+            }
+          }
+        },
+        {
           "type": "ModuleImport",
           "module": "./tracker",
           "name": "trackWasm",
@@ -107,7 +145,20 @@
                 "value": 0
               }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 75
+            },
+            "end": {
+              "line": -1,
+              "column": 82
+            }
+          },
+          "metadata": {
+            "bodySize": 6
+          }
         }
       ],
       "metadata": {

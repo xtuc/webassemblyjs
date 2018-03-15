@@ -3,11 +3,11 @@ const illegalop = "illegal";
 const magicModuleHeader = [0x00, 0x61, 0x73, 0x6d];
 const moduleVersion = [0x01, 0x00, 0x00, 0x00];
 
-function invertMap(obj) {
+function invertMap(obj, keyModifierFn = k => k) {
   const result = {};
   const keys = Object.keys(obj);
   for (let i = 0, length = keys.length; i < length; i++) {
-    result[obj[keys[i]]] = keys[i];
+    result[keyModifierFn(obj[keys[i]])] = keys[i];
   }
   return result;
 }
@@ -317,6 +317,14 @@ const symbolsByByte = {
   0xbf: createSymbolObject("reinterpret/i64", "f64")
 };
 
+const symbolsByName = invertMap(symbolsByByte, obj => {
+  if (typeof obj.object === "string") {
+    return `${obj.object}.${obj.name}`;
+  }
+
+  return obj.name;
+});
+
 module.exports = {
   symbolsByByte,
   sections,
@@ -332,5 +340,6 @@ module.exports = {
   importTypes,
   valtypesByString,
   globalTypesByString,
-  exportTypesByName
+  exportTypesByName,
+  symbolsByName
 };

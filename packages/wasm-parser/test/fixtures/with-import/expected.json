@@ -6,6 +6,48 @@
       "id": null,
       "fields": [
         {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [],
+            "result": [
+              "i32"
+            ]
+          },
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 11
+            },
+            "end": {
+              "line": -1,
+              "column": 15
+            }
+          }
+        },
+        {
+          "type": "TypeInstruction",
+          "functype": {
+            "params": [
+              {
+                "valtype": "i32"
+              }
+            ],
+            "result": [
+              "i32"
+            ]
+          },
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 15
+            },
+            "end": {
+              "line": -1,
+              "column": 20
+            }
+          }
+        },
+        {
           "type": "ModuleImport",
           "module": "./module",
           "name": "getNumber",
@@ -80,7 +122,20 @@
               "object": "i32",
               "args": []
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": -1,
+              "column": 66
+            },
+            "end": {
+              "line": -1,
+              "column": 74
+            }
+          },
+          "metadata": {
+            "bodySize": 7
+          }
         },
         {
           "type": "ModuleExport",

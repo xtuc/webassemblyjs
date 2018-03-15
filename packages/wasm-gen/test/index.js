@@ -30,13 +30,13 @@ const fixtures = [
   },
 
   {
-    name: "should generate a memory ModuleImport",
+    name: "a memory ModuleImport",
     node: t.moduleImport("a", "b", t.memory(t.limits(2))),
     expected: [0x01, 0x61, 0x01, 0x62, 0x02, 0x00, 0x02]
   },
 
   {
-    name: "should generate a func(): i32 ModuleImport",
+    name: "a func(): i32 ModuleImport",
     node: t.moduleImport(
       "a",
       "b",
@@ -46,45 +46,120 @@ const fixtures = [
   },
 
   {
-    name: "should generate func type func(): i32",
+    name: "(func (result i32))",
     node: t.typeInstructionFunc([], ["i32"]),
     expected: [0x60, 0x00, 0x01, 0x7f]
   },
 
   {
-    name: "should generate func type func(i32)",
+    name: "(func (param i32))",
     node: t.typeInstructionFunc([t.funcParam("i32")], []),
     expected: [0x60, 0x01, 0x7f, 0x00]
   },
 
   {
-    name: "should generate func type func(i32): i32",
+    name: "(func (param i32) (result i32))",
     node: t.typeInstructionFunc([t.funcParam("i32")], ["i32"]),
     expected: [0x60, 0x01, 0x7f, 0x01, 0x7f]
   },
 
   {
-    name: "should generate an empty ImportSection",
+    name: "an empty ImportSection",
     node: t.sectionMetadata("import", 0, 1, 0),
     expected: [0x02, 0x01, 0x00]
   },
 
   {
-    name: "should generate a CallInstruction",
+    name: "(call 0)",
     node: t.callInstruction(t.indexLiteral(0)),
     expected: [0x10, 0x00]
   },
 
   {
-    name: "should generate a ModuleExport of func 1",
+    name: "a CallIndirectInstruction",
+    node: t.callIndirectInstructionIndex(t.indexLiteral(10)),
+    expected: [0x11, 0x0a, 0x00]
+  },
+
+  {
+    name: '(export "a" (func 1))',
     node: t.moduleExport("a", "Func", t.indexLiteral(1)),
     expected: [0x01, 0x61, 0x00, 0x01]
+  },
+
+  {
+    name: "a ModuleImport of Table with min 2",
+    node: t.moduleImport("a", "b", t.table("anyfunc", t.limits(2))),
+    expected: [0x01, 0x61, 0x01, 0x62, 0x01, 0x70, 0x00, 0x02]
+  },
+
+  {
+    name: "a ModuleImport of Table with min 2 and max 10",
+    node: t.moduleImport("a", "b", t.table("anyfunc", t.limits(2, 10))),
+    expected: [0x01, 0x61, 0x01, 0x62, 0x01, 0x70, 0x01, 0x02, 0x0a]
+  },
+
+  {
+    name: "(get_global 1)",
+    node: t.instruction("get_global", [t.indexLiteral(1)]),
+    expected: [0x23, 0x01]
+  },
+
+  {
+    name: "(set_global 1)",
+    node: t.instruction("set_global", [t.indexLiteral(1)]),
+    expected: [0x24, 0x01]
+  },
+
+  {
+    name: "(get_local 1)",
+    node: t.instruction("get_local", [t.indexLiteral(1)]),
+    expected: [0x20, 0x01]
+  },
+
+  {
+    name: "(global (mut i32) (i32.const 0))",
+    node: t.global(t.globalType("i32", "var"), [
+      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+    ]),
+    expected: [0x7f, 0x01, 0x41, 0x01, 0x0b]
+  },
+
+  {
+    name: "(global i32 (i32.const 0))",
+    node: t.global(t.globalType("i32", "const"), [
+      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+    ]),
+    expected: [0x7f, 0x00, 0x41, 0x01, 0x0b]
+  },
+
+  {
+    name: "(func)",
+    node: t.func(null, [], [], []),
+    expected: [0x02, 0x00, 0x0b]
+  },
+
+  {
+    name: "(func (i32.const 1))",
+    node: t.func(
+      null,
+      [],
+      [],
+      [t.objectInstruction("const", "i32", [t.numberLiteral(1)])]
+    ),
+    expected: [0x04, 0x00, 0x41, 0x01, 0x0b]
+  },
+
+  {
+    name: "(func (unreachable))",
+    node: t.func(null, [], [], [t.instruction("unreachable")]),
+    expected: [0x03, 0x00, 0x00, 0x0b]
   }
 ];
 
 describe("wasm gen", () => {
   fixtures.forEach(fixture => {
-    it(fixture.name, () => {
+    it("should generate " + fixture.name, () => {
       const binary = encodeNode(fixture.node);
       assert.deepEqual(binary, fixture.expected);
     });

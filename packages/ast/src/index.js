@@ -535,6 +535,15 @@ export function callIndirectInstruction(
   };
 }
 
+export function callIndirectInstructionIndex(
+  index: Index
+): CallIndirectInstruction {
+  return {
+    type: "CallIndirectInstruction",
+    index
+  };
+}
+
 export function start(index: Index): Start {
   return {
     type: "Start",
@@ -555,6 +564,14 @@ export function elem(
   };
 }
 
+export function indexInFuncSection(index: Index): IndexInFuncSection {
+  return {
+    type: "IndexInFuncSection",
+    index
+  };
+}
+
 export { traverse, traverseWithHooks } from "./traverse";
 export { signatures } from "./signatures";
 export { getSectionMetadata } from "./utils";
+export { cloneNode } from "./clone";

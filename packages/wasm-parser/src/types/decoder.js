@@ -55,6 +55,9 @@ type DecodedElementInExportSection = {
 };
 
 type DecodedElementInCodeSection = {
+  startLoc: Position,
+  endLoc: Position,
+  bodySize: number,
   code: Array<Instruction>,
   locals: Array<Valtype>
 };

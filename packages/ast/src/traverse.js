@@ -34,6 +34,10 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
 
   // TODO(sven): do it the good way, changing the node from the parent
   function replaceWith(newNode: Node) {
+    // Remove all the keys first
+    // $FlowIgnore
+    Object.keys(node).forEach(k => delete node[k]);
+
     // $FlowIgnore
     Object.assign(node, newNode);
   }
@@ -69,6 +73,7 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
     case "Elem":
     case "NumberLiteral":
     case "FloatLiteral":
+    case "LongNumberLiteral":
     case "BinaryModule":
     case "LeadingComment":
     case "BlockComment":
@@ -106,6 +111,19 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
       break;
     }
 
+    case "CallIndirectInstruction": {
+      const path = createPath(n, parentPath);
+      // $FlowIgnore
+      cb(n.type, path);
+
+      if (n.index != null) {
+        // $FlowIgnore
+        walk(n.index, cb, path);
+      }
+
+      break;
+    }
+
     case "ModuleImport": {
       cb(n.type, createPath(n, parentPath));
 
@@ -121,6 +139,17 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
 
       if (n.name != null) {
         walk(n.name, cb, path);
+      }
+
+      break;
+    }
+
+    case "TypeInstruction": {
+      const path = createPath(n, parentPath);
+      cb(n.type, path);
+
+      if (n.id != null) {
+        walk(n.id, cb, path);
       }
 
       break;
@@ -151,7 +180,9 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
       cb(n.type, path);
 
       // $FlowIgnore
-      n.args.forEach(x => walk(x, cb, path));
+      if (typeof n.args === "object") {
+        n.args.forEach(x => walk(x, cb, path));
+      }
 
       break;
     }

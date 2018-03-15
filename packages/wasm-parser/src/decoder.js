@@ -310,9 +310,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   // Type section
   // https://webassembly.github.io/spec/binary/modules.html#binary-typesec
   function parseTypeSection(numberOfTypes: number) {
+    const typeInstructionNodes = [];
+
     dump([numberOfTypes], "num types");
 
     for (let i = 0; i < numberOfTypes; i++) {
+      const startLoc = getPosition();
+
       dumpSep("type " + i);
 
       const type = readByte();
@@ -326,6 +330,12 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const result: Array<Valtype> = parseVec(b => valtypes[b]);
 
+        const endLoc = getPosition();
+
+        typeInstructionNodes.push(
+          t.withLoc(t.typeInstructionFunc(params, result), endLoc, startLoc)
+        );
+
         state.typesInModule.push({
           params,
           result
@@ -334,6 +344,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new Error("Unsupported type: " + toHex(type));
       }
     }
+
+    return typeInstructionNodes;
   }
 
   // Import section
@@ -548,6 +560,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     // Parse vector of function
     for (let i = 0; i < numberOfFuncs; i++) {
+      const startLoc = getPosition();
+
       dumpSep("function body " + i);
 
       // the u32 size of the function code in bytes
@@ -555,7 +569,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const bodySizeU32 = readU32();
       eatBytes(bodySizeU32.nextIndex);
 
-      dump([0x0], "function body size (guess)");
+      dump([bodySizeU32.value], "function body size");
 
       const code: Array<Instruction> = [];
 
@@ -592,9 +606,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       // Decode instructions until the end
       parseInstructionBlock(code);
 
+      const endLoc = getPosition();
+
       state.elementsInCodeSection.push({
         code,
-        locals
+        locals,
+
+        endLoc,
+        startLoc,
+        bodySize: bodySizeU32.value
       });
     }
   }
@@ -1133,9 +1153,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           numberOfTypes
         );
 
-        parseTypeSection(numberOfTypes);
-
-        const nodes = [];
+        const nodes = parseTypeSection(numberOfTypes);
 
         return { nodes, metadata };
       }
@@ -1428,10 +1446,18 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     funcIndex++;
 
-    const funcNode = t.func(func.id, params, result, body);
+    let funcNode = t.func(func.id, params, result, body);
 
     if (func.isExternal === true) {
       funcNode.isExternal = func.isExternal;
+    }
+
+    // Add function position in the binary if possible
+    if (opts.ignoreCodeSection === false) {
+      const { startLoc, endLoc, bodySize } = decodedElementInCodeSection;
+
+      funcNode = t.withLoc(funcNode, endLoc, startLoc);
+      funcNode.metadata = { bodySize };
     }
 
     moduleFields.push(funcNode);

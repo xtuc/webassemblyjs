@@ -16,12 +16,30 @@ export function encodeNode(n: Node): Array<Byte> {
       // $FlowIgnore: SectionMetadata ensure that the node is well formated
       return encoder.encodeCallInstruction(n);
 
+    case "CallIndirectInstruction":
+      // $FlowIgnore: SectionMetadata ensure that the node is well formated
+      return encoder.encodeCallIndirectInstruction(n);
+
     case "TypeInstruction":
       return encoder.encodeTypeInstruction(n);
+
+    case "Instr":
+      // $FlowIgnore
+      return encoder.encodeInstr(n);
 
     case "ModuleExport":
       // $FlowIgnore: SectionMetadata ensure that the node is well formated
       return encoder.encodeModuleExport(n);
+
+    case "Global":
+      // $FlowIgnore
+      return encoder.encodeGlobal(n);
+
+    case "Func":
+      return encoder.encodeFuncBody(n);
+
+    case "IndexInFuncSection":
+      return encoder.encodeIndexInFuncSection(n);
 
     default:
       throw new Error(

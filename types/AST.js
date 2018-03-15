@@ -105,7 +105,8 @@ type Node =
   | BlockComment
   | ValtypeLiteral
   | Start
-  | Elem;
+  | Elem
+  | IndexInFuncSection;
 
 type Expression =
   | Identifier
@@ -246,7 +247,11 @@ type Func = {
   body: Array<Instruction>,
 
   // Means that it has been imported from the outside js
-  isExternal?: boolean
+  isExternal?: boolean,
+
+  metadata?: {
+    bodySize: number
+  }
 };
 
 /**
@@ -319,9 +324,14 @@ type CallIndirectInstruction = {
   ...BaseNode,
 
   type: "CallIndirectInstruction",
-  params: Array<FuncParam>,
-  results: Array<Valtype>,
-  intrs: Array<Expression>
+
+  // WAST
+  params?: Array<FuncParam>,
+  results?: Array<Valtype>,
+  intrs?: Array<Expression>,
+
+  // WAT
+  index?: Index
 };
 
 type ModuleExport = {
@@ -461,4 +471,11 @@ type Elem = {
   offset: Array<Instruction>,
 
   funcs: Array<Index>
+};
+
+type IndexInFuncSection = {
+  ...BaseNode,
+
+  type: "IndexInFuncSection",
+  index: Index
 };

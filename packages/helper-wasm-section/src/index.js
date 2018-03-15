@@ -10,6 +10,8 @@ export function getSectionForNode(n: Node): SectionName {
       return "import";
 
     case "CallInstruction":
+    case "CallIndirectInstruction":
+    case "Func":
       return "code";
 
     case "ModuleExport":
@@ -20,6 +22,12 @@ export function getSectionForNode(n: Node): SectionName {
 
     case "TypeInstruction":
       return "type";
+
+    case "IndexInFuncSection":
+      return "func";
+
+    case "Global":
+      return "global";
 
     default:
       throw new Error(
