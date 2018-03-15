@@ -5,13 +5,12 @@ const {
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const t = require("@webassemblyjs/ast");
+const {
+  compareArrayBuffers
+} = require("@webassemblyjs/helper-buffer/lib/compare");
 const constants = require("@webassemblyjs/helper-wasm-bytecode");
 
 const { add, edit } = require("../lib");
-
-function assertArrayBufferEqual(l, r) {
-  assert.deepEqual(new Uint8Array(l), new Uint8Array(r));
-}
 
 describe("replace a node", () => {
   it("should replace the ModuleImport", () => {
@@ -36,7 +35,7 @@ describe("replace a node", () => {
       [0x7f, 0x00]
     );
 
-    assertArrayBufferEqual(newBinary, expectedBinary);
+    compareArrayBuffers(newBinary, expectedBinary);
   });
 
   it("should replace the ModuleImport with a new FuncImportDescr", () => {
@@ -77,7 +76,7 @@ describe("replace a node", () => {
       [0x00]
     );
 
-    assertArrayBufferEqual(actualBinary, expectedBinary);
+    compareArrayBuffers(actualBinary, expectedBinary);
   });
 
   it("should replace the Instruction to a CallInstruction", () => {
@@ -117,7 +116,7 @@ describe("replace a node", () => {
       [/* call */ 0x10, 0x00, 0x0b]
     );
 
-    assertArrayBufferEqual(newBinary, expectedBinary);
+    compareArrayBuffers(newBinary, expectedBinary);
   });
 
   it("should replace the Instruction to a CallIndirectInstruction (and resize func body size)", () => {
@@ -158,7 +157,7 @@ describe("replace a node", () => {
       [constants.sections.code, 0x07, 0x01, 0x05, 0x00, 0x11, 0x02, 0x00, 0x0b]
     );
 
-    assertArrayBufferEqual(newBinary, expectedBinary);
+    compareArrayBuffers(newBinary, expectedBinary);
   });
 
   it("should update all TypeInstructions (implies updating the underlying AST)", () => {
@@ -200,6 +199,6 @@ describe("replace a node", () => {
       [0x00, 0x60, 0x04, 0x7f, 0x7f, 0x7f, 0x7f, 0x00]
     );
 
-    assertArrayBufferEqual(newBinary, expectedBinary);
+    compareArrayBuffers(newBinary, expectedBinary);
   });
 });

@@ -1,4 +1,7 @@
-const { assert } = require("chai");
+const { makeBuffer } = require("@webassemblyjs/helper-buffer");
+const {
+  compareArrayBuffers
+} = require("@webassemblyjs/helper-buffer/lib/compare");
 const {
   encodeVersion,
   encodeHeader
@@ -6,15 +9,6 @@ const {
 const constants = require("@webassemblyjs/helper-wasm-bytecode");
 
 const { edit } = require("../lib");
-
-function makeBuffer(...splitedBytes) {
-  const bytes = [].concat.apply([], splitedBytes);
-  return new Uint8Array(bytes).buffer;
-}
-
-function assertArrayBufferEqual(l, r) {
-  assert.deepEqual(new Uint8Array(l), new Uint8Array(r));
-}
 
 describe("remove a node", () => {
   it("should remove the ModuleExport", () => {
@@ -45,7 +39,7 @@ describe("remove a node", () => {
       [constants.sections.export, 0x01, 0x00]
     );
 
-    assertArrayBufferEqual(newBinary, expectedBinary);
+    compareArrayBuffers(newBinary, expectedBinary);
   });
 
   it("should remove the Start", () => {
@@ -79,7 +73,7 @@ describe("remove a node", () => {
       [constants.sections.code, 0x04, 0x01, 0x02, 0x00, 0x0b]
     );
 
-    assertArrayBufferEqual(newBinary, expectedBinary);
+    compareArrayBuffers(newBinary, expectedBinary);
   });
 
   it("should remove all the types (implies updating the underlying AST)", () => {
@@ -107,6 +101,6 @@ describe("remove a node", () => {
       0x00
     ]);
 
-    assertArrayBufferEqual(newBinary, expectedBinary);
+    compareArrayBuffers(newBinary, expectedBinary);
   });
 });

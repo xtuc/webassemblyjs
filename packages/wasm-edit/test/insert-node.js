@@ -6,12 +6,11 @@ const {
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const constants = require("@webassemblyjs/helper-wasm-bytecode");
+const {
+  compareArrayBuffers
+} = require("@webassemblyjs/helper-buffer/lib/compare");
 
 const { add } = require("../lib");
-
-function assertArrayBufferEqual(l, r) {
-  assert.deepEqual(new Uint8Array(l), new Uint8Array(r));
-}
 
 describe("insert a node", () => {
   describe("ModuleImport", () => {
@@ -33,7 +32,7 @@ describe("insert a node", () => {
         t.moduleImport("a", "b", t.memory(t.limits(1)))
       ]);
 
-      assertArrayBufferEqual(newBinary, expectedBinary);
+      compareArrayBuffers(newBinary, expectedBinary);
     });
 
     it("should insert the node with existing empty section", () => {
@@ -48,7 +47,7 @@ describe("insert a node", () => {
         t.moduleImport("a", "b", t.memory(t.limits(1)))
       ]);
 
-      assertArrayBufferEqual(newBinary, expectedBinary);
+      compareArrayBuffers(newBinary, expectedBinary);
     });
   });
 
@@ -83,7 +82,7 @@ describe("insert a node", () => {
         t.moduleExport("a", "Func", t.indexLiteral(0))
       ]);
 
-      assertArrayBufferEqual(newBinary, expectedBinary);
+      compareArrayBuffers(newBinary, expectedBinary);
     });
 
     it("should insert the node with non existing section", () => {
@@ -102,7 +101,7 @@ describe("insert a node", () => {
         t.moduleExport("a", "Func", t.indexLiteral(0))
       ]);
 
-      assertArrayBufferEqual(newBinary, expectedBinary);
+      compareArrayBuffers(newBinary, expectedBinary);
     });
 
     it("should export a function in WebAssembly", function() {
@@ -162,7 +161,7 @@ describe("insert a node", () => {
 
       const newBinary = add(actual, [global]);
 
-      assertArrayBufferEqual(newBinary, expectedBinary);
+      compareArrayBuffers(newBinary, expectedBinary);
     });
 
     it("should insert the node with non-existing section", () => {
@@ -171,7 +170,7 @@ describe("insert a node", () => {
 
       const newBinary = add(actual, [global]);
 
-      assertArrayBufferEqual(newBinary, expectedBinary);
+      compareArrayBuffers(newBinary, expectedBinary);
     });
   });
 
@@ -208,14 +207,14 @@ describe("insert a node", () => {
 
       const newBinary = add(actual, [func, funcindex, functype]);
 
-      assertArrayBufferEqual(newBinary, expectedBinary);
+      compareArrayBuffers(newBinary, expectedBinary);
     });
 
     it("should insert the node with non-existing sections", () => {
       const actual = makeBuffer(encodeHeader(), encodeVersion(1));
       const newBinary = add(actual, [func, funcindex, functype]);
 
-      assertArrayBufferEqual(newBinary, expectedBinary);
+      compareArrayBuffers(newBinary, expectedBinary);
     });
 
     it("should insert the node after another function", () => {
@@ -238,7 +237,7 @@ describe("insert a node", () => {
         [0x04, 0x00, 0x41, 0x01, 0x0b]
       );
 
-      assertArrayBufferEqual(newBinary, expectedBinary2);
+      compareArrayBuffers(newBinary, expectedBinary2);
     });
   });
 });
