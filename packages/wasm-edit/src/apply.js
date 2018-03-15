@@ -14,7 +14,9 @@ import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
 type State = {
   uint8Buffer: Uint8Array,
-  deltaBytes: number
+
+  deltaBytes: number,
+  deltaElements: number
 };
 
 function assertNodeHasLoc(n: Node) {
@@ -39,6 +41,8 @@ function applyUpdate(
   uint8Buffer: Uint8Array,
   [oldNode, newNode]: [Node, Node]
 ): State {
+  const deltaElements = 0;
+
   assertNodeHasLoc(oldNode);
 
   const sectionName = getSectionForNode(newNode);
@@ -103,13 +107,6 @@ function applyUpdate(
     // $FlowIgnore: assertNodeHasLoc ensures that
     (oldNode.loc.end.column - oldNode.loc.start.column);
 
-  uint8Buffer = resizeSectionByteSize(
-    ast,
-    uint8Buffer,
-    sectionName,
-    deltaBytes
-  );
-
   // Init location informations
   newNode.loc = {
     start: { line: -1, column: -1 },
@@ -123,7 +120,7 @@ function applyUpdate(
     // $FlowIgnore: assertNodeHasLoc ensures that
     oldNode.loc.start.column + replacementByteArray.length;
 
-  return { uint8Buffer, deltaBytes };
+  return { uint8Buffer, deltaBytes, deltaElements };
 }
 
 function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
@@ -141,9 +138,10 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
      * we need to remove the whole section
      */
     uint8Buffer = removeSection(ast, uint8Buffer, "start");
+
     const deltaBytes = -sectionMetadata.size;
 
-    return { uint8Buffer, deltaBytes };
+    return { uint8Buffer, deltaBytes, deltaElements };
   }
 
   // replacement is nothing
@@ -165,21 +163,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
   // $FlowIgnore: assertNodeHasLoc ensures that
   const deltaBytes = -(node.loc.end.column - node.loc.start.column);
 
-  uint8Buffer = resizeSectionByteSize(
-    ast,
-    uint8Buffer,
-    sectionName,
-    deltaBytes
-  );
-
-  uint8Buffer = resizeSectionVecSize(
-    ast,
-    uint8Buffer,
-    sectionName,
-    deltaElements
-  );
-
-  return { uint8Buffer, deltaBytes };
+  return { uint8Buffer, deltaBytes, deltaElements };
 }
 
 function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
@@ -214,24 +198,9 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    */
   const deltaBytes = newByteArray.length;
 
-  uint8Buffer = resizeSectionByteSize(
-    ast,
-    uint8Buffer,
-    sectionName,
-    deltaBytes
-  );
-
-  uint8Buffer = resizeSectionVecSize(
-    ast,
-    uint8Buffer,
-    sectionName,
-    deltaElements
-  );
-
-  return { uint8Buffer, deltaBytes };
+  return { uint8Buffer, deltaBytes, deltaElements };
 }
 
-// TODO(sven): we could resize the section here instead, it's generic enough
 export function applyOperations(
   ast: Program,
   uint8Buffer: Uint8Array,
@@ -239,18 +208,22 @@ export function applyOperations(
 ): Uint8Array {
   ops.forEach(op => {
     let state;
+    let sectionName;
 
     switch (op.kind) {
       case "update":
         state = applyUpdate(ast, uint8Buffer, [op.oldNode, op.node]);
+        sectionName = getSectionForNode(op.node);
         break;
 
       case "delete":
         state = applyDelete(ast, uint8Buffer, op.node);
+        sectionName = getSectionForNode(op.node);
         break;
 
       case "add":
         state = applyAdd(ast, uint8Buffer, op.node);
+        sectionName = getSectionForNode(op.node);
         break;
 
       default:
@@ -270,6 +243,24 @@ export function applyOperations(
             return shiftLocNodeByDelta(op.node, state.deltaBytes);
         }
       });
+
+      if (sectionName !== "start") {
+        state.uint8Buffer = resizeSectionByteSize(
+          ast,
+          state.uint8Buffer,
+          sectionName,
+          state.deltaBytes
+        );
+      }
+    }
+
+    if (state.deltaElements !== 0 && sectionName !== "start") {
+      state.uint8Buffer = resizeSectionVecSize(
+        ast,
+        state.uint8Buffer,
+        sectionName,
+        state.deltaElements
+      );
     }
 
     uint8Buffer = state.uint8Buffer;
