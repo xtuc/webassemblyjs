@@ -19,6 +19,7 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [wasm-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-parser) - WebAssembly binary format parser
 - [wast-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-parser) - WebAssembly text format parser
 - [wast-printer](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-printer) - WebAssembly text format printer
+- [wast-strip](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-strip) - Strips custom sections
 - [webassemblyjs](https://github.com/xtuc/webassemblyjs/tree/master/packages/webassemblyjs) - WebAssembly interpreter, implements the W3C WebAssembly API.
 
 
