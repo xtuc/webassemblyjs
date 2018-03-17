@@ -5,7 +5,7 @@ const wastIdentifierToIndex = require("@webassemblyjs/ast/lib/transform/wast-ide
 const glob = require("glob");
 const diff = require("jest-diff");
 const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
-const { writeFileSync, readFileSync } = require("fs");
+const { writeFileSync, readFileSync, existsSync } = require("fs");
 const path = require("path");
 
 const { parse } = require("../lib");
@@ -48,13 +48,49 @@ describe("compiler", () => {
       testSuites.forEach(suite => {
         it(suite, () => {
           const code = readFileSync(suite, "utf8");
-          const ast = parse(code);
+          const throwsFile = path.join(path.dirname(suite), "throws.txt");
+          let ast;
+          let actualError = false;
+          let expectedError = false;
 
-          if (/wast-identifier-to-index/.test(suite) === true) {
-            wastIdentifierToIndex.transform(ast);
+          if (existsSync(throwsFile)) {
+            expectedError = readFileSync(throwsFile, "utf8").trim();
           }
 
-          createCheck(suite, ast);
+          try {
+            ast = parse(code);
+          } catch (e) {
+            actualError = e;
+          }
+
+          if (actualError === false && expectedError === false) {
+            if (/wast-identifier-to-index/.test(suite) === true) {
+              wastIdentifierToIndex.transform(ast);
+            }
+            createCheck(suite, ast);
+          }
+
+          if (actualError !== false && expectedError === false) {
+            throw actualError;
+          }
+
+          if (actualError === false && expectedError !== false) {
+            throw new Error(
+              `Expected parser error "${expectedError}", but got none.`
+            );
+          }
+
+          if (
+            actualError !== false &&
+            expectedError !== false &&
+            actualError.message !== expectedError
+          ) {
+            throw new Error(
+              `Expected parser error "${expectedError}", but got "${
+                actualError.message
+              }".`
+            );
+          }
         });
       });
     });

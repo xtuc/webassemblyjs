@@ -268,6 +268,10 @@ function tokenize(input: string) {
         numberLiterals.test(char) ||
         (input[current - 1] === "p" && char === "+")
       ) {
+        if (char === "p" && value.includes("p")) {
+          throw new Error("Unexpected character `p`.");
+        }
+
         if (char !== "_") {
           value += char;
         }
