@@ -26,7 +26,7 @@ build:
 	./scripts/build.sh
 
 watch:
-	$(BABEL) --out-dir lib/ src/ --watch
+	./scripts/build.sh --watch
 
 test-ci: test test-whitelisted-spec lint
 
