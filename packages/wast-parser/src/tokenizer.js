@@ -122,7 +122,7 @@ function tokenize(input: string) {
    *
    */
   function peek(length = 1, offset = 1) {
-    return input.substring(current + offset,current + offset + length);
+    return input.substring(current + offset, current + offset + length);
   }
 
   function eatToken() {
@@ -249,7 +249,7 @@ function tokenize(input: string) {
 
     if (
       NUMBERS.test(char) ||
-      NUMBER_KEYWORDS.test(peek(3,0)) ||
+      NUMBER_KEYWORDS.test(peek(3, 0)) ||
       char === "-"
     ) {
       let value = "";
@@ -258,11 +258,11 @@ function tokenize(input: string) {
         char = input[++current];
       }
 
-      if (NUMBER_KEYWORDS.test(peek(3,0))) {
+      if (NUMBER_KEYWORDS.test(peek(3, 0))) {
         let tokenLength = 3;
-        if (peek(4,0) === "nan:") {
+        if (peek(4, 0) === "nan:") {
           tokenLength = 4;
-        } else if (peek(3,0) === "nan") {
+        } else if (peek(3, 0) === "nan") {
           tokenLength = 3;
         }
         value += input.substring(current, current + tokenLength);
