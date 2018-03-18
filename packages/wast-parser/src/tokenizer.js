@@ -118,11 +118,24 @@ function tokenize(input: string) {
    * The default behavior `lookahead()` simply returns the next character without consuming it.
    *
    * @param int length How many characters to query. Default = 1
-   * @param int offset How many characters to skip from current one. Default = 1
+   * @param int offset How many characters to skip forward from current one. Default = 1
    *
    */
   function lookahead(length = 1, offset = 1) {
     return input.substring(current + offset, current + offset + length);
+  }
+
+  /**
+   * Can be used to look at the last few character(s).
+   *
+   * The default behavior `lookback()` simply returns the last character.
+   *
+   * @param int length How many characters to query. Default = 1
+   * @param int offset How many characters to skip back from current one. Default = 1
+   *
+   */
+  function lookback(length = 1, offset = 1) {
+    return input.substring(current - offset, current - offset + length);
   }
 
   function eatToken() {
@@ -279,8 +292,8 @@ function tokenize(input: string) {
 
       while (
         numberLiterals.test(char) ||
-        (input[current - 1] === "p" && char === "+") ||
-        (input[current - 1].toUpperCase() === "E" && char === "-") ||
+        (lookback() === "p" && char === "+") ||
+        (lookback().toUpperCase() === "E" && char === "-") ||
         (value.length > 0 && char.toUpperCase() === "E")
       ) {
         if (char === "p" && value.includes("p")) {
