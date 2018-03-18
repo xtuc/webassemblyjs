@@ -112,6 +112,19 @@ function tokenize(input: string) {
 
   const tokens = [];
 
+  /**
+   * Can be used to look at the next character(s).
+   *
+   * The default behavior `peek()` simply returns the next character without consuming it.
+   *
+   * @param int length How many characters to query. Default = 1
+   * @param int offset How many characters to skip from current one. Default = 1
+   *
+   */
+  function peek(length = 1, offset = 1) {
+    return input.substring(current + offset,current + offset + length);
+  }
+
   function eatToken() {
     column++;
     current++;
@@ -121,7 +134,7 @@ function tokenize(input: string) {
     let char = input[current];
 
     // ;;
-    if (char === ";" && input[current + 1] === ";") {
+    if (char === ";" && peek() === ";") {
       eatToken();
       eatToken();
 
@@ -147,7 +160,7 @@ function tokenize(input: string) {
     }
 
     // (;
-    if (char === "(" && input[current + 1] === ";") {
+    if (char === "(" && peek() === ";") {
       eatToken(); // (
       eatToken(); // ;
 
@@ -159,7 +172,7 @@ function tokenize(input: string) {
       while (true) {
         char = input[current];
 
-        if (char === ";" && input[current + 1] === ")") {
+        if (char === ";" && peek() === ")") {
           eatToken(); // ;
           eatToken(); // )
 
@@ -236,7 +249,7 @@ function tokenize(input: string) {
 
     if (
       NUMBERS.test(char) ||
-      NUMBER_KEYWORDS.test(input.substring(current, current + 3)) ||
+      NUMBER_KEYWORDS.test(peek(3,0)) ||
       char === "-"
     ) {
       let value = "";
@@ -245,11 +258,11 @@ function tokenize(input: string) {
         char = input[++current];
       }
 
-      if (NUMBER_KEYWORDS.test(input.substring(current, current + 3))) {
+      if (NUMBER_KEYWORDS.test(peek(3,0))) {
         let tokenLength = 3;
-        if (input.substring(current, current + 4) === "nan:") {
+        if (peek(4,0) === "nan:") {
           tokenLength = 4;
-        } else if (input.substring(current, current + 3) === "nan") {
+        } else if (peek(3,0) === "nan") {
           tokenLength = 3;
         }
         value += input.substring(current, current + tokenLength);
@@ -258,7 +271,7 @@ function tokenize(input: string) {
 
       let numberLiterals = NUMBERS;
 
-      if (char === "0" && input[current + 1].toUpperCase() === "X") {
+      if (char === "0" && peek().toUpperCase() === "X") {
         value += "0x";
         numberLiterals = HEX_NUMBERS;
         char = input[(current += 2)];
