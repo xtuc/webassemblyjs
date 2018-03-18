@@ -266,7 +266,8 @@ function tokenize(input: string) {
 
       while (
         numberLiterals.test(char) ||
-        (input[current - 1] === "p" && char === "+")
+        (input[current - 1] === "p" && char === "+") ||
+        (value.length > 0 && char.toUpperCase() === "E")
       ) {
         if (char === "p" && value.includes("p")) {
           throw new Error("Unexpected character `p`.");
