@@ -105,6 +105,7 @@ const EqualToken = createToken(tokens.equal);
 
 function tokenize(input: string) {
   let current = 0;
+  let char = input[current];
 
   // Used by SourceLocation
   let column = 1;
@@ -143,21 +144,23 @@ function tokenize(input: string) {
     current++;
   }
 
+  function eatCharacter(amount = 1) {
+    column += amount;
+    char = input[(current += amount)];
+  }
+
   while (current < input.length) {
-    let char = input[current];
+    char = input[current];
 
     // ;;
     if (char === ";" && lookahead() === ";") {
-      eatToken();
-      eatToken();
-
-      char = input[current];
+      eatCharacter(2);
 
       let text = "";
 
       while (!isNewLine(char)) {
         text += char;
-        char = input[++current];
+        eatCharacter();
 
         if (char === undefined) {
           break;
@@ -174,10 +177,7 @@ function tokenize(input: string) {
 
     // (;
     if (char === "(" && lookahead() === ";") {
-      eatToken(); // (
-      eatToken(); // ;
-
-      char = input[current];
+      eatCharacter(2);
 
       let text = "";
 
@@ -212,44 +212,44 @@ function tokenize(input: string) {
     if (char === "(") {
       tokens.push(OpenParenToken(char, line, column));
 
-      eatToken();
+      eatCharacter();
       continue;
     }
 
     if (char === "=") {
       tokens.push(EqualToken(char, line, column));
 
-      eatToken();
+      eatCharacter();
       continue;
     }
 
     if (char === ")") {
       tokens.push(CloseParenToken(char, line, column));
 
-      eatToken();
+      eatCharacter();
       continue;
     }
 
     if (isNewLine(char)) {
       line++;
-      eatToken();
+      eatCharacter();
       column = 0;
       continue;
     }
 
     if (WHITESPACE.test(char)) {
-      eatToken();
+      eatCharacter();
       continue;
     }
 
     if (char === "$") {
-      char = input[++current];
+      eatCharacter();
 
       let value = "";
 
       while (idchar.test(char)) {
         value += char;
-        char = input[++current];
+        eatCharacter();
       }
 
       // Shift by the length of the string
@@ -268,7 +268,7 @@ function tokenize(input: string) {
       let value = "";
       if (char === "-") {
         value += char;
-        char = input[++current];
+        eatCharacter();
       }
 
       if (NUMBER_KEYWORDS.test(lookahead(3, 0))) {
@@ -279,7 +279,7 @@ function tokenize(input: string) {
           tokenLength = 3;
         }
         value += input.substring(current, current + tokenLength);
-        char = input[(current += tokenLength)];
+        eatCharacter(tokenLength);
       }
 
       let numberLiterals = NUMBERS;
@@ -287,7 +287,7 @@ function tokenize(input: string) {
       if (char === "0" && lookahead().toUpperCase() === "X") {
         value += "0x";
         numberLiterals = HEX_NUMBERS;
-        char = input[(current += 2)];
+        eatCharacter(2);
       }
 
       while (
@@ -303,7 +303,7 @@ function tokenize(input: string) {
         if (char !== "_") {
           value += char;
         }
-        char = input[++current];
+        eatCharacter();
       }
 
       // Shift by the length of the string
@@ -317,7 +317,7 @@ function tokenize(input: string) {
     if (char === '"') {
       let value = "";
 
-      char = input[++current];
+      eatCharacter();
 
       while (char !== '"') {
         if (isNewLine(char)) {
@@ -325,13 +325,13 @@ function tokenize(input: string) {
         }
 
         value += char;
-        char = input[++current];
+        eatCharacter();
       }
 
       // Shift by the length of the string
       column += value.length;
 
-      eatToken();
+      eatCharacter();
 
       tokens.push(StringToken(value, line, column));
 
@@ -343,7 +343,7 @@ function tokenize(input: string) {
 
       while (LETTERS.test(char)) {
         value += char;
-        char = input[++current];
+        eatCharacter();
       }
 
       // Shift by the length of the string
@@ -360,11 +360,11 @@ function tokenize(input: string) {
         }
 
         value = "";
-        char = input[++current];
+        eatCharacter();
 
         while (LETTERS.test(char)) {
           value += char;
-          char = input[++current];
+          eatCharacter();
         }
 
         // Shift by the length of the string
