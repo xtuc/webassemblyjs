@@ -9,6 +9,7 @@ const { writeFileSync, readFileSync, existsSync } = require("fs");
 const path = require("path");
 
 const { parse } = require("../lib");
+const { tokenize } = require("../lib/tokenizer");
 
 function createCheck(suite, ast) {
   const expectedFile = path.join(path.dirname(suite), "expected.json");
@@ -40,6 +41,58 @@ function createCheck(suite, ast) {
 
 describe("compiler", () => {
   describe("wast", () => {
+    describe("tokenizing", () => {
+      const testSuites = glob.sync(
+        "packages/wast-parser/test/tokenizer/**/actual.wast"
+      );
+
+      testSuites.forEach(suite => {
+        it(suite, () => {
+          const code = readFileSync(suite, "utf8");
+          const throwsFile = path.join(path.dirname(suite), "throws.txt");
+          let tokens;
+          let actualError = false;
+          let expectedError = false;
+
+          if (existsSync(throwsFile)) {
+            expectedError = readFileSync(throwsFile, "utf8").trim();
+          }
+
+          try {
+            tokens = tokenize(code);
+          } catch (e) {
+            actualError = e;
+          }
+
+          if (actualError === false && expectedError === false) {
+            createCheck(suite, tokens);
+          }
+
+          if (actualError !== false && expectedError === false) {
+            throw actualError;
+          }
+
+          if (actualError === false && expectedError !== false) {
+            throw new Error(
+              `Expected parser error "${expectedError}", but got none.`
+            );
+          }
+
+          if (
+            actualError !== false &&
+            expectedError !== false &&
+            actualError.message !== expectedError
+          ) {
+            throw new Error(
+              `Expected parser error "${expectedError}", but got "${
+                actualError.message
+              }".`
+            );
+          }
+        });
+      });
+    });
+
     describe("parsing", () => {
       const testSuites = glob.sync(
         "packages/wast-parser/test/fixtures/**/actual.wast"
