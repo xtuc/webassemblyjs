@@ -267,6 +267,7 @@ function tokenize(input: string) {
       while (
         numberLiterals.test(char) ||
         (input[current - 1] === "p" && char === "+") ||
+        (input[current - 1].toUpperCase() === "E" && char === "-") ||
         (value.length > 0 && char.toUpperCase() === "E")
       ) {
         if (char === "p" && value.includes("p")) {
