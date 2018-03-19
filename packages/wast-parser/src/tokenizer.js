@@ -128,13 +128,13 @@ function tokenize(input: string) {
   /**
    * Can be used to look at the last few character(s).
    *
-   * The default behavior `lookback()` simply returns the last character.
+   * The default behavior `lookbehind()` simply returns the last character.
    *
    * @param int length How many characters to query. Default = 1
    * @param int offset How many characters to skip back from current one. Default = 1
    *
    */
-  function lookback(length = 1, offset = 1) {
+  function lookbehind(length = 1, offset = 1) {
     return input.substring(current - offset, current - offset + length);
   }
 
@@ -292,8 +292,8 @@ function tokenize(input: string) {
 
       while (
         numberLiterals.test(char) ||
-        (lookback() === "p" && char === "+") ||
-        (lookback().toUpperCase() === "E" && char === "-") ||
+        (lookbehind() === "p" && char === "+") ||
+        (lookbehind().toUpperCase() === "E" && char === "-") ||
         (value.length > 0 && char.toUpperCase() === "E")
       ) {
         if (char === "p" && value.includes("p")) {
