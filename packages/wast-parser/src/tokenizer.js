@@ -139,19 +139,16 @@ function tokenize(input: string) {
     return input.substring(current - offset, current - offset + length);
   }
 
-  function eatToken() {
-    column++;
-    current++;
-  }
-
+  /**
+   * Advances the cursor in the input by a certain amount
+   */
   function eatCharacter(amount = 1) {
     column += amount;
-    char = input[(current += amount)];
+    current += amount;
+    char = input[current];
   }
 
   while (current < input.length) {
-    char = input[current];
-
     // ;;
     if (char === ";" && lookahead() === ";") {
       eatCharacter(2);
@@ -186,8 +183,7 @@ function tokenize(input: string) {
         char = input[current];
 
         if (char === ";" && lookahead() === ")") {
-          eatToken(); // ;
-          eatToken(); // )
+          eatCharacter(2);
 
           break;
         }
@@ -201,7 +197,7 @@ function tokenize(input: string) {
           column++;
         }
 
-        eatToken();
+        eatCharacter();
       }
 
       tokens.push(CommentToken(text, line, column, { type: "block" }));
