@@ -26,7 +26,8 @@ type FloatLiteral = {
   type: "FloatLiteral",
   value: number,
   nan?: boolean,
-  inf?: boolean
+  inf?: boolean,
+  raw: string
 };
 
 type Typeidx = U32Literal;
@@ -165,14 +166,16 @@ type NumberLiteral = {
   ...BaseNode,
 
   type: "NumberLiteral",
-  value: number
+  value: number,
+  raw: string
 };
 
 type LongNumberLiteral = {
   ...BaseNode,
 
   type: "LongNumberLiteral",
-  value: LongNumber
+  value: LongNumber,
+  raw: string
 };
 
 type Identifier = {
