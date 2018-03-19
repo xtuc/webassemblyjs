@@ -81,6 +81,10 @@
     (i64.const -1)
     (i64.const 1)
     (i64.const 0xFF)
+
+    (f32.const 0x1.b7p-1)
+    (f32.const inf)
+    (f32.const -inf)
   )
 
   ;; a
