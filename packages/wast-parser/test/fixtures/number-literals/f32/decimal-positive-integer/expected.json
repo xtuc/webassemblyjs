@@ -17,7 +17,8 @@
           "args": [
             {
               "type": "FloatLiteral",
-              "value": 33
+              "value": 33,
+              "raw": "33"
             }
           ]
         }

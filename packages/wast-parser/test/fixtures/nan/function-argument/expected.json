@@ -26,7 +26,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 0
+                  "value": 0,
+                  "raw": "0"
                 }
               ]
             },
@@ -54,7 +55,8 @@
                 {
                   "type": "FloatLiteral",
                   "value": 4194304,
-                  "nan": true
+                  "nan": true,
+                  "raw": "nan"
                 }
               ]
             }

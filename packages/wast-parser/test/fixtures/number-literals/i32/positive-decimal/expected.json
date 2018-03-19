@@ -17,7 +17,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": 1234
+              "value": 1234,
+              "raw": "1234"
             }
           ]
         }

@@ -17,7 +17,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": -90909
+              "value": -90909,
+              "raw": "-90909"
             }
           ]
         }

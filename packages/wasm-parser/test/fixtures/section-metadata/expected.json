@@ -34,7 +34,8 @@
           "type": "Start",
           "index": {
             "type": "NumberLiteral",
-            "value": 0
+            "value": 0,
+            "raw": "0"
           },
           "loc": {
             "start": {

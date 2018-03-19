@@ -17,7 +17,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": 1000000
+              "value": 1000000,
+              "raw": "1000000"
             }
           ]
         }

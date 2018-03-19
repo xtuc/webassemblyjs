@@ -15,7 +15,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": 0
+              "value": 0,
+              "raw": "0"
             },
             {
               "type": "Instr",
@@ -24,7 +25,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 12
+                  "value": 12,
+                  "raw": "12"
                 }
               ]
             }
@@ -37,7 +39,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": 2
+              "value": 2,
+              "raw": "2"
             }
           ]
         },
@@ -48,7 +51,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": 3
+              "value": 3,
+              "raw": "3"
             }
           ]
         }

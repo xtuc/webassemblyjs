@@ -94,7 +94,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 0
+                  "value": 0,
+                  "raw": "0"
                 }
               ],
               "loc": {
@@ -113,7 +114,8 @@
               "id": "call",
               "index": {
                 "type": "NumberLiteral",
-                "value": 0
+                "value": 0,
+                "raw": "0"
               }
             },
             {

@@ -17,7 +17,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": -1
+              "value": -1,
+              "raw": "0xFFFFFFFF"
             }
           ]
         }

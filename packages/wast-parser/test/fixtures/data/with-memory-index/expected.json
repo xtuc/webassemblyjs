@@ -5,7 +5,8 @@
       "type": "Data",
       "memoryIndex": {
         "type": "NumberLiteral",
-        "value": 23
+        "value": 23,
+        "raw": "23"
       },
       "offset": {
         "type": "Instr",
@@ -13,13 +14,18 @@
         "args": [
           {
             "type": "NumberLiteral",
-            "value": 25
+            "value": 25,
+            "raw": "25"
           }
         ]
       },
       "init": {
         "type": "Bytes",
-        "values": [97, 98, 99]
+        "values": [
+          97,
+          98,
+          99
+        ]
       }
     }
   ]
