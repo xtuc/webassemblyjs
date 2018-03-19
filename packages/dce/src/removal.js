@@ -29,9 +29,7 @@ module.exports = function removeFunc(moduleExport, ast) {
 
     ModuleExport(path) {
       if (path.node.name === exportName) {
-        // FIXME(sven): here's a hack to hide the node, since this type is not
-        // printable
-        path.node.type = "deleted";
+        path.remove();
         // console.log('\t> remove export');
       }
     }
