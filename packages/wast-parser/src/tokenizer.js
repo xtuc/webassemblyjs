@@ -45,12 +45,7 @@ function Token(type, value, line, column, opts = {}) {
   return token;
 }
 
-function createToken(type: string) {
-  return (v: string | number, line: number, col: number, opts: Object = {}) =>
-    Token(type, v, line, col, opts);
-}
-
-const tokens = {
+const tokenTypes = {
   openParen: "openParen",
   closeParen: "closeParen",
   number: "number",
@@ -91,18 +86,6 @@ const keywords = {
   offset: "offset"
 };
 
-const CloseParenToken = createToken(tokens.closeParen);
-const OpenParenToken = createToken(tokens.openParen);
-const NumberToken = createToken(tokens.number);
-const ValtypeToken = createToken(tokens.valtype);
-const NameToken = createToken(tokens.name);
-const IdentifierToken = createToken(tokens.identifier);
-const KeywordToken = createToken(tokens.keyword);
-const DotToken = createToken(tokens.dot);
-const StringToken = createToken(tokens.string);
-const CommentToken = createToken(tokens.comment);
-const EqualToken = createToken(tokens.equal);
-
 function tokenize(input: string) {
   let current = 0;
   let char = input[current];
@@ -112,6 +95,30 @@ function tokenize(input: string) {
   let line = 1;
 
   const tokens = [];
+
+  /**
+   * Creates a pushToken function for a given type
+   */
+  function pushToken(type: string) {
+    return function(v: string | number, opts: Object = {}) {
+      tokens.push(Token(type, v, line, column, opts));
+    };
+  }
+
+  /**
+   * Functions to save newly encountered tokens
+   */
+  const pushCloseParenToken = pushToken(tokenTypes.closeParen);
+  const pushOpenParenToken = pushToken(tokenTypes.openParen);
+  const pushNumberToken = pushToken(tokenTypes.number);
+  const pushValtypeToken = pushToken(tokenTypes.valtype);
+  const pushNameToken = pushToken(tokenTypes.name);
+  const pushIdentifierToken = pushToken(tokenTypes.identifier);
+  const pushKeywordToken = pushToken(tokenTypes.keyword);
+  const pushDotToken = pushToken(tokenTypes.dot);
+  const pushStringToken = pushToken(tokenTypes.string);
+  const pushCommentToken = pushToken(tokenTypes.comment);
+  const pushEqualToken = pushToken(tokenTypes.equal);
 
   /**
    * Can be used to look at the next character(s).
@@ -141,6 +148,8 @@ function tokenize(input: string) {
 
   /**
    * Advances the cursor in the input by a certain amount
+   *
+   * @param int amount How many characters to consume. Default = 1
    */
   function eatCharacter(amount = 1) {
     column += amount;
@@ -167,7 +176,7 @@ function tokenize(input: string) {
       // Shift by the length of the string
       column += text.length;
 
-      tokens.push(CommentToken(text, line, column, { type: "leading" }));
+      pushCommentToken(text, { type: "leading" });
 
       continue;
     }
@@ -200,27 +209,27 @@ function tokenize(input: string) {
         eatCharacter();
       }
 
-      tokens.push(CommentToken(text, line, column, { type: "block" }));
+      pushCommentToken(text, { type: "block" });
 
       continue;
     }
 
     if (char === "(") {
-      tokens.push(OpenParenToken(char, line, column));
+      pushOpenParenToken(char);
 
       eatCharacter();
       continue;
     }
 
     if (char === "=") {
-      tokens.push(EqualToken(char, line, column));
+      pushEqualToken(char);
 
       eatCharacter();
       continue;
     }
 
     if (char === ")") {
-      tokens.push(CloseParenToken(char, line, column));
+      pushCloseParenToken(char);
 
       eatCharacter();
       continue;
@@ -251,7 +260,7 @@ function tokenize(input: string) {
       // Shift by the length of the string
       column += value.length;
 
-      tokens.push(IdentifierToken(value, line, column));
+      pushIdentifierToken(value);
 
       continue;
     }
@@ -305,7 +314,7 @@ function tokenize(input: string) {
       // Shift by the length of the string
       column += value.length;
 
-      tokens.push(NumberToken(value, line, column));
+      pushNumberToken(value);
 
       continue;
     }
@@ -329,7 +338,7 @@ function tokenize(input: string) {
 
       eatCharacter();
 
-      tokens.push(StringToken(value, line, column));
+      pushStringToken(value);
 
       continue;
     }
@@ -350,9 +359,9 @@ function tokenize(input: string) {
        */
       if (char === ".") {
         if (valtypes.indexOf(value) !== -1) {
-          tokens.push(ValtypeToken(value, line, column));
+          pushValtypeToken(value);
         } else {
-          tokens.push(NameToken(value, line, column));
+          pushNameToken(value);
         }
 
         value = "";
@@ -366,8 +375,8 @@ function tokenize(input: string) {
         // Shift by the length of the string
         column += value.length;
 
-        tokens.push(DotToken(".", line, column));
-        tokens.push(NameToken(value, line, column));
+        pushDotToken(".");
+        pushNameToken(value);
 
         continue;
       }
@@ -377,7 +386,7 @@ function tokenize(input: string) {
        */
       // $FlowIgnore
       if (typeof keywords[value] === "string") {
-        tokens.push(KeywordToken(value, line, column));
+        pushKeywordToken(value);
 
         // Shift by the length of the string
         column += value.length;
@@ -389,7 +398,7 @@ function tokenize(input: string) {
        * Handle types
        */
       if (valtypes.indexOf(value) !== -1) {
-        tokens.push(ValtypeToken(value, line, column));
+        pushValtypeToken(value);
 
         // Shift by the length of the string
         column += value.length;
@@ -400,7 +409,7 @@ function tokenize(input: string) {
       /*
        * Handle literals
        */
-      tokens.push(NameToken(value, line, column));
+      pushNameToken(value);
 
       // Shift by the length of the string
       column += value.length;
@@ -418,6 +427,6 @@ function tokenize(input: string) {
 
 module.exports = {
   tokenize,
-  tokens,
+  tokens: tokenTypes,
   keywords
 };
