@@ -11,7 +11,7 @@
   },
   {
     "type": "valtype",
-    "value": "f32",
+    "value": "i32",
     "loc": {
       "start": {
         "line": 1,
@@ -41,7 +41,7 @@
   },
   {
     "type": "number",
-    "value": "1e-1",
+    "value": "234",
     "loc": {
       "start": {
         "line": 1,
@@ -55,7 +55,7 @@
     "loc": {
       "start": {
         "line": 1,
-        "column": 16
+        "column": 15
       }
     }
   }
