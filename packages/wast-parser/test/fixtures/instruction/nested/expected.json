@@ -21,7 +21,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 4
+                  "value": 4,
+                  "raw": "4"
                 }
               ]
             }
@@ -45,7 +46,8 @@
                   "args": [
                     {
                       "type": "NumberLiteral",
-                      "value": 1
+                      "value": 1,
+                      "raw": "1"
                     },
                     {
                       "type": "Instr",
@@ -54,7 +56,8 @@
                       "args": [
                         {
                           "type": "NumberLiteral",
-                          "value": 8
+                          "value": 8,
+                          "raw": "8"
                         }
                       ]
                     }
@@ -67,7 +70,8 @@
                   "args": [
                     {
                       "type": "NumberLiteral",
-                      "value": 1
+                      "value": 1,
+                      "raw": "1"
                     }
                   ]
                 }
@@ -98,7 +102,8 @@
                       "args": [
                         {
                           "type": "NumberLiteral",
-                          "value": 4
+                          "value": 4,
+                          "raw": "4"
                         }
                       ]
                     }
@@ -122,7 +127,8 @@
                           "args": [
                             {
                               "type": "NumberLiteral",
-                              "value": 1
+                              "value": 1,
+                              "raw": "1"
                             },
                             {
                               "type": "Instr",
@@ -131,7 +137,8 @@
                               "args": [
                                 {
                                   "type": "NumberLiteral",
-                                  "value": 8
+                                  "value": 8,
+                                  "raw": "8"
                                 }
                               ]
                             }
@@ -144,7 +151,8 @@
                           "args": [
                             {
                               "type": "NumberLiteral",
-                              "value": 1
+                              "value": 1,
+                              "raw": "1"
                             }
                           ]
                         }
@@ -159,7 +167,8 @@
                   "args": [
                     {
                       "type": "NumberLiteral",
-                      "value": 32
+                      "value": 32,
+                      "raw": "32"
                     }
                   ]
                 }
@@ -174,7 +183,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": 0
+              "value": 0,
+              "raw": "0"
             },
             {
               "type": "Instr",
@@ -183,7 +193,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 10
+                  "value": 10,
+                  "raw": "10"
                 }
               ]
             },
@@ -193,7 +204,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 0
+                  "value": 0,
+                  "raw": "0"
                 }
               ]
             }
@@ -205,7 +217,8 @@
           "args": [
             {
               "type": "FloatLiteral",
-              "value": 0
+              "value": 0,
+              "raw": "0"
             },
             {
               "type": "BlockInstruction",
@@ -225,7 +238,8 @@
                       "args": [
                         {
                           "type": "NumberLiteral",
-                          "value": 1
+                          "value": 1,
+                          "raw": "1"
                         },
                         {
                           "type": "Instr",
@@ -234,7 +248,8 @@
                           "args": [
                             {
                               "type": "NumberLiteral",
-                              "value": 8
+                              "value": 8,
+                              "raw": "8"
                             }
                           ]
                         },
@@ -244,7 +259,8 @@
                           "args": [
                             {
                               "type": "NumberLiteral",
-                              "value": 0
+                              "value": 0,
+                              "raw": "0"
                             }
                           ]
                         }
@@ -259,7 +275,8 @@
                   "args": [
                     {
                       "type": "NumberLiteral",
-                      "value": 4
+                      "value": 4,
+                      "raw": "4"
                     }
                   ]
                 }
@@ -273,7 +290,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 1
+                  "value": 1,
+                  "raw": "1"
                 }
               ]
             }

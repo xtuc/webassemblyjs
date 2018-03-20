@@ -13,7 +13,8 @@
           "args": [
             {
               "type": "NumberLiteral",
-              "value": 0
+              "value": 0,
+              "raw": "0"
             }
           ]
         }
@@ -21,11 +22,13 @@
       "namedArgs": {
         "offset": {
           "type": "NumberLiteral",
-          "value": 0
+          "value": 0,
+          "raw": "0x000"
         },
         "align": {
           "type": "NumberLiteral",
-          "value": 1
+          "value": 1,
+          "raw": "1"
         }
       }
     }

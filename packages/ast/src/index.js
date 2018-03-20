@@ -295,6 +295,8 @@ export function numberLiteral(
     x.inf = true;
   }
 
+  x.raw = String(rawValue);
+
   return x;
 }
 

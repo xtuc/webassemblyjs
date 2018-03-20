@@ -18,7 +18,8 @@
             {
               "type": "FloatLiteral",
               "value": 4194322,
-              "nan": true
+              "nan": true,
+              "raw": "nan:0x400012"
             }
           ]
         }

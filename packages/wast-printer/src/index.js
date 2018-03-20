@@ -618,11 +618,23 @@ function printGenericInstruction(n: GenericInstruction): string {
 }
 
 function printLongNumberLiteral(n: LongNumberLiteral): string {
+  if (typeof n.raw === "string") {
+    return n.raw;
+  }
+
   const { low, high } = n.value;
 
   const v = new Long(low, high);
 
   return v.toString();
+}
+
+function printFloatLiteral(n: FloatLiteral): string {
+  if (typeof n.raw === "string") {
+    return n.raw;
+  }
+
+  return String(n.value);
 }
 
 function printFuncInstructionArg(n: Object): string {
@@ -644,6 +656,10 @@ function printFuncInstructionArg(n: Object): string {
     out += n.name;
   }
 
+  if (n.type === "FloatLiteral") {
+    out += printFloatLiteral(n);
+  }
+
   if (n.type === "Instr") {
     out += printGenericInstruction(n);
   }
@@ -652,7 +668,11 @@ function printFuncInstructionArg(n: Object): string {
 }
 
 function printNumberLiteral(n: NumberLiteral): string {
-  return n.value + "";
+  if (typeof n.raw === "string") {
+    return n.raw;
+  }
+
+  return String(n.value);
 }
 
 function printModuleExport(n: ModuleExport): string {

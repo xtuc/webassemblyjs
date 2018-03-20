@@ -35,7 +35,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 16
+                  "value": 16,
+                  "raw": "16"
                 }
               ]
             }

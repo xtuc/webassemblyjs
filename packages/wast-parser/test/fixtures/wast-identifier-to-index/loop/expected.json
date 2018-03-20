@@ -36,7 +36,8 @@
               "id": "call",
               "index": {
                 "type": "NumberLiteral",
-                "value": 0
+                "value": 0,
+                "raw": "0"
               }
             },
             {
@@ -45,7 +46,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 1
+                  "value": 1,
+                  "raw": "1"
                 },
                 {
                   "type": "Instr",
@@ -54,7 +56,8 @@
                   "args": [
                     {
                       "type": "NumberLiteral",
-                      "value": 4
+                      "value": 4,
+                      "raw": "4"
                     }
                   ]
                 }
@@ -67,7 +70,8 @@
               "args": [
                 {
                   "type": "NumberLiteral",
-                  "value": 2
+                  "value": 2,
+                  "raw": "2"
                 }
               ]
             }
