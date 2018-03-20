@@ -43,6 +43,7 @@ module.exports = {
     'no-unreachable': 'off',
     'no-use-before-define': 'off',
     'no-var': 'error',
+    'no-debugger': 'error',
     'prefer-const': 'error',
     strict: 'off'
   },

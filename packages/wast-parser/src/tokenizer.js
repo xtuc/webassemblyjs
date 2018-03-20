@@ -101,7 +101,9 @@ function tokenize(input: string) {
    */
   function pushToken(type: string) {
     return function(v: string | number, opts: Object = {}) {
-      tokens.push(Token(type, v, line, column, opts));
+      const startColumn = opts.startColumn || column;
+      delete opts.startColumn;
+      tokens.push(Token(type, v, line, startColumn, opts));
     };
   }
 
@@ -271,6 +273,8 @@ function tokenize(input: string) {
       char === "-"
     ) {
       let value = "";
+      const startColumn = column;
+
       if (char === "-") {
         value += char;
         eatCharacter();
@@ -308,13 +312,11 @@ function tokenize(input: string) {
         if (char !== "_") {
           value += char;
         }
+
         eatCharacter();
       }
 
-      // Shift by the length of the string
-      column += value.length;
-
-      pushNumberToken(value);
+      pushNumberToken(value, { startColumn });
 
       continue;
     }
@@ -345,38 +347,35 @@ function tokenize(input: string) {
 
     if (LETTERS.test(char)) {
       let value = "";
+      const startColumn = column;
 
       while (LETTERS.test(char)) {
         value += char;
         eatCharacter();
       }
 
-      // Shift by the length of the string
-      column += value.length;
-
       /*
        * Handle MemberAccess
        */
       if (char === ".") {
+        const dotStartColumn = column;
         if (valtypes.indexOf(value) !== -1) {
-          pushValtypeToken(value);
+          pushValtypeToken(value, { startColumn });
         } else {
           pushNameToken(value);
         }
+        eatCharacter();
 
         value = "";
-        eatCharacter();
+        const nameStartColumn = column;
 
         while (LETTERS.test(char)) {
           value += char;
           eatCharacter();
         }
 
-        // Shift by the length of the string
-        column += value.length;
-
-        pushDotToken(".");
-        pushNameToken(value);
+        pushDotToken(".", { startColumn: dotStartColumn });
+        pushNameToken(value, { startColumn: nameStartColumn });
 
         continue;
       }

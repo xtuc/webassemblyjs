@@ -15,7 +15,7 @@
     "loc": {
       "start": {
         "line": 1,
-        "column": 8
+        "column": 2
       }
     }
   },
@@ -25,7 +25,7 @@
     "loc": {
       "start": {
         "line": 1,
-        "column": 19
+        "column": 5
       }
     }
   },
@@ -35,7 +35,7 @@
     "loc": {
       "start": {
         "line": 1,
-        "column": 19
+        "column": 6
       }
     }
   },
@@ -45,7 +45,7 @@
     "loc": {
       "start": {
         "line": 1,
-        "column": 26
+        "column": 12
       }
     }
   },
@@ -55,7 +55,7 @@
     "loc": {
       "start": {
         "line": 1,
-        "column": 26
+        "column": 15
       }
     }
   }
