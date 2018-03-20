@@ -300,7 +300,7 @@ function tokenize(input: string) {
       }
 
       while (
-        numberLiterals.test(char) ||
+        (char !== undefined && numberLiterals.test(char)) ||
         (lookbehind() === "p" && char === "+") ||
         (lookbehind().toUpperCase() === "E" && char === "-") ||
         (value.length > 0 && char.toUpperCase() === "E")
