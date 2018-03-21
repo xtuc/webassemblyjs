@@ -126,26 +126,28 @@ function tokenize(input: string) {
    * Can be used to look at the next character(s).
    *
    * The default behavior `lookahead()` simply returns the next character without consuming it.
+   * Letters are always returned in lowercase.
    *
    * @param int length How many characters to query. Default = 1
    * @param int offset How many characters to skip forward from current one. Default = 1
    *
    */
   function lookahead(length = 1, offset = 1) {
-    return input.substring(current + offset, current + offset + length);
+    return input.substring(current + offset, current + offset + length).toLowerCase();
   }
 
   /**
    * Can be used to look at the last few character(s).
    *
    * The default behavior `lookbehind()` simply returns the last character.
+   * Letters are always returned in lowercase.
    *
    * @param int length How many characters to query. Default = 1
    * @param int offset How many characters to skip back from current one. Default = 1
    *
    */
   function lookbehind(length = 1, offset = 1) {
-    return input.substring(current - offset, current - offset + length);
+    return input.substring(current - offset, current - offset + length).toLowerCase();
   }
 
   /**
@@ -293,7 +295,7 @@ function tokenize(input: string) {
 
       let numberLiterals = NUMBERS;
 
-      if (char === "0" && lookahead().toUpperCase() === "X") {
+      if (char === "0" && lookahead() === "x") {
         value += "0x";
         numberLiterals = HEX_NUMBERS;
         eatCharacter(2);
@@ -302,8 +304,8 @@ function tokenize(input: string) {
       while (
         (char !== undefined && numberLiterals.test(char)) ||
         (lookbehind() === "p" && char === "+") ||
-        (lookbehind().toUpperCase() === "E" && char === "-") ||
-        (value.length > 0 && char.toUpperCase() === "E")
+        (lookbehind() === "e" && char === "-") ||
+        (value.length > 0 && char === "e")
       ) {
         if (char === "p" && value.includes("p")) {
           throw new Error("Unexpected character `p`.");
