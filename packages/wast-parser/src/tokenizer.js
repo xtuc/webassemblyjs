@@ -272,12 +272,13 @@ function tokenize(input: string) {
     if (
       NUMBERS.test(char) ||
       NUMBER_KEYWORDS.test(lookahead(3, 0)) ||
-      char === "-"
+      char === "-" ||
+      char === "+"
     ) {
       let value = "";
       const startColumn = column;
 
-      if (char === "-") {
+      if (char === "-" || char === '+') {
         value += char;
         eatCharacter();
       }
