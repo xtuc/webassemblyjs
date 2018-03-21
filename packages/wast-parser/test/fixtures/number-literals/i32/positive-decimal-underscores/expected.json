@@ -18,7 +18,7 @@
             {
               "type": "NumberLiteral",
               "value": 1000000,
-              "raw": "1000000"
+              "raw": "1_000_000"
             }
           ]
         }

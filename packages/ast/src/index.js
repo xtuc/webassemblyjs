@@ -242,6 +242,12 @@ export function numberLiteral(
   let nan = false;
   let inf = false;
   let type = "NumberLiteral";
+  const original = rawValue;
+
+  // Remove numeric separators _
+  if (typeof rawValue === "string") {
+    rawValue = rawValue.replace(/_/g, "");
+  }
 
   if (typeof rawValue === "number") {
     value = rawValue;
@@ -295,7 +301,7 @@ export function numberLiteral(
     x.inf = true;
   }
 
-  x.raw = String(rawValue);
+  x.raw = String(original);
 
   return x;
 }

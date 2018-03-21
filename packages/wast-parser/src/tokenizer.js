@@ -133,7 +133,9 @@ function tokenize(input: string) {
    *
    */
   function lookahead(length = 1, offset = 1) {
-    return input.substring(current + offset, current + offset + length).toLowerCase();
+    return input
+      .substring(current + offset, current + offset + length)
+      .toLowerCase();
   }
 
   /**
@@ -147,7 +149,9 @@ function tokenize(input: string) {
    *
    */
   function lookbehind(length = 1, offset = 1) {
-    return input.substring(current - offset, current - offset + length).toLowerCase();
+    return input
+      .substring(current - offset, current - offset + length)
+      .toLowerCase();
   }
 
   /**
@@ -278,7 +282,7 @@ function tokenize(input: string) {
       let value = "";
       const startColumn = column;
 
-      if (char === "-" || char === '+') {
+      if (char === "-" || char === "+") {
         value += char;
         eatCharacter();
       }
@@ -312,10 +316,7 @@ function tokenize(input: string) {
           throw new Error("Unexpected character `p`.");
         }
 
-        if (char !== "_") {
-          value += char;
-        }
-
+        value += char;
         eatCharacter();
       }
 
