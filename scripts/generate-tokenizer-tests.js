@@ -5,7 +5,7 @@ const path = require('path')
 
 const packageDir = './packages/wast-parser/test/tokenizer/'
 
-const all = fs.readFileSync(path.join(packageDir, 'raw/int_literals.txt'), 'utf-8').split('\n').map(s => s.trim())
+const all = fs.readFileSync(path.join(packageDir, 'raw/int_literals.txt'), 'utf-8').split('\n').map(s => s.trim()).filter(s => s.length > 0)
 
 const expected = literal => JSON.stringify([
   {
@@ -18,7 +18,7 @@ const expected = literal => JSON.stringify([
         }
     }
   }
-])
+], null, 2)
 
 all.forEach(literal => {
 
@@ -30,6 +30,6 @@ all.forEach(literal => {
 
   fs.writeFileSync(path.join(dir, 'actual.wast'), literal)
 
-  fs.writeFileSync(path.join(dir, 'expected.json'), JSON.stringify(expected(literal)))
+  fs.writeFileSync(path.join(dir, 'expected.json'), expected(literal))
 
 })

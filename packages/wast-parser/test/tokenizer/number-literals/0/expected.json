@@ -1,1 +1,12 @@
-[{"type":"number","value":"0","loc":{"start":{"line":1,"column":1}}}]
+[
+  {
+    "type": "number",
+    "value": "0",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  }
+]
