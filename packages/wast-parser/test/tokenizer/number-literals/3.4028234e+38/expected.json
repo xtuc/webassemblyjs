@@ -1,0 +1,12 @@
+[
+  {
+    "type": "number",
+    "value": "3.4028234e+38",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  }
+]

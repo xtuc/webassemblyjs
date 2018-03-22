@@ -5,7 +5,10 @@ const path = require('path')
 
 const packageDir = './packages/wast-parser/test/tokenizer/'
 
-const all = fs.readFileSync(path.join(packageDir, 'raw/int_literals.txt'), 'utf-8').split('\n').map(s => s.trim()).filter(s => s.length > 0)
+const allIntegers = fs.readFileSync(path.join(packageDir, 'raw/int_literals.txt'), 'utf-8').split('\n').map(s => s.trim()).filter(s => s.length > 0)
+const allFloats = fs.readFileSync(path.join(packageDir, 'raw/float_literals.txt'), 'utf-8').split('\n').map(s => s.trim()).filter(s => s.length > 0)
+
+const all = [ ... allIntegers, ... allFloats ]
 
 const expected = literal => JSON.stringify([
   {
