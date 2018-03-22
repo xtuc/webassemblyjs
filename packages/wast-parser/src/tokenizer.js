@@ -315,11 +315,19 @@ function tokenize(input: string) {
         (value.length > 0 && (char === "e" || char === "E"))
       ) {
         if (char === "p" && value.includes("p")) {
-          throw new Error("Unexpected character \"p\"");
+          throw new Error('Unexpected character "p"');
         }
 
         if (char === "." && value.includes(".")) {
-          throw new Error("Unexpected character \".\"");
+          throw new Error('Unexpected character "."');
+        }
+
+        if (
+          numberLiterals !== HEX_NUMBERS &&
+          char === "e" &&
+          value.includes("e")
+        ) {
+          throw new Error('Unexpected character "e"');
         }
 
         value += char;
