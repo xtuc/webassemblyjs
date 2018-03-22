@@ -40,11 +40,6 @@ type ParserState = {
     type: ExportDescr,
     name: string,
     id: Index
-  }>,
-  registredImportedElements: Array<{
-    module: string,
-    name: string,
-    descr: ImportDescr
   }>
 };
 
@@ -59,8 +54,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
   }
 
   const state: ParserState = {
-    registredExportedElements: [],
-    registredImportedElements: []
+    registredExportedElements: []
   };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
@@ -854,16 +848,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           state.registredExportedElements = [];
         }
 
-        if (state.registredImportedElements.length > 0) {
-          state.registredImportedElements.forEach(decl => {
-            moduleFields.push(
-              t.moduleImport(decl.module, decl.name, decl.descr)
-            );
-          });
-
-          state.registredImportedElements = [];
-        }
-
         token = tokensList[current];
       }
 
@@ -1442,16 +1426,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new TypeError("Could not determine global type");
       }
 
-      if (importing != null) {
-        importing.descr = type;
-
-        // $FlowIgnore: the type is correct but Flow doesn't like the mutation above
-        state.registredImportedElements.push(importing);
-      }
-
       maybeIgnoreComment();
 
       const init = [];
+
+      if (importing != null) {
+        importing.descr = type;
+        init.push(
+          t.moduleImport(importing.module, importing.name, importing.descr)
+        );
+      }
 
       /**
        * instr*

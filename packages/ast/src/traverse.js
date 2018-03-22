@@ -71,8 +71,13 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
     case "Data":
     case "Memory":
     case "Elem":
+    case "FuncImportDescr":
+    case "GlobalType":
     case "NumberLiteral":
+    case "ValtypeLiteral":
     case "FloatLiteral":
+    case "StringLiteral":
+    case "QuoteModule":
     case "LongNumberLiteral":
     case "BinaryModule":
     case "LeadingComment":
@@ -127,7 +132,10 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
     case "ModuleImport": {
       cb(n.type, createPath(n, parentPath));
 
-      cb(n.descr.type, createPath(n.descr, parentPath));
+      if (n.descr != null) {
+        // $FlowIgnore
+        walk(n.descr, cb, createPath(n, parentPath));
+      }
 
       break;
     }
@@ -139,6 +147,11 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
 
       if (n.name != null) {
         walk(n.name, cb, path);
+      }
+
+      if (n.init != null) {
+        // $FlowIgnore
+        n.init.forEach(x => walk(x, cb, path));
       }
 
       break;
