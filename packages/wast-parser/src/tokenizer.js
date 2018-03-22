@@ -20,6 +20,7 @@ const valtypes = ["i32", "i64", "f32", "f64"];
 const NUMBERS = /[0-9|.|_]/;
 const NUMBER_KEYWORDS = /nan|inf/;
 const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
+const ALL_NUMBER_CHARS = /[0-9|A-F|a-f|_|\.|p|P|-|\+|x]/;
 
 function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
@@ -282,56 +283,388 @@ function tokenize(input: string) {
       let value = "";
       const startColumn = column;
 
-      if (char === "-" || char === "+") {
-        value += char;
-        eatCharacter();
-      }
+      const START = 0
+      const HEX = 1
+      const HEX_FRAC = 2
+      const NAN_HEX = 3
+      const DEC = 4
+      const DEC_UNDERSCORE = 10
+      const DEC_FRAC = 5
+      const DEC_EXP = 1234
+      const DEC_SIGNED_EXP = 21234
+      const DEC_EXP_UNDERSCORE = 9000
+      const STOP = 6
+      const HEX_SIGNED_EXP = 7
+      const HEX_EXP = 8
+      const HEX_UNDERSCORE = 777
+      const HEX_FRAC_UNDERSCORE = 99
+      const HEX_EXP_UNDERSCORE = 88
 
-      if (NUMBER_KEYWORDS.test(lookahead(3, 0))) {
-        let tokenLength = 3;
-        if (lookahead(4, 0) === "nan:") {
-          tokenLength = 4;
-        } else if (lookahead(3, 0) === "nan") {
-          tokenLength = 3;
-        }
-        value += input.substring(current, current + tokenLength);
-        eatCharacter(tokenLength);
+      const stateName = {
+        0: "START",
+        1: "HEX",
+        2: "HEX_FRAC",
+        3: "NAN_HEX",
+        4: "DEC",
+        10: "DEC_UNDERSCORE",
+        5: "DEC_FRAC",
+        1234: "DEC_EXP",
+        21234: "DEC_SIGNED_EXP",
+        9000: "DEC_EXP_UNDERSCORE",
+        6: "STOP",
+        8: "HEX_EXP",
+        777: "HEX_UNDERSCORE",
+        99: "HEX_FRAC_UNDERSCORE",
+        88: "HEX_EXP_UNDERSCORE",
       }
-
-      let numberLiterals = NUMBERS;
-
-      if (char === "0" && lookahead() === "x") {
-        value += "0x";
-        numberLiterals = HEX_NUMBERS;
-        eatCharacter(2);
-      }
+      /**
+       * START | HEX | HEX_FRAC | NAN_HEX | DEC | DEC_FRAC | STOP
+       */
+      let state = START;
+      const dbg = () => { throw new Error(`Unexpected character ${char} in state ${stateName[state]} on input ${input}`) }
 
       while (
-        (char !== undefined && numberLiterals.test(char)) ||
-        (lookbehind() === "p" && char === "+") ||
-        (lookbehind() === "p" && char === "-") ||
-        (lookbehind() === "e" && char === "+") ||
-        (lookbehind() === "e" && char === "-") ||
-        (value.length > 0 && (char === "e" || char === "E"))
+        state !== STOP
       ) {
-        if (char === "p" && value.includes("p")) {
-          throw new Error('Unexpected character "p"');
-        }
+        if (char === undefined || (char !== '-' && char !== '+' && !NUMBER_KEYWORDS.test(lookahead(3,0)) && !ALL_NUMBER_CHARS.test(char.toLowerCase()))) {
+          state = STOP
+          continue
+        } 
 
-        if (char === "." && value.includes(".")) {
-          throw new Error('Unexpected character "."');
-        }
+        switch (state) {
+          case START: {
+            // START -> START
+            console.log(input, char)
+            if (char === "-" || char === "+") {
+              value += char;
+              eatCharacter();
+              break
+            }
 
-        if (
-          numberLiterals !== HEX_NUMBERS &&
-          char === "e" &&
-          value.includes("e")
-        ) {
-          throw new Error('Unexpected character "e"');
-        }
+            // START -> STOP | NAN_HEX
+            if (lookahead(3,0) === "nan") {
+              value += "nan"
+              eatCharacter(3)
+              if(lookahead(3,0) === ":0x") {
+                value += ":0x"
+                eatCharacter(3)
+                state = NAN_HEX
+              } else {
+                state = STOP
+              }
+              break
+            }
 
-        value += char;
-        eatCharacter();
+            // START -> STOP
+            if (lookahead(3,0) === "inf") {
+              value += "inf"
+              eatCharacter(3)
+              state = STOP
+              break
+            }
+
+            // START -> HEX
+            if (lookahead(2,0) === "0x") {
+              value += "0x";
+              eatCharacter(2);
+              state = HEX
+              break
+            }
+
+            // START -> DEC
+            if (/[0-9]/.test(char)) {
+              value += char
+              eatCharacter()
+              state = DEC
+              break
+            }
+
+            // START -> DEC_FRAC
+            if (char === '.') {
+              value += char
+              eatCharacter();
+              state = DEC_FRAC
+              break
+            }
+            
+            dbg()
+          }
+
+          case DEC_FRAC: {
+            if (/[0-9]/.test(char)) {
+              value += char
+              eatCharacter()
+              break
+            }
+          }
+
+          case DEC: {
+            // DEC -> DEC
+            if (/[0-9]/.test(char)) {
+              value += char
+              eatCharacter()
+              break
+            }
+
+            // DEC -> DEC_FRAC
+            if (char === '.') {
+              value += char
+              eatCharacter()
+              state = DEC_FRAC
+              break
+            }
+
+            // DEC -> DEC_UNDERSCORE
+            if (char === '_') {
+              // Cheating the FSM a bit here, but alright
+              if (/[0-9]/.test(lookbehind())) {
+                value += char
+                eatCharacter()
+                state = DEC_UNDERSCORE
+                break
+              } else {
+                dbg()
+              }
+            }
+
+            // DEC -> DEC_SIGNED_EXP
+            if (char === 'e' || char === 'E') {
+              value += char
+              eatCharacter()
+              state = DEC_SIGNED_EXP
+              break
+            }
+
+            dbg()
+          }
+
+          case DEC_SIGNED_EXP: {
+            if (char === '+' || char === '-' ) {
+              value += char
+              eatCharacter()
+              state = DEC_EXP
+              break
+            }
+
+            if (/[0-9]/.test(char) ) {
+              value += char
+              eatCharacter()
+              break
+            }
+
+            dbg()
+          }
+
+          case DEC_EXP: {
+            if (/[0-9]/.test(char) ) {
+              value += char
+              eatCharacter()
+              break
+            }
+
+            if (char === '_') {
+              // Cheating the FSM a bit here, but alright
+              if (/[0-9]/.test(lookbehind())) {
+                value += char
+                eatCharacter()
+                state = DEC_EXP_UNDERSCORE
+                break
+              } else {
+                dbg()
+              }
+            }
+
+            dbg()
+          }
+
+          case DEC_EXP_UNDERSCORE: {
+            if (/[0-9]/.test(char)) {
+              value += char
+              eatCharacter()
+              state = DEC_EXP
+              break
+            } else {
+              dbg()
+            }
+
+            dbg()
+          }
+          
+          case DEC_UNDERSCORE: {
+            if (/[0-9]/.test(char)) {
+              value += char
+              eatCharacter()
+              state = DEC
+              break
+            } else {
+              dbg()
+            }
+
+            dbg()
+          }
+
+          case HEX: {
+            // HEX -> HEX
+            if (/[0-9|A-F|a-f]/.test(char)) {
+              value += char   
+              eatCharacter()
+              break
+            }
+
+            // HEX -> HEX_FRAC
+            if (char === ".") {
+              value += char
+              eatCharacter()
+              state = HEX_FRAC
+              break
+            }
+
+            if (char === '_') {
+              if (/[0-9|A-F|a-f]/.test(lookbehind())) {
+                value += char
+                eatCharacter()
+                state = HEX_UNDERSCORE
+              } else {
+                dgb()
+              }
+              break
+            }
+
+            // HEX -> HEX_EXP
+            if (char === 'p' || char === 'P') {
+              value += char
+              eatCharacter()
+              state = HEX_SIGNED_EXP
+              break
+            }
+
+            dbg()
+          }
+
+          case HEX_FRAC: {
+            if (/[0-9|A-F|a-f]/.test(char)) {
+              value += char   
+              eatCharacter()
+              break
+            }
+
+            if (char === '_') {
+              if (/[0-9|A-F|a-f]/.test(lookbehind())) {
+                value += char
+                eatCharacter()
+                state = HEX_FRAC_UNDERSCORE
+              } else {
+                dgb()
+              }
+              break
+            }
+
+            // HEX -> HEX_EXP
+            if (char === 'p' || char === 'P') {
+              value += char
+              eatCharacter()
+              state = HEX_SIGNED_EXP
+              break
+            }
+
+            dbg()
+          }
+
+          case HEX_FRAC_UNDERSCORE: {
+            if (/[0-9|A-F|a-f]/.test(char)) {
+              value += char   
+              eatCharacter()
+              state = HEX_FRAC
+              break
+            } else {
+              dbg()
+            }
+
+            dbg()
+          }
+
+          case HEX_UNDERSCORE: {
+            if (/[0-9|A-F|a-f]/.test(char)) {
+              value += char   
+              eatCharacter()
+              state = HEX
+              break
+            } else {
+              dbg()
+            }
+
+            dbg()
+          }
+
+          case HEX_SIGNED_EXP: {
+
+            // HEX_SIGNED_EXP -> HEX_EXP
+            if (char === '+' || char === '-' || /[0-9]/.test(char)) {
+              value += char
+              eatCharacter()
+              state = HEX_EXP
+              break
+            }
+
+            dbg()
+          }
+
+          case HEX_EXP: {
+
+            if (/[0-9]/.test(char)) {
+              value += char
+              eatCharacter()
+              state = HEX_EXP
+              break
+            }
+
+            if (char === '_') {
+              if (/[0-9|A-F|a-f]/.test(lookbehind())) {
+                value += char
+                eatCharacter()
+                state = HEX_EXP_UNDERSCORE
+              } else {
+                dgb()
+              }
+              break
+            }
+
+            dbg()
+          }
+
+          case HEX_EXP_UNDERSCORE: {
+            if (/[0-9|A-F|a-f]/.test(char)) {
+              value += char   
+              eatCharacter()
+              state = HEX_EXP
+              break
+            } else {
+              dbg()
+            }
+
+            dbg()
+          }
+
+          case NAN_HEX: {
+            if (/[0-9|A-F|a-f]/.test(char)) {
+              value += char
+              eatCharacter()
+              state = NAN_HEX
+              break
+            }
+
+            dbg()
+          }
+
+          default: {
+            throw new Error('Corrupted state: ' + state )
+          }
+
+        }
+      }
+
+      if(value === "") {
+        throw new Error('Unexpected character "' + char + '"')
       }
 
       pushNumberToken(value, { startColumn });
