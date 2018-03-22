@@ -19,7 +19,7 @@ const valtypes = ["i32", "i64", "f32", "f64"];
 
 const NUMBERS = /[0-9|.|_]/;
 const NUMBER_KEYWORDS = /nan|inf/;
-const HEX_NUMBERS = /[0-9|A-F|a-f|_|\.|p|P|-]/;
+const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
 
 function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
