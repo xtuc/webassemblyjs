@@ -19,7 +19,7 @@ const valtypes = ["i32", "i64", "f32", "f64"];
 
 const NUMBERS = /[0-9|.|_]/;
 const NUMBER_KEYWORDS = /nan|inf/;
-const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
+const HEX_NUMBERS = /[0-9|A-F|a-f|_|\.|p|P|-]/;
 
 function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
@@ -315,7 +315,11 @@ function tokenize(input: string) {
         (value.length > 0 && (char === "e" || char === "E"))
       ) {
         if (char === "p" && value.includes("p")) {
-          throw new Error("Unexpected character `p`.");
+          throw new Error("Unexpected character \"p\"");
+        }
+
+        if (char === "." && value.includes(".")) {
+          throw new Error("Unexpected character \".\"");
         }
 
         value += char;
@@ -424,7 +428,7 @@ function tokenize(input: string) {
 
     showCodeFrame(input, line, column);
 
-    throw new TypeError("Unknown char: " + char);
+    throw new TypeError(`Unexpected character "${char}"`);
   }
 
   return tokens;
