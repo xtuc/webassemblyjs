@@ -309,8 +309,10 @@ function tokenize(input: string) {
       while (
         (char !== undefined && numberLiterals.test(char)) ||
         (lookbehind() === "p" && char === "+") ||
+        (lookbehind() === "p" && char === "-") ||
+        (lookbehind() === "e" && char === "+") ||
         (lookbehind() === "e" && char === "-") ||
-        (value.length > 0 && char === "e")
+        (value.length > 0 && (char === "e" || char === "E"))
       ) {
         if (char === "p" && value.includes("p")) {
           throw new Error("Unexpected character `p`.");
