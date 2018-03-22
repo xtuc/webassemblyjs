@@ -1,6 +1,8 @@
 const { decode } = require("@webassemblyjs/wasm-parser");
 const { print } = require("@webassemblyjs/wast-printer");
 
+const diff = require("jest-diff");
+const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 const chai = require("chai");
 const glob = require("glob");
 const { readFileSync, writeFileSync } = require("fs");
@@ -9,7 +11,7 @@ const path = require("path");
 const loader = require("../src/index");
 const getUsedExports = require("../src/used-exports");
 
-describe.skip("Eliminate unused", () => {
+describe("Eliminate unused", () => {
   const testSuites = glob.sync("packages/dce/test/fixtures/**/actual.wast");
 
   testSuites.forEach(suite => {
@@ -33,6 +35,12 @@ describe.skip("Eliminate unused", () => {
         writeFileSync(expectedFile, actualWast);
 
         console.log("Write expected file", expectedFile);
+      }
+
+      const out = diff(actualWast.trim(), expected.trim());
+
+      if (out !== null && out !== NO_DIFF_MESSAGE) {
+        throw new Error("\n" + out);
       }
 
       chai.expect(actualWast).to.be.equal(expected);

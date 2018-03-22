@@ -11,6 +11,15 @@
   (memory 1 0)
   (memory $foo 1 0)
 
+  (type (func))
+  (type $t (func))
+  (type (func (param i32)))
+  (type (func (param $x i32)))
+  (type (func (result i32)))
+  (type (func (param i32) (result i32)))
+  (type (func (param $x i32) (result i32)))
+  (type (func (param f32 f64)))
+
   (func $add (param $lhs i32) (param $rhs i32) (result i32)
     (local i32)
     (local i64)

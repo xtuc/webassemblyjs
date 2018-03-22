@@ -45,6 +45,50 @@ function printProgram(n: Program, depth: number): string {
   }, "");
 }
 
+function printTypeInstruction(n: TypeInstruction): string {
+  let out = "";
+
+  out += "(";
+  out += "type";
+
+  out += space;
+
+  if (n.id != null) {
+    out += printIndex(n.id);
+    out += space;
+  }
+
+  out += "(";
+  out += "func";
+
+  n.functype.params.forEach(param => {
+    out += space;
+    out += "(";
+    out += "param";
+    out += space;
+
+    out += printFuncParam(param);
+
+    out += ")";
+  });
+
+  n.functype.result.forEach(result => {
+    out += space;
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += result;
+    out += ")";
+  });
+
+  out += ")"; // func
+
+  out += ")";
+
+  return out;
+}
+
 function printModule(n: Module, depth: number): string {
   let out = "(";
   out += "module";
@@ -65,40 +109,61 @@ function printModule(n: Module, depth: number): string {
       out += indent(depth);
     }
 
-    if (field.type === "Func") {
-      out += printFunc(field, depth + 1);
-    }
+    switch (field.type) {
+      case "Func": {
+        out += printFunc(field, depth + 1);
+        break;
+      }
 
-    if (field.type === "Table") {
-      out += printTable(field);
-    }
+      case "TypeInstruction": {
+        out += printTypeInstruction(field);
+        break;
+      }
 
-    if (field.type === "Global") {
-      out += printGlobal(field, depth + 1);
-    }
+      case "Table": {
+        out += printTable(field);
+        break;
+      }
 
-    if (field.type === "ModuleExport") {
-      out += printModuleExport(field);
-    }
+      case "Global": {
+        out += printGlobal(field, depth + 1);
+        break;
+      }
 
-    if (field.type === "ModuleImport") {
-      out += printModuleImport(field);
-    }
+      case "ModuleExport": {
+        out += printModuleExport(field);
+        break;
+      }
 
-    if (field.type === "Memory") {
-      out += printMemory(field);
-    }
+      case "ModuleImport": {
+        out += printModuleImport(field);
+        break;
+      }
 
-    if (field.type === "BlockComment") {
-      out += printBlockComment(field);
-    }
+      case "Memory": {
+        out += printMemory(field);
+        break;
+      }
 
-    if (field.type === "LeadingComment") {
-      out += printLeadingComment(field);
-    }
+      case "BlockComment": {
+        out += printBlockComment(field);
+        break;
+      }
 
-    if (field.type === "Start") {
-      out += printStart(field);
+      case "LeadingComment": {
+        out += printLeadingComment(field);
+        break;
+      }
+
+      case "Start": {
+        out += printStart(field);
+        break;
+      }
+
+      default:
+        throw new Error(
+          "Unsupported node in printModule: " + String(field.type)
+        );
     }
 
     if (compact === false) {
