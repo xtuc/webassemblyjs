@@ -10,10 +10,9 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [cli](https://github.com/xtuc/webassemblyjs/tree/master/packages/cli) - Toolbox for WebAssembly
 - [dce](https://github.com/xtuc/webassemblyjs/tree/master/packages/dce) - Eliminate unused functions in your WASM binary
 - [helper-buffer](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-buffer) - Buffer manipulation helpers
-- [helper-leb128](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-leb128) - Wrapper arround `leb`
-- [helper-leb128](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-leb128) - Wrapper arround `leb`
 - [helper-wasm-bytecode](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-wasm-bytecode) - Constants for the wasm format
 - [helper-wasm-section](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-wasm-section) - Section manipulation helpers
+- [leb128](https://github.com/xtuc/webassemblyjs/tree/master/packages/leb128) - `LEB128` decoding
 - [wasm-edit](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-edit) - Replace in-place an AST node in the binary.
 - [wasm-gen](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-gen) - WebAssembly binary format printer
 - [wasm-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-parser) - WebAssembly binary format parser
@@ -21,7 +20,6 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [wast-printer](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-printer) - WebAssembly text format printer
 - [wast-strip](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-strip) - Strips custom sections
 - [webassemblyjs](https://github.com/xtuc/webassemblyjs/tree/master/packages/webassemblyjs) - WebAssembly interpreter, implements the W3C WebAssembly API.
-
 
 ## Licence
 
