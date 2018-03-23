@@ -95,8 +95,10 @@ describe("replace a node", () => {
 
     const newBinary = edit(actualBinary, {
       Instr(path) {
-        const newNode = t.callInstruction(t.indexLiteral(0));
-        path.replaceWith(newNode);
+        if (path.node.id === "get_global") {
+          const newNode = t.callInstruction(t.indexLiteral(0));
+          path.replaceWith(newNode);
+        }
       }
     });
 
@@ -136,8 +138,10 @@ describe("replace a node", () => {
 
     const newBinary = edit(actualBinary, {
       Instr(path) {
-        const newNode = t.callIndirectInstructionIndex(t.indexLiteral(2));
-        path.replaceWith(newNode);
+        if (path.node.id === "get_global") {
+          const newNode = t.callIndirectInstructionIndex(t.indexLiteral(2));
+          path.replaceWith(newNode);
+        }
       }
     });
 

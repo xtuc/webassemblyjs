@@ -15,7 +15,7 @@ function toArrayBuffer(buf) {
 describe("interpreter", () => {
   describe("wasm", () => {
     const testSuites = glob.sync(
-      "packages/WebAssembly/test/fixtures/**/module.wasm"
+      "packages/webassemblyjs/test/fixtures/**/module.wasm"
     );
 
     testSuites.forEach(suite => {
@@ -47,7 +47,7 @@ describe("interpreter", () => {
 
   describe("wat", () => {
     const testSuites = glob.sync(
-      "packages/WebAssembly/test/fixtures/**/module.wast"
+      "packages/webassemblyjs/test/fixtures/**/module.wast"
     );
 
     testSuites.forEach(suite => {
