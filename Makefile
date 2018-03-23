@@ -33,6 +33,9 @@ test-ci: test test-whitelisted-spec lint
 test: build
 	./scripts/test.sh
 
+test-watch:
+	./scripts/test.sh --watch
+
 test-whitelisted-spec:
 	$(REPL) spec/test/core/exports.wast
 	$(REPL) spec/test/core/globals.wast
