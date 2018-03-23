@@ -98,6 +98,13 @@ function tokenize(input: string) {
   const tokens = [];
 
   /**
+   *
+   */
+  function unexpectedCharacter(char) {
+    throw new Error(`Unexpected character ${char}`)
+  }
+
+  /**
    * Creates a pushToken function for a given type
    */
   function pushToken(type: string) {
@@ -283,49 +290,32 @@ function tokenize(input: string) {
       let value = "";
       const startColumn = column;
 
-      const START = 0
-      const HEX = 1
-      const HEX_FRAC = 2
-      const NAN_HEX = 3
-      const DEC = 4
-      const DEC_UNDERSCORE = 10
-      const DEC_FRAC = 5
-      const DEC_EXP = 1234
-      const DEC_SIGNED_EXP = 21234
-      const DEC_EXP_UNDERSCORE = 9000
-      const STOP = 6
-      const HEX_SIGNED_EXP = 7
-      const HEX_EXP = 8
-      const HEX_UNDERSCORE = 777
-      const HEX_FRAC_UNDERSCORE = 99
-      const HEX_EXP_UNDERSCORE = 88
+      const START = "START"
+      const HEX = "HEX"
+      const HEX_FRAC = "HEX_FRAC"
+      const NAN_HEX = "NAN_HEX"
+      const DEC = "DEC"
+      const DEC_UNDERSCORE = "DEC_UNDERSCORE"
+      const DEC_FRAC = "DEC_FRAC"
+      const DEC_EXP = "DEC_EXP"
+      const DEC_SIGNED_EXP = "DEC_SIGNED_EXP"
+      const DEC_EXP_UNDERSCORE = "DEC_EXP_UNDERSCORE"
+      const STOP = "STOP"
+      const HEX_SIGNED_EXP = "HEX_SIGNED_EXP"
+      const HEX_EXP = "HEX_EXP"
+      const HEX_UNDERSCORE = "HEX_UNDERSCORE"
+      const HEX_FRAC_UNDERSCORE = "HEX_FRAC_UNDERSCORE"
+      const HEX_EXP_UNDERSCORE = "HEX_EXP_UNDERSCORE"
 
-      const stateName = {
-        0: "START",
-        1: "HEX",
-        2: "HEX_FRAC",
-        3: "NAN_HEX",
-        4: "DEC",
-        10: "DEC_UNDERSCORE",
-        5: "DEC_FRAC",
-        1234: "DEC_EXP",
-        21234: "DEC_SIGNED_EXP",
-        9000: "DEC_EXP_UNDERSCORE",
-        6: "STOP",
-        8: "HEX_EXP",
-        777: "HEX_UNDERSCORE",
-        99: "HEX_FRAC_UNDERSCORE",
-        88: "HEX_EXP_UNDERSCORE",
-      }
-      /**
-       * START | HEX | HEX_FRAC | NAN_HEX | DEC | DEC_FRAC | STOP
-       */
       let state = START;
-      const dbg = () => { throw new Error(`Unexpected character ${char} in state ${stateName[state]} on input ${input}`) }
+      const dbg = () => unexpectedCharacter(char)
 
       while (
         state !== STOP
       ) {
+
+        let eatLength = 1
+
         if (char === undefined || (char !== '-' && char !== '+' && !NUMBER_KEYWORDS.test(lookahead(3,0)) && !ALL_NUMBER_CHARS.test(char.toLowerCase()))) {
           state = STOP
           continue
@@ -334,20 +324,15 @@ function tokenize(input: string) {
         switch (state) {
           case START: {
             // START -> START
-            console.log(input, char)
             if (char === "-" || char === "+") {
-              value += char;
-              eatCharacter();
               break
             }
 
             // START -> STOP | NAN_HEX
             if (lookahead(3,0) === "nan") {
-              value += "nan"
-              eatCharacter(3)
-              if(lookahead(3,0) === ":0x") {
-                value += ":0x"
-                eatCharacter(3)
+              eatLength = 3
+              if(lookahead(3,3) === ":0x") {
+                eatLength = 6
                 state = NAN_HEX
               } else {
                 state = STOP
@@ -357,32 +342,26 @@ function tokenize(input: string) {
 
             // START -> STOP
             if (lookahead(3,0) === "inf") {
-              value += "inf"
-              eatCharacter(3)
+              eatLength = 3
               state = STOP
               break
             }
 
             // START -> HEX
             if (lookahead(2,0) === "0x") {
-              value += "0x";
-              eatCharacter(2);
+              eatLength = 2
               state = HEX
               break
             }
 
             // START -> DEC
             if (/[0-9]/.test(char)) {
-              value += char
-              eatCharacter()
               state = DEC
               break
             }
 
             // START -> DEC_FRAC
             if (char === '.') {
-              value += char
-              eatCharacter();
               state = DEC_FRAC
               break
             }
@@ -392,8 +371,6 @@ function tokenize(input: string) {
 
           case DEC_FRAC: {
             if (/[0-9]/.test(char)) {
-              value += char
-              eatCharacter()
               break
             }
           }
@@ -401,15 +378,11 @@ function tokenize(input: string) {
           case DEC: {
             // DEC -> DEC
             if (/[0-9]/.test(char)) {
-              value += char
-              eatCharacter()
               break
             }
 
             // DEC -> DEC_FRAC
             if (char === '.') {
-              value += char
-              eatCharacter()
               state = DEC_FRAC
               break
             }
@@ -418,8 +391,6 @@ function tokenize(input: string) {
             if (char === '_') {
               // Cheating the FSM a bit here, but alright
               if (/[0-9]/.test(lookbehind())) {
-                value += char
-                eatCharacter()
                 state = DEC_UNDERSCORE
                 break
               } else {
@@ -429,8 +400,6 @@ function tokenize(input: string) {
 
             // DEC -> DEC_SIGNED_EXP
             if (char === 'e' || char === 'E') {
-              value += char
-              eatCharacter()
               state = DEC_SIGNED_EXP
               break
             }
@@ -440,15 +409,11 @@ function tokenize(input: string) {
 
           case DEC_SIGNED_EXP: {
             if (char === '+' || char === '-' ) {
-              value += char
-              eatCharacter()
               state = DEC_EXP
               break
             }
 
             if (/[0-9]/.test(char) ) {
-              value += char
-              eatCharacter()
               break
             }
 
@@ -457,16 +422,12 @@ function tokenize(input: string) {
 
           case DEC_EXP: {
             if (/[0-9]/.test(char) ) {
-              value += char
-              eatCharacter()
               break
             }
 
             if (char === '_') {
               // Cheating the FSM a bit here, but alright
               if (/[0-9]/.test(lookbehind())) {
-                value += char
-                eatCharacter()
                 state = DEC_EXP_UNDERSCORE
                 break
               } else {
@@ -479,8 +440,6 @@ function tokenize(input: string) {
 
           case DEC_EXP_UNDERSCORE: {
             if (/[0-9]/.test(char)) {
-              value += char
-              eatCharacter()
               state = DEC_EXP
               break
             } else {
@@ -492,8 +451,6 @@ function tokenize(input: string) {
           
           case DEC_UNDERSCORE: {
             if (/[0-9]/.test(char)) {
-              value += char
-              eatCharacter()
               state = DEC
               break
             } else {
@@ -506,23 +463,17 @@ function tokenize(input: string) {
           case HEX: {
             // HEX -> HEX
             if (/[0-9|A-F|a-f]/.test(char)) {
-              value += char   
-              eatCharacter()
               break
             }
 
             // HEX -> HEX_FRAC
             if (char === ".") {
-              value += char
-              eatCharacter()
               state = HEX_FRAC
               break
             }
 
             if (char === '_') {
               if (/[0-9|A-F|a-f]/.test(lookbehind())) {
-                value += char
-                eatCharacter()
                 state = HEX_UNDERSCORE
               } else {
                 dgb()
@@ -532,8 +483,6 @@ function tokenize(input: string) {
 
             // HEX -> HEX_EXP
             if (char === 'p' || char === 'P') {
-              value += char
-              eatCharacter()
               state = HEX_SIGNED_EXP
               break
             }
@@ -543,15 +492,11 @@ function tokenize(input: string) {
 
           case HEX_FRAC: {
             if (/[0-9|A-F|a-f]/.test(char)) {
-              value += char   
-              eatCharacter()
               break
             }
 
             if (char === '_') {
               if (/[0-9|A-F|a-f]/.test(lookbehind())) {
-                value += char
-                eatCharacter()
                 state = HEX_FRAC_UNDERSCORE
               } else {
                 dgb()
@@ -561,8 +506,6 @@ function tokenize(input: string) {
 
             // HEX -> HEX_EXP
             if (char === 'p' || char === 'P') {
-              value += char
-              eatCharacter()
               state = HEX_SIGNED_EXP
               break
             }
@@ -572,8 +515,6 @@ function tokenize(input: string) {
 
           case HEX_FRAC_UNDERSCORE: {
             if (/[0-9|A-F|a-f]/.test(char)) {
-              value += char   
-              eatCharacter()
               state = HEX_FRAC
               break
             } else {
@@ -585,8 +526,6 @@ function tokenize(input: string) {
 
           case HEX_UNDERSCORE: {
             if (/[0-9|A-F|a-f]/.test(char)) {
-              value += char   
-              eatCharacter()
               state = HEX
               break
             } else {
@@ -600,8 +539,6 @@ function tokenize(input: string) {
 
             // HEX_SIGNED_EXP -> HEX_EXP
             if (char === '+' || char === '-' || /[0-9]/.test(char)) {
-              value += char
-              eatCharacter()
               state = HEX_EXP
               break
             }
@@ -612,16 +549,12 @@ function tokenize(input: string) {
           case HEX_EXP: {
 
             if (/[0-9]/.test(char)) {
-              value += char
-              eatCharacter()
               state = HEX_EXP
               break
             }
 
             if (char === '_') {
               if (/[0-9|A-F|a-f]/.test(lookbehind())) {
-                value += char
-                eatCharacter()
                 state = HEX_EXP_UNDERSCORE
               } else {
                 dgb()
@@ -634,8 +567,6 @@ function tokenize(input: string) {
 
           case HEX_EXP_UNDERSCORE: {
             if (/[0-9|A-F|a-f]/.test(char)) {
-              value += char   
-              eatCharacter()
               state = HEX_EXP
               break
             } else {
@@ -647,8 +578,6 @@ function tokenize(input: string) {
 
           case NAN_HEX: {
             if (/[0-9|A-F|a-f]/.test(char)) {
-              value += char
-              eatCharacter()
               state = NAN_HEX
               break
             }
@@ -661,10 +590,13 @@ function tokenize(input: string) {
           }
 
         }
+
+        value += input.substring(current, current + eatLength)
+        eatCharacter(eatLength);
       }
 
       if(value === "") {
-        throw new Error('Unexpected character "' + char + '"')
+        unexpectedCharacter(char)
       }
 
       pushNumberToken(value, { startColumn });
@@ -679,7 +611,7 @@ function tokenize(input: string) {
 
       while (char !== '"') {
         if (isNewLine(char)) {
-          throw new Error("Unterminated string constant");
+          unexpectedCharacter(char)
         }
 
         value += char;
@@ -768,8 +700,8 @@ function tokenize(input: string) {
     }
 
     showCodeFrame(input, line, column);
-
-    throw new TypeError(`Unexpected character "${char}"`);
+    
+    unexpectedCharacter(char)
   }
 
   return tokens;
