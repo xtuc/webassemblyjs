@@ -4,7 +4,7 @@
   (import "m" "a" (global i32))
 
   (global $test i32 (i32.const 0))
-  (global i32 (i32.const 1_1___4))
+  (global i32 (i32.const 1_1_4))
   (global (mut i32) (i32.const 1))
 
   (memory 1)
