@@ -401,7 +401,6 @@ function tokenize(input: string) {
       while (
         state !== STOP
       ) {
-        //console.log(input,char, state, eatLength)
         eatLength = 1
 
         if (char === undefined || (char !== '-' && char !== '+' && !NUMBER_KEYWORDS.test(lookahead(3,0)) && !ALL_NUMBER_CHARS.test(char.toLowerCase()))) {
@@ -409,62 +408,7 @@ function tokenize(input: string) {
           continue
         } 
 
-        switch (state) {
-          case START: {
-            state = states.START()
-            break
-          }
-
-          case DEC_FRAC: {
-            state = states.DEC_FRAC()
-            break
-          }
-
-          case DEC: {
-            state = states.DEC()
-            break
-          }
-
-          case DEC_SIGNED_EXP: {
-            state = states.DEC_SIGNED_EXP()
-            break
-          }
-
-          case DEC_EXP: {
-            state = states.DEC_EXP()
-            break
-          }
-
-          case HEX: {
-            state = states.HEX()
-            break
-          }
-
-          case HEX_FRAC: {
-            state = states.HEX_FRAC()
-            break
-          }
-
-          case HEX_SIGNED_EXP: {
-            state = states.HEX_SIGNED_EXP()
-            break
-          }
-
-          case HEX_EXP: {
-            state = states.HEX_EXP()
-            break
-          }
-
-          case NAN_HEX: {
-            state = states.NAN_HEX()
-            break
-          }
-
-          default: {
-            throw new Error('Corrupted state: ' + state )
-          }
-
-        }
+        state = states[state]()
 
         value += input.substring(current, current + eatLength)
         eatCharacter(eatLength);
