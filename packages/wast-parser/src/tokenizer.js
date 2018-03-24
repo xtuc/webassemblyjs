@@ -306,12 +306,29 @@ function tokenize(input: string) {
       const HEX_UNDERSCORE = "HEX_UNDERSCORE"
       const HEX_FRAC_UNDERSCORE = "HEX_FRAC_UNDERSCORE"
       const HEX_EXP_UNDERSCORE = "HEX_EXP_UNDERSCORE"
+      
+
+      const NUMERIC_SEPARATOR = '_'
 
       let state = START;
       let eatLength = 1
 
       const dbg = () => unexpectedCharacter(char)
-      const regexToState = (r,s,n=1) => () => {
+      const regexToState = (r,s,n=1,allowSeparators = false) => () => {
+
+        if(allowSeparators) {
+          debugger
+          if(char === NUMERIC_SEPARATOR) {
+            if(r.test(lookbehind())) {
+              // Consume the separator and stay in current state
+              eatLength = 1
+              return state
+            } else {
+              unexpectedCharacter(char)
+            }
+          }
+        }
+
         if(r.test(lookahead(n,0))) {
           eatLength = n
           return s
@@ -347,7 +364,7 @@ function tokenize(input: string) {
           regexToState(/[0-9]/, DEC_FRAC),
         ]),
         DEC: combineTransitions([
-          regexToState(/[0-9]/, DEC),
+          regexToState(/[0-9]/, DEC, 1, true),
           regexToState(/\./, DEC_FRAC),
           regexToState(/e|E/, DEC_SIGNED_EXP)
         ]),
@@ -356,18 +373,16 @@ function tokenize(input: string) {
           regexToState(/[0-9]/, DEC_EXP),
         ]),
         DEC_EXP: combineTransitions([
-          regexToState(/[0-9]/, DEC_EXP),
+          regexToState(/[0-9]/, DEC_EXP, 1, true),
         ]),
 
         HEX: combineTransitions([
-
-          regexToState(/[0-9|A-F|a-f]/, HEX),
+          regexToState(/[0-9|A-F|a-f]/, HEX, 1, true),
           regexToState(/\./, HEX_FRAC),
           regexToState(/p|P/, HEX_SIGNED_EXP),
         ]),
         HEX_FRAC: combineTransitions([
-        
-          regexToState(/[0-9|A-F|a-f]/, HEX_FRAC),
+          regexToState(/[0-9|A-F|a-f]/, HEX_FRAC, 1, true),
           regexToState(/p|P|/, HEX_SIGNED_EXP),
 
         ]),
@@ -375,7 +390,7 @@ function tokenize(input: string) {
           regexToState(/[0-9|\+|-]/, HEX_EXP)
         ]),
         HEX_EXP: combineTransitions([
-          regexToState(/[0-9]/, HEX_EXP),
+          regexToState(/[0-9]/, HEX_EXP, 1, true),
         ]),
         NAN_HEX: combineTransitions([
           regexToState(/[0-9|A-F|a-f]/, NAN_HEX)
@@ -406,18 +421,6 @@ function tokenize(input: string) {
           }
 
           case DEC: {
-
-            // DEC -> DEC_UNDERSCORE
-            if (char === '_') {
-              // Cheating the FSM a bit here, but alright
-              if (/[0-9]/.test(lookbehind())) {
-                state = DEC_UNDERSCORE
-                break
-              } else {
-                dbg()
-              }
-            }
-
             state = states.DEC()
             break
           }
@@ -428,83 +431,18 @@ function tokenize(input: string) {
           }
 
           case DEC_EXP: {
-
-            if (char === '_') {
-              // Cheating the FSM a bit here, but alright
-              if (/[0-9]/.test(lookbehind())) {
-                state = DEC_EXP_UNDERSCORE
-                break
-              } else {
-                dbg()
-              }
-            }
-
             state = states.DEC_EXP()
             break
           }
 
-          case DEC_EXP_UNDERSCORE: {
-            if (/[0-9]/.test(char)) {
-              state = DEC_EXP
-              break
-            } else {
-              dbg()
-            }
-          }
-          
-          case DEC_UNDERSCORE: {
-            if (/[0-9]/.test(char)) {
-              state = DEC
-              break
-            } else {
-              dbg()
-            }
-          }
-
           case HEX: {
-            if (char === '_') {
-              if (/[0-9|A-F|a-f]/.test(lookbehind())) {
-                state = HEX_UNDERSCORE
-              } else {
-                dgb()
-              }
-              break
-            }
-
             state = states.HEX()
             break
           }
 
           case HEX_FRAC: {
-            if (char === '_') {
-              if (/[0-9|A-F|a-f]/.test(lookbehind())) {
-                state = HEX_FRAC_UNDERSCORE
-              } else {
-                dgb()
-              }
-              break
-            }
-
             state = states.HEX_FRAC()
             break
-          }
-
-          case HEX_FRAC_UNDERSCORE: {
-            if (/[0-9|A-F|a-f]/.test(char)) {
-              state = HEX_FRAC
-              break
-            } else {
-              dbg()
-            }
-          }
-
-          case HEX_UNDERSCORE: {
-            if (/[0-9|A-F|a-f]/.test(char)) {
-              state = HEX
-              break
-            } else {
-              dbg()
-            }
           }
 
           case HEX_SIGNED_EXP: {
@@ -513,26 +451,8 @@ function tokenize(input: string) {
           }
 
           case HEX_EXP: {
-            if (char === '_') {
-              if (/[0-9|A-F|a-f]/.test(lookbehind())) {
-                state = HEX_EXP_UNDERSCORE
-              } else {
-                dgb()
-              }
-              break
-            }
-
             state = states.HEX_EXP()
             break
-          }
-
-          case HEX_EXP_UNDERSCORE: {
-            if (/[0-9|A-F|a-f]/.test(char)) {
-              state = HEX_EXP
-              break
-            } else {
-              dbg()
-            }
           }
 
           case NAN_HEX: {
