@@ -361,7 +361,8 @@ function tokenize(input: string) {
           regexToState(/\./, DEC_FRAC),
         ]),
         DEC_FRAC: combineTransitions([
-          regexToState(/[0-9]/, DEC_FRAC),
+          regexToState(/[0-9]/, DEC_FRAC, 1, true),
+          regexToState(/e|E/, DEC_SIGNED_EXP),
         ]),
         DEC: combineTransitions([
           regexToState(/[0-9]/, DEC, 1, true),
@@ -416,8 +417,7 @@ function tokenize(input: string) {
 
           case DEC_FRAC: {
             state = states.DEC_FRAC()
-            // TODO: This is a hack, provide the correct transitions instead
-            //break
+            break
           }
 
           case DEC: {
