@@ -126,26 +126,32 @@ function tokenize(input: string) {
    * Can be used to look at the next character(s).
    *
    * The default behavior `lookahead()` simply returns the next character without consuming it.
+   * Letters are always returned in lowercase.
    *
    * @param int length How many characters to query. Default = 1
    * @param int offset How many characters to skip forward from current one. Default = 1
    *
    */
   function lookahead(length = 1, offset = 1) {
-    return input.substring(current + offset, current + offset + length);
+    return input
+      .substring(current + offset, current + offset + length)
+      .toLowerCase();
   }
 
   /**
    * Can be used to look at the last few character(s).
    *
    * The default behavior `lookbehind()` simply returns the last character.
+   * Letters are always returned in lowercase.
    *
    * @param int length How many characters to query. Default = 1
    * @param int offset How many characters to skip back from current one. Default = 1
    *
    */
   function lookbehind(length = 1, offset = 1) {
-    return input.substring(current - offset, current - offset + length);
+    return input
+      .substring(current - offset, current - offset + length)
+      .toLowerCase();
   }
 
   /**
@@ -270,12 +276,13 @@ function tokenize(input: string) {
     if (
       NUMBERS.test(char) ||
       NUMBER_KEYWORDS.test(lookahead(3, 0)) ||
-      char === "-"
+      char === "-" ||
+      char === "+"
     ) {
       let value = "";
       const startColumn = column;
 
-      if (char === "-") {
+      if (char === "-" || char === "+") {
         value += char;
         eatCharacter();
       }
@@ -293,26 +300,37 @@ function tokenize(input: string) {
 
       let numberLiterals = NUMBERS;
 
-      if (char === "0" && lookahead().toUpperCase() === "X") {
+      if (char === "0" && lookahead() === "x") {
         value += "0x";
         numberLiterals = HEX_NUMBERS;
         eatCharacter(2);
       }
 
       while (
-        numberLiterals.test(char) ||
+        (char !== undefined && numberLiterals.test(char)) ||
         (lookbehind() === "p" && char === "+") ||
-        (lookbehind().toUpperCase() === "E" && char === "-") ||
-        (value.length > 0 && char.toUpperCase() === "E")
+        (lookbehind() === "p" && char === "-") ||
+        (lookbehind() === "e" && char === "+") ||
+        (lookbehind() === "e" && char === "-") ||
+        (value.length > 0 && (char === "e" || char === "E"))
       ) {
         if (char === "p" && value.includes("p")) {
-          throw new Error("Unexpected character `p`.");
+          throw new Error('Unexpected character "p"');
         }
 
-        if (char !== "_") {
-          value += char;
+        if (char === "." && value.includes(".")) {
+          throw new Error('Unexpected character "."');
         }
 
+        if (
+          numberLiterals !== HEX_NUMBERS &&
+          char === "e" &&
+          value.includes("e")
+        ) {
+          throw new Error('Unexpected character "e"');
+        }
+
+        value += char;
         eatCharacter();
       }
 
@@ -418,7 +436,7 @@ function tokenize(input: string) {
 
     showCodeFrame(input, line, column);
 
-    throw new TypeError("Unknown char: " + char);
+    throw new TypeError(`Unexpected character "${char}"`);
   }
 
   return tokens;

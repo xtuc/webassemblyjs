@@ -1,0 +1,12 @@
+[
+  {
+    "type": "number",
+    "value": "99e-123",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  }
+]

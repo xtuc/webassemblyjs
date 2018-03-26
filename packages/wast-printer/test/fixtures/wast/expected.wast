@@ -3,7 +3,7 @@
   (import "m" "a" (global (mut i32)))
   (import "m" "a" (global i32))
   (global $test i32 (i32.const 0))
-  (global $global_2 i32 (i32.const 1))
+  (global $global_2 i32 (i32.const 1_1___4))
   (global $global_3 (mut i32) (i32.const 1))
   (memory $memory_4 1)
   (memory $memory_5 1 0)

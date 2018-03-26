@@ -1,0 +1,12 @@
+[
+  {
+    "type": "number",
+    "value": "inf",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  }
+]

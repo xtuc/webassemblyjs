@@ -1,0 +1,12 @@
+[
+  {
+    "type": "number",
+    "value": "0x1.p100",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  }
+]
