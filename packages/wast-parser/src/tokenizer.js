@@ -1,6 +1,6 @@
 // @flow
 
-const { codeFrameColumns } = require("@babel/code-frame");
+import { codeFrameColumns } from "@babel/code-frame"
 
 function showCodeFrame(source: string, line: number, column: number) {
   const loc = {
@@ -21,6 +21,7 @@ const NUMBERS = /[0-9|.|_]/;
 const NUMBER_KEYWORDS = /nan|inf/;
 const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
 const ALL_NUMBER_CHARS = /[0-9|A-F|a-f|_|\.|p|P|-|\+|x]/;
+
 
 function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
@@ -87,6 +88,8 @@ const keywords = {
   offset: "offset"
 };
 
+const NUMERIC_SEPARATOR = "_";
+
 function tokenize(input: string) {
   let current = 0;
   let char = input[current];
@@ -98,9 +101,9 @@ function tokenize(input: string) {
   const tokens = [];
 
   /**
-   *
+   * Throw an error in case the current character is invalid
    */
-  function unexpectedCharacter(char) {
+  function unexpectedCharacter() {
     throw new Error(`Unexpected character ${char}`);
   }
 
@@ -172,6 +175,77 @@ function tokenize(input: string) {
     current += amount;
     char = input[current];
   }
+
+  // FSM helper functions
+
+  /**
+   * Creates a transition function mapping all characters matching a regular expression to a new state
+   *
+   * @param {RegExp} regex The regular expression to be matched against
+   * @param {String} nextState The state to transition to
+   * @param {Number} n How many characters to consume (default 1)
+   * @param {String} allowSeparators If the numeric separator "_" is allowed, this argument should contain the state to go to (default false)
+   *
+   * @return {Function} A state transition function which reads current state and input characters from its closure
+   */
+  const regexToState = (regex, nextState, n = 1, allowSeparators = false) => () => {
+    if (allowSeparators) {
+      if (char === NUMERIC_SEPARATOR) {
+        if (regex.test(lookbehind())) {
+          // Consume the separator and stay in current state
+          return [allowSeparators, 1];
+        } else {
+          unexpectedCharacter();
+        }
+      }
+    }
+
+    if (regex.test(lookahead(n, 0))) {
+      return [nextState, n];
+    }
+
+    return false;
+  };
+
+  /**
+   * Combines a list of transition functions into a complete state transition function.
+   * When none of the given transitions apply, the given default state is returned.
+   *
+   * @param {Array} transitions A list of transition functions
+   * @param {String} defaultState The state to be returned in case no transition matches
+   *
+   * @return {Array} A two element array containing [newState, eatLength] where eatLength is the amount of characters to consume.
+   *
+   */
+  const combineTransitions = (transitions, defaultState) => () => {
+    let newState = defaultState
+    let match = false;
+    for (let i = 0; i < transitions.length; ++i) {
+      match = transitions[i]();
+      if (match) {
+        break;
+      }
+    }
+
+    return match;
+  };
+
+  const START = "START";
+  const HEX = "HEX";
+  const HEX_FRAC = "HEX_FRAC";
+  const NAN_HEX = "NAN_HEX";
+  const DEC = "DEC";
+  const DEC_UNDERSCORE = "DEC_UNDERSCORE";
+  const DEC_FRAC = "DEC_FRAC";
+  const DEC_EXP = "DEC_EXP";
+  const DEC_SIGNED_EXP = "DEC_SIGNED_EXP";
+  const DEC_EXP_UNDERSCORE = "DEC_EXP_UNDERSCORE";
+  const STOP = "STOP";
+  const HEX_SIGNED_EXP = "HEX_SIGNED_EXP";
+  const HEX_EXP = "HEX_EXP";
+  const HEX_UNDERSCORE = "HEX_UNDERSCORE";
+  const HEX_FRAC_UNDERSCORE = "HEX_FRAC_UNDERSCORE";
+  const HEX_EXP_UNDERSCORE = "HEX_EXP_UNDERSCORE";
 
   while (current < input.length) {
     // ;;
@@ -290,66 +364,10 @@ function tokenize(input: string) {
       let value = "";
       const startColumn = column;
 
-      const START = "START";
-      const HEX = "HEX";
-      const HEX_FRAC = "HEX_FRAC";
-      const NAN_HEX = "NAN_HEX";
-      const DEC = "DEC";
-      const DEC_UNDERSCORE = "DEC_UNDERSCORE";
-      const DEC_FRAC = "DEC_FRAC";
-      const DEC_EXP = "DEC_EXP";
-      const DEC_SIGNED_EXP = "DEC_SIGNED_EXP";
-      const DEC_EXP_UNDERSCORE = "DEC_EXP_UNDERSCORE";
-      const STOP = "STOP";
-      const HEX_SIGNED_EXP = "HEX_SIGNED_EXP";
-      const HEX_EXP = "HEX_EXP";
-      const HEX_UNDERSCORE = "HEX_UNDERSCORE";
-      const HEX_FRAC_UNDERSCORE = "HEX_FRAC_UNDERSCORE";
-      const HEX_EXP_UNDERSCORE = "HEX_EXP_UNDERSCORE";
-
-      const NUMERIC_SEPARATOR = "_";
-
       let state = START;
       let eatLength = 1;
 
-      const dbg = () => unexpectedCharacter(char);
-      const regexToState = (r, s, n = 1, allowSeparators = false) => () => {
-        if (allowSeparators) {
-          debugger;
-          if (char === NUMERIC_SEPARATOR) {
-            if (r.test(lookbehind())) {
-              // Consume the separator and stay in current state
-              eatLength = 1;
-              return state;
-            } else {
-              unexpectedCharacter(char);
-            }
-          }
-        }
-
-        if (r.test(lookahead(n, 0))) {
-          eatLength = n;
-          return s;
-        }
-
-        return false;
-      };
-
-      const combineTransitions = ts => () => {
-        let newState = STOP;
-
-        for (let i = 0; i < ts.length; ++i) {
-          const match = ts[i]();
-          if (match) {
-            newState = match;
-            break;
-          }
-        }
-
-        return newState;
-      };
-
-      states = {
+      const states = {
         START: combineTransitions([
           regexToState(/-|\+/, START),
           regexToState(/nan:0x/, NAN_HEX, 6),
@@ -357,36 +375,36 @@ function tokenize(input: string) {
           regexToState(/0x/, HEX, 2),
           regexToState(/[0-9]/, DEC),
           regexToState(/\./, DEC_FRAC)
-        ]),
+        ], STOP),
         DEC_FRAC: combineTransitions([
-          regexToState(/[0-9]/, DEC_FRAC, 1, true),
+          regexToState(/[0-9]/, DEC_FRAC, 1, DEC_FRAC),
           regexToState(/e|E/, DEC_SIGNED_EXP)
-        ]),
+        ], STOP),
         DEC: combineTransitions([
-          regexToState(/[0-9]/, DEC, 1, true),
+          regexToState(/[0-9]/, DEC, 1, DEC),
           regexToState(/\./, DEC_FRAC),
           regexToState(/e|E/, DEC_SIGNED_EXP)
-        ]),
+        ], STOP),
         DEC_SIGNED_EXP: combineTransitions([
           regexToState(/\+|-/, DEC_EXP),
           regexToState(/[0-9]/, DEC_EXP)
-        ]),
-        DEC_EXP: combineTransitions([regexToState(/[0-9]/, DEC_EXP, 1, true)]),
+        ], STOP),
+        DEC_EXP: combineTransitions([regexToState(/[0-9]/, DEC_EXP, 1, DEC_EXP)]),
 
         HEX: combineTransitions([
-          regexToState(/[0-9|A-F|a-f]/, HEX, 1, true),
+          regexToState(/[0-9|A-F|a-f]/, HEX, 1, HEX),
           regexToState(/\./, HEX_FRAC),
           regexToState(/p|P/, HEX_SIGNED_EXP)
-        ]),
+        ], STOP),
         HEX_FRAC: combineTransitions([
-          regexToState(/[0-9|A-F|a-f]/, HEX_FRAC, 1, true),
+          regexToState(/[0-9|A-F|a-f]/, HEX_FRAC, 1, HEX_FRAC),
           regexToState(/p|P|/, HEX_SIGNED_EXP)
-        ]),
+        ], STOP),
         HEX_SIGNED_EXP: combineTransitions([
           regexToState(/[0-9|\+|-]/, HEX_EXP)
-        ]),
-        HEX_EXP: combineTransitions([regexToState(/[0-9]/, HEX_EXP, 1, true)]),
-        NAN_HEX: combineTransitions([regexToState(/[0-9|A-F|a-f]/, NAN_HEX)])
+        ], STOP),
+        HEX_EXP: combineTransitions([regexToState(/[0-9]/, HEX_EXP, 1, HEX_EXP)], STOP),
+        NAN_HEX: combineTransitions([regexToState(/[0-9|A-F|a-f]/, NAN_HEX)], STOP)
       };
 
       while (state !== STOP) {
@@ -403,14 +421,14 @@ function tokenize(input: string) {
           continue;
         }
 
-        state = states[state]();
+        [state, eatLength] = states[state]();
 
         value += input.substring(current, current + eatLength);
         eatCharacter(eatLength);
       }
 
       if (value === "") {
-        unexpectedCharacter(char);
+        unexpectedCharacter();
       }
 
       pushNumberToken(value, { startColumn });
@@ -425,7 +443,7 @@ function tokenize(input: string) {
 
       while (char !== '"') {
         if (isNewLine(char)) {
-          unexpectedCharacter(char);
+          unexpectedCharacter();
         }
 
         value += char;
@@ -515,7 +533,7 @@ function tokenize(input: string) {
 
     showCodeFrame(input, line, column);
 
-    unexpectedCharacter(char);
+    unexpectedCharacter();
   }
 
   return tokens;
