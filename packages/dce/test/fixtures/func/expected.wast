@@ -1,4 +1,4 @@
 (module 
   (type (func))
-  (func $func_1)
+  (func $func_0)
 )

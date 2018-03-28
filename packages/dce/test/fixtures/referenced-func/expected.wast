@@ -1,10 +1,10 @@
 (module 
   (type (func))
-  (func $func_1
+  (func $referenceda
     (nop)
   )
   (func $func_2
     (call 0)
   )
-  (export "test" (func $func_1))
+  (export "test" (func $referenceda))
 )

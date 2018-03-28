@@ -62,12 +62,15 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
 export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   const buf = new Uint8Array(ab);
 
-  let inc = 0;
+  const inc = {};
 
   function getUniqueName(prefix: string = "temp"): string {
-    inc++;
-
-    return prefix + "_" + inc;
+    if (!inc.hasOwnProperty(prefix)) {
+      inc[prefix] = 0;
+    } else {
+      inc[prefix] = inc[prefix] + 1;
+    }
+    return prefix + "_" + inc[prefix];
   }
 
   let offset = 0;
@@ -959,6 +962,59 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return t.globalType(type, globalType);
   }
 
+  // this section contains an array of function names and indices
+  function parseNameSectionFunctions() {
+    const functionNames = [];
+
+    const subSectionSizeInBytesu32 = readU32();
+    eatBytes(subSectionSizeInBytesu32.nextIndex);
+
+    const numbeOfFunctionsu32 = readU32();
+    const numbeOfFunctions = numbeOfFunctionsu32.value;
+    eatBytes(numbeOfFunctionsu32.nextIndex);
+
+    for (let i = 0; i < numbeOfFunctions; i++) {
+      const indexu32 = readU32();
+      const index = indexu32.value;
+      eatBytes(indexu32.nextIndex);
+
+      const name = readUTF8String();
+      eatBytes(name.nextIndex);
+
+      functionNames.push(t.functionNameMetadata(name.value, index));
+    }
+    return functionNames;
+  }
+
+  function parseNameSectionLocals() {
+    const subSectionSizeInBytesu32 = readU32();
+    const subSectionSizeInBytes = subSectionSizeInBytesu32.value;
+    eatBytes(subSectionSizeInBytesu32.nextIndex);
+
+    // TODO: add support for naming locals - for now we just eat this section
+    eatBytes(subSectionSizeInBytes);
+  }
+
+  // this is a custom suction that wat2wasm includes if invoked
+  // using the --debug-names option
+  function parseNameSection(remainingBytes: number) {
+    const nameMetadata = [];
+    const initialOffset = offset;
+
+    while (offset - initialOffset < remainingBytes) {
+      const sectionTypeByte = readByte();
+      eatBytes(1);
+
+      if (sectionTypeByte === 1) {
+        nameMetadata.push(...parseNameSectionFunctions());
+      } else if (sectionTypeByte === 2) {
+        parseNameSectionLocals();
+      }
+    }
+
+    return nameMetadata;
+  }
+
   function parseGlobalSection(numberOfGlobals: number) {
     const globals = [];
 
@@ -1126,7 +1182,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
-  function parseSection(): { nodes: Array<Node>, metadata: SectionMetadata } {
+  function parseSection(): {
+    nodes: Array<Node>,
+    metadata: SectionMetadata | Array<SectionMetadata>
+  } {
     const sectionId = readByte();
     eatBytes(1);
 
@@ -1388,17 +1447,23 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const nodes = [];
-        const metadata = t.sectionMetadata(
-          "custom",
-          startOffset,
-          sectionSizeInBytes
-        );
+        const metadata = [
+          t.sectionMetadata("custom", startOffset, sectionSizeInBytes)
+        ];
 
-        // We don't need to parse it, just eat all the bytes
-        eatBytes(sectionSizeInBytes);
+        const sectionName = readUTF8String();
+        eatBytes(sectionName.nextIndex);
 
-        return { nodes, metadata };
+        const remainingBytes = sectionSizeInBytes - sectionName.nextIndex;
+
+        if (sectionName.value === "name") {
+          metadata.push(...parseNameSection(remainingBytes));
+        } else {
+          // We don't parse otehr custom section
+          eatBytes(remainingBytes);
+        }
+
+        return { nodes: [], metadata };
       }
     }
 
@@ -1410,7 +1475,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   const moduleFields = [];
   const moduleMetadata = {
-    sections: []
+    sections: [],
+    functionNames: []
   };
 
   /**
@@ -1420,7 +1486,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const { nodes, metadata } = parseSection();
 
     moduleFields.push(...nodes);
-    moduleMetadata.sections.push(metadata);
+
+    const metadataArray = Array.isArray(metadata) ? metadata : [metadata];
+    metadataArray.forEach(metadataItem => {
+      if (metadataItem.type === "FunctionNameMetadata") {
+        moduleMetadata.functionNames.push(metadataItem);
+      } else {
+        moduleMetadata.sections.push(metadataItem);
+      }
+    });
   }
 
   /**
@@ -1487,6 +1561,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   dumpSep("end of program");
 
-  const module = t.module(null, moduleFields, moduleMetadata);
+  const module = t.module(
+    null,
+    moduleFields,
+    t.moduleMetadata(moduleMetadata.sections, moduleMetadata.functionNames)
+  );
   return t.program([module]);
 }

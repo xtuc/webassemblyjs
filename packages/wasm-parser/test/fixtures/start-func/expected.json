@@ -113,7 +113,7 @@
           "type": "Func",
           "name": {
             "type": "Identifier",
-            "value": "func_1"
+            "value": "func_0"
           },
           "params": [],
           "result": [],
@@ -165,6 +165,7 @@
         }
       ],
       "metadata": {
+        "type": "ModuleMetadata",
         "sections": [
           {
             "type": "SectionMetadata",

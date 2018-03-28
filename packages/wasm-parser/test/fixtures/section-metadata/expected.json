@@ -52,7 +52,7 @@
           "type": "Func",
           "name": {
             "type": "Identifier",
-            "value": "func_1"
+            "value": "a"
           },
           "params": [],
           "result": [],
@@ -78,7 +78,7 @@
             "type": "Func",
             "id": {
               "type": "Identifier",
-              "value": "func_1"
+              "value": "a"
             }
           },
           "loc": {
@@ -94,6 +94,7 @@
         }
       ],
       "metadata": {
+        "type": "ModuleMetadata",
         "sections": [
           {
             "type": "SectionMetadata",
@@ -143,6 +144,13 @@
             "startOffset": 41,
             "size": 16,
             "vectorOfSize": -1
+          }
+        ],
+        "functionNames": [
+          {
+            "type": "FunctionNameMetadata",
+            "value": "a",
+            "index": 0
           }
         ]
       }
