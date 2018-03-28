@@ -5,7 +5,7 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_1"
+        "value": "func_0"
       },
       "params": [
         {
@@ -20,7 +20,7 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_2"
+        "value": "func_1"
       },
       "params": [
         {
@@ -35,7 +35,7 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_3"
+        "value": "func_2"
       },
       "params": [
         {
@@ -50,7 +50,7 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_4"
+        "value": "func_3"
       },
       "params": [
         {

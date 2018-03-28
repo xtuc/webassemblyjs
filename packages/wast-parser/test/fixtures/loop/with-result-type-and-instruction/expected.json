@@ -5,7 +5,7 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_1"
+        "value": "func_0"
       },
       "params": [],
       "result": [],
@@ -15,7 +15,7 @@
           "id": "loop",
           "label": {
             "type": "Identifier",
-            "value": "loop_2"
+            "value": "loop_0"
           },
           "resulttype": "i32",
           "instr": [

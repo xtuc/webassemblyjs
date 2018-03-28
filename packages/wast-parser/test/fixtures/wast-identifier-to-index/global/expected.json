@@ -57,7 +57,7 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_3"
+        "value": "func_0"
       },
       "params": [],
       "result": [],
@@ -79,7 +79,7 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_4"
+        "value": "func_1"
       },
       "params": [],
       "result": [],

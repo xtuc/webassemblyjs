@@ -45,13 +45,7 @@ type ParserState = {
 
 export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
-  let inc = 0;
-
-  function getUniqueName(prefix: string = "temp"): string {
-    inc++;
-
-    return prefix + "_" + inc;
-  }
+  const getUniqueName = t.getUniqueNameGenerator();
 
   const state: ParserState = {
     registredExportedElements: []

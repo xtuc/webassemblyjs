@@ -332,6 +332,18 @@ export function numberLiteral(
   return x;
 }
 
+export function getUniqueNameGenerator(): string => string {
+  const inc = {};
+  return function(prefix: string = "temp"): string {
+    if (!inc.hasOwnProperty(prefix)) {
+      inc[prefix] = 0;
+    } else {
+      inc[prefix] = inc[prefix] + 1;
+    }
+    return prefix + "_" + inc[prefix];
+  };
+}
+
 export function callInstruction(
   index: Index,
   instrArgs?: Array<Expression>
