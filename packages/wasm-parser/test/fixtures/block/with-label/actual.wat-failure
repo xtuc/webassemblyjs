@@ -1,0 +1,6 @@
+;; see: https://github.com/xtuc/webassemblyjs/pulls/212
+(module
+  (func
+    (block $test)
+  )
+)

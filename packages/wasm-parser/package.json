@@ -28,5 +28,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "@webassemblyjs/wast-parser": "1.2.1",
+    "wabt": "^1.0.0"
   }
 }

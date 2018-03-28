@@ -25,8 +25,7 @@ describe("WebAssembly JavaScript API", () => {
     });
 
     it("should return a promise", () => {
-      const res = WebAssembly.instantiate();
-
+      const res = WebAssembly.instantiate().catch(() => {});
       assert.instanceOf(res, Promise);
     });
   });
