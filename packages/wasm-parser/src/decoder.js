@@ -719,7 +719,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const instr = [];
         parseInstructionBlock(instr);
 
-        const label = t.identifier(getUniqueName());
+        const label = t.identifier(getUniqueName("block"));
 
         // FIXME(sven): result type is ignored?
         const blockNode = t.blockInstruction(label, instr);
