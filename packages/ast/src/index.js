@@ -251,13 +251,15 @@ export function blockInstruction(
   assert(typeof label.type === "string");
   assert(typeof instr === "object" && typeof instr.length !== "undefined");
 
-  return {
+  const node: BlockInstruction = {
     type: "BlockInstruction",
     id: "block",
     label,
     instr,
     result
   };
+
+  return node;
 }
 
 export function numberLiteral(

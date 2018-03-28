@@ -442,7 +442,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseBlock(): BlockInstruction {
       let label = t.identifier(getUniqueName("block"));
-      let blockResult;
+      let blockResult = null;
       const instr = [];
 
       if (token.type === tokens.identifier) {

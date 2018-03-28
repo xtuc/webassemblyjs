@@ -1,4 +1,3 @@
-;; need to unify the label generation logic for wat and wasm
 (module
   (func (result i32)
     (block (result i32)
@@ -6,3 +5,4 @@
       )
   )
 )
+
