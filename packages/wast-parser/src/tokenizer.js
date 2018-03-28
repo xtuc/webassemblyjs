@@ -19,8 +19,7 @@ const valtypes = ["i32", "i64", "f32", "f64"];
 
 const NUMBERS = /[0-9|.|_]/;
 const NUMBER_KEYWORDS = /nan|inf/;
-const HEX_NUMBERS = /[0-9|A-F|a-f|_|.|p|P|-]/;
-const ALL_NUMBER_CHARS = /[0-9|A-F|a-f|_|\.|p|P|-|\+|x]/;
+const ALL_NUMBER_CHARS = /[0-9|A-F|a-f|_|.|p|P|-|+|x]/;
 
 function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
@@ -90,7 +89,7 @@ const keywords = {
 const NUMERIC_SEPARATOR = "_";
 
 function tokenize(input: string) {
-  let current = 0;
+  let current: number = 0;
   let char = input[current];
 
   // Used by SourceLocation
@@ -138,11 +137,11 @@ function tokenize(input: string) {
    * The default behavior `lookahead()` simply returns the next character without consuming it.
    * Letters are always returned in lowercase.
    *
-   * @param int length How many characters to query. Default = 1
-   * @param int offset How many characters to skip forward from current one. Default = 1
+   * @param {number} length How many characters to query. Default = 1
+   * @param {number} offset How many characters to skip forward from current one. Default = 1
    *
    */
-  function lookahead(length = 1, offset = 1) {
+  function lookahead(length: number = 1, offset: number = 1): string {
     return input
       .substring(current + offset, current + offset + length)
       .toLowerCase();
@@ -154,11 +153,11 @@ function tokenize(input: string) {
    * The default behavior `lookbehind()` simply returns the last character.
    * Letters are always returned in lowercase.
    *
-   * @param int length How many characters to query. Default = 1
-   * @param int offset How many characters to skip back from current one. Default = 1
+   * @param {number} length How many characters to query. Default = 1
+   * @param {number} offset How many characters to skip back from current one. Default = 1
    *
    */
-  function lookbehind(length = 1, offset = 1) {
+  function lookbehind(length: number = 1, offset: number = 1): string {
     return input
       .substring(current - offset, current - offset + length)
       .toLowerCase();
@@ -167,9 +166,9 @@ function tokenize(input: string) {
   /**
    * Advances the cursor in the input by a certain amount
    *
-   * @param int amount How many characters to consume. Default = 1
+   * @param {number} amount How many characters to consume. Default = 1
    */
-  function eatCharacter(amount = 1) {
+  function eatCharacter(amount: number = 1): void {
     column += amount;
     current += amount;
     char = input[current];
@@ -181,18 +180,22 @@ function tokenize(input: string) {
    * Creates a transition function mapping all characters matching a regular expression to a new state
    *
    * @param {RegExp} regex The regular expression to be matched against
-   * @param {String} nextState The state to transition to
-   * @param {Number} n How many characters to consume (default 1)
-   * @param {String} allowSeparators If the numeric separator "_" is allowed, this argument should contain the state to go to (default false)
+   * @param {State} nextState The state to transition to
+   * @param {?number} n How many characters to consume (default 1)
+   * @param {?State} allowSeparators If the numeric separator "_" is allowed, this argument should contain the state to go to (default false)
    *
    * @return {Function} A state transition function which reads current state and input characters from its closure
    */
+  type FsmTransition = () => [State, number] | false;
+
+  type safeFsmTransition = () => [State, number];
+
   const regexToState = (
-    regex,
-    nextState,
-    n = 1,
-    allowSeparators = false
-  ) => () => {
+    regex: RegExp,
+    nextState: State,
+    n: number = 1,
+    allowSeparators: ?State
+  ): FsmTransition => () => {
     if (allowSeparators) {
       if (char === NUMERIC_SEPARATOR) {
         if (regex.test(lookbehind())) {
@@ -215,14 +218,16 @@ function tokenize(input: string) {
    * Combines a list of transition functions into a complete state transition function.
    * When none of the given transitions apply, the given default state is returned.
    *
-   * @param {Array} transitions A list of transition functions
-   * @param {String} defaultState The state to be returned in case no transition matches
+   * @param {Array<FsmTransition>} transitions A list of transition functions
+   * @param {State} defaultState The state to be returned in case no transition matches
    *
-   * @return {Array} A two element array containing [newState, eatLength] where eatLength is the amount of characters to consume.
+   * @return {[State, number]} A two element array containing [newState, eatLength] where eatLength is the amount of characters to consume.
    *
    */
-  const combineTransitions = (transitions, defaultState) => () => {
-    let newState = defaultState;
+  const combineTransitions = (
+    transitions: Array<FsmTransition>,
+    defaultState: State
+  ): safeFsmTransition => () => {
     let match = false;
     for (let i = 0; i < transitions.length; ++i) {
       match = transitions[i]();
@@ -231,30 +236,40 @@ function tokenize(input: string) {
       }
     }
 
-    return match;
+    return match || [defaultState, 1];
   };
 
-  const START = "START";
-  const HEX = "HEX";
-  const HEX_FRAC = "HEX_FRAC";
-  const NAN_HEX = "NAN_HEX";
-  const DEC = "DEC";
-  const DEC_UNDERSCORE = "DEC_UNDERSCORE";
-  const DEC_FRAC = "DEC_FRAC";
-  const DEC_EXP = "DEC_EXP";
-  const DEC_SIGNED_EXP = "DEC_SIGNED_EXP";
-  const DEC_EXP_UNDERSCORE = "DEC_EXP_UNDERSCORE";
-  const STOP = "STOP";
-  const HEX_SIGNED_EXP = "HEX_SIGNED_EXP";
-  const HEX_EXP = "HEX_EXP";
-  const HEX_UNDERSCORE = "HEX_UNDERSCORE";
-  const HEX_FRAC_UNDERSCORE = "HEX_FRAC_UNDERSCORE";
-  const HEX_EXP_UNDERSCORE = "HEX_EXP_UNDERSCORE";
+  type State =
+    | "START"
+    | "HEX"
+    | "HEX_FRAC"
+    | "NAN_HEX"
+    | "DEC"
+    | "DEC_EXP"
+    | "DEC_FRAC"
+    | "DEC_SIGNED_EXP"
+    | "STOP"
+    | "HEX_SIGNED_EXP"
+    | "HEX_EXP";
+
+  const START: State = "START";
+  const HEX: State = "HEX";
+  const HEX_FRAC: State = "HEX_FRAC";
+  const NAN_HEX: State = "NAN_HEX";
+  const DEC: State = "DEC";
+  const DEC_FRAC: State = "DEC_FRAC";
+  const DEC_EXP: State = "DEC_EXP";
+  const DEC_SIGNED_EXP: State = "DEC_SIGNED_EXP";
+  const STOP: State = "STOP";
+  const HEX_SIGNED_EXP: State = "HEX_SIGNED_EXP";
+  const HEX_EXP: State = "HEX_EXP";
+
+  const emptyTransition = (state: State): safeFsmTransition => () => [state, 1];
 
   /**
    * Build the FSM for number literals
    */
-  const numberLiteralFSM = {
+  const numberLiteralFSM: { [State]: safeFsmTransition } = {
     START: combineTransitions(
       [
         regexToState(/-|\+/, START),
@@ -285,7 +300,10 @@ function tokenize(input: string) {
       [regexToState(/\+|-/, DEC_EXP), regexToState(/[0-9]/, DEC_EXP)],
       STOP
     ),
-    DEC_EXP: combineTransitions([regexToState(/[0-9]/, DEC_EXP, 1, DEC_EXP)]),
+    DEC_EXP: combineTransitions(
+      [regexToState(/[0-9]/, DEC_EXP, 1, DEC_EXP)],
+      STOP
+    ),
 
     HEX: combineTransitions(
       [
@@ -303,14 +321,15 @@ function tokenize(input: string) {
       STOP
     ),
     HEX_SIGNED_EXP: combineTransitions(
-      [regexToState(/[0-9|\+|-]/, HEX_EXP)],
+      [regexToState(/[0-9|+|-]/, HEX_EXP)],
       STOP
     ),
     HEX_EXP: combineTransitions(
       [regexToState(/[0-9]/, HEX_EXP, 1, HEX_EXP)],
       STOP
     ),
-    NAN_HEX: combineTransitions([regexToState(/[0-9|A-F|a-f]/, NAN_HEX)], STOP)
+    NAN_HEX: combineTransitions([regexToState(/[0-9|A-F|a-f]/, NAN_HEX)], STOP),
+    STOP: emptyTransition(STOP)
   };
 
   while (current < input.length) {
