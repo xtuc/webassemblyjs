@@ -70,7 +70,7 @@ function createCheck(actualWatPath) {
 describe("compiler", () => {
   describe("Binary format parsing", () => {
     const testSuites = glob.sync(
-      "packages/wasm-parser/test/fixtures/block/**/actual.wat"
+      "packages/wasm-parser/test/fixtures/**/actual.wat"
     );
 
     testSuites.forEach(suite => {

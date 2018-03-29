@@ -251,15 +251,13 @@ export function blockInstruction(
   assert(typeof label.type === "string");
   assert(typeof instr === "object" && typeof instr.length !== "undefined");
 
-  const node: BlockInstruction = {
+  return {
     type: "BlockInstruction",
     id: "block",
     label,
     instr,
     result
   };
-
-  return node;
 }
 
 export function numberLiteral(
@@ -337,7 +335,7 @@ export function numberLiteral(
 export function getUniqueNameGenerator(): string => string {
   const inc = {};
   return function(prefix: string = "temp"): string {
-    if (!inc.hasOwnProperty(prefix)) {
+    if (!(prefix in inc)) {
       inc[prefix] = 0;
     } else {
       inc[prefix] = inc[prefix] + 1;
