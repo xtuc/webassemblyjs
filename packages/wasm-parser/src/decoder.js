@@ -62,16 +62,7 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
 export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   const buf = new Uint8Array(ab);
 
-  const inc = {};
-
-  function getUniqueName(prefix: string = "temp"): string {
-    if (!inc.hasOwnProperty(prefix)) {
-      inc[prefix] = 0;
-    } else {
-      inc[prefix] = inc[prefix] + 1;
-    }
-    return prefix + "_" + inc[prefix];
-  }
+  const getUniqueName = t.getUniqueNameGenerator();
 
   let offset = 0;
 
@@ -728,10 +719,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const instr = [];
         parseInstructionBlock(instr);
 
-        const label = t.identifier(getUniqueName());
+        const label = t.identifier(getUniqueName("block"));
 
-        // FIXME(sven): result type is ignored?
-        const blockNode = t.blockInstruction(label, instr);
+        const blockNode = t.blockInstruction(label, instr, blocktype);
 
         code.push(blockNode);
         instructionAlreadyCreated = true;

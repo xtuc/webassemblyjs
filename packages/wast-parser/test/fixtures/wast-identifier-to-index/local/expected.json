@@ -15,7 +15,7 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_2"
+        "value": "func_1"
       },
       "params": [
         {

@@ -1,0 +1,5 @@
+;; see: https://github.com/xtuc/webassemblyjs/issues/218
+(module
+  (func)
+  (export "test" (func 0))
+)
