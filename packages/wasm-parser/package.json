@@ -30,7 +30,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@webassemblyjs/wast-parser": "1.2.1",
+    "@webassemblyjs/wast-parser": "1.2.2",
     "wabt": "^1.0.0"
   }
 }
