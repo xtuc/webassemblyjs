@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/cli",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Toolbox for WebAssembly",
   "main": "lib/index.js",
   "keywords": [
@@ -18,11 +18,11 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/ast": "1.2.1",
-    "@webassemblyjs/wasm-parser": "1.2.1",
-    "@webassemblyjs/wast-parser": "1.2.1",
-    "@webassemblyjs/wast-printer": "1.2.1",
-    "webassemblyjs": "1.2.1"
+    "@webassemblyjs/ast": "1.2.2",
+    "@webassemblyjs/wasm-parser": "1.2.2",
+    "@webassemblyjs/wast-parser": "1.2.2",
+    "@webassemblyjs/wast-printer": "1.2.2",
+    "webassemblyjs": "1.2.2"
   },
   "bin": {
     "wasmdump": "./lib/bin/wasmdump.js",
