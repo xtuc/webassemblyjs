@@ -71,7 +71,7 @@ module.exports = {
         if (existsSync(file) === false) {
           return context.report({
             node: object,
-            message: "WASM file does not exists"
+            message: JSON.stringify(file) + " is not a valid WASM file"
           });
         }
 

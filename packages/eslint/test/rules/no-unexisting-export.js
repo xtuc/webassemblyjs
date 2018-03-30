@@ -9,7 +9,7 @@ ruleTester.run("file-exists", rule, {
   invalid: [
     {
       code: "import('./non-existing.wasm').then()",
-      errors: [{ message: "WASM file does not exists" }]
+      errors: [{ message: '"non-existing.wasm" is not a valid WASM file' }]
     },
 
     {
