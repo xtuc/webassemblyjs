@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-webassembly",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "ESLint plugin for WebAssembly",
   "keywords": [
     "eslint",

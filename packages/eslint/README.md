@@ -36,7 +36,7 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "webassembly/rule-name": 2
+        "webassembly/non-unexisting-export": 2
     }
 }
 ```
@@ -63,3 +63,6 @@ import("module.wasm").then(x => {
 });
 ```
 
+## `Parsing error: The keyword 'import' is reserved`
+
+ESLint doesn't support dynamic import out of the box. Make sure to check out https://github.com/babel/babel-eslint.
