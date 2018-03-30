@@ -1,4 +1,4 @@
-const rule = require("../../lib/rules/no-unexisting-export");
+const rule = require("../../lib/rules/no-unknown-export");
 const RuleTester = require("../RuleTester");
 
 const ruleTester = new RuleTester();

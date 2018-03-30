@@ -36,14 +36,14 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "webassembly/non-unexisting-export": 2
+        "webassembly/no-unknown-export": 2
     }
 }
 ```
 
 ## Supported Rules
 
-### `no-unexisting-export`
+### `no-unknown-export`
 
 Checks that the exports exists, example:
 

@@ -1,5 +1,5 @@
-import noUnexistingExport from "./no-unexisting-export";
+import noUnknownExport from "./no-unknown-export";
 
 export default {
-  "no-unexisting-export": noUnexistingExport
+  "no-unknown-export": noUnknownExport
 };
