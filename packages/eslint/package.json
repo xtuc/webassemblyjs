@@ -5,7 +5,10 @@
   "keywords": [
     "eslint",
     "eslintplugin",
-    "eslint-plugin"
+    "eslint-plugin",
+    "wasm",
+    "WebAssembly",
+    "wast"
   ],
   "author": "Sven Sauleau",
   "main": "lib/index.js",

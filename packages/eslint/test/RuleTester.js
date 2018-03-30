@@ -1,8 +1,7 @@
-var RuleTester = require("eslint").RuleTester;
+const { RuleTester } = require("eslint");
 
 RuleTester.setDefaultConfig({
-    parser: 'babel-eslint'
+  parser: "babel-eslint"
 });
 
 module.exports = RuleTester;
-
