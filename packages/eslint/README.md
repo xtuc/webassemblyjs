@@ -20,12 +20,12 @@ $ npm install eslint-plugin-webassembly --save-dev
 
 ## Usage
 
-Add `webassemblyjs-eslint` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
+Add `webassembly` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
 
 ```json
 {
     "plugins": [
-        "webassemblyjs-eslint"
+        "webassembly"
     ]
 }
 ```
@@ -36,7 +36,7 @@ Then configure the rules you want to use under the rules section.
 ```json
 {
     "rules": {
-        "webassemblyjs-eslint/rule-name": 2
+        "webassembly/rule-name": 2
     }
 }
 ```
