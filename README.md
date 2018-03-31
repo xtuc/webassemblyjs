@@ -9,7 +9,7 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [ast](https://github.com/xtuc/webassemblyjs/tree/master/packages/ast) - AST utils for webassemblyjs
 - [cli](https://github.com/xtuc/webassemblyjs/tree/master/packages/cli) - Toolbox for WebAssembly
 - [dce](https://github.com/xtuc/webassemblyjs/tree/master/packages/dce) - Eliminate unused functions in your WASM binary
-- [eslint-plugin-webassembly](https://github.com/xtuc/webassemblyjs/tree/master/packages/eslint-plugin-webassembly) - ESLint plugin for WebAssembly.
+- [eslint-plugin-webassembly](https://github.com/xtuc/webassemblyjs/tree/master/packages/eslint) - ESLint plugin for WebAssembly.
 - [helper-buffer](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-buffer) - Buffer manipulation helpers
 - [helper-leb128](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-leb128) - Wrapper arround `leb`
 - [helper-wasm-bytecode](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-wasm-bytecode) - Constants for the wasm format
