@@ -81,7 +81,15 @@ module.exports = {
         const [fn] = node.parent.arguments;
         const [binding] = fn.params;
 
-        const used = getUsageIn(fn.body, binding.name);
+        let used = [];
+
+        if (binding.type === "Identifier") {
+          used = getUsageIn(fn.body, binding.name);
+        }
+
+        if (binding.type === "ObjectPattern") {
+          used = binding.properties.map(prop => prop.value.name);
+        }
 
         used.forEach(name => {
           const exportExists = exports.indexOf(name) !== -1;

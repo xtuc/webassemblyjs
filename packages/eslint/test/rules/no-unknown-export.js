@@ -4,7 +4,9 @@ const RuleTester = require("../RuleTester");
 const ruleTester = new RuleTester();
 ruleTester.run("file-exists", rule, {
   valid: [
-    "import('./packages/eslint/test/addTwo.wasm').then(x => x.addTwo(1, 2));"
+    "import('./packages/eslint/test/addTwo.wasm')",
+    "import('./packages/eslint/test/addTwo.wasm').then(x => x.addTwo);",
+    "import('./packages/eslint/test/addTwo.wasm').then(({addTwo}) => addTwo);"
   ],
   invalid: [
     {
@@ -15,6 +17,11 @@ ruleTester.run("file-exists", rule, {
     {
       code: "import('./packages/eslint/test/addTwo.wasm').then(x => x.foo())",
       errors: [{ message: '"foo" is not exported' }]
+    },
+
+    {
+      code: "import('./packages/eslint/test/addTwo.wasm').then(({bar}) => bar)",
+      errors: [{ message: '"bar" is not exported' }]
     }
   ]
 });
