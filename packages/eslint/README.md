@@ -53,13 +53,21 @@ Good:
 import("module.wasm").then(x => {
   x.test();
 });
+
+import("module.wasm").then(({test}) => {
+  test();
+});
 ```
 
 Bad:
 
 ```js
 import("module.wasm").then(x => {
-  x.noUnexistingExport();
+  x.unknownExport();
+});
+
+import("module.wasm").then(({unknownExport}) => {
+  unknownExport();
 });
 ```
 
