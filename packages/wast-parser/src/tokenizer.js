@@ -1,6 +1,7 @@
 // @flow
 
 import { codeFrameColumns } from "@babel/code-frame";
+import { FSM, makeTransition } from "./fsm";
 
 function showCodeFrame(source: string, line: number, column: number) {
   const loc = {
@@ -19,7 +20,6 @@ const valtypes = ["i32", "i64", "f32", "f64"];
 
 const NUMBERS = /[0-9|.|_]/;
 const NUMBER_KEYWORDS = /nan|inf/;
-const ALL_NUMBER_CHARS = /[0-9|A-F|a-f|_|.|p|P|-|+|x]/;
 
 function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
@@ -88,6 +88,65 @@ const keywords = {
 
 const NUMERIC_SEPARATOR = "_";
 
+/**
+ * Build the FSM for number literals
+ */
+type NumberLiteralState =
+  | "START"
+  | "HEX"
+  | "HEX_FRAC"
+  | "NAN_HEX"
+  | "DEC"
+  | "DEC_EXP"
+  | "DEC_FRAC"
+  | "DEC_SIGNED_EXP"
+  | "STOP"
+  | "HEX_SIGNED_EXP"
+  | "HEX_EXP";
+
+const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
+  {
+    START: [
+      makeTransition(/-|\+/, "START"),
+      makeTransition(/nan:0x/, "NAN_HEX", 6),
+      makeTransition(/nan|inf/, "STOP", 3),
+      makeTransition(/0x/, "HEX", 2),
+      makeTransition(/[0-9]/, "DEC"),
+      makeTransition(/\./, "DEC_FRAC")
+    ],
+    DEC_FRAC: [
+      makeTransition(/[0-9]/, "DEC_FRAC", 1, NUMERIC_SEPARATOR),
+      makeTransition(/e|E/, "DEC_SIGNED_EXP")
+    ],
+    DEC: [
+      makeTransition(/[0-9]/, "DEC", 1, NUMERIC_SEPARATOR),
+      makeTransition(/\./, "DEC_FRAC"),
+      makeTransition(/e|E/, "DEC_SIGNED_EXP")
+    ],
+    DEC_SIGNED_EXP: [
+      makeTransition(/\+|-/, "DEC_EXP"),
+      makeTransition(/[0-9]/, "DEC_EXP")
+    ],
+
+    DEC_EXP: [makeTransition(/[0-9]/, "DEC_EXP", 1, NUMERIC_SEPARATOR)],
+    HEX: [
+      makeTransition(/[0-9|A-F|a-f]/, "HEX", 1, NUMERIC_SEPARATOR),
+      makeTransition(/\./, "HEX_FRAC"),
+      makeTransition(/p|P/, "HEX_SIGNED_EXP")
+    ],
+    HEX_FRAC: [
+      makeTransition(/[0-9|A-F|a-f]/, "HEX_FRAC", 1, NUMERIC_SEPARATOR),
+      makeTransition(/p|P|/, "HEX_SIGNED_EXP")
+    ],
+    HEX_SIGNED_EXP: [makeTransition(/[0-9|+|-]/, "HEX_EXP")],
+    HEX_EXP: [makeTransition(/[0-9]/, "HEX_EXP", 1, NUMERIC_SEPARATOR)],
+    NAN_HEX: [makeTransition(/[0-9|A-F|a-f]/, "NAN_HEX", 1, NUMERIC_SEPARATOR)],
+    STOP: []
+  },
+  "START",
+  "STOP"
+);
+
 function tokenize(input: string) {
   let current: number = 0;
   let char = input[current];
@@ -148,22 +207,6 @@ function tokenize(input: string) {
   }
 
   /**
-   * Can be used to look at the last few character(s).
-   *
-   * The default behavior `lookbehind()` simply returns the last character.
-   * Letters are always returned in lowercase.
-   *
-   * @param {number} length How many characters to query. Default = 1
-   * @param {number} offset How many characters to skip back from current one. Default = 1
-   *
-   */
-  function lookbehind(length: number = 1, offset: number = 1): string {
-    return input
-      .substring(current - offset, current - offset + length)
-      .toLowerCase();
-  }
-
-  /**
    * Advances the cursor in the input by a certain amount
    *
    * @param {number} amount How many characters to consume. Default = 1
@@ -173,164 +216,6 @@ function tokenize(input: string) {
     current += amount;
     char = input[current];
   }
-
-  // FSM helper functions
-
-  /**
-   * Creates a transition function mapping all characters matching a regular expression to a new state
-   *
-   * @param {RegExp} regex The regular expression to be matched against
-   * @param {State} nextState The state to transition to
-   * @param {?number} n How many characters to consume (default 1)
-   * @param {?State} allowSeparators If the numeric separator "_" is allowed, this argument should contain the state to go to (default false)
-   *
-   * @return {Function} A state transition function which reads current state and input characters from its closure
-   */
-  type FsmTransition = () => [State, number] | false;
-
-  type safeFsmTransition = () => [State, number];
-
-  const regexToState = (
-    regex: RegExp,
-    nextState: State,
-    n: number = 1,
-    allowSeparators: ?State
-  ): FsmTransition => () => {
-    if (allowSeparators) {
-      if (char === NUMERIC_SEPARATOR) {
-        if (regex.test(lookbehind())) {
-          // Consume the separator and stay in current state
-          return [allowSeparators, 1];
-        } else {
-          unexpectedCharacter();
-        }
-      }
-    }
-
-    if (regex.test(lookahead(n, 0))) {
-      return [nextState, n];
-    }
-
-    return false;
-  };
-
-  /**
-   * Combines a list of transition functions into a complete state transition function.
-   * When none of the given transitions apply, the given default state is returned.
-   *
-   * @param {Array<FsmTransition>} transitions A list of transition functions
-   * @param {State} defaultState The state to be returned in case no transition matches
-   *
-   * @return {[State, number]} A two element array containing [newState, eatLength] where eatLength is the amount of characters to consume.
-   *
-   */
-  const combineTransitions = (
-    transitions: Array<FsmTransition>,
-    defaultState: State
-  ): safeFsmTransition => () => {
-    let match = false;
-    for (let i = 0; i < transitions.length; ++i) {
-      match = transitions[i]();
-      if (match) {
-        break;
-      }
-    }
-
-    return match || [defaultState, 1];
-  };
-
-  type State =
-    | "START"
-    | "HEX"
-    | "HEX_FRAC"
-    | "NAN_HEX"
-    | "DEC"
-    | "DEC_EXP"
-    | "DEC_FRAC"
-    | "DEC_SIGNED_EXP"
-    | "STOP"
-    | "HEX_SIGNED_EXP"
-    | "HEX_EXP";
-
-  const START: State = "START";
-  const HEX: State = "HEX";
-  const HEX_FRAC: State = "HEX_FRAC";
-  const NAN_HEX: State = "NAN_HEX";
-  const DEC: State = "DEC";
-  const DEC_FRAC: State = "DEC_FRAC";
-  const DEC_EXP: State = "DEC_EXP";
-  const DEC_SIGNED_EXP: State = "DEC_SIGNED_EXP";
-  const STOP: State = "STOP";
-  const HEX_SIGNED_EXP: State = "HEX_SIGNED_EXP";
-  const HEX_EXP: State = "HEX_EXP";
-
-  const emptyTransition = (state: State): safeFsmTransition => () => [state, 1];
-
-  /**
-   * Build the FSM for number literals
-   */
-  const numberLiteralFSM: { [State]: safeFsmTransition } = {
-    START: combineTransitions(
-      [
-        regexToState(/-|\+/, START),
-        regexToState(/nan:0x/, NAN_HEX, 6),
-        regexToState(/nan|inf/, STOP, 3),
-        regexToState(/0x/, HEX, 2),
-        regexToState(/[0-9]/, DEC),
-        regexToState(/\./, DEC_FRAC)
-      ],
-      STOP
-    ),
-    DEC_FRAC: combineTransitions(
-      [
-        regexToState(/[0-9]/, DEC_FRAC, 1, DEC_FRAC),
-        regexToState(/e|E/, DEC_SIGNED_EXP)
-      ],
-      STOP
-    ),
-    DEC: combineTransitions(
-      [
-        regexToState(/[0-9]/, DEC, 1, DEC),
-        regexToState(/\./, DEC_FRAC),
-        regexToState(/e|E/, DEC_SIGNED_EXP)
-      ],
-      STOP
-    ),
-    DEC_SIGNED_EXP: combineTransitions(
-      [regexToState(/\+|-/, DEC_EXP), regexToState(/[0-9]/, DEC_EXP)],
-      STOP
-    ),
-    DEC_EXP: combineTransitions(
-      [regexToState(/[0-9]/, DEC_EXP, 1, DEC_EXP)],
-      STOP
-    ),
-
-    HEX: combineTransitions(
-      [
-        regexToState(/[0-9|A-F|a-f]/, HEX, 1, HEX),
-        regexToState(/\./, HEX_FRAC),
-        regexToState(/p|P/, HEX_SIGNED_EXP)
-      ],
-      STOP
-    ),
-    HEX_FRAC: combineTransitions(
-      [
-        regexToState(/[0-9|A-F|a-f]/, HEX_FRAC, 1, HEX_FRAC),
-        regexToState(/p|P|/, HEX_SIGNED_EXP)
-      ],
-      STOP
-    ),
-    HEX_SIGNED_EXP: combineTransitions(
-      [regexToState(/[0-9|+|-]/, HEX_EXP)],
-      STOP
-    ),
-    HEX_EXP: combineTransitions(
-      [regexToState(/[0-9]/, HEX_EXP, 1, HEX_EXP)],
-      STOP
-    ),
-    NAN_HEX: combineTransitions([regexToState(/[0-9|A-F|a-f]/, NAN_HEX)], STOP),
-    STOP: emptyTransition(STOP)
-  };
 
   while (current < input.length) {
     // ;;
@@ -446,37 +331,14 @@ function tokenize(input: string) {
       char === "-" ||
       char === "+"
     ) {
-      let value = "";
-      const startColumn = column;
-
-      let state = START;
-      let eatLength = 1;
-
-      while (state !== STOP) {
-        eatLength = 1;
-
-        if (
-          char === undefined ||
-          (char !== "-" &&
-            char !== "+" &&
-            !NUMBER_KEYWORDS.test(lookahead(3, 0)) &&
-            !ALL_NUMBER_CHARS.test(char.toLowerCase()))
-        ) {
-          state = STOP;
-          continue;
-        }
-
-        [state, eatLength] = numberLiteralFSM[state]();
-
-        value += input.substring(current, current + eatLength);
-        eatCharacter(eatLength);
-      }
+      const value = numberLiteralFSM.run(input.slice(current));
 
       if (value === "") {
         unexpectedCharacter();
       }
 
-      pushNumberToken(value, { startColumn });
+      pushNumberToken(value);
+      eatCharacter(value.length);
 
       continue;
     }
@@ -509,7 +371,7 @@ function tokenize(input: string) {
       let value = "";
       const startColumn = column;
 
-      while (LETTERS.test(char)) {
+      while (char && LETTERS.test(char)) {
         value += char;
         eatCharacter();
       }
