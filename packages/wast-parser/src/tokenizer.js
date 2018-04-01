@@ -108,18 +108,20 @@ const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
   {
     START: [
       makeTransition(/-|\+/, "START"),
-      makeTransition(/nan:0x/, "NAN_HEX", 6),
-      makeTransition(/nan|inf/, "STOP", 3),
-      makeTransition(/0x/, "HEX", 2),
+      makeTransition(/nan:0x/, "NAN_HEX", { n: 6 }),
+      makeTransition(/nan|inf/, "STOP", { n: 3 }),
+      makeTransition(/0x/, "HEX", { n: 2 }),
       makeTransition(/[0-9]/, "DEC"),
       makeTransition(/\./, "DEC_FRAC")
     ],
     DEC_FRAC: [
-      makeTransition(/[0-9]/, "DEC_FRAC", 1, NUMERIC_SEPARATOR),
+      makeTransition(/[0-9]/, "DEC_FRAC", {
+        allowedSeparator: NUMERIC_SEPARATOR
+      }),
       makeTransition(/e|E/, "DEC_SIGNED_EXP")
     ],
     DEC: [
-      makeTransition(/[0-9]/, "DEC", 1, NUMERIC_SEPARATOR),
+      makeTransition(/[0-9]/, "DEC", { allowedSeparator: NUMERIC_SEPARATOR }),
       makeTransition(/\./, "DEC_FRAC"),
       makeTransition(/e|E/, "DEC_SIGNED_EXP")
     ],
@@ -128,19 +130,35 @@ const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
       makeTransition(/[0-9]/, "DEC_EXP")
     ],
 
-    DEC_EXP: [makeTransition(/[0-9]/, "DEC_EXP", 1, NUMERIC_SEPARATOR)],
+    DEC_EXP: [
+      makeTransition(/[0-9]/, "DEC_EXP", {
+        allowedSeparator: NUMERIC_SEPARATOR
+      })
+    ],
     HEX: [
-      makeTransition(/[0-9|A-F|a-f]/, "HEX", 1, NUMERIC_SEPARATOR),
+      makeTransition(/[0-9|A-F|a-f]/, "HEX", {
+        allowedSeparator: NUMERIC_SEPARATOR
+      }),
       makeTransition(/\./, "HEX_FRAC"),
       makeTransition(/p|P/, "HEX_SIGNED_EXP")
     ],
     HEX_FRAC: [
-      makeTransition(/[0-9|A-F|a-f]/, "HEX_FRAC", 1, NUMERIC_SEPARATOR),
+      makeTransition(/[0-9|A-F|a-f]/, "HEX_FRAC", {
+        allowedSeparator: NUMERIC_SEPARATOR
+      }),
       makeTransition(/p|P|/, "HEX_SIGNED_EXP")
     ],
     HEX_SIGNED_EXP: [makeTransition(/[0-9|+|-]/, "HEX_EXP")],
-    HEX_EXP: [makeTransition(/[0-9]/, "HEX_EXP", 1, NUMERIC_SEPARATOR)],
-    NAN_HEX: [makeTransition(/[0-9|A-F|a-f]/, "NAN_HEX", 1, NUMERIC_SEPARATOR)],
+    HEX_EXP: [
+      makeTransition(/[0-9]/, "HEX_EXP", {
+        allowedSeparator: NUMERIC_SEPARATOR
+      })
+    ],
+    NAN_HEX: [
+      makeTransition(/[0-9|A-F|a-f]/, "NAN_HEX", {
+        allowedSeparator: NUMERIC_SEPARATOR
+      })
+    ],
     STOP: []
   },
   "START",
