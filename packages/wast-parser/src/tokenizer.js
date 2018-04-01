@@ -1,7 +1,7 @@
 // @flow
 
 import { codeFrameColumns } from "@babel/code-frame";
-import { FSM, makeTransition } from "./fsm";
+import { FSM, makeTransition } from "@webassemblyjs/helper-fsm";
 
 function showCodeFrame(source: string, line: number, column: number) {
   const loc = {

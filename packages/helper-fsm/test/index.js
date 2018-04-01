@@ -1,6 +1,6 @@
 const assert = require("assert");
 
-const { FSM, makeTransition } = require("../../lib/fsm");
+const { FSM, makeTransition } = require("../lib/index");
 
 describe("fsm", () => {
   it("no move fsm", () => {
