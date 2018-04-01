@@ -14,6 +14,7 @@ function showCodeFrame(source: string, line: number, column: number) {
 }
 
 const WHITESPACE = /\s/;
+const PARENS = /\(|\)/;
 const LETTERS = /[a-z0-9_/]/i;
 const idchar = /[a-z0-9!#$%&*+./:<=>?@\\[\]^_`|~-]/i;
 const valtypes = ["i32", "i64", "f32", "f64"];
@@ -178,7 +179,7 @@ function tokenize(input: string) {
    * Throw an error in case the current character is invalid
    */
   function unexpectedCharacter() {
-    throw new Error(`Unexpected character ${char}`);
+    throw new Error(`Unexpected character "${char}"`);
   }
 
   /**
@@ -356,6 +357,10 @@ function tokenize(input: string) {
 
       pushNumberToken(value);
       eatCharacter(value.length);
+
+      if (char && !PARENS.test(char) && !WHITESPACE.test(char)) {
+        unexpectedCharacter();
+      }
 
       continue;
     }
