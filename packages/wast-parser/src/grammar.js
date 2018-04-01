@@ -75,6 +75,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       eatToken();
     }
 
+    function parseExportIdentifier(token: Object, prefix: string) {
+      let index;
+      if (token.type === tokens.identifier) {
+        index = t.identifier(token.value);
+        eatToken();
+      } else if (token.type === tokens.number) {
+        index = t.identifier(prefix + "_" + token.value);
+        eatToken();
+      }
+      return index;
+    }
+
     function lookaheadAndCheck(...tokenTypes: Array<string>): boolean {
       const len = tokenTypes.length;
 
@@ -247,7 +259,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *          ( elem <var>? <expr> <var>* )
      */
     function parseTable(): Table {
-      let name = t.identifier(getUniqueName());
+      let name = t.identifier(getUniqueName("table"));
 
       let limit = t.limits(0);
       const elemIndices = [];
@@ -693,66 +705,20 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         while (token.type !== tokens.closeParen) {
           if (isKeyword(token, keywords.func)) {
             type = "Func";
-
             eatToken();
-
-            if (token.type === tokens.identifier) {
-              index = t.identifier(token.value);
-              eatToken();
-            }
-
-            if (token.type === tokens.number) {
-              index = t.indexLiteral(token.value);
-              eatToken();
-            }
-          }
-
-          if (isKeyword(token, keywords.table)) {
+            index = parseExportIdentifier(token, "func");
+          } else if (isKeyword(token, keywords.table)) {
             type = "Table";
-
             eatToken();
-
-            if (token.type === tokens.identifier) {
-              index = t.identifier(token.value);
-              eatToken();
-            }
-
-            if (token.type === tokens.number) {
-              index = t.indexLiteral(token.value);
-              eatToken();
-            }
-          }
-
-          if (isKeyword(token, keywords.global)) {
+            index = parseExportIdentifier(token, "table");
+          } else if (isKeyword(token, keywords.global)) {
             type = "Global";
-
             eatToken();
-
-            if (token.type === tokens.identifier) {
-              index = t.identifier(token.value);
-              eatToken();
-            }
-
-            if (token.type === tokens.number) {
-              index = t.indexLiteral(token.value);
-              eatToken();
-            }
-          }
-
-          if (isKeyword(token, keywords.memory)) {
+            index = parseExportIdentifier(token, "global");
+          } else if (isKeyword(token, keywords.memory)) {
             type = "Memory";
-
             eatToken();
-
-            if (token.type === tokens.identifier) {
-              index = t.identifier(token.value);
-              eatToken();
-            }
-
-            if (token.type === tokens.number) {
-              index = t.indexLiteral(token.value);
-              eatToken();
-            }
+            index = parseExportIdentifier(token, "memory");
           }
 
           eatToken();
