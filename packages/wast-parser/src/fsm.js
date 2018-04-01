@@ -10,7 +10,8 @@ type TransitionList<Q> = { [Q]: Array<TransitionEdge<Q>> };
 function makeTransition<Q>(
   regex: RegExp,
   nextState: Q,
-  { n = 1, allowedSeparator }: { n: number, allowedSeparator: ?string } = {}
+  // $FlowIgnore
+  { n = 1, allowedSeparator } = {}
 ): TransitionEdge<Q> {
   return function() {
     if (allowedSeparator) {
