@@ -14,7 +14,7 @@
         },
         "name": {
           "type": "Identifier",
-          "value": "temp_0"
+          "value": "table_0"
         }
       }
     },
@@ -32,7 +32,7 @@
         },
         "name": {
           "type": "Identifier",
-          "value": "temp_1"
+          "value": "table_1"
         }
       }
     }
