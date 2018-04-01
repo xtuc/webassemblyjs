@@ -3,29 +3,31 @@
 const STOP = Symbol("STOP");
 
 type State<T> = T | Symbol;
-type TransitionEdge<Q> = () => [Q, number] | false;
-type TransitionFunction<Q> = () => [Q, number];
-type TransitionList<Q> = { [Q]: Array<TransitionEdge<Q>> };
+type TransitionEdge<T> = (FSM<T>) => [State<T>, number] | false;
+type TransitionFunction<T> = () => [State<T>, number];
+type TransitionList<T> = { [State<T>]: Array<TransitionEdge<T>> };
 
-function makeTransition<Q>(
+function makeTransition<T>(
   regex: RegExp,
-  nextState: Q,
+  nextState: State<T>,
   // $FlowIgnore
   { n = 1, allowedSeparator } = {}
-): TransitionEdge<Q> {
-  return function() {
+): TransitionEdge<T> {
+  return function(instance: FSM<T>) {
     if (allowedSeparator) {
-      if (this.input[this.ptr] === allowedSeparator) {
-        if (regex.test(this.input.substring(this.ptr - 1, this.ptr))) {
+      if (instance.input[instance.ptr] === allowedSeparator) {
+        if (
+          regex.test(instance.input.substring(instance.ptr - 1, instance.ptr))
+        ) {
           // Consume the separator and stay in current state
-          return [this.currentState, 1];
+          return [instance.currentState, 1];
         } else {
-          return [this.terminatingState, 0];
+          return [instance.terminatingState, 0];
         }
       }
     }
 
-    if (regex.test(this.input.substring(this.ptr, this.ptr + n))) {
+    if (regex.test(instance.input.substring(instance.ptr, instance.ptr + n))) {
       return [nextState, n];
     }
 
@@ -33,15 +35,15 @@ function makeTransition<Q>(
   };
 }
 
-function combineTransitions<Q>(
-  transitions: TransitionList<Q>
-): TransitionFunction<Q> {
+function combineTransitions<T>(
+  transitions: TransitionList<T>
+): TransitionFunction<T> {
   return function() {
     let match = false;
     const currentTransitions = transitions[this.currentState] || [];
 
     for (let i = 0; i < currentTransitions.length; ++i) {
-      match = currentTransitions[i].call(this);
+      match = currentTransitions[i](this);
       if (match !== false) {
         break;
       }
@@ -57,10 +59,10 @@ class FSM<T> {
   terminatingState: State<T>;
   input: string;
   ptr: number;
-  transitionFunction: TransitionFunction<State<T>>;
+  transitionFunction: TransitionFunction<T>;
 
   constructor(
-    transitions: TransitionList<State<T>>,
+    transitions: TransitionList<T>,
     initialState: State<T>,
     terminatingState: State<T> = STOP
   ) {
