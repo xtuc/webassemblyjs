@@ -19,5 +19,6 @@ describe("fsm", () => {
     );
     assert.strictEqual(simpleFsm.run("hello"), "");
     assert.strictEqual(simpleFsm.run("ahello"), "a");
+    assert.strictEqual(simpleFsm.run("abhello"), "ab");
   });
 });

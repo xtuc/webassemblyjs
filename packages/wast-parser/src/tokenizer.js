@@ -129,7 +129,6 @@ const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
       makeTransition(/\+|-/, "DEC_EXP"),
       makeTransition(/[0-9]/, "DEC_EXP")
     ],
-
     DEC_EXP: [
       makeTransition(/[0-9]/, "DEC_EXP", {
         allowedSeparator: NUMERIC_SEPARATOR
