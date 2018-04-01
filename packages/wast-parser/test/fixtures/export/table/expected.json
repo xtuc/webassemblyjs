@@ -14,7 +14,7 @@
           },
           "name": {
             "type": "Identifier",
-            "value": "temp_0"
+            "value": "table_0"
           }
         },
         {
@@ -23,9 +23,8 @@
           "descr": {
             "type": "Table",
             "id": {
-              "type": "NumberLiteral",
-              "value": 0,
-              "raw": "0"
+              "type": "Identifier",
+              "value": "table_0"
             }
           }
         }
