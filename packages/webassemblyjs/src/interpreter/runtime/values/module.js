@@ -176,7 +176,7 @@ function instantiateInternals(
 
       if (node.name != null) {
         if (node.name.type === "Identifier") {
-          internals.instantiatedFuncs[node.name.value] = addr;
+          internals.instantiatedFuncs[node.name.value] = { addr };
         }
       }
     },
@@ -194,7 +194,7 @@ function instantiateInternals(
 
       if (node.name != null) {
         if (node.name.type === "Identifier") {
-          internals.instantiatedTables[node.name.value] = addr;
+          internals.instantiatedTables[node.name.value] = { addr };
         }
       }
     },
@@ -243,7 +243,7 @@ function instantiateInternals(
       if (node.id != null) {
         if (node.id.type === "Identifier") {
           // $FlowIgnore
-          internals.instantiatedMemories[node.id.value] = addr;
+          internals.instantiatedMemories[node.id.value] = { addr };
         }
       }
     },
@@ -289,105 +289,88 @@ function instantiateExports(
     }
   }
 
+  function createModuleExport(
+    node: ModuleExport,
+    instantiatedItemArray,
+    validate: Object => void
+  ) {
+    if (node.descr.id.type === "Identifier") {
+      const instantiatedItem = instantiatedItemArray[node.descr.id.value];
+
+      validate(instantiatedItem);
+
+      assertNotAlreadyExported(node.name);
+
+      moduleInstance.exports.push({
+        name: node.name,
+        value: {
+          type: node.descr.type,
+          addr: instantiatedItem.addr
+        }
+      });
+    } else {
+      throw new CompileError(
+        "Module exports must be referenced via an Identifier"
+      );
+    }
+  }
+
   traverse(n, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
-      if (node.descr.type === "Func") {
-        // Referenced by its identifier
-        if (node.descr.id.type === "Identifier") {
-          const instantiatedFuncAddr =
-            internals.instantiatedFuncs[node.descr.id.value];
-
-          if (typeof instantiatedFuncAddr === "undefined") {
-            throw new Error("unknown function");
-          }
-
-          const externalVal = {
-            type: node.descr.type,
-            addr: instantiatedFuncAddr
-          };
-
-          assertNotAlreadyExported(node.name);
-
-          moduleInstance.exports.push(
-            createModuleExportIntance(node.name, externalVal)
+      switch (node.descr.type) {
+        case "Func": {
+          createModuleExport(
+            node,
+            internals.instantiatedFuncs,
+            instantiatedFunc => {
+              if (typeof instantiatedFunc === "undefined") {
+                throw new Error("unknown function");
+              }
+            }
           );
+          break;
         }
-      }
-
-      if (node.descr.type === "Global") {
-        // Referenced by its identifier
-        if (node.descr.id.type === "Identifier") {
-          const instantiatedGlobal =
-            internals.instantiatedGlobals[node.descr.id.value];
-
-          if (typeof instantiatedGlobal === "undefined") {
-            throw new Error("unknown global");
-          }
-
-          if (instantiatedGlobal.type.mutability === "var") {
-            throw new CompileError("Mutable globals cannot be exported");
-          }
-
-          if (instantiatedGlobal.type.valtype === "i64") {
-            throw new LinkError("Export of globals of type i64 is not allowed");
-          }
-
-          const externalVal = {
-            type: node.descr.type,
-            addr: instantiatedGlobal.addr
-          };
-
-          assertNotAlreadyExported(node.name);
-
-          moduleInstance.exports.push(
-            createModuleExportIntance(node.name, externalVal)
+        case "Global": {
+          createModuleExport(
+            node,
+            internals.instantiatedGlobals,
+            instantiatedGlobal => {
+              if (typeof instantiatedGlobal === "undefined") {
+                throw new Error("unknown global");
+              } else if (instantiatedGlobal.type.mutability === "var") {
+                throw new CompileError("Mutable globals cannot be exported");
+              } else if (instantiatedGlobal.type.valtype === "i64") {
+                throw new LinkError(
+                  "Export of globals of type i64 is not allowed"
+                );
+              }
+            }
           );
+          break;
         }
-      }
-
-      if (node.descr.type === "Table") {
-        // Referenced by its identifier
-        if (node.descr.id.type === "Identifier") {
-          const instantiatedTable =
-            internals.instantiatedTables[node.descr.id.value];
-
-          if (typeof instantiatedTable === "undefined") {
-            throw new Error("unknown table");
-          }
-
-          const externalVal = {
-            type: node.descr.type,
-            addr: instantiatedTable
-          };
-
-          assertNotAlreadyExported(node.name);
-
-          moduleInstance.exports.push(
-            createModuleExportIntance(node.name, externalVal)
+        case "Table": {
+          createModuleExport(
+            node,
+            internals.instantiatedTables,
+            instantiatedTable => {
+              if (typeof instantiatedTable === "undefined") {
+                throw new Error("unknown table");
+              }
+            }
           );
+          break;
         }
-      }
-
-      if (node.descr.type === "Memory") {
-        // Referenced by its identifier
-        if (node.descr.id.type === "Identifier") {
-          const instantiatedMemory =
-            internals.instantiatedMemories[node.descr.id.value];
-
-          if (typeof instantiatedMemory === "undefined") {
-            throw new Error("unknown memory");
-          }
-
-          const externalVal = {
-            type: node.descr.type,
-            addr: instantiatedMemory
-          };
-
-          assertNotAlreadyExported(node.name);
-
-          moduleInstance.exports.push(
-            createModuleExportIntance(node.name, externalVal)
+        case "Memory": {
+          createModuleExport(
+            node,
+            internals.instantiatedMemories,
+            instantiatedMemory => {
+              if (typeof instantiatedMemory === "undefined") {
+                throw new Error("unknown memory");
+              }
+            }
           );
+          break;
         }
       }
     }
@@ -435,14 +418,4 @@ export function createInstance(
   instantiateExports(n, allocator, instantiatedInternals, moduleInstance);
 
   return moduleInstance;
-}
-
-function createModuleExportIntance(
-  name: string,
-  value: ExternalVal
-): ExportInstance {
-  return {
-    name,
-    value
-  };
 }
