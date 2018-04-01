@@ -7,11 +7,15 @@ type TransitionEdge<T> = (FSM<T>) => [State<T>, number] | false;
 type TransitionFunction<T> = () => [State<T>, number];
 type TransitionList<T> = { [State<T>]: Array<TransitionEdge<T>> };
 
+type transitionFactoryOpts = {
+  n?: number,
+  allowedSeparator?: string
+};
+
 function makeTransition<T>(
   regex: RegExp,
   nextState: State<T>,
-  // $FlowIgnore
-  { n = 1, allowedSeparator } = {}
+  { n = 1, allowedSeparator }: transitionFactoryOpts = {}
 ): TransitionEdge<T> {
   return function(instance: FSM<T>) {
     if (allowedSeparator) {
