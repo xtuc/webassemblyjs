@@ -12,7 +12,6 @@
   "license": "GPL-2.0",
   "dependencies": {
     "@webassemblyjs/wast-parser": "1.2.2",
-    "webassembly-floating-point-hex-parser": "0.1.2",
     "webassemblyjs": "1.2.2"
   },
   "repository": {
