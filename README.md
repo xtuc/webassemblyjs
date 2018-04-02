@@ -12,6 +12,7 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [eslint-plugin-webassembly](https://github.com/xtuc/webassemblyjs/tree/master/packages/eslint) - ESLint plugin for WebAssembly.
 - [floating-point-hex-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/floating-point-hex-parser) - Parser function for floating point hexadecimals.
 - [helper-buffer](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-buffer) - Buffer manipulation helpers
+- [helper-fsm](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-fsm) - FSM implementation
 - [helper-leb128](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-leb128) - Wrapper arround `leb`
 - [helper-wasm-bytecode](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-wasm-bytecode) - Constants for the wasm format
 - [helper-wasm-section](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-wasm-section) - Section manipulation helpers
