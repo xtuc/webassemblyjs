@@ -21,8 +21,10 @@
     "@webassemblyjs/ast": "1.2.2",
     "@webassemblyjs/wasm-parser": "1.2.2",
     "@webassemblyjs/wast-parser": "1.2.2",
-    "long": "^3.2.0",
-    "webassembly-floating-point-hex-parser": "0.1.2"
+    "long": "^3.2.0"
+  },
+  "devDependencies": {
+    "@webassemblyjs/floating-point-hex-parser": "1.2.2"
   },
   "repository": {
     "type": "git",
