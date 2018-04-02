@@ -2,6 +2,14 @@ import { traverse } from "@webassemblyjs/ast";
 
 let errors = [];
 
+const ANY = "ANY";
+
+function checkTypes(a, b) {
+  if (a !== ANY && b !== ANY && a !== b) {
+    errors.push(`Expected type ${a} but got ${b || "none"}.`);
+  }
+}
+
 export default function validate(ast) {
   errors = [];
 
@@ -19,9 +27,7 @@ export default function validate(ast) {
       if (resultingStack !== false) {
         expectedResult.map((type, i) => {
           actual = resultingStack[resultingStack.length - 1 - i];
-          if (actual !== type) {
-            errors.push(`Expected type ${type} but got ${actual}.`);
-          }
+          checkTypes(type, actual);
         });
       }
     }
@@ -56,10 +62,7 @@ function applyInstruction(stack, instruction) {
 
   type.args.forEach(argType => {
     actual = stack.pop() || "none";
-    if (actual !== argType) {
-      errors.push(`Expected type ${argType} but got ${actual}.`);
-      return false;
-    }
+    checkTypes(argType, actual);
   });
 
   stack = [...stack, ...type.result];
@@ -80,6 +83,16 @@ function getType(instruction) {
     case "const": {
       args = [];
       result = [instruction.object];
+      break;
+    }
+    /**
+     * drop
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-const
+     */
+    case "drop": {
+      args = [ANY];
+      result = [];
       break;
     }
     /**
