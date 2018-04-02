@@ -10,6 +10,7 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [cli](https://github.com/xtuc/webassemblyjs/tree/master/packages/cli) - Toolbox for WebAssembly
 - [dce](https://github.com/xtuc/webassemblyjs/tree/master/packages/dce) - Eliminate unused functions in your WASM binary
 - [eslint-plugin-webassembly](https://github.com/xtuc/webassemblyjs/tree/master/packages/eslint) - ESLint plugin for WebAssembly.
+- [floating-point-hex-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/floating-point-hex-parser) - Parser function for floating point hexadecimals.
 - [helper-buffer](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-buffer) - Buffer manipulation helpers
 - [helper-leb128](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-leb128) - Wrapper arround `leb`
 - [helper-wasm-bytecode](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-wasm-bytecode) - Constants for the wasm format
