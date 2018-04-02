@@ -22,6 +22,12 @@ make bootstrap
 make build
 ```
 
+You can incrementally build the project with the following command:
+
+```sh
+make watch
+```
+
 ### Running linting/tests
 
 You can run lint via:
@@ -40,6 +46,12 @@ You can run tests via:
 
 ```sh
 make test
+```
+
+You can select test based on their titles:
+
+```sh
+./scripts/test.sh --grep fsm
 ```
 
 ## Developing on the website
