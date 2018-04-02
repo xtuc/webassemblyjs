@@ -1,5 +1,5 @@
 (module
- (func (export "singular") (result i32)
+ (func $asdf (export "singular") (result i32)
   (loop
     (nop)
   )

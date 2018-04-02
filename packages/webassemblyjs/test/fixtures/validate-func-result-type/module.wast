@@ -1,5 +1,5 @@
 (module
-  (func $a (result i32)
+  (func $ff (result i32)
     (i64.const 1)
   )
 
