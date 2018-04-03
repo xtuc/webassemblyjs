@@ -157,8 +157,7 @@ function getType(moduleContext, instruction) {
      */
     case "loop": {
       args = [];
-      result = instruction.resulttype || [];
-      return false;
+      result = instruction.resulttype ? [instruction.resulttype] : [];
       break;
     }
     /**
