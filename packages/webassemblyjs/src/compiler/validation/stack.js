@@ -146,7 +146,7 @@ function getType(moduleContext, instruction) {
      */
     case "block": {
       args = [];
-      result = instruction.result || [];
+      result = instruction.result ? [instruction.result] : [];
       break;
     }
     /**
