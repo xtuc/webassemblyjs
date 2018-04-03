@@ -77,7 +77,8 @@ function applyInstruction(moduleContext, stack, instruction) {
     instruction.type !== "Instr" &&
     instruction.type !== "LoopInstruction" &&
     instruction.type !== "CallInstruction" &&
-    instruction.type !== "BlockInstruction"
+    instruction.type !== "BlockInstruction" &&
+    instruction.type !== "IfInstruction"
   ) {
     return stack;
   }
@@ -100,6 +101,38 @@ function applyInstruction(moduleContext, stack, instruction) {
         []
       )
     ];
+  }
+
+  // Used for branches
+  if (instruction.type === "IfInstruction") {
+    moduleContext.addLabel(type.result);
+
+    const stackConsequent = [
+      ...stack,
+      ...instruction.consequent.reduce(
+        applyInstruction.bind(null, moduleContext),
+        []
+      )
+    ];
+
+    const stackAlternate = [
+      ...stack,
+      ...instruction.alternate.reduce(
+        applyInstruction.bind(null, moduleContext),
+        []
+      )
+    ];
+
+    // Compare the two branches
+    if (stackConsequent.length !== stackAlternate.length) {
+      errors.push(
+        `Type mismatch in if, got ${stackConsequent} and ${stackAlternate}`
+      );
+    }
+    stackConsequent.forEach((x, i) => x === checkTypes(x, stackAlternate[i]));
+
+    // Add to existing stack
+    stack = [...stack, ...stackConsequent];
   }
 
   // Recursively evaluate all nested instructions
@@ -146,6 +179,16 @@ function getType(moduleContext, instruction) {
      */
     case "block": {
       args = [];
+      result = instruction.result ? [instruction.result] : [];
+      break;
+    }
+    /**
+     * if
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-if
+     */
+    case "if": {
+      args = ["i32"];
       result = instruction.result ? [instruction.result] : [];
       break;
     }
