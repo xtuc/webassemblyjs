@@ -20,18 +20,49 @@ function checkTypes(a, b) {
 
 class ModuleContext {
   constructor() {
-    this.func = new Map();
+    this.funcs = [];
     this.labels = [];
-    this.funcCount = 0;
+
+    // Current stack frame
+    this.locals = [];
   }
 
+  /**
+   * Functions
+   */
   addFunction({ params: args, result }) {
     args = args.map(arg => arg.valtype);
-    this.func.set(this.funcCount++, { args, result });
+    this.funcs.push({ args, result });
   }
 
+  hasFunction(index) {
+    return this.funcs.length > index && index >= 0;
+  }
+
+  getFunction(index) {
+    return this.funcs[index];
+  }
+
+  /**
+   * Labels
+   */
   addLabel(result) {
     this.labels.unshift(result);
+  }
+
+  /**
+   * Locals
+   */
+  hasLocal(index) {
+    return this.locals.length > index && index >= 0;
+  }
+
+  getLocal(index) {
+    return this.locals[index];
+  }
+
+  addLocal(type) {
+    this.locals.push(type);
   }
 }
 
@@ -39,6 +70,8 @@ export default function validate(ast) {
   // Module context
   const moduleContext = new ModuleContext();
 
+  // Collect indices for funcs and globals
+  // TODO: This assumes `traverse` runs in program order which is probably wrong
   traverse(ast, {
     Func(path) {
       moduleContext.addFunction(path.node);
@@ -51,6 +84,9 @@ export default function validate(ast) {
   traverse(ast, {
     Func(path) {
       const expectedResult = path.node.result;
+
+      // Parameters are local variables
+      path.node.params.forEach(p => moduleContext.addLocal(p.valtype));
 
       const resultingStack = path.node.body.reduce(
         applyInstruction.bind(null, moduleContext),
@@ -183,6 +219,61 @@ function getType(moduleContext, instruction) {
 
   switch (instruction.id) {
     /**
+     * This is actually not an instruction, but we parse it as such.
+     * We skip over it by treating it as `nop` here.
+     */
+    case "local": {
+      instruction.args.forEach(t => moduleContext.addLocal(t.name));
+      args = [];
+      result = [];
+      break;
+    }
+    /**
+     * set_local
+     *
+     * @see http://webassembly.github.io/spec/core/valid/instructions.html#valid-set-local
+     */
+    case "set_local": {
+      const index = instruction.args[0].value;
+      if (!moduleContext.hasLocal(index)) {
+        errors.push(`Function does not have local ${index}`);
+        return false;
+      }
+      args = [moduleContext.getLocal(index)];
+      result = [];
+      break;
+    }
+    /**
+     * tee_local
+     *
+     * @see http://webassembly.github.io/spec/core/valid/instructions.html#valid-tee-local
+     */
+    case "tee_local": {
+      const index = instruction.args[0].value;
+      if (!moduleContext.hasLocal(index)) {
+        errors.push(`Function does not have local ${index}`);
+        return false;
+      }
+      args = [moduleContext.getLocal(index)];
+      result = [moduleContext.getLocal(index)];
+      break;
+    }
+    /**
+     * get_local
+     *
+     * @see http://webassembly.github.io/spec/core/valid/instructions.html#valid-get-local
+     */
+    case "get_local": {
+      const index = instruction.args[0].value;
+      if (!moduleContext.hasLocal(index)) {
+        errors.push(`Function does not have local ${index}`);
+        return false;
+      }
+      args = [];
+      result = [moduleContext.getLocal(index)];
+      break;
+    }
+    /**
      * block
      *
      * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-block
@@ -228,12 +319,13 @@ function getType(moduleContext, instruction) {
      * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-call
      */
     case "call": {
-      if (!moduleContext.func.has(instruction.index.value)) {
+      if (!moduleContext.hasFunction(instruction.index.value)) {
         errors.push(
           `Call to undefined function index ${instruction.index.value}.`
         );
+        return false;
       }
-      ({ args, result } = moduleContext.func.get(instruction.index.value));
+      ({ args, result } = moduleContext.getFunction(instruction.index.value));
       break;
     }
     /**
