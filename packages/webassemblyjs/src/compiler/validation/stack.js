@@ -21,6 +21,10 @@ class ModuleContext {
     args = args.map(arg => arg.valtype);
     this.func.set(this.funcCount++, { args, result });
   }
+
+  addLabel(result) {
+    // TODO
+  }
 }
 
 export default function validate(ast) {
@@ -60,13 +64,31 @@ export default function validate(ast) {
 }
 
 function applyInstruction(moduleContext, stack, instruction) {
+
   // Workaround for node.args which sometimes does not contain instructions (i32.const, call)
   if (
     instruction.type !== "Instr" &&
     instruction.type !== "LoopInstruction" &&
-    instruction.type !== "CallInstruction"
+    instruction.type !== "CallInstruction" &&
+    instruction.type !== "BlockInstruction"
   ) {
     return stack;
+  }
+
+  const type = getType(moduleContext, instruction);
+
+  debugger
+
+  // Structured control flow
+  // Update context
+  // Run on empty stack
+  if(instruction.type === "BlockInstruction") {
+    moduleContext.addLabel(type.result)  
+
+    stack = instruction.instr.reduce(
+      applyInstruction.bind(null, moduleContext),
+      []
+    );
   }
 
   // Recursively evaluate all nested instructions
@@ -84,7 +106,6 @@ function applyInstruction(moduleContext, stack, instruction) {
     );
   }
 
-  const type = getType(moduleContext, instruction);
 
   // No type available for this instruction, skip the rest.
   if (stack === false || type === false) {
@@ -108,6 +129,17 @@ function getType(moduleContext, instruction) {
   let result = [];
 
   switch (instruction.id) {
+    /**
+     * block
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-block
+     */
+    case 'block': {
+      args = []
+      result = instruction.result || []
+      return false;
+      break;
+    }
     /**
      * call
      *
