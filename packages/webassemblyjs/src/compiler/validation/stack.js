@@ -5,7 +5,15 @@ let errors = [];
 const ANY = "ANY";
 
 function checkTypes(a, b) {
-  if (a !== ANY && b !== ANY && a !== b) {
+  if (a === ANY && b) {
+    return;
+  }
+
+  if (b === ANY && a) {
+    return;
+  }
+
+  if (a !== b) {
     errors.push(`Expected type ${a} but got ${b || "none"}.`);
   }
 }
@@ -13,7 +21,7 @@ function checkTypes(a, b) {
 class ModuleContext {
   constructor() {
     this.func = new Map();
-
+    this.labels = [];
     this.funcCount = 0;
   }
 
@@ -23,7 +31,7 @@ class ModuleContext {
   }
 
   addLabel(result) {
-    // TODO
+    this.labels.unshift(result);
   }
 }
 
@@ -64,7 +72,6 @@ export default function validate(ast) {
 }
 
 function applyInstruction(moduleContext, stack, instruction) {
-
   // Workaround for node.args which sometimes does not contain instructions (i32.const, call)
   if (
     instruction.type !== "Instr" &&
@@ -77,18 +84,19 @@ function applyInstruction(moduleContext, stack, instruction) {
 
   const type = getType(moduleContext, instruction);
 
-  debugger
-
   // Structured control flow
   // Update context
   // Run on empty stack
-  if(instruction.type === "BlockInstruction") {
-    moduleContext.addLabel(type.result)  
+  if (instruction.type === "BlockInstruction") {
+    moduleContext.addLabel(type.result);
 
-    stack = instruction.instr.reduce(
-      applyInstruction.bind(null, moduleContext),
-      []
-    );
+    stack = [
+      ...stack,
+      ...instruction.instr.reduce(
+        applyInstruction.bind(null, moduleContext),
+        []
+      )
+    ];
   }
 
   // Recursively evaluate all nested instructions
@@ -106,7 +114,6 @@ function applyInstruction(moduleContext, stack, instruction) {
     );
   }
 
-
   // No type available for this instruction, skip the rest.
   if (stack === false || type === false) {
     return false;
@@ -115,7 +122,7 @@ function applyInstruction(moduleContext, stack, instruction) {
   let actual;
 
   type.args.forEach(argType => {
-    actual = stack.pop() || "none";
+    actual = stack.pop();
     checkTypes(argType, actual);
   });
 
@@ -134,9 +141,9 @@ function getType(moduleContext, instruction) {
      *
      * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-block
      */
-    case 'block': {
-      args = []
-      result = instruction.result || []
+    case "block": {
+      args = [];
+      result = instruction.result || [];
       return false;
       break;
     }
