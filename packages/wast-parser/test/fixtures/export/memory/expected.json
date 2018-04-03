@@ -22,9 +22,8 @@
           "descr": {
             "type": "Memory",
             "id": {
-              "type": "NumberLiteral",
-              "value": 0,
-              "raw": "0"
+              "type": "Identifier",
+              "value": "memory_0"
             }
           }
         }
