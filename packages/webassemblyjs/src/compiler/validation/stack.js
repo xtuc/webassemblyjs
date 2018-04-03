@@ -147,7 +147,16 @@ function getType(moduleContext, instruction) {
     case "block": {
       args = [];
       result = instruction.result || [];
-      return false;
+      break;
+    }
+    /**
+     * nop
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-nop
+     */
+    case "nop": {
+      args = [];
+      result = [];
       break;
     }
     /**
