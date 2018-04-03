@@ -743,19 +743,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         dump([indices], "num indices");
 
-        for (let i = 0; i < indices; i++) {
+        for (let i = 0; i <= indices; i++) {
           const indexu32 = readU32();
           const index = indexu32.value;
           eatBytes(indexu32.nextIndex);
 
           dump([index], "index");
+
+          args.push(t.numberLiteral(indexu32.value.toString(), "f64"));
         }
-
-        const labelIndexu32 = readU32();
-        const labelIndex = labelIndexu32.value;
-        eatBytes(labelIndexu32.nextIndex);
-
-        dump([labelIndex], "label index");
       } else if (instructionByte >= 0x28 && instructionByte <= 0x40) {
         /**
          * Memory instructions
