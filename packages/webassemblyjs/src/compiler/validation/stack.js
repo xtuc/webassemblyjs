@@ -87,7 +87,10 @@ function applyInstruction(moduleContext, stack, instruction) {
   // Structured control flow
   // Update context
   // Run on empty stack
-  if (instruction.type === "BlockInstruction") {
+  if (
+    instruction.type === "BlockInstruction" ||
+    instruction.type === "LoopInstruction"
+  ) {
     moduleContext.addLabel(type.result);
 
     stack = [
@@ -144,6 +147,17 @@ function getType(moduleContext, instruction) {
     case "block": {
       args = [];
       result = instruction.result || [];
+      return false;
+      break;
+    }
+    /**
+     * loop
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-loop
+     */
+    case "loop": {
+      args = [];
+      result = instruction.resulttype || [];
       return false;
       break;
     }
