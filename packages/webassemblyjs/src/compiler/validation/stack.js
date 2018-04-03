@@ -72,6 +72,11 @@ export default function validate(ast) {
 }
 
 function applyInstruction(moduleContext, stack, instruction) {
+  // Return was called, skip everything
+  if (stack.return) {
+    return stack;
+  }
+
   // Workaround for node.args which sometimes does not contain instructions (i32.const, call)
   if (
     instruction.type !== "Instr" &&
@@ -148,6 +153,11 @@ function applyInstruction(moduleContext, stack, instruction) {
       applyInstruction.bind(null, moduleContext),
       stack
     );
+  }
+
+  if (instruction.id === "return") {
+    stack.return = true;
+    return stack;
   }
 
   // No type available for this instruction, skip the rest.
