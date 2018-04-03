@@ -5,6 +5,7 @@ const chai = require("chai");
 const { readFileSync } = require("fs");
 const path = require("path");
 const vm = require("vm");
+const argv = require("yargs").argv;
 
 const WebAssembly = require("../lib");
 
@@ -46,9 +47,14 @@ describe("interpreter", () => {
   });
 
   describe("wat", () => {
-    const testSuites = glob.sync(
+    let testSuites = glob.sync(
       "packages/webassemblyjs/test/fixtures/**/module.wast"
     );
+
+    // Filter based on last command line argument
+    if (argv.only) {
+      testSuites = testSuites.filter(f => f.includes(argv.only));
+    }
 
     testSuites.forEach(suite => {
       describe(suite, () => {

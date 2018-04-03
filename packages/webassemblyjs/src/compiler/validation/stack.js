@@ -10,16 +10,39 @@ function checkTypes(a, b) {
   }
 }
 
+class ModuleContext {
+  constructor() {
+    this.func = new Map();
+
+    this.funcCount = 0;
+  }
+
+  addFunction({ params: args, result }) {
+    args = args.map(arg => arg.valtype);
+    this.func.set(this.funcCount++, { args, result });
+  }
+}
+
 export default function validate(ast) {
+  // Module context
+  const moduleContext = new ModuleContext();
+
+  traverse(ast, {
+    Func(path) {
+      moduleContext.addFunction(path.node);
+    }
+  });
+
   errors = [];
 
+  // Simulate stack types throughout all function bodies
   traverse(ast, {
     Func(path) {
       const expectedResult = path.node.result;
 
       const resultingStack = path.node.body.reduce(
-        applyInstruction,
-        path.node.params
+        applyInstruction.bind(null, moduleContext),
+        path.node.params.map(arg => arg.valtype)
       );
 
       // Compare the two
@@ -36,7 +59,7 @@ export default function validate(ast) {
   return errors;
 }
 
-function applyInstruction(stack, instruction) {
+function applyInstruction(moduleContext, stack, instruction) {
   // Workaround for node.args which sometimes does not contain instructions (i32.const, call)
   if (
     instruction.type !== "Instr" &&
@@ -48,10 +71,20 @@ function applyInstruction(stack, instruction) {
 
   // Recursively evaluate all nested instructions
   if (instruction.args) {
-    stack = instruction.args.reduce(applyInstruction, stack);
+    stack = instruction.args.reduce(
+      applyInstruction.bind(null, moduleContext),
+      stack
+    );
   }
 
-  const type = getType(instruction);
+  if (instruction.instrArgs) {
+    stack = instruction.instrArgs.reduce(
+      applyInstruction.bind(null, moduleContext),
+      stack
+    );
+  }
+
+  const type = getType(moduleContext, instruction);
 
   // No type available for this instruction, skip the rest.
   if (stack === false || type === false) {
@@ -70,11 +103,25 @@ function applyInstruction(stack, instruction) {
   return stack;
 }
 
-function getType(instruction) {
+function getType(moduleContext, instruction) {
   let args = [];
   let result = [];
 
   switch (instruction.id) {
+    /**
+     * call
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-call
+     */
+    case "call": {
+      if (!moduleContext.func.has(instruction.index.value)) {
+        errors.push(
+          `Call to undefined function index ${instruction.index.value}.`
+        );
+      }
+      ({ args, result } = moduleContext.func.get(instruction.index.value));
+      break;
+    }
     /**
      * const
      *
