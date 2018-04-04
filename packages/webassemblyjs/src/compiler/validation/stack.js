@@ -162,7 +162,7 @@ function applyInstruction(moduleContext, stack, instruction) {
     return stack;
   }
 
-  const type = getType(moduleContext, instruction);
+  const type = getType(moduleContext, stack, instruction);
 
   // Structured control flow
   // Update context
@@ -251,7 +251,7 @@ function applyInstruction(moduleContext, stack, instruction) {
   return stack;
 }
 
-function getType(moduleContext, instruction) {
+function getType(moduleContext, stack, instruction) {
   let args = [];
   let result = [];
 
@@ -264,6 +264,22 @@ function getType(moduleContext, instruction) {
       instruction.args.forEach(t => moduleContext.addLocal(t.name));
       args = [];
       result = [];
+      break;
+    }
+    case "select": {
+      if (stack.length < 3) {
+        errors.push(`Stack contains too few arguments for select`);
+        return false;
+      }
+      const decide = stack[stack.length - 1];
+      const first = stack[stack.length - 2];
+      const second = stack[stack.length - 3];
+      if (first !== second) {
+        errors.push(`Type mismatch in select`);
+        return false;
+      }
+      args = [first, first, decide];
+      result = [first];
       break;
     }
     /**
