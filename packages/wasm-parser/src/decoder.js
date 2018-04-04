@@ -454,7 +454,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new CompileError(`function signature not found (${typeindex})`);
       }
 
-      const id = t.identifier(getUniqueName("func"));
+      // preserve anonymous, a name might be resolved later
+      const id = t.withRaw(t.identifier(getUniqueName("func")), "");
 
       state.functionsInModule.push({
         id,
@@ -507,7 +508,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = func.id;
+        id = t.cloneNode(func.id);
+        id = t.withRaw(id, String(index));
+
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
         console.warn("Unsupported export type table");
@@ -525,6 +528,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           id = t.identifier(memNode.id.value + "");
         } else {
           id = t.identifier(getUniqueName("memory"));
+          id = t.withRaw(id, ""); // preserve anonymous
         }
 
         signature = null;
@@ -663,7 +667,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         parseInstructionBlock(instr);
 
-        const label = t.identifier(getUniqueName("loop"));
+        // preserve anonymous
+        const label = t.withRaw(t.identifier(getUniqueName("loop")), "");
         const loopNode = t.loopInstruction(label, blocktype, instr);
 
         code.push(loopNode);
@@ -689,7 +694,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const alternate = [];
 
         // FIXME(sven): where is that stored?
-        const testIndex = t.identifier(getUniqueName("ifindex"));
+        // preserve anonymous
+        const testIndex = t.withRaw(t.identifier(getUniqueName("ifindex")), "");
         const testInstrs = [];
 
         const ifNode = t.ifInstruction(
@@ -719,7 +725,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const instr = [];
         parseInstructionBlock(instr);
 
-        const label = t.identifier(getUniqueName("block"));
+        // preserve anonymous
+        const label = t.withRaw(t.identifier(getUniqueName("block")), "");
 
         const blockNode = t.blockInstruction(label, instr, blocktype);
 

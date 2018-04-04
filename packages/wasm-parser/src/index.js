@@ -36,14 +36,36 @@ function restoreNames(ast) {
       const functionName = functionNames.find(f => f.index === index);
       if (functionName) {
         nodeName.value = functionName.name;
+
+        // $FlowIgnore
+        delete nodeName.raw;
       }
     },
+
+    // Also update the reference in the export
+    ModuleExport({ node }: NodePath<ModuleExport>) {
+      if (node.descr.type === "Func") {
+        // $FlowIgnore
+        const nodeName: Identifier = node.descr.id;
+        const indexBasedFunctionName = nodeName.value;
+        const index = Number(indexBasedFunctionName.replace("func_", ""));
+        const functionName = functionNames.find(f => f.index === index);
+
+        if (functionName) {
+          nodeName.value = functionName.name;
+        }
+      }
+    },
+
     CallInstruction(nodePath: NodePath<CallInstruction>) {
       const node = nodePath.node;
       const index = node.index.value;
       const functionName = functionNames.find(f => f.index === index);
       if (functionName) {
         node.index = t.identifier(functionName.name);
+
+        // $FlowIgnore
+        delete node.raw;
       }
     }
   });

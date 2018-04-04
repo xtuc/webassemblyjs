@@ -17,6 +17,7 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
+    "@webassemblyjs/ast": "1.2.2",
     "@webassemblyjs/wast-parser": "1.2.2",
     "long": "^3.2.0"
   },

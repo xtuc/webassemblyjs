@@ -183,7 +183,9 @@ type Identifier = {
   ...BaseNode,
 
   type: "Identifier",
-  value: string
+  value: string,
+
+  raw?: string
 };
 
 /**

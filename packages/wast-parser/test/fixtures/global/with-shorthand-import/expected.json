@@ -50,7 +50,8 @@
           ],
           "name": {
             "type": "Identifier",
-            "value": "global_1"
+            "value": "global_1",
+            "raw": ""
           }
         },
         {
@@ -74,7 +75,8 @@
           ],
           "name": {
             "type": "Identifier",
-            "value": "global_2"
+            "value": "global_2",
+            "raw": ""
           }
         },
         {
@@ -98,7 +100,8 @@
           ],
           "name": {
             "type": "Identifier",
-            "value": "global_3"
+            "value": "global_3",
+            "raw": ""
           }
         }
       ]

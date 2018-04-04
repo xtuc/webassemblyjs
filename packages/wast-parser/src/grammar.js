@@ -82,6 +82,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       } else if (token.type === tokens.number) {
         index = t.identifier(prefix + "_" + token.value);
+        index = t.withRaw(index, String(token.value));
+
         eatToken();
       }
       return index;
@@ -134,6 +136,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         id = t.identifier(token.value);
 
         eatToken();
+      } else {
+        id = t.withRaw(id, ""); // preserve anonymous
       }
 
       /**
@@ -268,6 +272,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.string || token.type === tokens.identifier) {
         name = t.identifier(token.value);
         eatToken();
+      } else {
+        name = t.withRaw(name, ""); // preserve anonymous
       }
 
       while (token.type !== tokens.closeParen) {
@@ -460,6 +466,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         label = t.identifier(token.value);
         eatToken();
+      } else {
+        label = t.withRaw(label, ""); // preserve anonymous
       }
 
       while (token.type === tokens.openParen) {
@@ -517,6 +525,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         label = t.identifier(token.value);
         eatToken();
+      } else {
+        label = t.withRaw(label, ""); // preserve anonymous
       }
 
       while (token.type === tokens.openParen) {
@@ -645,6 +655,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         label = t.identifier(token.value);
         eatToken();
+      } else {
+        label = t.withRaw(label, ""); // preserve anonymous
       }
 
       while (token.type === tokens.openParen) {
@@ -1152,6 +1164,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         fnName = t.identifier(token.value);
         eatToken();
+      } else {
+        fnName = t.withRaw(fnName, ""); // preserve anonymous
       }
 
       while (token.type === tokens.openParen) {
@@ -1316,6 +1330,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         name = t.identifier(token.value);
         eatToken();
+      } else {
+        name = t.withRaw(name, ""); // preserve anonymous
       }
 
       /**

@@ -14,7 +14,8 @@
           },
           "name": {
             "type": "Identifier",
-            "value": "table_0"
+            "value": "table_0",
+            "raw": ""
           }
         },
         {
@@ -24,7 +25,8 @@
             "type": "Table",
             "id": {
               "type": "Identifier",
-              "value": "table_0"
+              "value": "table_0",
+              "raw": ""
             }
           }
         }

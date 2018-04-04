@@ -5,7 +5,8 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_0"
+        "value": "func_0",
+        "raw": ""
       },
       "params": [],
       "result": [
@@ -27,7 +28,8 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_1"
+        "value": "func_1",
+        "raw": ""
       },
       "params": [],
       "result": [],

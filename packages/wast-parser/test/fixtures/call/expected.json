@@ -25,7 +25,8 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_2"
+        "value": "func_2",
+        "raw": ""
       },
       "params": [],
       "result": [],
