@@ -1,4 +1,4 @@
-(module
+(module 
   (func $a)
   (func $test)
   (func

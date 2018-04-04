@@ -4,6 +4,7 @@ NODE_OPTS =
 LERNA = ./node_modules/.bin/lerna
 FLOWTYPED = ./node_modules/.bin/flow-typed
 NODE = node
+WAST_REFMT = $(NODE) packages/wast-refmt/lib/cli.js
 PRETTIER = ./node_modules/.bin/prettier --ignore-path .prettierignore
 MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
 BABEL = ./node_modules/.bin/babel --ignore src/types/npm
@@ -62,6 +63,7 @@ bench:
 
 fix:
 	$(PRETTIER) --write "{packages,docs,benchmark}/**/*.js" "**/*.tjs"
+	find packages -name "*.wast" -exec $(WAST_REFMT)  {} --fix \;
 
 flow-update-def:
 	$(FLOWTYPED) install --libdefDir src/types

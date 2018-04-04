@@ -1,3 +1,4 @@
-(module
-  (global (export "a") i64 (i64.const 0xFFFFFFFFFF))
+(module 
+  (global i64 (i64.const 0xFFFFFFFFFF))
+  (export "a")
 )

@@ -1,3 +1,4 @@
-(module
-  (global (export "a") i32 (i32.const 1))
+(module 
+  (global i32 (i32.const 1))
+  (export "a")
 )

@@ -1,1 +1,0 @@
-(data 23 (i32.const 25) "abc")

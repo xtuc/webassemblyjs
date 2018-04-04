@@ -1,1 +1,4 @@
-(module (table (export "a") 0 anyfunc))
+(module 
+  (table 0 anyfunc)
+  (export "a")
+)
