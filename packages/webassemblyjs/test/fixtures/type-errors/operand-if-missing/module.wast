@@ -1,3 +1,5 @@
-(module (func $type-if-operand-missing
-	(if (then))
-))
+(module
+  (func $type-if-operand-missing
+    (if (then))
+  )
+)
