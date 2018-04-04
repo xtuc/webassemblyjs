@@ -5,7 +5,6 @@ const chai = require("chai");
 const { readFileSync } = require("fs");
 const path = require("path");
 const vm = require("vm");
-const argv = require("yargs").argv;
 
 const WebAssembly = require("../lib");
 
