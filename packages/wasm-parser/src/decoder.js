@@ -455,7 +455,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       }
 
       const id = t.identifier(getUniqueName("func"));
-      id.raw = ""; // preserve anonymous
+      id.raw = ""; // preserve anonymous, a name might be resolved later
 
       state.functionsInModule.push({
         id,
@@ -508,7 +508,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = func.id;
+        id = t.cloneNode(func.id);
+        id.raw = String(index);
+
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
         console.warn("Unsupported export type table");
