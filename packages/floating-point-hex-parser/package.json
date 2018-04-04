@@ -14,7 +14,7 @@
   "description": "A function to parse floating point hexadecimal strings as defined by the WebAssembly specification",
   "main": "lib/index.js",
   "scripts": {
-    "pretest": "gcc ./test/fuzzing/parse.c -o ./test/fuzzing/parse.out -lm -Wall"
+    "pretest": "[ -f ./test/fuzzing/parse.out ] || gcc ./test/fuzzing/parse.c -o ./test/fuzzing/parse.out -lm -Wall"
   },
   "keywords": [
     "webassembly",
