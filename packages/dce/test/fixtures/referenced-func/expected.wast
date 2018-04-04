@@ -4,7 +4,7 @@
     (nop)
   )
   (func $func_1
-    (call 0)
+    (call $referenceda)
   )
   (export "test" (func $referenceda))
 )
