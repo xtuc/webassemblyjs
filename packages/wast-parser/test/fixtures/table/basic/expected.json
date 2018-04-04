@@ -35,7 +35,8 @@
       },
       "name": {
         "type": "Identifier",
-        "value": "table_2"
+        "value": "table_2",
+        "raw": ""
       }
     },
     {
@@ -48,7 +49,8 @@
       },
       "name": {
         "type": "Identifier",
-        "value": "table_3"
+        "value": "table_3",
+        "raw": ""
       }
     },
     {

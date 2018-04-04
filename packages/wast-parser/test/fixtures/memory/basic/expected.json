@@ -9,7 +9,8 @@
       },
       "id": {
         "type": "Identifier",
-        "value": "memory_0"
+        "value": "memory_0",
+        "raw": ""
       }
     },
     {
@@ -21,7 +22,8 @@
       },
       "id": {
         "type": "Identifier",
-        "value": "memory_1"
+        "value": "memory_1",
+        "raw": ""
       }
     },
     {
@@ -66,7 +68,8 @@
       },
       "id": {
         "type": "Identifier",
-        "value": "memory_5"
+        "value": "memory_5",
+        "raw": ""
       }
     }
   ]

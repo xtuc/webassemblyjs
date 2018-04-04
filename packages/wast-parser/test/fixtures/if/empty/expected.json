@@ -6,7 +6,8 @@
       "id": "if",
       "testLabel": {
         "type": "Identifier",
-        "value": "if_0"
+        "value": "if_0",
+        "raw": ""
       },
       "test": [
         {
@@ -29,7 +30,8 @@
       "id": "if",
       "testLabel": {
         "type": "Identifier",
-        "value": "if_1"
+        "value": "if_1",
+        "raw": ""
       },
       "test": [
         {

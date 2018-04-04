@@ -13,7 +13,8 @@
           },
           "id": {
             "type": "Identifier",
-            "value": "memory_0"
+            "value": "memory_0",
+            "raw": ""
           }
         },
         {
