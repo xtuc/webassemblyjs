@@ -454,8 +454,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new CompileError(`function signature not found (${typeindex})`);
       }
 
-      const id = t.identifier(getUniqueName("func"));
-      id.raw = ""; // preserve anonymous, a name might be resolved later
+      // preserve anonymous, a name might be resolved later
+      const id = t.withRaw(t.identifier(getUniqueName("func")), "");
 
       state.functionsInModule.push({
         id,
@@ -509,7 +509,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         }
 
         id = t.cloneNode(func.id);
-        id.raw = String(index);
+        id = t.withRaw(id, String(index));
 
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
@@ -528,7 +528,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           id = t.identifier(memNode.id.value + "");
         } else {
           id = t.identifier(getUniqueName("memory"));
-          id.raw = ""; // preserve anonymous
+          id = t.withRaw(id, ""); // preserve anonymous
         }
 
         signature = null;
@@ -667,10 +667,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         parseInstructionBlock(instr);
 
-        const label = t.identifier(getUniqueName("loop"));
+        // preserve anonymous
+        const label = t.withRaw(t.identifier(getUniqueName("loop")), "");
         const loopNode = t.loopInstruction(label, blocktype, instr);
-
-        label.raw = ""; // preserve anonymous
 
         code.push(loopNode);
         instructionAlreadyCreated = true;
@@ -695,10 +694,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const alternate = [];
 
         // FIXME(sven): where is that stored?
-        const testIndex = t.identifier(getUniqueName("ifindex"));
+        // preserve anonymous
+        const testIndex = t.withRaw(t.identifier(getUniqueName("ifindex")), "");
         const testInstrs = [];
-
-        testIndex.raw = ""; // preserve anonymous
 
         const ifNode = t.ifInstruction(
           testIndex,
@@ -727,9 +725,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const instr = [];
         parseInstructionBlock(instr);
 
-        const label = t.identifier(getUniqueName("block"));
-
-        label.raw = ""; // preserve anonymous
+        // preserve anonymous
+        const label = t.withRaw(t.identifier(getUniqueName("block")), "");
 
         const blockNode = t.blockInstruction(label, instr, blocktype);
 

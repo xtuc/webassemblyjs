@@ -45,7 +45,6 @@ function restoreNames(ast) {
     // Also update the reference in the export
     ModuleExport({ node }: NodePath<ModuleExport>) {
       if (node.descr.type === "Func") {
-
         // $FlowIgnore
         const nodeName: Identifier = node.descr.id;
         const indexBasedFunctionName = nodeName.value;

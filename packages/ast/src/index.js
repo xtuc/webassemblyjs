@@ -383,6 +383,10 @@ export function ifInstruction(
   };
 }
 
+/**
+ * Decorators
+ */
+
 export function withLoc(n: Node, end: Position, start: Position): Node {
   const loc = {
     start,
@@ -390,6 +394,13 @@ export function withLoc(n: Node, end: Position, start: Position): Node {
   };
 
   n.loc = loc;
+
+  return n;
+}
+
+export function withRaw(n: Node, raw: string): Node {
+  // $FlowIgnore
+  n.raw = raw;
 
   return n;
 }
