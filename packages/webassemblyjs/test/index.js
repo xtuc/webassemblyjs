@@ -47,14 +47,9 @@ describe("interpreter", () => {
   });
 
   describe("wat", () => {
-    let testSuites = glob.sync(
+    const testSuites = glob.sync(
       "packages/webassemblyjs/test/fixtures/**/module.wast"
     );
-
-    // Filter based on last command line argument
-    if (argv.only) {
-      testSuites = testSuites.filter(f => f.includes(argv.only));
-    }
 
     testSuites.forEach(suite => {
       describe(suite, () => {
