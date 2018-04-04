@@ -22,6 +22,7 @@ class ModuleContext {
   constructor() {
     this.funcs = [];
     this.labels = [];
+    this.globals = [];
 
     // Current stack frame
     this.locals = [];
@@ -64,17 +65,50 @@ class ModuleContext {
   addLocal(type) {
     this.locals.push(type);
   }
+
+  /**
+   * Globals
+   */
+  hasGlobal(index) {
+    return this.globals.length > index && index >= 0;
+  }
+
+  getGlobal(index) {
+    return this.globals[index].type;
+  }
+
+  addGlobal(type, mutability) {
+    this.globals.push({ type, mutability });
+  }
+
+  isMutableGlobal(index) {
+    return this.globals[index].mutability === "var";
+  }
 }
 
 export default function validate(ast) {
   // Module context
   const moduleContext = new ModuleContext();
 
-  // Collect indices for funcs and globals
-  // TODO: This assumes `traverse` runs in program order which is probably wrong
-  traverse(ast, {
-    Func(path) {
-      moduleContext.addFunction(path.node);
+  ast.body[0].fields.forEach(field => {
+    switch (field.type) {
+      case "Func": {
+        moduleContext.addFunction(field);
+        break;
+      }
+      case "Global": {
+        moduleContext.addGlobal(field.globalType.valtype, field.mutability);
+        break;
+      }
+      case "ModuleImport": {
+        switch (field.descr.type) {
+          case "GlobalType": {
+            moduleContext.addGlobal(field.descr.valtype);
+            break;
+          }
+        }
+        break;
+      }
     }
   });
 
@@ -225,6 +259,40 @@ function getType(moduleContext, instruction) {
     case "local": {
       instruction.args.forEach(t => moduleContext.addLocal(t.name));
       args = [];
+      result = [];
+      break;
+    }
+    /**
+     * get_global
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-get-global
+     */
+    case "get_global": {
+      const index = instruction.args[0].value;
+      if (!moduleContext.hasGlobal(index)) {
+        errors.push(`Module does not have global ${index}`);
+        return false;
+      }
+      args = [];
+      result = [moduleContext.getGlobal(index)];
+      break;
+    }
+    /**
+     * set_global
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-set-global
+     */
+    case "set_global": {
+      const index = instruction.args[0].value;
+      if (!moduleContext.hasGlobal(index)) {
+        errors.push(`Module does not have global ${index}`);
+        return false;
+      }
+      if (!moduleContext.isMutableGlobal(index)) {
+        errors.push(`Global ${index} is immutable`);
+        return false;
+      }
+      args = [moduleContext.getGlobal(index)];
       result = [];
       break;
     }
