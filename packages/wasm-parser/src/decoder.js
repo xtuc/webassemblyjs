@@ -455,6 +455,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       }
 
       const id = t.identifier(getUniqueName("func"));
+      id.raw = ""; // preserve anonymous
 
       state.functionsInModule.push({
         id,
@@ -525,6 +526,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           id = t.identifier(memNode.id.value + "");
         } else {
           id = t.identifier(getUniqueName("memory"));
+          id.raw = ""; // preserve anonymous
         }
 
         signature = null;
@@ -666,6 +668,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const label = t.identifier(getUniqueName("loop"));
         const loopNode = t.loopInstruction(label, blocktype, instr);
 
+        label.raw = ""; // preserve anonymous
+
         code.push(loopNode);
         instructionAlreadyCreated = true;
       } else if (instruction.name === "if") {
@@ -691,6 +695,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         // FIXME(sven): where is that stored?
         const testIndex = t.identifier(getUniqueName("ifindex"));
         const testInstrs = [];
+
+        testIndex.raw = ""; // preserve anonymous
 
         const ifNode = t.ifInstruction(
           testIndex,
@@ -720,6 +726,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         parseInstructionBlock(instr);
 
         const label = t.identifier(getUniqueName("block"));
+
+        label.raw = ""; // preserve anonymous
 
         const blockNode = t.blockInstruction(label, instr, blocktype);
 

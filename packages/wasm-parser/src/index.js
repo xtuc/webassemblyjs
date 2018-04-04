@@ -36,6 +36,9 @@ function restoreNames(ast) {
       const functionName = functionNames.find(f => f.index === index);
       if (functionName) {
         nodeName.value = functionName.name;
+
+        // $FlowIgnore
+        delete nodeName.raw;
       }
     },
     CallInstruction(nodePath: NodePath<CallInstruction>) {
@@ -44,6 +47,9 @@ function restoreNames(ast) {
       const functionName = functionNames.find(f => f.index === index);
       if (functionName) {
         node.index = t.identifier(functionName.name);
+
+        // $FlowIgnore
+        delete node.raw;
       }
     }
   });
