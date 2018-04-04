@@ -617,6 +617,10 @@ export function indexInFuncSection(index: Index): IndexInFuncSection {
   };
 }
 
+export function isAnonymous(ident: Identifier): boolean {
+  return ident.raw === "";
+}
+
 export { traverse, traverseWithHooks } from "./traverse";
 export { signatures } from "./signatures";
 export { getSectionMetadata } from "./utils";

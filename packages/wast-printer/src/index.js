@@ -1,5 +1,6 @@
 // @flow
 import Long from "long";
+import { isAnonymous } from "@webassemblyjs/ast";
 
 const compact = false;
 const space = " ";
@@ -227,9 +228,11 @@ function printModuleImportDescr(n: ImportDescr): string {
   if (n.type === "FuncImportDescr") {
     out += "(";
     out += "func";
-    out += space;
 
-    out += printIdentifier(n.id);
+    if (isAnonymous(n.id) === false) {
+      out += space;
+      out += printIdentifier(n.id);
+    }
 
     n.params.forEach(param => {
       out += space;
@@ -311,10 +314,9 @@ function printGlobal(n: Global, depth: number): string {
 
   out += "(";
   out += "global";
-
   out += space;
 
-  if (n.name != null) {
+  if (n.name != null && isAnonymous(n.name) === false) {
     out += printIdentifier(n.name);
     out += space;
   }
@@ -336,13 +338,13 @@ function printTable(n: Table): string {
 
   out += "(";
   out += "table";
+  out += space;
 
-  if (n.name != null) {
-    out += space;
+  if (n.name != null && isAnonymous(n.name) === false) {
     out += printIdentifier(n.name);
+    out += space;
   }
 
-  out += space;
   out += printLimit(n.limits);
   out += space;
 
@@ -373,7 +375,7 @@ function printFunc(n: Func, depth: number): string {
   out += "func";
 
   if (n.name != null) {
-    if (n.name.type === "Identifier") {
+    if (n.name.type === "Identifier" && isAnonymous(n.name) === false) {
       out += space;
       out += printIdentifier(n.name);
     }
@@ -456,7 +458,7 @@ function printLoopInstruction(n: LoopInstruction, depth: number): string {
   out += "(";
   out += "loop";
 
-  if (n.label != null) {
+  if (n.label != null && isAnonymous(n.label) === false) {
     out += space;
     out += printIdentifier(n.label);
   }
@@ -514,7 +516,7 @@ function printIfInstruction(n: IfInstruction, depth: number): string {
   out += "(";
   out += "if";
 
-  if (n.testLabel != null) {
+  if (n.testLabel != null && isAnonymous(n.testLabel) === false) {
     out += space;
     out += printIdentifier(n.testLabel);
   }
@@ -632,7 +634,7 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
   out += "(";
   out += "block";
 
-  if (n.label != null) {
+  if (n.label != null && isAnonymous(n.label) === false) {
     out += space;
     out += printIdentifier(n.label);
   }
@@ -713,7 +715,7 @@ function printFuncInstructionArg(n: Object): string {
     out += printLongNumberLiteral(n);
   }
 
-  if (n.type === "Identifier") {
+  if (n.type === "Identifier" && isAnonymous(n) === false) {
     out += printIdentifier(n);
   }
 
