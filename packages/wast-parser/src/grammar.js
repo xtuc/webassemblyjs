@@ -82,6 +82,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       } else if (token.type === tokens.number) {
         index = t.identifier(prefix + "_" + token.value);
+        index.raw = String(token.value);
+
         eatToken();
       }
       return index;

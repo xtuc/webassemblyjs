@@ -39,7 +39,8 @@
             "type": "Global",
             "id": {
               "type": "Identifier",
-              "value": "global_0"
+              "value": "global_0",
+              "raw": "0"
             }
           }
         },
