@@ -21,11 +21,16 @@ function checkTypes(a, b) {
 class ModuleContext {
   constructor() {
     this.funcs = [];
-    this.labels = [];
     this.globals = [];
 
     // Current stack frame
     this.locals = [];
+    this.labels = [];
+  }
+
+  resetStackFrame() {
+    this.locals = [];
+    this.labels = [];
   }
 
   /**
@@ -122,6 +127,8 @@ export default function validate(ast) {
   traverse(ast, {
     Func(path) {
       const expectedResult = path.node.result;
+
+      moduleContext.resetStackFrame();
 
       // Parameters are local variables
       path.node.params.forEach(p => moduleContext.addLocal(p.valtype));
@@ -271,14 +278,13 @@ function getType(moduleContext, stack, instruction) {
         errors.push(`Stack contains too few arguments for select`);
         return false;
       }
-      const decide = stack[stack.length - 1];
       const first = stack[stack.length - 2];
       const second = stack[stack.length - 3];
       if (first !== second) {
         errors.push(`Type mismatch in select`);
         return false;
       }
-      args = [first, first, decide];
+      args = ["i32", first, first];
       result = [first];
       break;
     }
