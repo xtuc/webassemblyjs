@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-const { readFileSync } = require("fs");
+const { readFileSync, writeFileSync } = require("fs");
 const refmt = require("./").default;
 
 const filename = process.argv[2];
+const isInplaceFix = process.argv.indexOf("--fix") !== -1;
 
 if (typeof filename === "undefined") {
   throw new Error("Missing file");
@@ -12,4 +13,8 @@ if (typeof filename === "undefined") {
 const content = readFileSync(filename, "utf8");
 const newContent = refmt(content);
 
-console.log(newContent);
+if (isInplaceFix === true) {
+  writeFileSync(filename, newContent);
+} else {
+  process.stdout.write(newContent);
+}
