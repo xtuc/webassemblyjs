@@ -77,8 +77,12 @@ class ModuleContext {
     return this.globals[index].type;
   }
 
-  addGlobal(type, mutability) {
+  defineGlobal(type, mutability) {
     this.globals.push({ type, mutability });
+  }
+
+  importGlobal(type, mutability) {
+    this.globals.unshift({ type, mutability });
   }
 
   isMutableGlobal(index) {
@@ -97,13 +101,13 @@ export default function validate(ast) {
         break;
       }
       case "Global": {
-        moduleContext.addGlobal(field.globalType.valtype, field.mutability);
+        moduleContext.defineGlobal(field.globalType.valtype, field.mutability);
         break;
       }
       case "ModuleImport": {
         switch (field.descr.type) {
           case "GlobalType": {
-            moduleContext.addGlobal(field.descr.valtype);
+            moduleContext.importGlobal(field.descr.valtype);
             break;
           }
         }
