@@ -737,14 +737,27 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         code.push(callNode);
         instructionAlreadyCreated = true;
       } else if (instruction.name === "call_indirect") {
-        const indexu32 = readU32();
-        const index = indexu32.value;
-        eatBytes(indexu32.nextIndex);
-        eatBytes(1);
+        const indexU32 = readU32();
+        const typeindex = indexU32.value;
+        eatBytes(indexU32.nextIndex);
 
-        dump([index], "index");
+        dump([typeindex], "type index");
 
-        const callNode = t.callIndirectInstruction([], [], []);
+        const signature = state.typesInModule[typeindex];
+
+        if (typeof signature === "undefined") {
+          throw new CompileError(
+            `call_indirect signature not found (${typeindex})`
+          );
+        }
+
+        const callNode = t.callIndirectInstruction(
+          signature.params,
+          signature.result,
+          []
+        );
+
+        eatBytes(1); // 0x00 - reserved byte
 
         code.push(callNode);
         instructionAlreadyCreated = true;

@@ -139,7 +139,7 @@ describe("replace a node", () => {
     const newBinary = edit(actualBinary, {
       Instr(path) {
         if (path.node.id === "get_global") {
-          const newNode = t.callIndirectInstructionIndex(t.indexLiteral(2));
+          const newNode = t.callIndirectInstructionIndex(t.indexLiteral(0));
           path.replaceWith(newNode);
         }
       }
@@ -157,7 +157,7 @@ describe("replace a node", () => {
       [constants.sections.type, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7f],
       [constants.sections.func, 0x02, 0x01, 0x00],
       [constants.sections.global, 0x06, 0x01, 0x7f, 0x00, 0x41, 0x01, 0x0b],
-      [constants.sections.code, 0x07, 0x01, 0x05, 0x00, 0x11, 0x02, 0x00, 0x0b]
+      [constants.sections.code, 0x07, 0x01, 0x05, 0x00, 0x11, 0x00, 0x00, 0x0b]
     );
 
     compareArrayBuffers(newBinary, expectedBinary);
