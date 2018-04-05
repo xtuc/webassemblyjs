@@ -524,6 +524,48 @@ function getType(moduleContext, stack, instruction) {
       break;
     }
     /**
+     * cvtop
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-cvtop
+     */
+    case "wrap/i64":
+    case "convert_s/i64":
+    case "convert_u/i64":
+    case "reinterpret/i64": {
+      args = ["i64"];
+      result = [instruction.object];
+      break;
+    }
+    case "promote/f32":
+    case "trunc_u/f32":
+    case "trunc_s/f32":
+    case "convert_s/f32":
+    case "convert_u/f32":
+    case "reinterpret/f32": {
+      args = ["f32"];
+      result = [instruction.object];
+      break;
+    }
+    case "demote/f64":
+    case "trunc_u/f64":
+    case "trunc_s/f64":
+    case "convert_s/f64":
+    case "convert_u/f64":
+    case "reinterpret/f64": {
+      args = ["f64"];
+      result = [instruction.object];
+      break;
+    }
+    case "extend_u/i32":
+    case "extend_s/i32":
+    case "convert_s/i32":
+    case "convert_u/i32":
+    case "reinterpret/i32": {
+      args = ["i32"];
+      result = [instruction.object];
+      break;
+    }
+    /**
      * Skip type checking
      */
     default: {
