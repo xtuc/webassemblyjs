@@ -736,6 +736,18 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         code.push(callNode);
         instructionAlreadyCreated = true;
+      } else if (instruction.name === "call_indirect") {
+        const indexu32 = readU32();
+        const index = indexu32.value;
+        eatBytes(indexu32.nextIndex);
+        eatBytes(1);
+
+        dump([index], "index");
+
+        const callNode = t.callIndirectInstruction([], [], []);
+
+        code.push(callNode);
+        instructionAlreadyCreated = true;
       } else if (instruction.name === "br_table") {
         const indicesu32 = readU32();
         const indices = indicesu32.value;
