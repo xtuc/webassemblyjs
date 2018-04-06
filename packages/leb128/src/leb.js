@@ -241,18 +241,20 @@ function encodeInt64(num) {
 
 function decodeInt64(encodedBuffer, index) {
   var result = decodeIntBuffer(encodedBuffer, index);
+  var parsed = bufs.readInt(result.value);
+  var value = parsed.value;
 
-  const hiBytes = result.value.slice(0, 4);
-  const lowBytes = result.value.slice(4);
+  // const hiBytes = result.value.slice(0, 4);
+  // const lowBytes = result.value.slice(4);
 
-  const value = {
-    hi: bufs.readInt(hiBytes).value,
-    low: bufs.readInt(lowBytes).value
-  };
+  // const value = {
+  //   hi: bufs.readInt(hiBytes).value,
+  //   low: bufs.readInt(lowBytes).value
+  // };
 
   bufs.free(result.value);
 
-  return { value: value, nextIndex: result.nextIndex, lossy: false };
+  return { value: value, nextIndex: result.nextIndex, lossy: parsed.lossy };
 }
 
 function encodeUIntBuffer(buffer) {

@@ -17,7 +17,7 @@
   "license": "GPL-2.0",
   "dependencies": {
     "@webassemblyjs/ast": "1.2.2",
-    "@webassemblyjs/helper-leb128": "1.2.2",
+    "@webassemblyjs/leb128": "1.2.2",
     "@webassemblyjs/helper-wasm-bytecode": "1.2.2"
   }
 }

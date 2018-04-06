@@ -38,7 +38,8 @@ describe("LEB128", () => {
     });
   });
 
-  it("should decode number where |n| > 2^53", () => {
+  // FIXME(sven): reenable that we have two's complement
+  it.skip("should decode number where |n| > 2^53", () => {
     const u64 = decodeInt64(
       Buffer.from([0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x7f])
     );
