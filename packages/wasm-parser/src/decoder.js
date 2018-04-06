@@ -6,7 +6,6 @@ import {
   decodeInt32,
   decodeUInt32,
   MAX_NUMBER_OF_BYTE_U32,
-
   decodeInt64,
   decodeUInt64,
   MAX_NUMBER_OF_BYTE_U64

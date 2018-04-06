@@ -7,13 +7,11 @@
  * `buffer[buffer.length - 1]`.
  */
 
-
 /*
  * Modules used
  */
 
 "use strict";
-
 
 /*
  * Exported bindings
@@ -29,26 +27,26 @@
  * specified is taken to be `0`.
  */
 function extract(buffer, bitIndex, bitLength, defaultBit) {
-  if ((bitLength < 0) || (bitLength > 32)) {
+  if (bitLength < 0 || bitLength > 32) {
     throw new Error("Bad value for bitLength.");
   }
 
   if (defaultBit === undefined) {
     defaultBit = 0;
-  } else if ((defaultBit !== 0) && (defaultBit !== 1)) {
+  } else if (defaultBit !== 0 && defaultBit !== 1) {
     throw new Error("Bad value for defaultBit.");
   }
 
-  var defaultByte = defaultBit * 0xff;
-  var result = 0;
+  const defaultByte = defaultBit * 0xff;
+  let result = 0;
 
   // All starts are inclusive. The {endByte, endBit} pair is exclusive, but
   // if endBit !== 0, then endByte is inclusive.
-  var lastBit = bitIndex + bitLength;
-  var startByte = Math.floor(bitIndex / 8);
-  var startBit = bitIndex % 8;
-  var endByte = Math.floor(lastBit / 8);
-  var endBit = lastBit % 8;
+  const lastBit = bitIndex + bitLength;
+  const startByte = Math.floor(bitIndex / 8);
+  const startBit = bitIndex % 8;
+  let endByte = Math.floor(lastBit / 8);
+  const endBit = lastBit % 8;
 
   if (endBit !== 0) {
     // `(1 << endBit) - 1` is the mask of all bits up to but not including
@@ -65,8 +63,8 @@ function extract(buffer, bitIndex, bitLength, defaultBit) {
   return result;
 
   function get(index) {
-    var result = buffer[index];
-    return (result === undefined) ? defaultByte : result;
+    const result = buffer[index];
+    return result === undefined ? defaultByte : result;
   }
 }
 
@@ -75,24 +73,24 @@ function extract(buffer, bitIndex, bitLength, defaultBit) {
  * bits in the value beyond the length to set are ignored.
  */
 function inject(buffer, bitIndex, bitLength, value) {
-  if ((bitLength < 0) || (bitLength > 32)) {
+  if (bitLength < 0 || bitLength > 32) {
     throw new Error("Bad value for bitLength.");
   }
 
-  var lastByte = Math.floor((bitIndex + bitLength - 1) / 8);
-  if ((bitIndex < 0) || (lastByte >= buffer.length)) {
+  const lastByte = Math.floor((bitIndex + bitLength - 1) / 8);
+  if (bitIndex < 0 || lastByte >= buffer.length) {
     throw new Error("Index out of range.");
   }
 
   // Just keeping it simple, until / unless profiling shows that this
   // is a problem.
 
-  var atByte = Math.floor(bitIndex / 8);
-  var atBit = bitIndex % 8;
+  let atByte = Math.floor(bitIndex / 8);
+  let atBit = bitIndex % 8;
 
   while (bitLength > 0) {
     if (value & 1) {
-      buffer[atByte] |= (1 << atBit);
+      buffer[atByte] |= 1 << atBit;
     } else {
       buffer[atByte] &= ~(1 << atBit);
     }
@@ -122,10 +120,10 @@ function getSign(buffer) {
  * `-1`.
  */
 function highOrder(bit, buffer) {
-  var length = buffer.length;
-  var fullyWrongByte = (bit^1) * 0xff; // the other-bit extended to a full byte
+  let length = buffer.length;
+  const fullyWrongByte = (bit ^ 1) * 0xff; // the other-bit extended to a full byte
 
-  while ((length > 0) && (buffer[length - 1] === fullyWrongByte)) {
+  while (length > 0 && buffer[length - 1] === fullyWrongByte) {
     length--;
   }
 
@@ -134,10 +132,10 @@ function highOrder(bit, buffer) {
     return -1;
   }
 
-  var byteToCheck = buffer[length - 1];
-  var result = length * 8 - 1;
+  const byteToCheck = buffer[length - 1];
+  let result = length * 8 - 1;
 
-  for (var i = 7; i > 0; i--) {
+  for (let i = 7; i > 0; i--) {
     if (((byteToCheck >> i) & 1) === bit) {
       break;
     }

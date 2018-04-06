@@ -78,8 +78,8 @@ function trimIntBuffer(buffer) {
  */
 function trimUIntBuffer(buffer) {
   let length = buffer.length;
-  const signBit = buffer[length - 1] >> 7;
-  const signByte = signBit * 0xff;
+  // const signBit = buffer[length - 1] >> 7;
+  // const signByte = signBit * 0xff;
 
   while (length > 1 && buffer[length - 1] === 0) {
     length--;

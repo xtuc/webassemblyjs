@@ -4,45 +4,42 @@
  * leb: LEB128 utilities.
  */
 
-
 /*
  * Modules used
  */
 
 "use strict";
 
-var bits = require("./bits");
-var bufs = require("./bufs");
-
+const bits = require("./bits");
+const bufs = require("./bufs");
 
 /*
  * Module variables
  */
 
 /** The minimum possible 32-bit signed int. */
-var MIN_INT32 = -0x80000000;
+const MIN_INT32 = -0x80000000;
 
 /** The maximum possible 32-bit signed int. */
-var MAX_INT32 = 0x7fffffff;
+const MAX_INT32 = 0x7fffffff;
 
 /** The maximum possible 32-bit unsigned int. */
-var MAX_UINT32 = 0xffffffff;
+const MAX_UINT32 = 0xffffffff;
 
 /** The minimum possible 64-bit signed int. */
-var MIN_INT64 = -0x8000000000000000;
+// const MIN_INT64 = -0x8000000000000000;
 
 /**
  * The maximum possible 64-bit signed int that is representable as a
  * JavaScript number.
  */
-var MAX_INT64 = 0x7ffffffffffffc00;
+// const MAX_INT64 = 0x7ffffffffffffc00;
 
 /**
  * The maximum possible 64-bit unsigned int that is representable as a
  * JavaScript number.
  */
-var MAX_UINT64 = 0xfffffffffffff800;
-
+const MAX_UINT64 = 0xfffffffffffff800;
 
 /*
  * Helper functions
@@ -66,7 +63,7 @@ var MAX_UINT64 = 0xfffffffffffff800;
  * As a special degenerate case, the numbers 0 and -1 each require just one bit.
  */
 function signedBitCount(buffer) {
-  return bits.highOrder(bits.getSign(buffer)^1, buffer) + 2;
+  return bits.highOrder(bits.getSign(buffer) ^ 1, buffer) + 2;
 }
 
 /**
@@ -86,7 +83,7 @@ function signedBitCount(buffer) {
  * As a special degenerate case, the number 0 requires 1 bit.
  */
 function unsignedBitCount(buffer) {
-  var result = bits.highOrder(1, buffer) + 1;
+  const result = bits.highOrder(1, buffer) + 1;
   return result ? result : 1;
 }
 
@@ -95,8 +92,8 @@ function unsignedBitCount(buffer) {
  * bigint-ish buffer, returning an LEB128-encoded buffer.
  */
 function encodeBufferCommon(buffer, signed) {
-  var signBit;
-  var bitCount;
+  let signBit;
+  let bitCount;
 
   if (signed) {
     signBit = bits.getSign(buffer);
@@ -106,11 +103,11 @@ function encodeBufferCommon(buffer, signed) {
     bitCount = unsignedBitCount(buffer);
   }
 
-  var byteCount = Math.ceil(bitCount / 7);
-  var result = bufs.alloc(byteCount);
+  const byteCount = Math.ceil(bitCount / 7);
+  const result = bufs.alloc(byteCount);
 
-  for (var i = 0; i < byteCount; i++) {
-    var payload = bits.extract(buffer, i * 7, 7, signBit);
+  for (let i = 0; i < byteCount; i++) {
+    const payload = bits.extract(buffer, i * 7, 7, signBit);
     result[i] = payload | 0x80;
   }
 
@@ -125,7 +122,7 @@ function encodeBufferCommon(buffer, signed) {
  * the given index.
  */
 function encodedLength(encodedBuffer, index) {
-  var result = 0;
+  let result = 0;
 
   while (encodedBuffer[index + result] >= 0x80) {
     result++;
@@ -133,7 +130,7 @@ function encodedLength(encodedBuffer, index) {
 
   result++; // to account for the last byte
 
-  if ((index + result) > encodedBuffer.length) {
+  if (index + result > encodedBuffer.length) {
     throw new Error("Bogus encoding");
   }
 
@@ -145,13 +142,13 @@ function encodedLength(encodedBuffer, index) {
  * LEB128-encoded buffer, returning a bigint-ish buffer.
  */
 function decodeBufferCommon(encodedBuffer, index, signed) {
-  index = (index === undefined) ? 0: index;
+  index = index === undefined ? 0 : index;
 
-  var length = encodedLength(encodedBuffer, index);
-  var bitLength = length * 7;
-  var byteLength = Math.ceil(bitLength / 8);
-  var result = bufs.alloc(byteLength);
-  var outIndex = 0;
+  let length = encodedLength(encodedBuffer, index);
+  const bitLength = length * 7;
+  let byteLength = Math.ceil(bitLength / 8);
+  let result = bufs.alloc(byteLength);
+  let outIndex = 0;
 
   while (length > 0) {
     bits.inject(result, outIndex, 7, encodedBuffer[index]);
@@ -160,15 +157,15 @@ function decodeBufferCommon(encodedBuffer, index, signed) {
     length--;
   }
 
-  var signBit;
-  var signByte;
+  let signBit;
+  let signByte;
 
   if (signed) {
     // Sign-extend the last byte.
-    var lastByte = result[byteLength - 1];
-    var endBit = outIndex % 8;
+    let lastByte = result[byteLength - 1];
+    const endBit = outIndex % 8;
     if (endBit !== 0) {
-      var shift = 32 - endBit; // 32 because JS bit ops work on 32-bit ints.
+      const shift = 32 - endBit; // 32 because JS bit ops work on 32-bit ints.
       lastByte = result[byteLength - 1] = ((lastByte << shift) >> shift) & 0xff;
     }
     signBit = lastByte >> 7;
@@ -180,16 +177,17 @@ function decodeBufferCommon(encodedBuffer, index, signed) {
 
   // Slice off any superfluous bytes, that is, ones that add no meaningful
   // bits (because the value would be the same if they were removed).
-  while ((byteLength > 1) &&
-         (result[byteLength - 1] === signByte) &&
-         (!signed || ((result[byteLength - 2] >> 7) === signBit))) {
+  while (
+    byteLength > 1 &&
+    result[byteLength - 1] === signByte &&
+    (!signed || result[byteLength - 2] >> 7 === signBit)
+  ) {
     byteLength--;
   }
   result = bufs.resize(result, byteLength);
 
   return { value: result, nextIndex: index };
 }
-
 
 /*
  * Exported bindings
@@ -204,24 +202,24 @@ function decodeIntBuffer(encodedBuffer, index) {
 }
 
 function encodeInt32(num) {
-  var buf = bufs.alloc(4);
+  const buf = bufs.alloc(4);
 
   buf.writeInt32LE(num, 0);
 
-  var result = encodeIntBuffer(buf);
+  const result = encodeIntBuffer(buf);
 
   bufs.free(buf);
   return result;
 }
 
 function decodeInt32(encodedBuffer, index) {
-  var result = decodeIntBuffer(encodedBuffer, index);
-  var parsed = bufs.readInt(result.value);
-  var value = parsed.value;
+  const result = decodeIntBuffer(encodedBuffer, index);
+  const parsed = bufs.readInt(result.value);
+  const value = parsed.value;
 
   bufs.free(result.value);
 
-  if ((value < MIN_INT32) || (value > MAX_INT32)) {
+  if (value < MIN_INT32 || value > MAX_INT32) {
     throw new Error("Result out of range");
   }
 
@@ -229,20 +227,20 @@ function decodeInt32(encodedBuffer, index) {
 }
 
 function encodeInt64(num) {
-  var buf = bufs.alloc(8);
+  const buf = bufs.alloc(8);
 
   bufs.writeInt64(num, buf);
 
-  var result = encodeIntBuffer(buf);
+  const result = encodeIntBuffer(buf);
 
   bufs.free(buf);
   return result;
 }
 
 function decodeInt64(encodedBuffer, index) {
-  var result = decodeIntBuffer(encodedBuffer, index);
-  var parsed = bufs.readInt(result.value);
-  var value = parsed.value;
+  const result = decodeIntBuffer(encodedBuffer, index);
+  const parsed = bufs.readInt(result.value);
+  const value = parsed.value;
 
   // const hiBytes = result.value.slice(0, 4);
   // const lowBytes = result.value.slice(4);
@@ -266,20 +264,20 @@ function decodeUIntBuffer(encodedBuffer, index) {
 }
 
 function encodeUInt32(num) {
-  var buf = bufs.alloc(4);
+  const buf = bufs.alloc(4);
 
   buf.writeUInt32LE(num, 0);
 
-  var result = encodeUIntBuffer(buf);
+  const result = encodeUIntBuffer(buf);
 
   bufs.free(buf);
   return result;
 }
 
 function decodeUInt32(encodedBuffer, index) {
-  var result = decodeUIntBuffer(encodedBuffer, index);
-  var parsed = bufs.readUInt(result.value);
-  var value = parsed.value;
+  const result = decodeUIntBuffer(encodedBuffer, index);
+  const parsed = bufs.readUInt(result.value);
+  const value = parsed.value;
 
   bufs.free(result.value);
 
@@ -291,20 +289,20 @@ function decodeUInt32(encodedBuffer, index) {
 }
 
 function encodeUInt64(num) {
-  var buf = bufs.alloc(8);
+  const buf = bufs.alloc(8);
 
   bufs.writeUInt64(num, buf);
 
-  var result = encodeUIntBuffer(buf);
+  const result = encodeUIntBuffer(buf);
 
   bufs.free(buf);
   return result;
 }
 
 function decodeUInt64(encodedBuffer, index) {
-  var result = decodeUIntBuffer(encodedBuffer, index);
-  var parsed = bufs.readUInt(result.value);
-  var value = parsed.value;
+  const result = decodeUIntBuffer(encodedBuffer, index);
+  const parsed = bufs.readUInt(result.value);
+  const value = parsed.value;
 
   bufs.free(result.value);
 
@@ -327,5 +325,5 @@ module.exports = {
   encodeIntBuffer: encodeIntBuffer,
   encodeUInt32: encodeUInt32,
   encodeUInt64: encodeUInt64,
-  encodeUIntBuffer: encodeUIntBuffer,
+  encodeUIntBuffer: encodeUIntBuffer
 };

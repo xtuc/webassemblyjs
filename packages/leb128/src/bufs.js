@@ -4,45 +4,42 @@
  * bufs: Buffer utilities.
  */
 
-
 /*
  * Modules used
  */
 
 "use strict";
 
-
 /*
  * Module variables
  */
 
 /** Pool of buffers, where `bufPool[x].length === x`. */
-var bufPool = [];
+const bufPool = [];
 
 /** Maximum length of kept temporary buffers. */
-var TEMP_BUF_MAXIMUM_LENGTH = 20;
+const TEMP_BUF_MAXIMUM_LENGTH = 20;
 
 /** Minimum exactly-representable 64-bit int. */
-var MIN_EXACT_INT64 = -0x8000000000000000;
+const MIN_EXACT_INT64 = -0x8000000000000000;
 
 /** Maximum exactly-representable 64-bit int. */
-var MAX_EXACT_INT64 = 0x7ffffffffffffc00;
+const MAX_EXACT_INT64 = 0x7ffffffffffffc00;
 
 /** Maximum exactly-representable 64-bit uint. */
-var MAX_EXACT_UINT64 = 0xfffffffffffff800;
+const MAX_EXACT_UINT64 = 0xfffffffffffff800;
 
 /**
  * The int value consisting just of a 1 in bit #32 (that is, one more
  * than the maximum 32-bit unsigned value).
  */
-var BIT_32 = 0x100000000;
+const BIT_32 = 0x100000000;
 
 /**
  * The int value consisting just of a 1 in bit #64 (that is, one more
  * than the maximum 64-bit unsigned value).
  */
-var BIT_64 = 0x10000000000000000;
-
+const BIT_64 = 0x10000000000000000;
 
 /*
  * Helper functions
@@ -64,20 +61,19 @@ function isLossyToAdd(accum, num) {
     return false;
   }
 
-  var lowBit = lowestBit(num);
-  var added = accum + lowBit;
+  const lowBit = lowestBit(num);
+  const added = accum + lowBit;
 
   if (added === accum) {
     return true;
   }
 
-  if ((added - lowBit) !== accum) {
+  if (added - lowBit !== accum) {
     return true;
   }
 
   return false;
 }
-
 
 /*
  * Exported functions
@@ -89,7 +85,7 @@ function isLossyToAdd(accum, num) {
  * available, or a freshly-allocated buffer if not.
  */
 function alloc(length) {
-  var result = bufPool[length];
+  let result = bufPool[length];
 
   if (result) {
     bufPool[length] = undefined;
@@ -105,7 +101,7 @@ function alloc(length) {
  * Releases a buffer back to the pool.
  */
 function free(buffer) {
-  var length = buffer.length;
+  const length = buffer.length;
 
   if (length < TEMP_BUF_MAXIMUM_LENGTH) {
     bufPool[length] = buffer;
@@ -123,7 +119,7 @@ function resize(buffer, length) {
     return buffer;
   }
 
-  var newBuf = alloc(length);
+  const newBuf = alloc(length);
 
   buffer.copy(newBuf);
   free(buffer);
@@ -134,10 +130,10 @@ function resize(buffer, length) {
  * Reads an arbitrary signed int from a buffer.
  */
 function readInt(buffer) {
-  var length = buffer.length;
-  var positive = buffer[length - 1] < 0x80;
-  var result = positive ? 0 : -1;
-  var lossy = false;
+  const length = buffer.length;
+  const positive = buffer[length - 1] < 0x80;
+  let result = positive ? 0 : -1;
+  let lossy = false;
 
   // Note: We can't use bit manipulation here, since that stops
   // working if the result won't fit in a 32-bit int.
@@ -145,12 +141,12 @@ function readInt(buffer) {
   if (length < 7) {
     // Common case which can't possibly be lossy (because the result has
     // no more than 48 bits, and loss only happens with 54 or more).
-    for (var i = length - 1; i >= 0; i--) {
-      result = (result * 0x100) + buffer[i];
+    for (let i = length - 1; i >= 0; i--) {
+      result = result * 0x100 + buffer[i];
     }
   } else {
-    for (var i = length - 1; i >= 0; i--) {
-      var one = buffer[i];
+    for (let i = length - 1; i >= 0; i--) {
+      const one = buffer[i];
       result *= 0x100;
       if (isLossyToAdd(result, one)) {
         lossy = true;
@@ -158,7 +154,7 @@ function readInt(buffer) {
       result += one;
     }
   }
-  
+
   return { value: result, lossy: lossy };
 }
 
@@ -166,20 +162,20 @@ function readInt(buffer) {
  * Reads an arbitrary unsigned int from a buffer.
  */
 function readUInt(buffer) {
-  var length = buffer.length;
-  var result = 0;
-  var lossy = false;
+  const length = buffer.length;
+  let result = 0;
+  let lossy = false;
 
   // Note: See above in re bit manipulation.
 
   if (length < 7) {
     // Common case which can't possibly be lossy (see above).
-    for (var i = length - 1; i >= 0; i--) {
-      result = (result * 0x100) + buffer[i];
+    for (let i = length - 1; i >= 0; i--) {
+      result = result * 0x100 + buffer[i];
     }
   } else {
-    for (var i = length - 1; i >= 0; i--) {
-      var one = buffer[i];
+    for (let i = length - 1; i >= 0; i--) {
+      const one = buffer[i];
       result *= 0x100;
       if (isLossyToAdd(result, one)) {
         lossy = true;
@@ -187,7 +183,7 @@ function readUInt(buffer) {
       result += one;
     }
   }
-  
+
   return { value: result, lossy: lossy };
 }
 
@@ -195,7 +191,7 @@ function readUInt(buffer) {
  * Writes a little-endian 64-bit signed int into a buffer.
  */
 function writeInt64(value, buffer) {
-  if ((value < MIN_EXACT_INT64) || (value > MAX_EXACT_INT64)) {
+  if (value < MIN_EXACT_INT64 || value > MAX_EXACT_INT64) {
     throw new Error("Value out of range.");
   }
 
@@ -210,12 +206,12 @@ function writeInt64(value, buffer) {
  * Writes a little-endian 64-bit unsigned int into a buffer.
  */
 function writeUInt64(value, buffer) {
-  if ((value < 0) || (value > MAX_EXACT_UINT64)) {
+  if (value < 0 || value > MAX_EXACT_UINT64) {
     throw new Error("Value out of range.");
   }
 
-  var lowWord = value % BIT_32;
-  var highWord = Math.floor(value / BIT_32);
+  const lowWord = value % BIT_32;
+  const highWord = Math.floor(value / BIT_32);
 
   buffer.writeUInt32LE(lowWord, 0);
   buffer.writeUInt32LE(highWord, 4);
