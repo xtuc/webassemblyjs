@@ -28,7 +28,6 @@
     "wasmdump": "./lib/bin/wasmdump.js",
     "wasmast": "./lib/bin/wasmast.js",
     "wasmrun": "./lib/bin/wasmrun.js",
-    "wasm": "./lib/bin/repl.js",
     "wasm2wast": "./lib/bin/wasm2wast.js",
     "wastast": "./lib/bin/wastast.js"
   },
