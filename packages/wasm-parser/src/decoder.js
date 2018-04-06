@@ -743,6 +743,31 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         code.push(callNode);
         instructionAlreadyCreated = true;
+      } else if (instruction.name === "call_indirect") {
+        const indexU32 = readU32();
+        const typeindex = indexU32.value;
+        eatBytes(indexU32.nextIndex);
+
+        dump([typeindex], "type index");
+
+        const signature = state.typesInModule[typeindex];
+
+        if (typeof signature === "undefined") {
+          throw new CompileError(
+            `call_indirect signature not found (${typeindex})`
+          );
+        }
+
+        const callNode = t.callIndirectInstruction(
+          signature.params,
+          signature.result,
+          []
+        );
+
+        eatBytes(1); // 0x00 - reserved byte
+
+        code.push(callNode);
+        instructionAlreadyCreated = true;
       } else if (instruction.name === "br_table") {
         const indicesu32 = readU32();
         const indices = indicesu32.value;
