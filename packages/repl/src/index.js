@@ -3,7 +3,6 @@ const {
 } = require("webassemblyjs/lib/compiler/compile/module");
 const { Instance } = require("webassemblyjs/lib/interpreter");
 const partialEvaluation = require("webassemblyjs/lib/interpreter/partial-evaluation");
-const t = require("@webassemblyjs/ast");
 const { parse } = require("@webassemblyjs/wast-parser");
 const {
   Memory
@@ -334,6 +333,8 @@ export function createRepl({ isVerbose, onAssert }) {
 
       buffer = "";
     }
+
+    return buffer;
   }
 
   // function prettyPrintInstance(instance) {
