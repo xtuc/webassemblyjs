@@ -789,6 +789,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
 
           maybeIgnoreComment();
+          maybeIgnoreComment();
         }
 
         eatTokenOfType(tokens.closeParen);
