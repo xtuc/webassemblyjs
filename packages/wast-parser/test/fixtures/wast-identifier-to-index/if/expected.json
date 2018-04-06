@@ -15,7 +15,8 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_2"
+        "value": "func_1",
+        "raw": ""
       },
       "params": [
         {
@@ -31,7 +32,8 @@
           "id": "if",
           "testLabel": {
             "type": "Identifier",
-            "value": "if_3"
+            "value": "if_0",
+            "raw": ""
           },
           "test": [
             {
@@ -82,7 +84,8 @@
           "id": "if",
           "testLabel": {
             "type": "Identifier",
-            "value": "if_4"
+            "value": "if_1",
+            "raw": ""
           },
           "test": [
             {
@@ -133,7 +136,8 @@
           "id": "if",
           "testLabel": {
             "type": "Identifier",
-            "value": "if_5"
+            "value": "if_2",
+            "raw": ""
           },
           "test": [
             {

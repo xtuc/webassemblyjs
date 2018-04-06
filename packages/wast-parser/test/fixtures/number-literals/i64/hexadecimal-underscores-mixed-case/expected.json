@@ -5,7 +5,8 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_1"
+        "value": "func_0",
+        "raw": ""
       },
       "params": [],
       "result": [],
@@ -21,7 +22,7 @@
                 "high": 0,
                 "low": 109071
               },
-              "raw": "0x1aA0f"
+              "raw": "0x1_a_A_0_f"
             }
           ]
         }

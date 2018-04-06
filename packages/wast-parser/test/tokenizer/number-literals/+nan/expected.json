@@ -1,0 +1,12 @@
+[
+  {
+    "type": "number",
+    "value": "+nan",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  }
+]

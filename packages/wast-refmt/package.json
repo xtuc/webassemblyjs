@@ -1,0 +1,22 @@
+{
+  "name": "@webassemblyjs/wast-refmt",
+  "version": "1.2.2",
+  "description": "WAST refmt",
+  "main": "lib/index.js",
+  "bin": {
+    "wast-refmt": "lib/cli.js"
+  },
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "@webassemblyjs/wast-printer": "1.2.2",
+    "@webassemblyjs/wast-parser": "1.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

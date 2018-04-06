@@ -16,7 +16,8 @@
       "id": "block",
       "label": {
         "type": "Identifier",
-        "value": "block_2"
+        "value": "block_1",
+        "raw": ""
       },
       "instr": [],
       "result": "i32"
@@ -26,7 +27,8 @@
       "id": "block",
       "label": {
         "type": "Identifier",
-        "value": "block_3"
+        "value": "block_2",
+        "raw": ""
       },
       "instr": [],
       "result": "i64"
@@ -36,7 +38,8 @@
       "id": "block",
       "label": {
         "type": "Identifier",
-        "value": "block_4"
+        "value": "block_3",
+        "raw": ""
       },
       "instr": [],
       "result": "f64"

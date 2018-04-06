@@ -40,27 +40,15 @@ type ParserState = {
     type: ExportDescr,
     name: string,
     id: Index
-  }>,
-  registredImportedElements: Array<{
-    module: string,
-    name: string,
-    descr: ImportDescr
   }>
 };
 
 export function parse(tokensList: Array<Object>, source: string): Program {
   let current = 0;
-  let inc = 0;
-
-  function getUniqueName(prefix: string = "temp"): string {
-    inc++;
-
-    return prefix + "_" + inc;
-  }
+  const getUniqueName = t.getUniqueNameGenerator();
 
   const state: ParserState = {
-    registredExportedElements: [],
-    registredImportedElements: []
+    registredExportedElements: []
   };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
@@ -85,6 +73,20 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       eatToken();
+    }
+
+    function parseExportIdentifier(token: Object, prefix: string) {
+      let index;
+      if (token.type === tokens.identifier) {
+        index = t.identifier(token.value);
+        eatToken();
+      } else if (token.type === tokens.number) {
+        index = t.identifier(prefix + "_" + token.value);
+        index = t.withRaw(index, String(token.value));
+
+        eatToken();
+      }
+      return index;
     }
 
     function lookaheadAndCheck(...tokenTypes: Array<string>): boolean {
@@ -134,6 +136,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         id = t.identifier(token.value);
 
         eatToken();
+      } else {
+        id = t.withRaw(id, ""); // preserve anonymous
       }
 
       /**
@@ -259,7 +263,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *          ( elem <var>? <expr> <var>* )
      */
     function parseTable(): Table {
-      let name = t.identifier(getUniqueName());
+      let name = t.identifier(getUniqueName("table"));
 
       let limit = t.limits(0);
       const elemIndices = [];
@@ -268,6 +272,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.string || token.type === tokens.identifier) {
         name = t.identifier(token.value);
         eatToken();
+      } else {
+        name = t.withRaw(name, ""); // preserve anonymous
       }
 
       while (token.type !== tokens.closeParen) {
@@ -454,12 +460,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseBlock(): BlockInstruction {
       let label = t.identifier(getUniqueName("block"));
-      let blockResult;
+      let blockResult = null;
       const instr = [];
 
       if (token.type === tokens.identifier) {
         label = t.identifier(token.value);
         eatToken();
+      } else {
+        label = t.withRaw(label, ""); // preserve anonymous
       }
 
       while (token.type === tokens.openParen) {
@@ -517,6 +525,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         label = t.identifier(token.value);
         eatToken();
+      } else {
+        label = t.withRaw(label, ""); // preserve anonymous
       }
 
       while (token.type === tokens.openParen) {
@@ -645,6 +655,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         label = t.identifier(token.value);
         eatToken();
+      } else {
+        label = t.withRaw(label, ""); // preserve anonymous
       }
 
       while (token.type === tokens.openParen) {
@@ -705,66 +717,20 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         while (token.type !== tokens.closeParen) {
           if (isKeyword(token, keywords.func)) {
             type = "Func";
-
             eatToken();
-
-            if (token.type === tokens.identifier) {
-              index = t.identifier(token.value);
-              eatToken();
-            }
-
-            if (token.type === tokens.number) {
-              index = t.indexLiteral(token.value);
-              eatToken();
-            }
-          }
-
-          if (isKeyword(token, keywords.table)) {
+            index = parseExportIdentifier(token, "func");
+          } else if (isKeyword(token, keywords.table)) {
             type = "Table";
-
             eatToken();
-
-            if (token.type === tokens.identifier) {
-              index = t.identifier(token.value);
-              eatToken();
-            }
-
-            if (token.type === tokens.number) {
-              index = t.indexLiteral(token.value);
-              eatToken();
-            }
-          }
-
-          if (isKeyword(token, keywords.global)) {
+            index = parseExportIdentifier(token, "table");
+          } else if (isKeyword(token, keywords.global)) {
             type = "Global";
-
             eatToken();
-
-            if (token.type === tokens.identifier) {
-              index = t.identifier(token.value);
-              eatToken();
-            }
-
-            if (token.type === tokens.number) {
-              index = t.indexLiteral(token.value);
-              eatToken();
-            }
-          }
-
-          if (isKeyword(token, keywords.memory)) {
+            index = parseExportIdentifier(token, "global");
+          } else if (isKeyword(token, keywords.memory)) {
             type = "Memory";
-
             eatToken();
-
-            if (token.type === tokens.identifier) {
-              index = t.identifier(token.value);
-              eatToken();
-            }
-
-            if (token.type === tokens.number) {
-              index = t.indexLiteral(token.value);
-              eatToken();
-            }
+            index = parseExportIdentifier(token, "memory");
           }
 
           eatToken();
@@ -852,16 +818,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           });
 
           state.registredExportedElements = [];
-        }
-
-        if (state.registredImportedElements.length > 0) {
-          state.registredImportedElements.forEach(decl => {
-            moduleFields.push(
-              t.moduleImport(decl.module, decl.name, decl.descr)
-            );
-          });
-
-          state.registredImportedElements = [];
         }
 
         token = tokensList[current];
@@ -1208,6 +1164,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         fnName = t.identifier(token.value);
         eatToken();
+      } else {
+        fnName = t.withRaw(fnName, ""); // preserve anonymous
       }
 
       while (token.type === tokens.openParen) {
@@ -1372,6 +1330,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type === tokens.identifier) {
         name = t.identifier(token.value);
         eatToken();
+      } else {
+        name = t.withRaw(name, ""); // preserve anonymous
       }
 
       /**
@@ -1442,16 +1402,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new TypeError("Could not determine global type");
       }
 
-      if (importing != null) {
-        importing.descr = type;
-
-        // $FlowIgnore: the type is correct but Flow doesn't like the mutation above
-        state.registredImportedElements.push(importing);
-      }
-
       maybeIgnoreComment();
 
       const init = [];
+
+      if (importing != null) {
+        importing.descr = type;
+        init.push(
+          t.moduleImport(importing.module, importing.name, importing.descr)
+        );
+      }
 
       /**
        * instr*

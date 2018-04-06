@@ -63,13 +63,7 @@ function byteArrayEq(l: Array<Byte>, r: Array<Byte>): boolean {
 export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   const buf = new Uint8Array(ab);
 
-  let inc = 0;
-
-  function getUniqueName(prefix: string = "temp"): string {
-    inc++;
-
-    return prefix + "_" + inc;
-  }
+  const getUniqueName = t.getUniqueNameGenerator();
 
   let offset = 0;
 
@@ -461,7 +455,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new CompileError(`function signature not found (${typeindex})`);
       }
 
-      const id = t.identifier(getUniqueName("func"));
+      // preserve anonymous, a name might be resolved later
+      const id = t.withRaw(t.identifier(getUniqueName("func")), "");
 
       state.functionsInModule.push({
         id,
@@ -514,7 +509,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = func.id;
+        id = t.cloneNode(func.id);
+        id = t.withRaw(id, String(index));
+
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
         console.warn("Unsupported export type table");
@@ -532,6 +529,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           id = t.identifier(memNode.id.value + "");
         } else {
           id = t.identifier(getUniqueName("memory"));
+          id = t.withRaw(id, ""); // preserve anonymous
         }
 
         signature = null;
@@ -670,7 +668,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         parseInstructionBlock(instr);
 
-        const label = t.identifier(getUniqueName("loop"));
+        // preserve anonymous
+        const label = t.withRaw(t.identifier(getUniqueName("loop")), "");
         const loopNode = t.loopInstruction(label, blocktype, instr);
 
         code.push(loopNode);
@@ -696,7 +695,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const alternate = [];
 
         // FIXME(sven): where is that stored?
-        const testIndex = t.identifier(getUniqueName("ifindex"));
+        // preserve anonymous
+        const testIndex = t.withRaw(t.identifier(getUniqueName("ifindex")), "");
         const testInstrs = [];
 
         const ifNode = t.ifInstruction(
@@ -726,10 +726,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const instr = [];
         parseInstructionBlock(instr);
 
-        const label = t.identifier(getUniqueName());
+        // preserve anonymous
+        const label = t.withRaw(t.identifier(getUniqueName("block")), "");
 
-        // FIXME(sven): result type is ignored?
-        const blockNode = t.blockInstruction(label, instr);
+        const blockNode = t.blockInstruction(label, instr, blocktype);
 
         code.push(blockNode);
         instructionAlreadyCreated = true;
@@ -744,6 +744,31 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         code.push(callNode);
         instructionAlreadyCreated = true;
+      } else if (instruction.name === "call_indirect") {
+        const indexU32 = readU32();
+        const typeindex = indexU32.value;
+        eatBytes(indexU32.nextIndex);
+
+        dump([typeindex], "type index");
+
+        const signature = state.typesInModule[typeindex];
+
+        if (typeof signature === "undefined") {
+          throw new CompileError(
+            `call_indirect signature not found (${typeindex})`
+          );
+        }
+
+        const callNode = t.callIndirectInstruction(
+          signature.params,
+          signature.result,
+          []
+        );
+
+        eatBytes(1); // 0x00 - reserved byte
+
+        code.push(callNode);
+        instructionAlreadyCreated = true;
       } else if (instruction.name === "br_table") {
         const indicesu32 = readU32();
         const indices = indicesu32.value;
@@ -751,19 +776,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         dump([indices], "num indices");
 
-        for (let i = 0; i < indices; i++) {
+        for (let i = 0; i <= indices; i++) {
           const indexu32 = readU32();
           const index = indexu32.value;
           eatBytes(indexu32.nextIndex);
 
           dump([index], "index");
+
+          args.push(t.numberLiteral(indexu32.value.toString(), "f64"));
         }
-
-        const labelIndexu32 = readU32();
-        const labelIndex = labelIndexu32.value;
-        eatBytes(labelIndexu32.nextIndex);
-
-        dump([labelIndex], "label index");
       } else if (instructionByte >= 0x28 && instructionByte <= 0x40) {
         /**
          * Memory instructions
@@ -960,6 +981,59 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return t.globalType(type, globalType);
   }
 
+  // this section contains an array of function names and indices
+  function parseNameSectionFunctions() {
+    const functionNames = [];
+
+    const subSectionSizeInBytesu32 = readU32();
+    eatBytes(subSectionSizeInBytesu32.nextIndex);
+
+    const numbeOfFunctionsu32 = readU32();
+    const numbeOfFunctions = numbeOfFunctionsu32.value;
+    eatBytes(numbeOfFunctionsu32.nextIndex);
+
+    for (let i = 0; i < numbeOfFunctions; i++) {
+      const indexu32 = readU32();
+      const index = indexu32.value;
+      eatBytes(indexu32.nextIndex);
+
+      const name = readUTF8String();
+      eatBytes(name.nextIndex);
+
+      functionNames.push(t.functionNameMetadata(name.value, index));
+    }
+    return functionNames;
+  }
+
+  function parseNameSectionLocals() {
+    const subSectionSizeInBytesu32 = readU32();
+    const subSectionSizeInBytes = subSectionSizeInBytesu32.value;
+    eatBytes(subSectionSizeInBytesu32.nextIndex);
+
+    // TODO: add support for naming locals - for now we just eat this section
+    eatBytes(subSectionSizeInBytes);
+  }
+
+  // this is a custom suction that wat2wasm includes if invoked
+  // using the --debug-names option
+  function parseNameSection(remainingBytes: number) {
+    const nameMetadata = [];
+    const initialOffset = offset;
+
+    while (offset - initialOffset < remainingBytes) {
+      const sectionTypeByte = readByte();
+      eatBytes(1);
+
+      if (sectionTypeByte === 1) {
+        nameMetadata.push(...parseNameSectionFunctions());
+      } else if (sectionTypeByte === 2) {
+        parseNameSectionLocals();
+      }
+    }
+
+    return nameMetadata;
+  }
+
   function parseGlobalSection(numberOfGlobals: number) {
     const globals = [];
 
@@ -1127,7 +1201,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
-  function parseSection(): { nodes: Array<Node>, metadata: SectionMetadata } {
+  function parseSection(): {
+    nodes: Array<Node>,
+    metadata: SectionMetadata | Array<SectionMetadata>
+  } {
     const sectionId = readByte();
     eatBytes(1);
 
@@ -1389,17 +1466,23 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const nodes = [];
-        const metadata = t.sectionMetadata(
-          "custom",
-          startOffset,
-          sectionSizeInBytes
-        );
+        const metadata = [
+          t.sectionMetadata("custom", startOffset, sectionSizeInBytes)
+        ];
 
-        // We don't need to parse it, just eat all the bytes
-        eatBytes(sectionSizeInBytes);
+        const sectionName = readUTF8String();
+        eatBytes(sectionName.nextIndex);
 
-        return { nodes, metadata };
+        const remainingBytes = sectionSizeInBytes - sectionName.nextIndex;
+
+        if (sectionName.value === "name") {
+          metadata.push(...parseNameSection(remainingBytes));
+        } else {
+          // We don't parse otehr custom section
+          eatBytes(remainingBytes);
+        }
+
+        return { nodes: [], metadata };
       }
     }
 
@@ -1411,7 +1494,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   const moduleFields = [];
   const moduleMetadata = {
-    sections: []
+    sections: [],
+    functionNames: []
   };
 
   /**
@@ -1421,7 +1505,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const { nodes, metadata } = parseSection();
 
     moduleFields.push(...nodes);
-    moduleMetadata.sections.push(metadata);
+
+    const metadataArray = Array.isArray(metadata) ? metadata : [metadata];
+    metadataArray.forEach(metadataItem => {
+      if (metadataItem.type === "FunctionNameMetadata") {
+        moduleMetadata.functionNames.push(metadataItem);
+      } else {
+        moduleMetadata.sections.push(metadataItem);
+      }
+    });
   }
 
   /**
@@ -1488,6 +1580,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   dumpSep("end of program");
 
-  const module = t.module(null, moduleFields, moduleMetadata);
+  const module = t.module(
+    null,
+    moduleFields,
+    t.moduleMetadata(moduleMetadata.sections, moduleMetadata.functionNames)
+  );
   return t.program([module]);
 }

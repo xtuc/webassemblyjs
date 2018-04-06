@@ -1,0 +1,12 @@
+[
+  {
+    "type": "number",
+    "value": "0x80000000",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  }
+]

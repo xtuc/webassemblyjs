@@ -9,7 +9,8 @@
           "type": "Func",
           "name": {
             "type": "Identifier",
-            "value": "func_1"
+            "value": "func_0",
+            "raw": ""
           },
           "params": [],
           "result": [],

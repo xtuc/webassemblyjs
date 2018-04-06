@@ -1,0 +1,5 @@
+(module
+  (func
+    (block)
+  )
+)

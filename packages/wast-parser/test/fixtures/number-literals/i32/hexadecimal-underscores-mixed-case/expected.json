@@ -5,7 +5,8 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_1"
+        "value": "func_0",
+        "raw": ""
       },
       "params": [],
       "result": [],
@@ -18,7 +19,7 @@
             {
               "type": "NumberLiteral",
               "value": 109071,
-              "raw": "0x1aA0f"
+              "raw": "0x1_a_A_0_f"
             }
           ]
         }

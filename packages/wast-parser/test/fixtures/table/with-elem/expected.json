@@ -10,7 +10,8 @@
       },
       "name": {
         "type": "Identifier",
-        "value": "temp_1"
+        "value": "table_0",
+        "raw": ""
       },
       "elements": [
         {
@@ -28,7 +29,8 @@
       },
       "name": {
         "type": "Identifier",
-        "value": "temp_2"
+        "value": "table_1",
+        "raw": ""
       },
       "elements": [
         {

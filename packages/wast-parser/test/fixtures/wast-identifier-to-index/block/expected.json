@@ -25,7 +25,8 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "func_3"
+        "value": "func_2",
+        "raw": ""
       },
       "params": [],
       "result": [],
@@ -35,7 +36,8 @@
           "id": "block",
           "label": {
             "type": "Identifier",
-            "value": "block_4"
+            "value": "block_0",
+            "raw": ""
           },
           "instr": [
             {
@@ -56,7 +58,8 @@
                 "raw": "1"
               }
             }
-          ]
+          ],
+          "result": null
         }
       ]
     }

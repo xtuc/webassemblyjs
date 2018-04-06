@@ -75,13 +75,14 @@ type NodePath<T> = {
 type Node =
   | Program
   | FloatLiteral
-  | Program
+  | ModuleMetadata
   | StringLiteral
   | NumberLiteral
   | LongNumberLiteral
   | Identifier
   | Module
   | SectionMetadata
+  | FunctionNameMetadata
   | BinaryModule
   | QuoteModule
   | Func
@@ -182,7 +183,9 @@ type Identifier = {
   ...BaseNode,
 
   type: "Identifier",
-  value: string
+  value: string,
+
+  raw?: string
 };
 
 /**
@@ -201,7 +204,19 @@ type Module = {
 };
 
 type ModuleMetadata = {
-  sections: Array<SectionMetadata>
+  ...BaseNode,
+
+  type: "ModuleMetadata",
+  sections: Array<SectionMetadata>,
+  functionNames?: Array<FunctionNameMetadata>
+};
+
+type FunctionNameMetadata = {
+  ...BaseNode,
+
+  type: "FunctionNameMetadata",
+  value: string,
+  index: number
 };
 
 type SectionMetadata = {

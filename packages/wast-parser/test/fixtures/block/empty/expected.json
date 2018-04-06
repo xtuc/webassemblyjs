@@ -6,9 +6,11 @@
       "id": "block",
       "label": {
         "type": "Identifier",
-        "value": "block_1"
+        "value": "block_0",
+        "raw": ""
       },
-      "instr": []
+      "instr": [],
+      "result": null
     }
   ]
 }

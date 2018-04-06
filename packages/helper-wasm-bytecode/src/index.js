@@ -67,7 +67,13 @@ const tableTypes = {
 };
 
 const blockTypes = Object.assign({}, valtypes, {
-  0x40: null
+  // https://webassembly.github.io/spec/core/binary/types.html#binary-blocktype
+  0x40: null,
+  // https://webassembly.github.io/spec/core/binary/types.html#binary-valtype
+  0x7f: "i32",
+  0x7e: "i64",
+  0x7d: "f32",
+  0x7c: "f64"
 });
 
 const globalTypes = {

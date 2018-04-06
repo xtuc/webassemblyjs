@@ -9,7 +9,8 @@
           "type": "Func",
           "name": {
             "type": "Identifier",
-            "value": "func_1"
+            "value": "func_0",
+            "raw": ""
           },
           "params": [],
           "result": [],
@@ -22,7 +23,7 @@
             "type": "Func",
             "id": {
               "type": "Identifier",
-              "value": "func_1"
+              "value": "func_0"
             }
           }
         },
@@ -30,7 +31,8 @@
           "type": "Func",
           "name": {
             "type": "Identifier",
-            "value": "func_2"
+            "value": "func_1",
+            "raw": ""
           },
           "params": [],
           "result": [
@@ -45,7 +47,7 @@
             "type": "Func",
             "id": {
               "type": "Identifier",
-              "value": "func_2"
+              "value": "func_1"
             }
           }
         },
@@ -53,7 +55,8 @@
           "type": "Func",
           "name": {
             "type": "Identifier",
-            "value": "func_3"
+            "value": "func_2",
+            "raw": ""
           },
           "params": [
             {
@@ -70,7 +73,7 @@
             "type": "Func",
             "id": {
               "type": "Identifier",
-              "value": "func_3"
+              "value": "func_2"
             }
           }
         }

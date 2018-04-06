@@ -33,6 +33,32 @@ export function signature(object: string, name: string): SignatureMap {
   return sign[0];
 }
 
+export function functionNameMetadata(
+  value: string,
+  index: number
+): FunctionNameMetadata {
+  return {
+    type: "FunctionNameMetadata",
+    value,
+    index
+  };
+}
+
+export function moduleMetadata(
+  sections: Array<SectionMetadata>,
+  functionNames: Array<FunctionNameMetadata>
+): ModuleMetadata {
+  const n: ModuleMetadata = {
+    type: "ModuleMetadata",
+    sections
+  };
+
+  if (functionNames.length) {
+    n.functionNames = functionNames;
+  }
+  return n;
+}
+
 export function identifier(value: string): Identifier {
   return {
     type: "Identifier",
@@ -242,6 +268,12 @@ export function numberLiteral(
   let nan = false;
   let inf = false;
   let type = "NumberLiteral";
+  const original = rawValue;
+
+  // Remove numeric separators _
+  if (typeof rawValue === "string") {
+    rawValue = rawValue.replace(/_/g, "");
+  }
 
   if (typeof rawValue === "number") {
     value = rawValue;
@@ -295,9 +327,21 @@ export function numberLiteral(
     x.inf = true;
   }
 
-  x.raw = String(rawValue);
+  x.raw = String(original);
 
   return x;
+}
+
+export function getUniqueNameGenerator(): string => string {
+  const inc = {};
+  return function(prefix: string = "temp"): string {
+    if (!(prefix in inc)) {
+      inc[prefix] = 0;
+    } else {
+      inc[prefix] = inc[prefix] + 1;
+    }
+    return prefix + "_" + inc[prefix];
+  };
 }
 
 export function callInstruction(
@@ -339,6 +383,10 @@ export function ifInstruction(
   };
 }
 
+/**
+ * Decorators
+ */
+
 export function withLoc(n: Node, end: Position, start: Position): Node {
   const loc = {
     start,
@@ -346,6 +394,13 @@ export function withLoc(n: Node, end: Position, start: Position): Node {
   };
 
   n.loc = loc;
+
+  return n;
+}
+
+export function withRaw(n: Node, raw: string): Node {
+  // $FlowIgnore
+  n.raw = raw;
 
   return n;
 }
@@ -571,6 +626,10 @@ export function indexInFuncSection(index: Index): IndexInFuncSection {
     type: "IndexInFuncSection",
     index
   };
+}
+
+export function isAnonymous(ident: Identifier): boolean {
+  return ident.raw === "";
 }
 
 export { traverse, traverseWithHooks } from "./traverse";

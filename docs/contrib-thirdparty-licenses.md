@@ -239,7 +239,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ```
 
-## Notice for maurobringolf/webassembly-floating-point-hex-parser
+## Notice for packages/floating-point-hex-parser
 
 ```
 

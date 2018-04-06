@@ -28,7 +28,8 @@
           ],
           "name": {
             "type": "Identifier",
-            "value": "global_1"
+            "value": "global_0",
+            "raw": ""
           }
         },
         {
@@ -37,8 +38,8 @@
           "descr": {
             "type": "Global",
             "id": {
-              "type": "NumberLiteral",
-              "value": 0,
+              "type": "Identifier",
+              "value": "global_0",
               "raw": "0"
             }
           }
