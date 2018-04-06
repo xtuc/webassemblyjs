@@ -309,7 +309,7 @@ function replEval(input) {
       return assert_malformed(node);
     }
 
-    if (node.id === "assert_malformed") {
+    if (node.id === "assert_unlinkable") {
       throw new Error("assert_unlinkable: not implemented yet");
     }
   } else if (node.type === "Module") {

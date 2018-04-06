@@ -11,7 +11,9 @@ ESLINT = ./node_modules/.bin/eslint
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1
 MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 
-REPL = $(NODE) ./packages/cli/lib/repl.js
+SPEC_TEST_DIR = testsuite
+
+REPL = $(NODE) ./packages/repl/lib/bin.js
 
 .PHONY: test build
 
@@ -34,13 +36,10 @@ test: build
 	./scripts/test.sh
 
 test-whitelisted-spec:
-	$(REPL) spec/test/core/exports.wast
-	$(REPL) spec/test/core/globals.wast
-	$(REPL) spec/test/core/i32.wast
-	$(REPL) spec/test/core/binary.wast
-
-test-spec:
-	./spec/test/core/run.py --wasm ./lib/bin/repl.js
+	$(REPL) $(SPEC_TEST_DIR)/exports.wast
+	$(REPL) $(SPEC_TEST_DIR)/globals.wast
+	$(REPL) $(SPEC_TEST_DIR)/i32.wast
+	$(REPL) $(SPEC_TEST_DIR)/binary.wast
 
 lint:
 	$(ESLINT) packages

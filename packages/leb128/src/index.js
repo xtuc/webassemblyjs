@@ -1,6 +1,6 @@
 // @flow
 
-import leb from "leb";
+import leb from "./leb";
 
 /**
  * According to https://webassembly.github.io/spec/binary/values.html#binary-int
