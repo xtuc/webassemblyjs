@@ -1,0 +1,76 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Memory",
+      "limits": {
+        "type": "Limit",
+        "min": 1
+      },
+      "id": {
+        "type": "Identifier",
+        "value": "memory_0",
+        "raw": ""
+      }
+    },
+    {
+      "type": "Memory",
+      "limits": {
+        "type": "Limit",
+        "min": 1,
+        "max": 2
+      },
+      "id": {
+        "type": "Identifier",
+        "value": "memory_1",
+        "raw": ""
+      }
+    },
+    {
+      "type": "Memory",
+      "limits": {
+        "type": "Limit",
+        "min": 1,
+        "max": 2
+      },
+      "id": {
+        "type": "Identifier",
+        "value": "test"
+      }
+    },
+    {
+      "type": "Memory",
+      "limits": {
+        "type": "Limit",
+        "min": 1
+      },
+      "id": {
+        "type": "Identifier",
+        "value": "test"
+      }
+    },
+    {
+      "type": "Memory",
+      "limits": {
+        "type": "Limit",
+        "min": 0
+      },
+      "id": {
+        "type": "Identifier",
+        "value": "a"
+      }
+    },
+    {
+      "type": "Memory",
+      "limits": {
+        "type": "Limit",
+        "min": 254
+      },
+      "id": {
+        "type": "Identifier",
+        "value": "memory_5",
+        "raw": ""
+      }
+    }
+  ]
+}

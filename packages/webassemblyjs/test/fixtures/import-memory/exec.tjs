@@ -1,0 +1,20 @@
+it("should import the memory", () => {
+  const mem = new WebAssembly.Memory({ initial: 100 });
+
+  // Fill memory
+  const i32 = new Uint32Array(mem.buffer);
+  i32[0] = 10;
+
+  const importObject = {
+    env: { mem }
+  };
+
+  const m = WebAssembly.instantiateFromSource(watmodule, importObject);
+
+  assert.typeOf(m.exports.get(), "number");
+  assert.notEqual(m.exports.get(), 0); // default value
+  assert.equal(m.exports.get(), 10);
+
+  i32[0] = 1;
+  assert.equal(m.exports.get(), 1);
+});

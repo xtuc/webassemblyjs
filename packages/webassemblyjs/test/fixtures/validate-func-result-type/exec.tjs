@@ -1,0 +1,5 @@
+it("should throw a validation error", () => {
+  const fn = () => WebAssembly.instantiateFromSource(watmodule);
+
+  assert.throws(fn, "Validation errors");
+});

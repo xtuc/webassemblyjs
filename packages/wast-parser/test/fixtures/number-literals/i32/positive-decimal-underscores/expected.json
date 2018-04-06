@@ -1,0 +1,29 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 1000000,
+              "raw": "1_000_000"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

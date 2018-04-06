@@ -1,0 +1,115 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Global",
+      "globalType": {
+        "type": "GlobalType",
+        "valtype": "i32",
+        "mutability": "const"
+      },
+      "init": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 1,
+              "raw": "1"
+            }
+          ]
+        }
+      ],
+      "name": {
+        "type": "Identifier",
+        "value": "a"
+      }
+    },
+    {
+      "type": "Global",
+      "globalType": {
+        "type": "GlobalType",
+        "valtype": "i32",
+        "mutability": "const"
+      },
+      "init": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 1,
+              "raw": "1"
+            }
+          ]
+        }
+      ],
+      "name": {
+        "type": "Identifier",
+        "value": "b"
+      }
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "Instr",
+          "id": "get_global",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0,
+              "raw": "0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_1",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "Instr",
+          "id": "set_global",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 1,
+              "raw": "1"
+            },
+            {
+              "type": "Instr",
+              "id": "i32",
+              "object": "const",
+              "args": [
+                {
+                  "type": "FloatLiteral",
+                  "value": 1,
+                  "raw": "1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

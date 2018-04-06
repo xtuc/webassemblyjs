@@ -1,0 +1,35 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Memory",
+          "limits": {
+            "type": "Limit",
+            "min": 0
+          },
+          "id": {
+            "type": "Identifier",
+            "value": "memory_0",
+            "raw": ""
+          }
+        },
+        {
+          "type": "ModuleExport",
+          "name": "a",
+          "descr": {
+            "type": "Memory",
+            "id": {
+              "type": "Identifier",
+              "value": "memory_0",
+              "raw": "0"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

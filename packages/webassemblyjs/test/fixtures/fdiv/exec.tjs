@@ -1,0 +1,10 @@
+it("should correctly use the operands as dividend and divisor", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+
+  const dividend = 10;
+  const divisor = 2;
+  const res = m.exports.div(dividend, divisor);
+
+  assert.typeOf(res, "number");
+  assert.equal(res, 5);
+});

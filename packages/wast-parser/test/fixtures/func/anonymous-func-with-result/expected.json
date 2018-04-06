@@ -1,0 +1,18 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [
+        "i32"
+      ],
+      "body": []
+    }
+  ]
+}

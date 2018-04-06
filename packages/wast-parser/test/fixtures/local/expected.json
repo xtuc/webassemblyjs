@@ -1,0 +1,85 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "ValtypeLiteral",
+              "name": "i32"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "ValtypeLiteral",
+              "name": "i64"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "ValtypeLiteral",
+              "name": "f32"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "ValtypeLiteral",
+              "name": "f64"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "Identifier",
+              "value": "a"
+            },
+            {
+              "type": "ValtypeLiteral",
+              "name": "i32"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "local",
+          "args": [
+            {
+              "type": "Identifier",
+              "value": "b"
+            },
+            {
+              "type": "ValtypeLiteral",
+              "name": "f32"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

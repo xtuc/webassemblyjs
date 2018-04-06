@@ -1,0 +1,33 @@
+{
+  "name": "webassemblyjs",
+  "version": "1.2.2",
+  "keywords": [
+    "webassembly",
+    "interpreter",
+    "javascript",
+    "ast",
+    "compiler",
+    "parser",
+    "polyfill"
+  ],
+  "description": "WebAssembly interpreter",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "@webassemblyjs/ast": "1.2.2",
+    "@webassemblyjs/wasm-parser": "1.2.2",
+    "@webassemblyjs/wast-parser": "1.2.2",
+    "long": "^3.2.0"
+  },
+  "devDependencies": {
+    "@webassemblyjs/floating-point-hex-parser": "1.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git"
+  }
+}

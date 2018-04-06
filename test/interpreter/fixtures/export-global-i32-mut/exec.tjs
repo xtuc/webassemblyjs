@@ -1,4 +1,0 @@
-it("should throw an error", () => {
-  const instantiate = () => WebAssembly.instantiateFromSource(watfmodule);
-  assert.throws(instantiate, "Mutable globals cannot be exported");
-});

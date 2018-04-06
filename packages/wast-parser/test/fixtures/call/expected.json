@@ -1,0 +1,54 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "a"
+      },
+      "params": [],
+      "result": [],
+      "body": []
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "test"
+      },
+      "params": [],
+      "result": [],
+      "body": []
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_2",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "CallInstruction",
+          "id": "call",
+          "index": {
+            "type": "NumberLiteral",
+            "value": 0,
+            "raw": "0"
+          }
+        },
+        {
+          "type": "CallInstruction",
+          "id": "call",
+          "index": {
+            "type": "Identifier",
+            "value": "test"
+          }
+        }
+      ]
+    }
+  ]
+}

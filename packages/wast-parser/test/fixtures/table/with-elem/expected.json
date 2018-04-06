@@ -1,0 +1,47 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": 0
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "table_0",
+        "raw": ""
+      },
+      "elements": [
+        {
+          "type": "Identifier",
+          "value": "f"
+        }
+      ]
+    },
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": 0
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "table_1",
+        "raw": ""
+      },
+      "elements": [
+        {
+          "type": "Identifier",
+          "value": "a"
+        },
+        {
+          "type": "Identifier",
+          "value": "b"
+        }
+      ]
+    }
+  ]
+}

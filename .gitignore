@@ -58,5 +58,3 @@ typings/
 .env
 
 lib/
-
-*.wasm

@@ -1,8 +1,0 @@
-const m = WebAssembly.instantiateFromSource(watfmodule);
-
-it("should compute the correct value", () => {
-  const res = m.exports.add(1, 1);
-
-  assert.typeOf(res, "number");
-  assert.equal(res, 2);
-});

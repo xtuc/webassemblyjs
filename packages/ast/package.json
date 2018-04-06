@@ -1,0 +1,27 @@
+{
+  "name": "@webassemblyjs/ast",
+  "version": "1.2.2",
+  "description": "AST utils for webassemblyjs",
+  "keywords": [
+    "webassembly",
+    "javascript",
+    "ast"
+  ],
+  "main": "lib/index.js",
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "@webassemblyjs/wast-parser": "1.2.2",
+    "webassemblyjs": "1.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "dump-exports": "^0.1.0"
+  }
+}

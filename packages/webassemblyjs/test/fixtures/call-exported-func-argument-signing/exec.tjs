@@ -1,0 +1,11 @@
+it("should treat integers as signed", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+
+  // for numbers < 2^31 the input is the same as the output
+  let res = m.exports.get(1234);
+  assert.equal(res, 1234);
+
+  // for numbers > 2^31 the number is interpreted as signed
+  res = m.exports.get(0xbfffffff);
+  assert.equal(res, -0x40000001); // -2^32 + 0xbfffffff
+});

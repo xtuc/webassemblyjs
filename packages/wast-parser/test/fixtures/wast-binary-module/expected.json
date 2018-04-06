@@ -1,0 +1,31 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "BinaryModule",
+      "blob": [
+        ""
+      ],
+      "id": null,
+      "fields": []
+    },
+    {
+      "type": "BinaryModule",
+      "blob": [
+        "\\00asm",
+        "\\01\\00\\00\\00"
+      ],
+      "id": "M2",
+      "fields": []
+    },
+    {
+      "type": "BinaryModule",
+      "blob": [
+        "\\00asm",
+        "\\01\\00\\00\\00"
+      ],
+      "id": null,
+      "fields": []
+    }
+  ]
+}

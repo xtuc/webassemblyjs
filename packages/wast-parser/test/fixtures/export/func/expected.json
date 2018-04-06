@@ -1,0 +1,39 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [
+        "i32"
+      ],
+      "body": [
+        {
+          "type": "CallInstruction",
+          "id": "call",
+          "index": {
+            "type": "NumberLiteral",
+            "value": 0,
+            "raw": "0"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_1",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": []
+    }
+  ]
+}

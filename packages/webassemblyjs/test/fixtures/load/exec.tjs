@@ -1,0 +1,35 @@
+const PAGE_SIZE = Math.pow(2, 16);
+const I32_SIZE = 4;
+
+it("should load from the given location", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const i32 = new Uint32Array(m.exports.memory.buffer);
+
+  // store a number
+  i32[12 / I32_SIZE] = 45;
+  assert.equal(m.exports.load(12), 45);
+});
+
+it("should throw for memory out of bounds", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const i32 = new Uint32Array(m.exports.memory.buffer);
+
+  // upper bound
+  i32[PAGE_SIZE / I32_SIZE - 1] = 45;
+  assert.equal(m.exports.load(PAGE_SIZE - I32_SIZE), 45);
+
+  assert.throws(() => {
+    // upper bound exceeded
+    m.exports.load(PAGE_SIZE - I32_SIZE + 1);
+  }, "memory access out of bounds");
+});
+
+it("should support offsets", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const i32 = new Uint32Array(m.exports.memory.buffer);
+
+  // load a number with an offset
+  const offset = 4;
+  i32[(4 + offset) / I32_SIZE] = 45;
+  assert.equal(m.exports.load_with_offset(4), 45);
+});

@@ -1,0 +1,83 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_0",
+            "raw": ""
+          },
+          "params": [],
+          "result": [],
+          "body": []
+        },
+        {
+          "type": "ModuleExport",
+          "name": "a",
+          "descr": {
+            "type": "Func",
+            "id": {
+              "type": "Identifier",
+              "value": "func_0"
+            }
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_1",
+            "raw": ""
+          },
+          "params": [],
+          "result": [
+            "i32"
+          ],
+          "body": []
+        },
+        {
+          "type": "ModuleExport",
+          "name": "b",
+          "descr": {
+            "type": "Func",
+            "id": {
+              "type": "Identifier",
+              "value": "func_1"
+            }
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_2",
+            "raw": ""
+          },
+          "params": [
+            {
+              "valtype": "i32"
+            }
+          ],
+          "result": [],
+          "body": []
+        },
+        {
+          "type": "ModuleExport",
+          "name": "c",
+          "descr": {
+            "type": "Func",
+            "id": {
+              "type": "Identifier",
+              "value": "func_2"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

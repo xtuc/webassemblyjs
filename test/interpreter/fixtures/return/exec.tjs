@@ -1,8 +1,0 @@
-const m = WebAssembly.instantiateFromSource(watfmodule);
-
-it("should stop the interpretation and return the value", () => {
-  const res = m.exports.test();
-
-  assert.notEqual(res, 2, "Interpretation should have been stoped");
-  assert.equal(res, 1);
-});

@@ -1,0 +1,4 @@
+it("should throw an error", () => {
+  const instantiate = () => WebAssembly.instantiateFromSource(watmodule);
+  assert.throws(instantiate, "Export of globals of type i64 is not allowed");
+});

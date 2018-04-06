@@ -1,0 +1,32 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Data",
+      "memoryIndex": {
+        "type": "NumberLiteral",
+        "value": 0,
+        "raw": "0"
+      },
+      "offset": {
+        "type": "Instr",
+        "id": "const",
+        "args": [
+          {
+            "type": "NumberLiteral",
+            "value": 25,
+            "raw": "25"
+          }
+        ]
+      },
+      "init": {
+        "type": "Bytes",
+        "values": [
+          97,
+          98,
+          99
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "IfInstruction",
+          "id": "if",
+          "testLabel": {
+            "type": "Identifier",
+            "value": "label"
+          },
+          "test": [],
+          "consequent": [
+            {
+              "type": "Instr",
+              "id": "nop",
+              "args": []
+            }
+          ],
+          "alternate": [
+            {
+              "type": "Instr",
+              "id": "nop",
+              "args": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

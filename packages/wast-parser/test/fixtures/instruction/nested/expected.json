@@ -1,0 +1,308 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "Instr",
+          "id": "drop",
+          "args": [
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 4,
+                  "raw": "4"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "drop",
+          "args": [
+            {
+              "type": "BlockInstruction",
+              "id": "block",
+              "label": {
+                "type": "Identifier",
+                "value": "t"
+              },
+              "instr": [
+                {
+                  "type": "Instr",
+                  "id": "br",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 1,
+                      "raw": "1"
+                    },
+                    {
+                      "type": "Instr",
+                      "id": "const",
+                      "object": "i32",
+                      "args": [
+                        {
+                          "type": "NumberLiteral",
+                          "value": 8,
+                          "raw": "8"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 1,
+                      "raw": "1"
+                    }
+                  ]
+                }
+              ],
+              "result": null
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "drop",
+          "args": [
+            {
+              "type": "BlockInstruction",
+              "id": "block",
+              "label": {
+                "type": "Identifier",
+                "value": "block_1",
+                "raw": ""
+              },
+              "instr": [
+                {
+                  "type": "Instr",
+                  "id": "drop",
+                  "args": [
+                    {
+                      "type": "Instr",
+                      "id": "const",
+                      "object": "i32",
+                      "args": [
+                        {
+                          "type": "NumberLiteral",
+                          "value": 4,
+                          "raw": "4"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "drop",
+                  "args": [
+                    {
+                      "type": "BlockInstruction",
+                      "id": "block",
+                      "label": {
+                        "type": "Identifier",
+                        "value": "a"
+                      },
+                      "instr": [
+                        {
+                          "type": "Instr",
+                          "id": "br",
+                          "args": [
+                            {
+                              "type": "NumberLiteral",
+                              "value": 1,
+                              "raw": "1"
+                            },
+                            {
+                              "type": "Instr",
+                              "id": "const",
+                              "object": "i32",
+                              "args": [
+                                {
+                                  "type": "NumberLiteral",
+                                  "value": 8,
+                                  "raw": "8"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "Instr",
+                          "id": "const",
+                          "object": "i32",
+                          "args": [
+                            {
+                              "type": "NumberLiteral",
+                              "value": 1,
+                              "raw": "1"
+                            }
+                          ]
+                        }
+                      ],
+                      "result": null
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 32,
+                      "raw": "32"
+                    }
+                  ]
+                }
+              ],
+              "result": "i32"
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "br_if",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 10,
+                  "raw": "10"
+                }
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0,
+                  "raw": "0"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "Instr",
+          "id": "br_table",
+          "args": [
+            {
+              "type": "FloatLiteral",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "BlockInstruction",
+              "id": "block",
+              "label": {
+                "type": "Identifier",
+                "value": "block_3",
+                "raw": ""
+              },
+              "instr": [
+                {
+                  "type": "Instr",
+                  "id": "drop",
+                  "args": [
+                    {
+                      "type": "Instr",
+                      "id": "br_if",
+                      "args": [
+                        {
+                          "type": "NumberLiteral",
+                          "value": 1,
+                          "raw": "1"
+                        },
+                        {
+                          "type": "Instr",
+                          "id": "const",
+                          "object": "i32",
+                          "args": [
+                            {
+                              "type": "NumberLiteral",
+                              "value": 8,
+                              "raw": "8"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "Instr",
+                          "id": "get_local",
+                          "args": [
+                            {
+                              "type": "NumberLiteral",
+                              "value": 0,
+                              "raw": "0"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 4,
+                      "raw": "4"
+                    }
+                  ]
+                }
+              ],
+              "result": "i32"
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1,
+                  "raw": "1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

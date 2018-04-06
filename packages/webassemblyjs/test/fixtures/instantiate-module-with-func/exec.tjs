@@ -1,0 +1,13 @@
+const m = WebAssembly.instantiateFromSource(watmodule);
+
+it("should be an object", () => {
+  assert.typeOf(m, "object");
+  assert.typeOf(m.exports, "object");
+});
+
+it("should have callable exports", () => {
+  assert.typeOf(m.exports.add, "function");
+  assert.typeOf(m.exports.an, "function");
+
+  m.exports.an();
+});

@@ -1,0 +1,4 @@
+it("should catch the duplciated export", () => {
+  const fn = () => WebAssembly.instantiateFromSource(watmodule);
+  assert.throws(fn, "Duplicate export name");
+});

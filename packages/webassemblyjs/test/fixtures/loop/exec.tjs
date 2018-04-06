@@ -1,0 +1,5 @@
+it("should return the correct results", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+
+  assert.equal(m.exports.singular(), 7);
+});

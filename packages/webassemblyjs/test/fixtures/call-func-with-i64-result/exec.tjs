@@ -1,0 +1,7 @@
+it("should throw when calling the exported function", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+
+  const fn = m.exports.test;
+
+  assert.throws(fn, "i64 in signature");
+});

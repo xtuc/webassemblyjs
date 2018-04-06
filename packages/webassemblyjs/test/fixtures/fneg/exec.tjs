@@ -1,0 +1,36 @@
+const m = WebAssembly.instantiateFromSource(watmodule);
+
+it("should negate positive input", () => {
+  const res = m.exports.neg(0.5);
+
+  assert.typeOf(res, "number");
+  assert.equal(res, -0.5);
+});
+
+it("should negate negative input", () => {
+  const res = m.exports.neg(-12341234);
+
+  assert.typeOf(res, "number");
+  assert.equal(res, 12341234);
+});
+
+it("should negate negative zero", () => {
+  const res = m.exports.neg(-0);
+
+  assert.typeOf(res, "number");
+  assert.equal(res, 0);
+});
+
+it("should negate NaN", () => {
+  const res = m.exports.neg(NaN);
+
+  assert.typeOf(res, "number");
+  assert.isTrue(Object.is(res, NaN));
+});
+
+it("should negate Infinity", () => {
+  const res = m.exports.neg(Infinity);
+
+  assert.typeOf(res, "number");
+  assert.equal(res, -Infinity);
+});

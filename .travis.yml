@@ -4,4 +4,5 @@ node_js:
   - "9"
   - "8"
 
+before_script: make bootstrap
 script: make test-ci

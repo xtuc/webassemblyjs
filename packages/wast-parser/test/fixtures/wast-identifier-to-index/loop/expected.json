@@ -1,0 +1,85 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "a"
+      },
+      "params": [],
+      "result": [],
+      "body": []
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_1",
+        "raw": ""
+      },
+      "params": [],
+      "result": [
+        "i32"
+      ],
+      "body": [
+        {
+          "type": "LoopInstruction",
+          "id": "loop",
+          "label": {
+            "type": "Identifier",
+            "value": "loop_0",
+            "raw": ""
+          },
+          "resulttype": "i32",
+          "instr": [
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "br",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1,
+                  "raw": "1"
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 4,
+                      "raw": "4"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 2,
+                  "raw": "2"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

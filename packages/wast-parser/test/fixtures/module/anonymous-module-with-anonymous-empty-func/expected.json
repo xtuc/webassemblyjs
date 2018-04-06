@@ -1,0 +1,22 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_0",
+            "raw": ""
+          },
+          "params": [],
+          "result": [],
+          "body": []
+        }
+      ]
+    }
+  ]
+}

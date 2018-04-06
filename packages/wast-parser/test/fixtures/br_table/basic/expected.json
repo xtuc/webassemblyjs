@@ -1,0 +1,38 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "Instr",
+          "id": "br_table",
+          "args": [
+            {
+              "type": "FloatLiteral",
+              "value": 0,
+              "raw": "0"
+            },
+            {
+              "type": "FloatLiteral",
+              "value": 1,
+              "raw": "1"
+            },
+            {
+              "type": "FloatLiteral",
+              "value": 3,
+              "raw": "3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

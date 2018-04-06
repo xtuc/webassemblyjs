@@ -1,0 +1,7 @@
+it("should compute the correct value", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const res = m.exports.add(1, 1);
+
+  assert.typeOf(res, "number");
+  assert.equal(res, 2);
+});

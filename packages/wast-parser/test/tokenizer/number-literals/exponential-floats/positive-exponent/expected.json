@@ -1,0 +1,62 @@
+[
+  {
+    "type": "openParen",
+    "value": "(",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "valtype",
+    "value": "f32",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 2
+      }
+    }
+  },
+  {
+    "type": "dot",
+    "value": ".",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 5
+      }
+    }
+  },
+  {
+    "type": "name",
+    "value": "const",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 6
+      }
+    }
+  },
+  {
+    "type": "number",
+    "value": "1e1",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 12
+      }
+    }
+  },
+  {
+    "type": "closeParen",
+    "value": ")",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 15
+      }
+    }
+  }
+]

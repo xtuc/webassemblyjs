@@ -1,0 +1,32 @@
+[
+  {
+    "type": "openParen",
+    "value": "(",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 1
+      }
+    }
+  },
+  {
+    "type": "number",
+    "value": "23",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 2
+      }
+    }
+  },
+  {
+    "type": "closeParen",
+    "value": ")",
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 4
+      }
+    }
+  }
+]

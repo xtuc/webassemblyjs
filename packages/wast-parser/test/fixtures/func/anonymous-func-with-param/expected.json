@@ -1,0 +1,69 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [
+        {
+          "id": "p",
+          "valtype": "i32"
+        }
+      ],
+      "result": [],
+      "body": []
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_1",
+        "raw": ""
+      },
+      "params": [
+        {
+          "id": "P",
+          "valtype": "i64"
+        }
+      ],
+      "result": [],
+      "body": []
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_2",
+        "raw": ""
+      },
+      "params": [
+        {
+          "id": "$",
+          "valtype": "f32"
+        }
+      ],
+      "result": [],
+      "body": []
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_3",
+        "raw": ""
+      },
+      "params": [
+        {
+          "id": "$",
+          "valtype": "f64"
+        }
+      ],
+      "result": [],
+      "body": []
+    }
+  ]
+}

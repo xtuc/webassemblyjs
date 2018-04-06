@@ -1,0 +1,48 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "value": "test"
+      },
+      "instr": [],
+      "result": "i32"
+    },
+    {
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "value": "block_1",
+        "raw": ""
+      },
+      "instr": [],
+      "result": "i32"
+    },
+    {
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "value": "block_2",
+        "raw": ""
+      },
+      "instr": [],
+      "result": "i64"
+    },
+    {
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "value": "block_3",
+        "raw": ""
+      },
+      "instr": [],
+      "result": "f64"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": "10"
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "a"
+      }
+    },
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": "0",
+        "max": "10"
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "b"
+      }
+    },
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": "10"
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "table_2",
+        "raw": ""
+      }
+    },
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": "0",
+        "max": "10"
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "table_3",
+        "raw": ""
+      }
+    },
+    {
+      "type": "Table",
+      "elementType": "anyfunc",
+      "limits": {
+        "type": "Limit",
+        "min": "10"
+      },
+      "name": {
+        "type": "Identifier",
+        "value": "a"
+      }
+    }
+  ]
+}

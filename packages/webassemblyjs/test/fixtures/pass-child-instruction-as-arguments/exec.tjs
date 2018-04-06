@@ -1,0 +1,6 @@
+it("should use child instructions as arguments", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const res = m.exports.add1(1);
+
+  assert.equal(res, 2);
+});

@@ -1,0 +1,15 @@
+it("should run the start func", () => {
+  let called = false;
+
+  const importObject = {
+    env: {
+      cb: () => {
+        called = true;
+      }
+    }
+  };
+
+  WebAssembly.instantiateFromSource(watmodule, importObject);
+
+  assert.isTrue(called, "Callback not called");
+});

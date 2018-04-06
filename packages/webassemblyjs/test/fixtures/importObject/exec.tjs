@@ -1,0 +1,19 @@
+let called = false;
+
+function fn() {
+  called = true;
+}
+
+const importObject = {
+  module: {
+    fn
+  }
+};
+
+it("should import the function", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule, importObject);
+
+  m.exports.main();
+
+  assert.isTrue(called);
+});

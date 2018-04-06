@@ -1,0 +1,12 @@
+const importObject = {
+  env: {
+    a: 1
+  }
+};
+
+it("should import the global value", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule, importObject);
+
+  assert.typeOf(m.exports.get(), "number");
+  assert.equal(m.exports.get(), 1);
+});

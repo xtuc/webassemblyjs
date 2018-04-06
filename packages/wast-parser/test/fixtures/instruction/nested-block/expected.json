@@ -1,0 +1,73 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "BlockInstruction",
+          "id": "block",
+          "label": {
+            "type": "Identifier",
+            "value": "block_0",
+            "raw": ""
+          },
+          "instr": [
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "Identifier",
+                "value": "dummy"
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 150,
+                  "raw": "150"
+                }
+              ]
+            },
+            {
+              "type": "BlockInstruction",
+              "id": "block",
+              "label": {
+                "type": "Identifier",
+                "value": "block_1",
+                "raw": ""
+              },
+              "instr": [
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "object": "i32",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 150,
+                      "raw": "150"
+                    }
+                  ]
+                }
+              ],
+              "result": null
+            }
+          ],
+          "result": null
+        }
+      ]
+    }
+  ]
+}

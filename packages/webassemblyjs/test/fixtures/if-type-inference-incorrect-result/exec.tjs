@@ -1,0 +1,5 @@
+it("should throw a type error", () => {
+  const fn = () => WebAssembly.instantiateFromSource(watmodule);
+
+  assert.throws(fn, "type mismatch in if branches");
+});

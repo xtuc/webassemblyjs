@@ -1,0 +1,6 @@
+it("should throw an error for invalid arity", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const fn = () => m.exports.add(1, 1, 9, 10);
+
+  assert.throws(fn, "Function 1 called with 4 arguments but 2 expected");
+});

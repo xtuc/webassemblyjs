@@ -1,0 +1,9 @@
+it("should instantiate the data section", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule, { m: { a: 2 } });
+  const i32 = new Uint8Array(m.exports.memory.buffer);
+
+  // store a number
+  assert.equal(i32[2], 97 /* a */);
+  assert.equal(i32[3], 98 /* b */);
+  assert.equal(i32[4], 99 /* c */);
+});

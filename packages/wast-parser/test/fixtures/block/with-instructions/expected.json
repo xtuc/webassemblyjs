@@ -1,0 +1,27 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "BlockInstruction",
+      "id": "block",
+      "label": {
+        "type": "Identifier",
+        "value": "block_0",
+        "raw": ""
+      },
+      "instr": [
+        {
+          "type": "Instr",
+          "id": "nop",
+          "args": []
+        },
+        {
+          "type": "Instr",
+          "id": "nop",
+          "args": []
+        }
+      ],
+      "result": null
+    }
+  ]
+}

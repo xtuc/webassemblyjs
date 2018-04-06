@@ -1,0 +1,22 @@
+const m = WebAssembly.instantiateFromSource(watmodule);
+
+it("should not change positive input", () => {
+  const res = m.exports.abs(0.5);
+
+  assert.typeOf(res, "number");
+  assert.equal(res, 0.5);
+});
+
+it("should flip negative input", () => {
+  const res = m.exports.abs(-12341234);
+
+  assert.typeOf(res, "number");
+  assert.equal(res, 12341234);
+});
+
+it("should flip negative zero", () => {
+  const res = m.exports.abs(-0);
+
+  assert.typeOf(res, "number");
+  assert.equal(res, 0);
+});

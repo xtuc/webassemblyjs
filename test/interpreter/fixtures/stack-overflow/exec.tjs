@@ -1,7 +1,0 @@
-const m = WebAssembly.instantiateFromSource(watfmodule);
-
-it("should throw an RuntimeError due to a stack overflow", () => {
-  const fn = m.exports.main;
-
-  assert.throws(fn, "Maximum call stack depth reached");
-});

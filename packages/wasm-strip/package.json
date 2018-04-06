@@ -1,0 +1,25 @@
+{
+  "name": "@webassemblyjs/wasm-strip",
+  "version": "1.2.2",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
+  "bin": {
+    "wasm-strip": "./lib/cli.js"
+  },
+  "dependencies": {
+    "@webassemblyjs/helper-wasm-section": "1.2.2",
+    "@webassemblyjs/wasm-parser": "1.2.2"
+  }
+}

@@ -1,0 +1,459 @@
+const parseFloat = require("@webassemblyjs/floating-point-hex-parser");
+
+// \(assert_return \(invoke "([fi][0-9]{2})\.([0-9a-z_.]*)" \([fi][0-9]{2}\.const ([^)]*)\)\) \([fi][0-9]{2}\.const ([+.:0-9xa-z-]*)\)\)
+// equals("$2_$1", "$3", "$4");
+
+it("should conform to the wasm test suite", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+
+  const equals = (exportFunction, inputString, expectedOutputString) => {
+    // optionally parse the input as floating point hex
+    const input =
+      inputString.indexOf("x") !== -1
+        ? parseFloat(inputString)
+        : Number(inputString);
+
+    // the WebAssembly test suite assert values are unsigned integer values. The JS <=> WASM boundary
+    // converts these into signed values. Here we perform the required conversion so that we can use the
+    // same expected value in our tests.
+    const expectedOutput = Number(expectedOutputString) | 0;
+
+    // verify
+    const result = m.exports[exportFunction](input);
+    assert.equal(result, expectedOutput);
+  };
+
+  //   equals("extend_s_i32_i64", "0", "0");
+  // equals("extend_s_i32_i64", "10000", "10000");
+  // equals("extend_s_i32_i64", "-10000", "-10000");
+  // equals("extend_s_i32_i64", "-1", "-1");
+  // equals("extend_s_i32_i64", "0x7fffffff", "0x000000007fffffff");
+  // equals("extend_s_i32_i64", "0x80000000", "0xffffffff80000000");
+
+  // equals("extend_u_i32_i64", "0", "0");
+  // equals("extend_u_i32_i64", "10000", "10000");
+  // equals("extend_u_i32_i64", "-10000", "0x00000000ffffd8f0");
+  // equals("extend_u_i32_i64", "-1", "0xffffffff");
+  // equals("extend_u_i32_i64", "0x7fffffff", "0x000000007fffffff");
+  // equals("extend_u_i32_i64", "0x80000000", "0x0000000080000000");
+
+  // equals("wrap_i64_i32", "-1", "-1");
+  // equals("wrap_i64_i32", "-100000", "-100000");
+  // equals("wrap_i64_i32", "0x80000000", "0x80000000");
+  // equals("wrap_i64_i32", "0xffffffff7fffffff", "0x7fffffff");
+  // equals("wrap_i64_i32", "0xffffffff00000000", "0x00000000");
+  // equals("wrap_i64_i32", "0xfffffffeffffffff", "0xffffffff");
+  // equals("wrap_i64_i32", "0xffffffff00000001", "0x00000001");
+  // equals("wrap_i64_i32", "0", "0");
+  // equals("wrap_i64_i32", "1311768467463790320", "0x9abcdef0");
+  // equals("wrap_i64_i32", "0x00000000ffffffff", "0xffffffff");
+  // equals("wrap_i64_i32", "0x0000000100000000", "0x00000000");
+  // equals("wrap_i64_i32", "0x0000000100000001", "0x00000001");
+
+  // equals("trunc_s_f32_i32", "0.0", "0");
+  // equals("trunc_s_f32_i32", "-0.0", "0");
+  // equals("trunc_s_f32_i32", "0x1p-149", "0");
+  // equals("trunc_s_f32_i32", "-0x1p-149", "0");
+  // equals("trunc_s_f32_i32", "1.0", "1");
+  // equals("trunc_s_f32_i32", "0x1.19999ap+0", "1");
+  // equals("trunc_s_f32_i32", "1.5", "1");
+  // equals("trunc_s_f32_i32", "-1.0", "-1");
+  // equals("trunc_s_f32_i32", "-0x1.19999ap+0", "-1");
+  // equals("trunc_s_f32_i32", "-1.5", "-1");
+  // equals("trunc_s_f32_i32", "-1.9", "-1");
+  // equals("trunc_s_f32_i32", "-2.0", "-2");
+  // equals("trunc_s_f32_i32", "2147483520.0", "2147483520");
+  // equals("trunc_s_f32_i32", "-2147483648.0", "-2147483648");
+  // (assert_trap (invoke "i32.trunc_s_f32" (f32.const 2147483648.0)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_s_f32" (f32.const -2147483904.0)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_s_f32" (f32.const inf)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_s_f32" (f32.const -inf)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_s_f32" (f32.const nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_s_f32" (f32.const nan:0x200000)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_s_f32" (f32.const -nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_s_f32" (f32.const -nan:0x200000)) "invalid conversion to integer")
+
+  // equals("trunc_u_f32_i32", "0.0", "0");
+  // equals("trunc_u_f32_i32", "-0.0", "0");
+  // equals("trunc_u_f32_i32", "0x1p-149", "0");
+  // equals("trunc_u_f32_i32", "-0x1p-149", "0");
+  // equals("trunc_u_f32_i32", "1.0", "1");
+  // equals("trunc_u_f32_i32", "0x1.19999ap+0", "1");
+  // equals("trunc_u_f32_i32", "1.5", "1");
+  // equals("trunc_u_f32_i32", "1.9", "1");
+  // equals("trunc_u_f32_i32", "2.0", "2");
+  // equals("trunc_u_f32_i32", "2147483648", "-2147483648"); ;; 0x1.00000p+31 -> 8000 0000
+  // equals("trunc_u_f32_i32", "4294967040.0", "-256");
+  // equals("trunc_u_f32_i32", "-0x1.ccccccp-1", "0");
+  // equals("trunc_u_f32_i32", "-0x1.fffffep-1", "0");
+  // (assert_trap (invoke "i32.trunc_u_f32" (f32.const 4294967296.0)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f32" (f32.const -1.0)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f32" (f32.const inf)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f32" (f32.const -inf)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f32" (f32.const nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_u_f32" (f32.const nan:0x200000)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_u_f32" (f32.const -nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_u_f32" (f32.const -nan:0x200000)) "invalid conversion to integer")
+
+  // equals("trunc_s_f64_i32", "0.0", "0");
+  // equals("trunc_s_f64_i32", "-0.0", "0");
+  // equals("trunc_s_f64_i32", "0x0.0000000000001p-1022", "0");
+  // equals("trunc_s_f64_i32", "-0x0.0000000000001p-1022", "0");
+  // equals("trunc_s_f64_i32", "1.0", "1");
+  // equals("trunc_s_f64_i32", "0x1.199999999999ap+0", "1");
+  // equals("trunc_s_f64_i32", "1.5", "1");
+  // equals("trunc_s_f64_i32", "-1.0", "-1");
+  // equals("trunc_s_f64_i32", "-0x1.199999999999ap+0", "-1");
+  // equals("trunc_s_f64_i32", "-1.5", "-1");
+  // equals("trunc_s_f64_i32", "-1.9", "-1");
+  // equals("trunc_s_f64_i32", "-2.0", "-2");
+  // equals("trunc_s_f64_i32", "2147483647.0", "2147483647");
+  // equals("trunc_s_f64_i32", "-2147483648.0", "-2147483648");
+  // (assert_trap (invoke "i32.trunc_s_f64" (f64.const 2147483648.0)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_s_f64" (f64.const -2147483649.0)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_s_f64" (f64.const inf)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_s_f64" (f64.const -inf)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_s_f64" (f64.const nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_s_f64" (f64.const nan:0x4000000000000)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_s_f64" (f64.const -nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_s_f64" (f64.const -nan:0x4000000000000)) "invalid conversion to integer")
+
+  // equals("trunc_u_f64_i32", "0.0", "0");
+  // equals("trunc_u_f64_i32", "-0.0", "0");
+  // equals("trunc_u_f64_i32", "0x0.0000000000001p-1022", "0");
+  // equals("trunc_u_f64_i32", "-0x0.0000000000001p-1022", "0");
+  // equals("trunc_u_f64_i32", "1.0", "1");
+  // equals("trunc_u_f64_i32", "0x1.199999999999ap+0", "1");
+  // equals("trunc_u_f64_i32", "1.5", "1");
+  // equals("trunc_u_f64_i32", "1.9", "1");
+  // equals("trunc_u_f64_i32", "2.0", "2");
+  // equals("trunc_u_f64_i32", "2147483648", "-2147483648"); ;; 0x1.00000p+31 -> 8000 0000
+  // equals("trunc_u_f64_i32", "4294967295.0", "-1");
+  // equals("trunc_u_f64_i32", "-0x1.ccccccccccccdp-1", "0");
+  // equals("trunc_u_f64_i32", "-0x1.fffffffffffffp-1", "0");
+  // equals("trunc_u_f64_i32", "1e8", "100000000");
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const 4294967296.0)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const -1.0)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const 1e16)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const 1e30)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const 9223372036854775808)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const inf)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const -inf)) "integer overflow")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const nan:0x4000000000000)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const -nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i32.trunc_u_f64" (f64.const -nan:0x4000000000000)) "invalid conversion to integer")
+
+  // equals("trunc_s_f32_i64", "0.0", "0");
+  // equals("trunc_s_f32_i64", "-0.0", "0");
+  // equals("trunc_s_f32_i64", "0x1p-149", "0");
+  // equals("trunc_s_f32_i64", "-0x1p-149", "0");
+  // equals("trunc_s_f32_i64", "1.0", "1");
+  // equals("trunc_s_f32_i64", "0x1.19999ap+0", "1");
+  // equals("trunc_s_f32_i64", "1.5", "1");
+  // equals("trunc_s_f32_i64", "-1.0", "-1");
+  // equals("trunc_s_f32_i64", "-0x1.19999ap+0", "-1");
+  // equals("trunc_s_f32_i64", "-1.5", "-1");
+  // equals("trunc_s_f32_i64", "-1.9", "-1");
+  // equals("trunc_s_f32_i64", "-2.0", "-2");
+  // equals("trunc_s_f32_i64", "4294967296", "4294967296"); ;; 0x1.00000p+32 -> 1 0000 0000
+  // equals("trunc_s_f32_i64", "-4294967296", "-4294967296"); ;; -0x1.00000p+32 -> ffff ffff 0000 0000
+  // equals("trunc_s_f32_i64", "9223371487098961920.0", "9223371487098961920");
+  // equals("trunc_s_f32_i64", "-9223372036854775808.0", "-9223372036854775808");
+  // (assert_trap (invoke "i64.trunc_s_f32" (f32.const 9223372036854775808.0)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_s_f32" (f32.const -9223373136366403584.0)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_s_f32" (f32.const inf)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_s_f32" (f32.const -inf)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_s_f32" (f32.const nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_s_f32" (f32.const nan:0x200000)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_s_f32" (f32.const -nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_s_f32" (f32.const -nan:0x200000)) "invalid conversion to integer")
+
+  // equals("trunc_u_f32_i64", "0.0", "0");
+  // equals("trunc_u_f32_i64", "-0.0", "0");
+  // equals("trunc_u_f32_i64", "0x1p-149", "0");
+  // equals("trunc_u_f32_i64", "-0x1p-149", "0");
+  // equals("trunc_u_f32_i64", "1.0", "1");
+  // equals("trunc_u_f32_i64", "0x1.19999ap+0", "1");
+  // equals("trunc_u_f32_i64", "1.5", "1");
+  // equals("trunc_u_f32_i64", "4294967296", "4294967296");
+  // equals("trunc_u_f32_i64", "18446742974197923840.0", "-1099511627776");
+  // equals("trunc_u_f32_i64", "-0x1.ccccccp-1", "0");
+  // equals("trunc_u_f32_i64", "-0x1.fffffep-1", "0");
+  // (assert_trap (invoke "i64.trunc_u_f32" (f32.const 18446744073709551616.0)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_u_f32" (f32.const -1.0)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_u_f32" (f32.const inf)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_u_f32" (f32.const -inf)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_u_f32" (f32.const nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_u_f32" (f32.const nan:0x200000)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_u_f32" (f32.const -nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_u_f32" (f32.const -nan:0x200000)) "invalid conversion to integer")
+
+  // equals("trunc_s_f64_i64", "0.0", "0");
+  // equals("trunc_s_f64_i64", "-0.0", "0");
+  // equals("trunc_s_f64_i64", "0x0.0000000000001p-1022", "0");
+  // equals("trunc_s_f64_i64", "-0x0.0000000000001p-1022", "0");
+  // equals("trunc_s_f64_i64", "1.0", "1");
+  // equals("trunc_s_f64_i64", "0x1.199999999999ap+0", "1");
+  // equals("trunc_s_f64_i64", "1.5", "1");
+  // equals("trunc_s_f64_i64", "-1.0", "-1");
+  // equals("trunc_s_f64_i64", "-0x1.199999999999ap+0", "-1");
+  // equals("trunc_s_f64_i64", "-1.5", "-1");
+  // equals("trunc_s_f64_i64", "-1.9", "-1");
+  // equals("trunc_s_f64_i64", "-2.0", "-2");
+  // equals("trunc_s_f64_i64", "4294967296", "4294967296"); ;; 0x1.00000p+32 -> 1 0000 0000
+  // equals("trunc_s_f64_i64", "-4294967296", "-4294967296"); ;; -0x1.00000p+32 -> ffff ffff 0000 0000
+  // equals("trunc_s_f64_i64", "9223372036854774784.0", "9223372036854774784");
+  // equals("trunc_s_f64_i64", "-9223372036854775808.0", "-9223372036854775808");
+  // (assert_trap (invoke "i64.trunc_s_f64" (f64.const 9223372036854775808.0)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_s_f64" (f64.const -9223372036854777856.0)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_s_f64" (f64.const inf)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_s_f64" (f64.const -inf)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_s_f64" (f64.const nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_s_f64" (f64.const nan:0x4000000000000)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_s_f64" (f64.const -nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_s_f64" (f64.const -nan:0x4000000000000)) "invalid conversion to integer")
+
+  // equals("trunc_u_f64_i64", "0.0", "0");
+  // equals("trunc_u_f64_i64", "-0.0", "0");
+  // equals("trunc_u_f64_i64", "0x0.0000000000001p-1022", "0");
+  // equals("trunc_u_f64_i64", "-0x0.0000000000001p-1022", "0");
+  // equals("trunc_u_f64_i64", "1.0", "1");
+  // equals("trunc_u_f64_i64", "0x1.199999999999ap+0", "1");
+  // equals("trunc_u_f64_i64", "1.5", "1");
+  // equals("trunc_u_f64_i64", "4294967295", "0xffffffff");
+  // equals("trunc_u_f64_i64", "4294967296", "0x100000000");
+  // equals("trunc_u_f64_i64", "18446744073709549568.0", "-2048");
+  // equals("trunc_u_f64_i64", "-0x1.ccccccccccccdp-1", "0");
+  // equals("trunc_u_f64_i64", "-0x1.fffffffffffffp-1", "0");
+  // equals("trunc_u_f64_i64", "1e8", "100000000");
+  // equals("trunc_u_f64_i64", "1e16", "10000000000000000");
+  // equals("trunc_u_f64_i64", "9223372036854775808", "-9223372036854775808");
+  // (assert_trap (invoke "i64.trunc_u_f64" (f64.const 18446744073709551616.0)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_u_f64" (f64.const -1.0)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_u_f64" (f64.const inf)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_u_f64" (f64.const -inf)) "integer overflow")
+  // (assert_trap (invoke "i64.trunc_u_f64" (f64.const nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_u_f64" (f64.const nan:0x4000000000000)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_u_f64" (f64.const -nan)) "invalid conversion to integer")
+  // (assert_trap (invoke "i64.trunc_u_f64" (f64.const -nan:0x4000000000000)) "invalid conversion to integer")
+
+  // equals("convert_s_i32_f32", "1", "1.0");
+  // equals("convert_s_i32_f32", "-1", "-1.0");
+  // equals("convert_s_i32_f32", "0", "0.0");
+  // equals("convert_s_i32_f32", "2147483647", "2147483648");
+  // equals("convert_s_i32_f32", "-2147483648", "-2147483648");
+  // equals("convert_s_i32_f32", "1234567890", "0x1.26580cp+30");
+  // ;; Test rounding directions.
+  // equals("convert_s_i32_f32", "16777217", "16777216.0");
+  // equals("convert_s_i32_f32", "-16777217", "-16777216.0");
+  // equals("convert_s_i32_f32", "16777219", "16777220.0");
+  // equals("convert_s_i32_f32", "-16777219", "-16777220.0");
+
+  // equals("convert_s_i64_f32", "1", "1.0");
+  // equals("convert_s_i64_f32", "-1", "-1.0");
+  // equals("convert_s_i64_f32", "0", "0.0");
+  // equals("convert_s_i64_f32", "9223372036854775807", "9223372036854775807");
+  // equals("convert_s_i64_f32", "-9223372036854775808", "-9223372036854775808");
+  // equals("convert_s_i64_f32", "314159265358979", "0x1.1db9e8p+48"); ;; PI
+  // ;; Test rounding directions.
+  // equals("convert_s_i64_f32", "16777217", "16777216.0");
+  // equals("convert_s_i64_f32", "-16777217", "-16777216.0");
+  // equals("convert_s_i64_f32", "16777219", "16777220.0");
+  // equals("convert_s_i64_f32", "-16777219", "-16777220.0");
+
+  // equals("convert_s_i32_f64", "1", "1.0");
+  // equals("convert_s_i32_f64", "-1", "-1.0");
+  // equals("convert_s_i32_f64", "0", "0.0");
+  // equals("convert_s_i32_f64", "2147483647", "2147483647");
+  // equals("convert_s_i32_f64", "-2147483648", "-2147483648");
+  // equals("convert_s_i32_f64", "987654321", "987654321");
+
+  // equals("convert_s_i64_f64", "1", "1.0");
+  // equals("convert_s_i64_f64", "-1", "-1.0");
+  // equals("convert_s_i64_f64", "0", "0.0");
+  // equals("convert_s_i64_f64", "9223372036854775807", "9223372036854775807");
+  // equals("convert_s_i64_f64", "-9223372036854775808", "-9223372036854775808");
+  // equals("convert_s_i64_f64", "4669201609102990", "4669201609102990"); ;; Feigenbaum
+  // ;; Test rounding directions.
+  // equals("convert_s_i64_f64", "9007199254740993", "9007199254740992");
+  // equals("convert_s_i64_f64", "-9007199254740993", "-9007199254740992");
+  // equals("convert_s_i64_f64", "9007199254740995", "9007199254740996");
+  // equals("convert_s_i64_f64", "-9007199254740995", "-9007199254740996");
+
+  // equals("convert_u_i32_f32", "1", "1.0");
+  // equals("convert_u_i32_f32", "0", "0.0");
+  // equals("convert_u_i32_f32", "2147483647", "2147483648");
+  // equals("convert_u_i32_f32", "-2147483648", "2147483648");
+  // equals("convert_u_i32_f32", "0x12345678", "0x1.234568p+28");
+  // equals("convert_u_i32_f32", "0xffffffff", "4294967296.0");
+  // equals("convert_u_i32_f32", "0x80000080", "0x1.000000p+31");
+  // equals("convert_u_i32_f32", "0x80000081", "0x1.000002p+31");
+  // equals("convert_u_i32_f32", "0x80000082", "0x1.000002p+31");
+  // equals("convert_u_i32_f32", "0xfffffe80", "0x1.fffffcp+31");
+  // equals("convert_u_i32_f32", "0xfffffe81", "0x1.fffffep+31");
+  // equals("convert_u_i32_f32", "0xfffffe82", "0x1.fffffep+31");
+  // ;; Test rounding directions.
+  // equals("convert_u_i32_f32", "16777217", "16777216.0");
+  // equals("convert_u_i32_f32", "16777219", "16777220.0");
+
+  // equals("convert_u_i64_f32", "1", "1.0");
+  // equals("convert_u_i64_f32", "0", "0.0");
+  // equals("convert_u_i64_f32", "9223372036854775807", "9223372036854775807");
+  // equals("convert_u_i64_f32", "-9223372036854775808", "9223372036854775808");
+  // equals("convert_u_i64_f32", "0xffffffffffffffff", "18446744073709551616.0");
+  // ;; Test rounding directions.
+  // equals("convert_u_i64_f32", "16777217", "16777216.0");
+  // equals("convert_u_i64_f32", "16777219", "16777220.0");
+
+  // equals("convert_u_i32_f64", "1", "1.0");
+  // equals("convert_u_i32_f64", "0", "0.0");
+  // equals("convert_u_i32_f64", "2147483647", "2147483647");
+  // equals("convert_u_i32_f64", "-2147483648", "2147483648");
+  // equals("convert_u_i32_f64", "0xffffffff", "4294967295.0");
+
+  // equals("convert_u_i64_f64", "1", "1.0");
+  // equals("convert_u_i64_f64", "0", "0.0");
+  // equals("convert_u_i64_f64", "9223372036854775807", "9223372036854775807");
+  // equals("convert_u_i64_f64", "-9223372036854775808", "9223372036854775808");
+  // equals("convert_u_i64_f64", "0xffffffffffffffff", "18446744073709551616.0");
+  // equals("convert_u_i64_f64", "0x8000000000000400", "0x1.0000000000000p+63");
+  // equals("convert_u_i64_f64", "0x8000000000000401", "0x1.0000000000001p+63");
+  // equals("convert_u_i64_f64", "0x8000000000000402", "0x1.0000000000001p+63");
+  // equals("convert_u_i64_f64", "0xfffffffffffff400", "0x1.ffffffffffffep+63");
+  // equals("convert_u_i64_f64", "0xfffffffffffff401", "0x1.fffffffffffffp+63");
+  // equals("convert_u_i64_f64", "0xfffffffffffff402", "0x1.fffffffffffffp+63");
+  // ;; Test rounding directions.
+  // equals("convert_u_i64_f64", "9007199254740993", "9007199254740992");
+  // equals("convert_u_i64_f64", "9007199254740995", "9007199254740996");
+
+  // equals("promote_f32_f64", "0.0", "0.0");
+  // equals("promote_f32_f64", "-0.0", "-0.0");
+  // equals("promote_f32_f64", "0x1p-149", "0x1p-149");
+  // equals("promote_f32_f64", "-0x1p-149", "-0x1p-149");
+  // equals("promote_f32_f64", "1.0", "1.0");
+  // equals("promote_f32_f64", "-1.0", "-1.0");
+  // equals("promote_f32_f64", "-0x1.fffffep+127", "-0x1.fffffep+127");
+  // equals("promote_f32_f64", "0x1.fffffep+127", "0x1.fffffep+127");
+  // ;; Generated randomly by picking a random int and reinterpret it to float.
+  // equals("promote_f32_f64", "0x1p-119", "0x1p-119");
+  // ;; Generated randomly by picking a random float.
+  // equals("promote_f32_f64", "0x1.8f867ep+125", "6.6382536710104395e+37");
+  // equals("promote_f32_f64", "inf", "inf");
+  // equals("promote_f32_f64", "-inf", "-inf");
+  // (assert_return_canonical_nan (invoke "f64.promote_f32" (f32.const nan)))
+  // (assert_return_arithmetic_nan (invoke "f64.promote_f32" (f32.const nan:0x200000)))
+  // (assert_return_canonical_nan (invoke "f64.promote_f32" (f32.const -nan)))
+  // (assert_return_arithmetic_nan (invoke "f64.promote_f32" (f32.const -nan:0x200000)))
+
+  // equals("demote_f64_f32", "0.0", "0.0");
+  // equals("demote_f64_f32", "-0.0", "-0.0");
+  // equals("demote_f64_f32", "0x0.0000000000001p-1022", "0.0");
+  // equals("demote_f64_f32", "-0x0.0000000000001p-1022", "-0.0");
+  // equals("demote_f64_f32", "1.0", "1.0");
+  // equals("demote_f64_f32", "-1.0", "-1.0");
+  // equals("demote_f64_f32", "0x1.fffffe0000000p-127", "0x1p-126");
+  // equals("demote_f64_f32", "-0x1.fffffe0000000p-127", "-0x1p-126");
+  // equals("demote_f64_f32", "0x1.fffffdfffffffp-127", "0x1.fffffcp-127");
+  // equals("demote_f64_f32", "-0x1.fffffdfffffffp-127", "-0x1.fffffcp-127");
+  // equals("demote_f64_f32", "0x1p-149", "0x1p-149");
+  // equals("demote_f64_f32", "-0x1p-149", "-0x1p-149");
+  // equals("demote_f64_f32", "0x1.fffffd0000000p+127", "0x1.fffffcp+127");
+  // equals("demote_f64_f32", "-0x1.fffffd0000000p+127", "-0x1.fffffcp+127");
+  // equals("demote_f64_f32", "0x1.fffffd0000001p+127", "0x1.fffffep+127");
+  // equals("demote_f64_f32", "-0x1.fffffd0000001p+127", "-0x1.fffffep+127");
+  // equals("demote_f64_f32", "0x1.fffffep+127", "0x1.fffffep+127");
+  // equals("demote_f64_f32", "-0x1.fffffep+127", "-0x1.fffffep+127");
+  // equals("demote_f64_f32", "0x1.fffffefffffffp+127", "0x1.fffffep+127");
+  // equals("demote_f64_f32", "-0x1.fffffefffffffp+127", "-0x1.fffffep+127");
+  // equals("demote_f64_f32", "0x1.ffffffp+127", "inf");
+  // equals("demote_f64_f32", "-0x1.ffffffp+127", "-inf");
+  // equals("demote_f64_f32", "0x1p-119", "0x1p-119");
+  // equals("demote_f64_f32", "0x1.8f867ep+125", "0x1.8f867ep+125");
+  // equals("demote_f64_f32", "inf", "inf");
+  // equals("demote_f64_f32", "-inf", "-inf");
+  // equals("demote_f64_f32", "0x1.0000000000001p+0", "1.0");
+  // equals("demote_f64_f32", "0x1.fffffffffffffp-1", "1.0");
+  // equals("demote_f64_f32", "0x1.0000010000000p+0", "0x1.000000p+0");
+  // equals("demote_f64_f32", "0x1.0000010000001p+0", "0x1.000002p+0");
+  // equals("demote_f64_f32", "0x1.000002fffffffp+0", "0x1.000002p+0");
+  // equals("demote_f64_f32", "0x1.0000030000000p+0", "0x1.000004p+0");
+  // equals("demote_f64_f32", "0x1.0000050000000p+0", "0x1.000004p+0");
+  // equals("demote_f64_f32", "0x1.0000010000000p+24", "0x1.0p+24");
+  // equals("demote_f64_f32", "0x1.0000010000001p+24", "0x1.000002p+24");
+  // equals("demote_f64_f32", "0x1.000002fffffffp+24", "0x1.000002p+24");
+  // equals("demote_f64_f32", "0x1.0000030000000p+24", "0x1.000004p+24");
+  // equals("demote_f64_f32", "0x1.4eae4f7024c7p+108", "0x1.4eae5p+108");
+  // equals("demote_f64_f32", "0x1.a12e71e358685p-113", "0x1.a12e72p-113");
+  // equals("demote_f64_f32", "0x1.cb98354d521ffp-127", "0x1.cb9834p-127");
+  // equals("demote_f64_f32", "-0x1.6972b30cfb562p+1", "-0x1.6972b4p+1");
+  // equals("demote_f64_f32", "-0x1.bedbe4819d4c4p+112", "-0x1.bedbe4p+112");
+  // (assert_return_canonical_nan (invoke "f32.demote_f64" (f64.const nan)))
+  // (assert_return_arithmetic_nan (invoke "f32.demote_f64" (f64.const nan:0x4000000000000)))
+  // (assert_return_canonical_nan (invoke "f32.demote_f64" (f64.const -nan)))
+  // (assert_return_arithmetic_nan (invoke "f32.demote_f64" (f64.const -nan:0x4000000000000)))
+  // equals("demote_f64_f32", "0x1p-1022", "0.0");
+  // equals("demote_f64_f32", "-0x1p-1022", "-0.0");
+  // equals("demote_f64_f32", "0x1.0p-150", "0.0");
+  // equals("demote_f64_f32", "-0x1.0p-150", "-0.0");
+  // equals("demote_f64_f32", "0x1.0000000000001p-150", "0x1p-149");
+  // equals("demote_f64_f32", "-0x1.0000000000001p-150", "-0x1p-149");
+
+  // equals("reinterpret_i32_f32", "0", "0.0");
+  // equals("reinterpret_i32_f32", "0x80000000", "-0.0");
+  // equals("reinterpret_i32_f32", "1", "0x1p-149");
+  // equals("reinterpret_i32_f32", "-1", "-nan:0x7fffff");
+  // equals("reinterpret_i32_f32", "123456789", "0x1.b79a2ap-113");
+  // equals("reinterpret_i32_f32", "-2147483647", "-0x1p-149");
+  // equals("reinterpret_i32_f32", "0x7f800000", "inf");
+  // equals("reinterpret_i32_f32", "0xff800000", "-inf");
+  // equals("reinterpret_i32_f32", "0x7fc00000", "nan");
+  // equals("reinterpret_i32_f32", "0xffc00000", "-nan");
+  // equals("reinterpret_i32_f32", "0x7fa00000", "nan:0x200000");
+  // equals("reinterpret_i32_f32", "0xffa00000", "-nan:0x200000");
+
+  // equals("reinterpret_i64_f64", "0", "0.0");
+  // equals("reinterpret_i64_f64", "1", "0x0.0000000000001p-1022");
+  // equals("reinterpret_i64_f64", "-1", "-nan:0xfffffffffffff");
+  // equals("reinterpret_i64_f64", "0x8000000000000000", "-0.0");
+  // equals("reinterpret_i64_f64", "1234567890", "0x0.00000499602d2p-1022");
+  // equals("reinterpret_i64_f64", "-9223372036854775807", "-0x0.0000000000001p-1022");
+  // equals("reinterpret_i64_f64", "0x7ff0000000000000", "inf");
+  // equals("reinterpret_i64_f64", "0xfff0000000000000", "-inf");
+  // equals("reinterpret_i64_f64", "0x7ff8000000000000", "nan");
+  // equals("reinterpret_i64_f64", "0xfff8000000000000", "-nan");
+  // equals("reinterpret_i64_f64", "0x7ff4000000000000", "nan:0x4000000000000");
+  // equals("reinterpret_i64_f64", "0xfff4000000000000", "-nan:0x4000000000000");
+
+  equals("reinterpret_f32_i32", "0.0", "0");
+  equals("reinterpret_f32_i32", "-0.0", "0x80000000");
+  equals("reinterpret_f32_i32", "0x1p-149", "1");
+  // equals("reinterpret_f32_i32", "-nan:0x7fffff", "-1");
+  equals("reinterpret_f32_i32", "-0x1p-149", "0x80000001");
+  equals("reinterpret_f32_i32", "1.0", "1065353216");
+  equals("reinterpret_f32_i32", "3.1415926", "1078530010");
+  equals("reinterpret_f32_i32", "0x1.fffffep+127", "2139095039");
+  equals("reinterpret_f32_i32", "-0x1.fffffep+127", "-8388609");
+  // equals("reinterpret_f32_i32", "inf", "0x7f800000");
+  // equals("reinterpret_f32_i32", "-inf", "0xff800000");
+  // equals("reinterpret_f32_i32", "nan", "0x7fc00000");
+  // equals("reinterpret_f32_i32", "-nan", "0xffc00000");
+  // equals("reinterpret_f32_i32", "nan:0x200000", "0x7fa00000");
+  // equals("reinterpret_f32_i32", "-nan:0x200000", "0xffa00000");
+
+  // equals("reinterpret_f64_i64", "0.0", "0");
+  // equals("reinterpret_f64_i64", "-0.0", "0x8000000000000000");
+  // equals("reinterpret_f64_i64", "0x0.0000000000001p-1022", "1");
+  // equals("reinterpret_f64_i64", "-nan:0xfffffffffffff", "-1");
+  // equals("reinterpret_f64_i64", "-0x0.0000000000001p-1022", "0x8000000000000001");
+  // equals("reinterpret_f64_i64", "1.0", "4607182418800017408");
+  // equals("reinterpret_f64_i64", "3.14159265358979", "4614256656552045841");
+  // equals("reinterpret_f64_i64", "0x1.fffffffffffffp+1023", "9218868437227405311");
+  // equals("reinterpret_f64_i64", "-0x1.fffffffffffffp+1023", "-4503599627370497");
+  // equals("reinterpret_f64_i64", "inf", "0x7ff0000000000000");
+  // equals("reinterpret_f64_i64", "-inf", "0xfff0000000000000");
+  // equals("reinterpret_f64_i64", "nan", "0x7ff8000000000000");
+  // equals("reinterpret_f64_i64", "-nan", "0xfff8000000000000");
+  // equals("reinterpret_f64_i64", "nan:0x4000000000000", "0x7ff4000000000000");
+  // equals("reinterpret_f64_i64", "-nan:0x4000000000000", "0xfff4000000000000");
+});

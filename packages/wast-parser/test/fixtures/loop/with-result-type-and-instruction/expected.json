@@ -1,0 +1,34 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "params": [],
+      "result": [],
+      "body": [
+        {
+          "type": "LoopInstruction",
+          "id": "loop",
+          "label": {
+            "type": "Identifier",
+            "value": "loop_0",
+            "raw": ""
+          },
+          "resulttype": "i32",
+          "instr": [
+            {
+              "type": "Instr",
+              "id": "nop",
+              "args": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,2 +1,3 @@
-types/
-src/compiler/parsing/wasm/types/
+packages/*/node_modules
+packages/*/lib
+packages/dce/src/libwabt.js

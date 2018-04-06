@@ -1,0 +1,55 @@
+const PAGE_SIZE = Math.pow(2, 16);
+const I32_SIZE = 4;
+
+it("should export the memory instance", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+
+  assert.containsAllKeys(m.exports.memory, ["buffer"]);
+});
+
+it("should store at the given location", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const i32 = new Uint32Array(m.exports.memory.buffer);
+
+  // store a positive
+  m.exports.store(12, 45);
+  assert.equal(i32[12 / I32_SIZE], 45);
+
+  // store a negative
+  m.exports.store(16, -100);
+  // note - we have to re-interpret the Uint32Array as signed
+  assert.equal(i32[16 / I32_SIZE] | 0, -100);
+});
+
+it("should throw for memory out of bounds", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const i32 = new Uint32Array(m.exports.memory.buffer);
+
+  // upper bound
+  m.exports.store(PAGE_SIZE - I32_SIZE, 22);
+  assert.equal(i32[PAGE_SIZE / I32_SIZE - 1], 22);
+
+  assert.throws(() => {
+    // upper bound exceeded
+    m.exports.store(PAGE_SIZE - I32_SIZE + 1, 22);
+  }, "memory access out of bounds");
+});
+
+it("should support offsets", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const i32 = new Uint32Array(m.exports.memory.buffer);
+
+  // upper bound
+  const offset = 4;
+  m.exports.store_with_offset(4, 22);
+  assert.equal(i32[(4 + offset) / I32_SIZE], 22);
+});
+
+it("should support lower bit depth store", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const i8 = new Uint8Array(m.exports.memory.buffer);
+
+  // upper bound
+  m.exports.store8(5, 22);
+  assert.equal(i8[5], 22);
+});

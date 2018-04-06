@@ -1,0 +1,14 @@
+it("should have entries in the table", () => {
+  const tbl = new WebAssembly.Table({ initial: 1, element: "anyfunc" });
+
+  const importObj = {
+    env: {
+      tbl
+    }
+  };
+
+  WebAssembly.instantiateFromSource(watmodule, importObj);
+
+  assert.lengthOf(tbl, 1);
+  assert.typeOf(tbl.get(0), "function");
+});

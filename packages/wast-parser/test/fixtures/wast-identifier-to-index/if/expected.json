@@ -1,0 +1,224 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "dummy"
+      },
+      "params": [],
+      "result": [],
+      "body": []
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_1",
+        "raw": ""
+      },
+      "params": [
+        {
+          "valtype": "i32"
+        }
+      ],
+      "result": [
+        "i32"
+      ],
+      "body": [
+        {
+          "type": "IfInstruction",
+          "id": "if",
+          "testLabel": {
+            "type": "Identifier",
+            "value": "if_0",
+            "raw": ""
+          },
+          "test": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0,
+                  "raw": "0"
+                }
+              ]
+            }
+          ],
+          "consequent": [
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            }
+          ],
+          "alternate": []
+        },
+        {
+          "type": "IfInstruction",
+          "id": "if",
+          "testLabel": {
+            "type": "Identifier",
+            "value": "if_1",
+            "raw": ""
+          },
+          "test": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0,
+                  "raw": "0"
+                }
+              ]
+            }
+          ],
+          "consequent": [],
+          "alternate": [
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            }
+          ]
+        },
+        {
+          "type": "IfInstruction",
+          "id": "if",
+          "testLabel": {
+            "type": "Identifier",
+            "value": "if_2",
+            "raw": ""
+          },
+          "test": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 0,
+                  "raw": "0"
+                }
+              ]
+            }
+          ],
+          "result": "i32",
+          "consequent": [
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 8,
+                  "raw": "8"
+                }
+              ]
+            }
+          ],
+          "alternate": [
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "NumberLiteral",
+                "value": 0,
+                "raw": "0"
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 9,
+                  "raw": "9"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

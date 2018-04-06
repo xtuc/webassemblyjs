@@ -1,0 +1,9 @@
+it("should throw a runetimeError when trapped", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+
+  assert.throws(
+    m.exports.trap,
+    WebAssembly.runtimeError,
+    "Execution has been trapped"
+  );
+});
