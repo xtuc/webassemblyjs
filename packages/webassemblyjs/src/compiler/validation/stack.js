@@ -574,9 +574,9 @@ function getType(moduleContext, stack, instruction) {
       break;
     }
     /**
-     * Control instructions
+     * br
      *
-     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-br
      */
     case "br": {
       const index = instruction.args[0].value;
@@ -586,6 +586,21 @@ function getType(moduleContext, stack, instruction) {
       }
       args = moduleContext.getLabel(index);
       result = []; // Technically arbitrary but we don't implement that currently
+      break;
+    }
+    /**
+     * br_if
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-br-if
+     */
+    case "br_if": {
+      const index = instruction.args[0].value;
+      if (!moduleContext.getLabel(index)) {
+        errors.push(`Label ${index} does not exist`);
+        return false;
+      }
+      args = [...moduleContext.getLabel(index), "i32"];
+      result = moduleContext.getLabel(index);
       break;
     }
     /**
