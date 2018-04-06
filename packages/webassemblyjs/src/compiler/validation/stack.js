@@ -56,6 +56,14 @@ class ModuleContext {
     this.labels.unshift(result);
   }
 
+  hasLabel(index) {
+    return this.labels.length > index && index >= 0;
+  }
+
+  getLabel(index) {
+    return this.labels[index];
+  }
+
   /**
    * Locals
    */
@@ -563,6 +571,21 @@ function getType(moduleContext, stack, instruction) {
     case "reinterpret/i32": {
       args = ["i32"];
       result = [instruction.object];
+      break;
+    }
+    /**
+     * Control instructions
+     *
+     *
+     */
+    case "br": {
+      const index = instruction.args[0].value;
+      if (!moduleContext.getLabel(index)) {
+        errors.push(`Label ${index} does not exist`);
+        return false;
+      }
+      args = moduleContext.getLabel(index);
+      result = []; // Technically arbitrary but we don't implement that currently
       break;
     }
     /**
