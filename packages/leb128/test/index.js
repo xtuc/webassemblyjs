@@ -2,7 +2,8 @@
 
 const { assert } = require("chai");
 
-const { decodeUInt32 } = require("../lib");
+// const Long = require("long");
+const { decodeUInt32, decodeInt64 } = require("../lib");
 
 describe("LEB128", () => {
   describe("should decode an u32", () => {
@@ -35,5 +36,21 @@ describe("LEB128", () => {
       assert.equal(u32.value, 165675008);
       assert.equal(u32.nextIndex, 4);
     });
+  });
+
+  // FIXME(sven): reenable that we have two's complement
+  it.skip("should decode number where |n| > 2^53", () => {
+    const u64 = decodeInt64(
+      Buffer.from([0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x7f])
+    );
+
+    assert.typeOf(u64.value, "object");
+    assert.typeOf(u64.value.hi, "number");
+    assert.typeOf(u64.value.low, "number");
+
+    // console.log(new Long(u64.value.hi, u64.value.low).toString())
+
+    // assert.equal(u32.value, 165675008);
+    assert.equal(u64.nextIndex, 10);
   });
 });

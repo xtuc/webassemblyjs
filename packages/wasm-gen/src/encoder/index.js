@@ -1,7 +1,7 @@
 // @flow
 
 import constants from "@webassemblyjs/helper-wasm-bytecode";
-import * as leb from "@webassemblyjs/helper-leb128";
+import * as leb from "@webassemblyjs/leb128";
 import { encodeNode } from "../index";
 
 function assertNotIdentifierNode(n: Node) {

@@ -13,9 +13,9 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [floating-point-hex-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/floating-point-hex-parser) - Parser function for floating point hexadecimals.
 - [helper-buffer](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-buffer) - Buffer manipulation helpers
 - [helper-fsm](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-fsm) - FSM implementation
-- [helper-leb128](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-leb128) - Wrapper arround `leb`
 - [helper-wasm-bytecode](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-wasm-bytecode) - Constants for the wasm format
 - [helper-wasm-section](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-wasm-section) - Section manipulation helpers
+- [leb128](https://github.com/xtuc/webassemblyjs/tree/master/packages/leb128) - `LEB128` decoding
 - [wasm-edit](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-edit) - Replace in-place an AST node in the binary.
 - [wasm-gen](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-gen) - WebAssembly binary format printer
 - [wasm-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-parser) - WebAssembly binary format parser

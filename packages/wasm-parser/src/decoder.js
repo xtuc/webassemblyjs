@@ -1,6 +1,16 @@
 // @flow
 
 import { CompileError } from "webassemblyjs/lib/errors";
+
+import {
+  decodeInt32,
+  decodeUInt32,
+  MAX_NUMBER_OF_BYTE_U32,
+  decodeInt64,
+  decodeUInt64,
+  MAX_NUMBER_OF_BYTE_U64
+} from "@webassemblyjs/leb128";
+
 const t = require("@webassemblyjs/ast");
 const {
   importTypes,
@@ -16,16 +26,6 @@ const {
   moduleVersion,
   sections
 } = require("@webassemblyjs/helper-wasm-bytecode");
-
-const {
-  decodeInt32,
-  decodeUInt32,
-  MAX_NUMBER_OF_BYTE_U32,
-
-  decodeInt64,
-  decodeUInt64,
-  MAX_NUMBER_OF_BYTE_U64
-} = require("@webassemblyjs/helper-leb128");
 
 const ieee754 = require("./ieee754");
 const { utf8ArrayToStr } = require("./utf8");
