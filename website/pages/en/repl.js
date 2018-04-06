@@ -37,7 +37,7 @@ class Repl extends React.Component {
           <input style={{ width: "100%" }} id="value" />
         </form>
 
-        <script src="https://bundle.run/@webassemblyjs/repl@1.2.2" />
+        <script src="https://bundle.run/@webassemblyjs/repl@1.2.2-1" />
         <script src="/js/repl.js" />
       </Container>
     );

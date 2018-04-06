@@ -333,6 +333,8 @@ export function createRepl({ isVerbose, onAssert }) {
 
       buffer = "";
     }
+
+    return buffer;
   }
 
   // function prettyPrintInstance(instance) {

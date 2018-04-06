@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/repl",
-  "version": "1.2.2",
+  "version": "1.2.2-1",
   "description": "WebAssembly REPL",
   "main": "lib/index.js",
   "scripts": {
