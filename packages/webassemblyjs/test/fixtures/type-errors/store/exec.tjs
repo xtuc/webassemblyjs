@@ -1,0 +1,6 @@
+it("should throw an error during instantiation when type checking fails", () => {
+  assert.throws(
+    () => WebAssembly.instantiateFromSource(watmodule),
+    "Expected type i64 but got i32"
+  );
+});
