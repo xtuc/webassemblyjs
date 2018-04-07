@@ -36,7 +36,7 @@ function tokenToString(token: Object): string {
 }
 
 type ParserState = {
-  registredExportedElements: Array<{
+  registeredExportedElements: Array<{
     type: ExportDescr,
     name: string,
     id: Index
@@ -48,7 +48,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
   const getUniqueName = t.getUniqueNameGenerator();
 
   const state: ParserState = {
-    registredExportedElements: []
+    registeredExportedElements: []
   };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
@@ -172,7 +172,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const name = token.value;
         eatToken();
 
-        state.registredExportedElements.push({
+        state.registeredExportedElements.push({
           type: "Memory",
           name,
           id
@@ -302,7 +302,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           const exportName = token.value;
           eatToken();
 
-          state.registredExportedElements.push({
+          state.registeredExportedElements.push({
             type: "Table",
             name: exportName,
             id: name
@@ -811,19 +811,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       while (token.type !== tokens.closeParen) {
         moduleFields.push(walk());
-
-        if (state.registredExportedElements.length > 0) {
-          state.registredExportedElements.forEach(decl => {
-            moduleFields.push(t.moduleExport(decl.name, decl.type, decl.id));
-          });
-
-          state.registredExportedElements = [];
-        }
-
         token = tokensList[current];
       }
 
       eatTokenOfType(tokens.closeParen);
+
+      state.registeredExportedElements.forEach(decl => {
+        moduleFields.push(t.moduleExport(decl.name, decl.type, decl.id));
+      });
 
       return t.module(name, moduleFields);
     }
@@ -1225,7 +1220,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        */
       const id = t.identifier(funcId.value);
 
-      state.registredExportedElements.push({
+      state.registeredExportedElements.push({
         type: "Func",
         name,
         id
@@ -1344,7 +1339,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const exportName = token.value;
         eatTokenOfType(tokens.string);
 
-        state.registredExportedElements.push({
+        state.registeredExportedElements.push({
           type: "Global",
           name: exportName,
           id: name

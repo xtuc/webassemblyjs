@@ -1,4 +1,3 @@
-;; shorthand exports results in structural differences between WASM / WAT parser
 (module
   (func (export "a"))
   (func (export "b") (result i32))

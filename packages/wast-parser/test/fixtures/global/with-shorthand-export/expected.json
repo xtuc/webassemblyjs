@@ -32,17 +32,6 @@
           }
         },
         {
-          "type": "ModuleExport",
-          "name": "a",
-          "descr": {
-            "type": "Global",
-            "id": {
-              "type": "Identifier",
-              "value": "test"
-            }
-          }
-        },
-        {
           "type": "Global",
           "globalType": {
             "type": "GlobalType",
@@ -70,18 +59,6 @@
           }
         },
         {
-          "type": "ModuleExport",
-          "name": "b",
-          "descr": {
-            "type": "Global",
-            "id": {
-              "type": "Identifier",
-              "value": "global_1",
-              "raw": ""
-            }
-          }
-        },
-        {
           "type": "Global",
           "globalType": {
             "type": "GlobalType",
@@ -106,6 +83,29 @@
             "type": "Identifier",
             "value": "global_2",
             "raw": ""
+          }
+        },
+        {
+          "type": "ModuleExport",
+          "name": "a",
+          "descr": {
+            "type": "Global",
+            "id": {
+              "type": "Identifier",
+              "value": "test"
+            }
+          }
+        },
+        {
+          "type": "ModuleExport",
+          "name": "b",
+          "descr": {
+            "type": "Global",
+            "id": {
+              "type": "Identifier",
+              "value": "global_1",
+              "raw": ""
+            }
           }
         },
         {

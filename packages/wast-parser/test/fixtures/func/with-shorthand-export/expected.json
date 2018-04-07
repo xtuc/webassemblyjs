@@ -17,17 +17,6 @@
           "body": []
         },
         {
-          "type": "ModuleExport",
-          "name": "a",
-          "descr": {
-            "type": "Func",
-            "id": {
-              "type": "Identifier",
-              "value": "func_0"
-            }
-          }
-        },
-        {
           "type": "Func",
           "name": {
             "type": "Identifier",
@@ -39,17 +28,6 @@
             "i32"
           ],
           "body": []
-        },
-        {
-          "type": "ModuleExport",
-          "name": "b",
-          "descr": {
-            "type": "Func",
-            "id": {
-              "type": "Identifier",
-              "value": "func_1"
-            }
-          }
         },
         {
           "type": "Func",
@@ -65,6 +43,28 @@
           ],
           "result": [],
           "body": []
+        },
+        {
+          "type": "ModuleExport",
+          "name": "a",
+          "descr": {
+            "type": "Func",
+            "id": {
+              "type": "Identifier",
+              "value": "func_0"
+            }
+          }
+        },
+        {
+          "type": "ModuleExport",
+          "name": "b",
+          "descr": {
+            "type": "Func",
+            "id": {
+              "type": "Identifier",
+              "value": "func_1"
+            }
+          }
         },
         {
           "type": "ModuleExport",
