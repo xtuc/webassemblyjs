@@ -8,6 +8,7 @@ const siteConfig = {
   projectName: "webassemblyjs",
   headerLinks: [
     { page: "share", label: "Share" },
+    { page: "repl", label: "REPL" },
     { doc: "index", label: "Documentation" },
     {
       href: "https://github.com/xtuc/webassemblyjs",

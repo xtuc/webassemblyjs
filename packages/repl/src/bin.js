@@ -12,7 +12,13 @@ function onAssert() {
   process.exit(1);
 }
 
-const repl = createRepl({ isVerbose, onAssert });
+function onLog(txt) {
+  console.log(txt);
+}
+
+function onOk() {}
+
+const repl = createRepl({ isVerbose, onAssert, onOk, onLog });
 
 if (filename === undefined) {
   const rl = readline.createInterface({

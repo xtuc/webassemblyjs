@@ -12,7 +12,7 @@ const {
 } = require("webassemblyjs/lib/interpreter/kernel/memory");
 const { decode } = require("@webassemblyjs/wasm-parser");
 
-export function createRepl({ isVerbose, onAssert }) {
+export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
   function decodeBinaryModule(node /*: BinaryModule */) {
     const raw = node.blob.join("");
     const chars = raw.split("");
@@ -215,10 +215,14 @@ export function createRepl({ isVerbose, onAssert }) {
     if (cond === false) {
       error(new Error("assertion failure: " + msg));
       onAssert();
+
+      return;
     }
 
+    onOk();
+
     if (isVerbose === true) {
-      console.log("Assertion OK");
+      onLog("Assertion OK");
     }
   }
 
@@ -241,10 +245,10 @@ export function createRepl({ isVerbose, onAssert }) {
   let openParens = 0;
 
   function error({ message, stack }) {
-    console.log("Error: " + message);
+    onLog("Error: " + message);
 
     if (isVerbose === true) {
-      console.log(stack);
+      onLog(stack);
     }
   }
 
@@ -263,7 +267,7 @@ export function createRepl({ isVerbose, onAssert }) {
 
   function replEval(input) {
     if (isVerbose === true) {
-      console.log(input);
+      onLog(input);
     }
 
     const ast = parse(input);
@@ -333,8 +337,6 @@ export function createRepl({ isVerbose, onAssert }) {
 
       buffer = "";
     }
-
-    return buffer;
   }
 
   // function prettyPrintInstance(instance) {
@@ -346,12 +348,12 @@ export function createRepl({ isVerbose, onAssert }) {
   //     name => `  export func "${name}"`
   //   );
 
-  //   console.log("module:");
+  //   onLog("module:");
 
   //   if (exports.length > 0) {
-  //     console.log(exports.join("\n"));
+  //     onLog(exports.join("\n"));
   //   } else {
-  //     console.log("empty");
+  //     onLog("empty");
   //   }
   // }
 
