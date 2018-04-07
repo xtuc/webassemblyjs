@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/ast",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "AST utils for webassemblyjs",
   "keywords": [
     "webassembly",
@@ -11,8 +11,8 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/wast-parser": "1.2.2",
-    "webassemblyjs": "1.2.2"
+    "@webassemblyjs/wast-parser": "1.2.3",
+    "webassemblyjs": "1.2.3"
   },
   "repository": {
     "type": "git",
