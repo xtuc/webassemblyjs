@@ -10,36 +10,53 @@ const Container = CompLibrary.Container;
 class Repl extends React.Component {
   render() {
     return (
-      <Container>
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://www.xtuc.fr/editor.css"
-        />
+      <div>
+        <Container>
+          <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://www.xtuc.fr/editor.css"
+          />
 
-        <div className="section line">
-          <h1>WebAssembly text format - REPL</h1>
+          <div className="section line">
+            <h1>WebAssembly text format - REPL</h1>
+          </div>
+        </Container>
+
+        <div style={{display: "flex"}}>
+
+          <div className="window" style={{ width: "45%" }}>
+            <div className="window-header">
+              <div className="action-buttons" />
+              <span className="language">Editor</span>
+            </div>
+            <div className="window-body" style={{ height: "60vh" }}>
+              <div id="container" style={{width: "100%", height: "100%"}}></div>
+            </div>
+          </div>
+
+          <div className="window" style={{ width: "45%" }}>
+            <div className="window-header">
+              <div className="action-buttons" />
+              <span className="language">Console</span>
+            </div>
+            <div className="window-body" style={{ height: "60vh" }}>
+              <pre className="code-output">
+                <code className="language-js" id="output" />
+              </pre>
+            </div>
+          </div>
         </div>
 
-        <div className="window" style={{ width: "900px" }}>
-          <div className="window-header">
-            <div className="action-buttons" />
-            <span className="language">REPL</span>
-          </div>
-          <div className="window-body" style={{ height: "345px;" }}>
-            <pre className="code-output">
-              <code className="language-js" id="exec" />
-            </pre>
-          </div>
-        </div>
+        <script src="https://bundle.run/@webassemblyjs/repl@1.2.2-5" />
 
-        <form id="input">
-          <input style={{ width: "100%" }} id="value" />
-        </form>
+        <script dangerouslySetInnerHTML={{__html: `var require = { paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.11.1/min/vs' } };`}} />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.11.1/min/vs/loader.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.11.1/min/vs/editor/editor.main.nls.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.11.1/min/vs/editor/editor.main.js"></script>
 
-        <script src="https://bundle.run/@webassemblyjs/repl@1.2.2-1" />
         <script src="/js/repl.js" />
-      </Container>
+      </div>
     );
   }
 }

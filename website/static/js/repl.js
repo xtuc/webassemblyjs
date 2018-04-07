@@ -1,27 +1,62 @@
+/* global _webassemblyjs_repl, monaco */
 "use strict";
 
-if (typeof _webassemblyjs_repl === "undefined") {
-  throw new Error("REPL has not been loaded");
+const defaultCode = `(module
+  (func (export "get") (result i32)
+    (i32.const 1)
+  )
+)
+
+(assert_return (invoke "get") (i32.const 42))`;
+
+let lastCode = defaultCode;
+
+function main() {
+  if (typeof _webassemblyjs_repl === "undefined") {
+    throw new Error("REPL has not been loaded");
+  }
+
+  const { createRepl } = _webassemblyjs_repl;
+
+  const output = document.getElementById("output");
+
+  const isVerbose = true;
+
+  function onAssert() {}
+  function onOk() {}
+
+  function onLog(txt) {
+    output.innerText = txt + "\n\n" + output.innerText;
+  }
+
+  const repl = createRepl({ isVerbose, onAssert, onLog, onOk });
+
+  const editor = monaco.editor.create(document.getElementById("container"), {
+    value: defaultCode
+  });
+
+  editor.focus();
+
+  editor.onKeyUp(e => {
+    const value = editor.getValue();
+
+    if (e.ctrlKey === true && e.keyCode === 3 /* enter */) {
+      setTimeout(() => exec(value), 1);
+      e.stopPropagation();
+    }
+
+    if (value !== lastCode) {
+      setTimeout(() => exec(value), 1);
+
+      lastCode = value;
+    }
+  });
+
+  function exec(code) {
+    code.split("\n").forEach(repl.read);
+  }
+
+  exec(defaultCode);
 }
 
-const { createRepl } = _webassemblyjs_repl;
-
-const isVerbose = true;
-const onAssert = console.log;
-
-const repl = createRepl({ isVerbose, onAssert });
-
-const input = document.getElementById("value");
-const exec = document.getElementById("exec");
-
-document.getElementById("input").addEventListener("submit", onSubmit);
-
-function onSubmit(e) {
-  e.preventDefault();
-
-  exec.innerText += input.value + "\n";
-
-  repl.read(input.value);
-
-  input.value = "";
-}
+window.addEventListener("load", main);
