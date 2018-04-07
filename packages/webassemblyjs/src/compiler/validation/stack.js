@@ -22,6 +22,7 @@ class ModuleContext {
   constructor() {
     this.funcs = [];
     this.globals = [];
+    this.mems = [];
 
     // Current stack frame
     this.locals = [];
@@ -101,6 +102,21 @@ class ModuleContext {
   isMutableGlobal(index) {
     return this.globals[index].mutability === "var";
   }
+
+  /**
+   * Memories
+   */
+  hasMemory(index) {
+    return this.mems.length > index && index >= 0;
+  }
+
+  addMemory(min, max) {
+    this.mems.push({ min, max });
+  }
+
+  getMemory(index) {
+    return this.mems[index];
+  }
 }
 
 export default function validate(ast) {
@@ -123,7 +139,18 @@ export default function validate(ast) {
             moduleContext.importGlobal(field.descr.valtype);
             break;
           }
+          case "Memory": {
+            moduleContext.addMemory(
+              field.descr.limits.min,
+              field.descr.limits.max
+            );
+            break;
+          }
         }
+        break;
+      }
+      case "Memory": {
+        moduleContext.addMemory(field.limits.min, field.limits.max);
         break;
       }
     }
@@ -601,6 +628,43 @@ function getType(moduleContext, stack, instruction) {
       }
       args = [...moduleContext.getLabel(index), "i32"];
       result = moduleContext.getLabel(index);
+      break;
+    }
+    /**
+     * load
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-load
+     */
+    case "load":
+    case "load8_u":
+    case "load8_s":
+    case "load16_u":
+    case "load16_s":
+    case "load32_u":
+    case "load32_s": {
+      if (!moduleContext.hasMemory(0)) {
+        errors.push(`Module does not have memory 0`);
+      }
+      // TODO Alignment check
+      args = ["i32"];
+      result = [instruction.object];
+      break;
+    }
+    /**
+     * store
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-store
+     */
+    case "store":
+    case "store8":
+    case "store16":
+    case "store32": {
+      if (!moduleContext.hasMemory(0)) {
+        errors.push(`Module does not have memory 0`);
+      }
+      // TODO Alignment check
+      args = [instruction.object, "i32"];
+      result = [];
       break;
     }
     /**
