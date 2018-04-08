@@ -2,7 +2,10 @@
   "private": true,
   "scripts": {
     "test": "make test",
-    "build": "make build"
+    "build": "make build",
+    "bs:build": "bsb -make-world",
+    "bs:watch": "bsb -make-world -w",
+    "bs:clean": "bsb -clean-world"
   },
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
@@ -13,6 +16,7 @@
     "@babel/preset-env": "^7.0.0-beta.34",
     "@babel/preset-flow": "^7.0.0-beta.34",
     "babel-eslint": "^8.0.3",
+    "bs-platform": "^2.2.2",
     "chai": "^4.1.2",
     "eslint": "^4.12.1",
     "eslint-config-prettier": "^2.9.0",

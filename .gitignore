@@ -1,3 +1,11 @@
+# BuckleScript
+.bsb.lock
+.merlin
+*.bs.js
+
+# Editors
+.projectile
+
 # Logs
 logs
 *.log
