@@ -123,6 +123,10 @@ export default function validate(ast) {
   // Module context
   const moduleContext = new ModuleContext();
 
+  if (!ast.body || !ast.body[0] || !ast.body[0].fields) {
+    return [];
+  }
+
   ast.body[0].fields.forEach(field => {
     switch (field.type) {
       case "Func": {
