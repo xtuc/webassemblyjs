@@ -503,7 +503,7 @@ export function executeStackFrame(
         case "br": {
           // https://webassembly.github.io/spec/core/exec/instructions.html#exec-br
 
-          const [label, ...children] = instruction.args;
+          const [label /*, ...children*/] = instruction.args;
 
           if (label.type === "Identifier") {
             throw newRuntimeError(
@@ -532,6 +532,7 @@ export function executeStackFrame(
             }
           }
 
+          // $FlowIgnore
           const L = frame.labels.find(x => x.id.value === labelidx.value);
 
           if (typeof L === "undefined") {
