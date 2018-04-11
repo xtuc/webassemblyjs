@@ -1156,6 +1156,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseFunc(): Func {
       let fnName = t.identifier(getUniqueName("func"));
+      let typeRef;
       const fnBody = [];
       const fnParams: Array<FuncParam> = [];
       const fnResult: Array<Valtype> = [];
@@ -1182,6 +1183,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         } else if (lookaheadAndCheck(keywords.export) === true) {
           eatToken();
           parseFuncExport(fnName);
+        } else if (lookaheadAndCheck(keywords.type) === true) {
+          eatToken();
+          typeRef = parseTypeReference();
         } else if (
           lookaheadAndCheck(tokens.name) === true ||
           lookaheadAndCheck(tokens.valtype) === true ||
@@ -1199,7 +1203,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
       }
 
-      return t.func(fnName, fnParams, fnResult, fnBody);
+      if (typeRef !== undefined) {
+        return t.funcWithTypeRef(fnName, typeRef, fnBody);
+      } else {
+        return t.func(fnName, fnParams, fnResult, fnBody);
+      }
     }
 
     /**
@@ -1304,6 +1312,22 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       results.push(valtype);
 
       return results;
+    }
+
+    /**
+     * Parses a type reference
+     *
+     */
+    function parseTypeReference() {
+      let ref;
+      if (token.type === tokens.identifier) {
+        ref = t.identifier(token.value);
+        eatToken();
+      } else if (token.type === tokens.number) {
+        ref = t.numberLiteral(token.value);
+        eatToken();
+      }
+      return ref;
     }
 
     /**

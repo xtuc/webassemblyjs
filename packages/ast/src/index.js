@@ -179,6 +179,22 @@ export function func(
   };
 }
 
+export function funcWithTypeRef(
+  name: ?Index,
+  typeRef: Identifier | NumberLiteral,
+  body: Array<Instruction>
+): Func {
+  assert(typeof body === "object" && typeof body.length !== "undefined");
+  assert(typeof name !== "string");
+
+  return {
+    type: "Func",
+    name,
+    typeRef,
+    body
+  };
+}
+
 export function objectInstruction(
   id: string,
   object: Valtype,

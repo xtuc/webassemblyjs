@@ -260,8 +260,10 @@ type Func = {
   // Only in WAST
   name: ?Index,
 
-  params: Array<FuncParam>,
-  result: Array<Valtype>,
+  params?: Array<FuncParam>,
+  result?: Array<Valtype>,
+  typeRef?: Identifier | NumberLiteral,
+
   body: Array<Instruction>,
 
   // Means that it has been imported from the outside js

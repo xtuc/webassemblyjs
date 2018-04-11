@@ -1,0 +1,32 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "TypeInstruction",
+      "functype": {
+        "params": [
+          {
+            "valtype": "i32"
+          }
+        ],
+        "result": [
+          "i32"
+        ]
+      }
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "typeRef": {
+        "type": "NumberLiteral",
+        "value": 0,
+        "raw": "0"
+      },
+      "body": []
+    }
+  ]
+}
