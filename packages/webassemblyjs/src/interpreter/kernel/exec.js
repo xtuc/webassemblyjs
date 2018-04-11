@@ -22,7 +22,7 @@ const label = require("../runtime/values/label");
 const stackframe = require("./stackframe");
 const { createTrap } = require("./signals");
 
-// Syntastic suggar for the syntastic suggar
+// Syntactic sugar for the Syntactic sugar
 // TODO(sven): do it AOT?
 function addEndInstruction(body) {
   body.push(t.instruction("end"));
@@ -50,7 +50,7 @@ export function executeStackFrame(
   firstFrame: StackFrame,
   depth: number = 0
 ): ?StackLocal {
-  const stack: Array<StackFrame> = [firstFrame];
+  let stack: Array<StackFrame> = [firstFrame];
   let framepointer = 0;
 
   // eax
@@ -228,7 +228,7 @@ export function executeStackFrame(
       // FIXME(sven): that's wrong
       const frame = stack[framepointer - 1];
 
-      assert(frame !== undefined);
+      assert(frame !== undefined, "no active frame");
 
       const nextStackFrame = stackframe.createChildStackFrame(frame, instrs);
 
@@ -249,21 +249,18 @@ export function executeStackFrame(
       }
     }
 
-    // Program counter, used to track the execution of the code
-    let pc = 0;
-
     while (true) {
-      const instruction = frame.code[pc];
+      const instruction = frame.code[frame._pc];
       assert(
         instruction !== undefined,
-        `no instruction at pc ${pc} in frame ${framepointer}`
+        `no instruction at pc ${frame._pc} in frame ${framepointer}`
       );
 
       if (typeof frame.trace === "function") {
-        frame.trace(stack.length - 1, pc, instruction, frame);
+        frame.trace(framepointer, frame._pc, instruction, frame);
       }
 
-      pc++;
+      frame._pc++;
 
       switch (instruction.type) {
         /**
@@ -501,6 +498,95 @@ export function executeStackFrame(
           });
 
           break;
+        }
+
+        case "br": {
+          // https://webassembly.github.io/spec/core/exec/instructions.html#exec-br
+
+          const [label, ...children] = instruction.args;
+
+          if (label.type === "Identifier") {
+            throw newRuntimeError(
+              "Internal compiler error: Identifier argument in br must be " +
+                "transformed to a NumberLiteral node"
+            );
+          }
+
+          const l = label.value;
+
+          // 1. Assert: due to validation, the stack contains at least l+1 labels.
+          assertNItemsOnStack(frame.values, l + 1);
+
+          // 2. Let L be the l-th label appearing on the stack, starting from the top and counting from zero.
+          let seenLabels = 0;
+          let labelidx = { value: "unknown" };
+          // for (var i = 0, len = frame.values.length; i < len; i++) {
+          for (let i = frame.values.length; i--; ) {
+            if (frame.values[i].type === "label") {
+              if (seenLabels === l) {
+                labelidx = frame.values[i];
+                break;
+              }
+
+              seenLabels++;
+            }
+          }
+
+          const L = frame.labels.find(x => x.id.value === labelidx.value);
+
+          if (typeof L === "undefined") {
+            throw newRuntimeError(`br: unknown label ${labelidx.value}`);
+          }
+
+          // 3. Let n be the arity of L.
+          const n = L.arity;
+
+          // 4. Assert: due to validation, there are at least nn values on the top of the stack.
+          assertNItemsOnStack(frame.values, n);
+
+          // 5. Pop the values valn from the stack
+          const val = frame.values[n];
+
+          const bottomOfTheStack = frame.values.slice(0, n);
+          const topOfTheStack = frame.values.slice(n + 1);
+
+          frame.values = [...bottomOfTheStack, ...topOfTheStack];
+
+          // 6. Repeat l+1 times:
+          for (let i = 0; i < l + 1; i++) {
+            // a. While the top of the stack is a value, do:
+            // i. Pop the value from the stack
+            const value = frame.values[frame.values.length - 1];
+
+            if (typeof value === "undefined") {
+              break;
+            }
+
+            if (value.type !== "label") {
+              pop1();
+            }
+          }
+
+          // b. Assert: due to validation, the top of the stack now is a label.
+          // c. Pop the label from the stack.
+          pop1OfType("label");
+
+          // 7. Push the values valn to the stack.
+          pushResult(val);
+
+          // 0 is the current frame, 1 is it's parent.
+          stack = stack.slice(0, -(l + 1));
+          framepointer -= l + 1;
+
+          // TODO(sven): that's a "on stack remplacement"?
+
+          // FIXME(sven): wast semantics
+          // addEndInstruction(children);
+          // createAndExecuteChildStackFrame(children, {
+          //   passCurrentContext: true
+          // });
+
+          return;
         }
 
         case "br_if": {

@@ -1,0 +1,6 @@
+it("should branch correctly", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+  const { test } = m.exports;
+
+  assert.equal(test(), 2);
+});
