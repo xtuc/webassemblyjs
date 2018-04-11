@@ -1,7 +1,8 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast";
 import { transform } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
+
+const t = require("@webassemblyjs/ast");
 
 import validateAST from "../validation";
 const { CompileError } = require("../../errors");
@@ -19,8 +20,6 @@ export class Module {
     imports: Array<CompiledModuleImportDescr>,
     start?: Funcidx
   ) {
-    validateAST(ast);
-
     this._ast = ast;
     this._start = start;
 
@@ -39,7 +38,9 @@ export function createCompiledModule(ast: Program): CompiledModule {
   // semantics during execution
   transform(ast);
 
-  traverse(ast, {
+  validateAST(ast);
+
+  t.traverse(ast, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
       if (node.descr.type === "Func") {
         exports.push({
@@ -55,6 +56,33 @@ export function createCompiledModule(ast: Program): CompiledModule {
       }
 
       start = node.index;
+    }
+  });
+
+  /**
+   * Adds missing end instructions
+   */
+  t.traverse(ast, {
+    Func({ node }: NodePath<Func>) {
+      node.body.push(t.instruction("end"));
+    },
+
+    Global({ node }: NodePath<Global>) {
+      node.init.push(t.instruction("end"));
+    },
+
+    IfInstruction({ node }: NodePath<IfInstruction>) {
+      node.test.push(t.instruction("end"));
+      node.consequent.push(t.instruction("end"));
+      node.alternate.push(t.instruction("end"));
+    },
+
+    BlockInstruction({ node }: NodePath<BlockInstruction>) {
+      node.instr.push(t.instruction("end"));
+    },
+
+    LoopInstruction({ node }: NodePath<LoopInstruction>) {
+      node.instr.push(t.instruction("end"));
     }
   });
 

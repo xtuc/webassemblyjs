@@ -219,11 +219,12 @@ describe("module create interface", () => {
 
   describe("global", () => {
     it("should have a value", () => {
-      const initNode = t.objectInstruction("const", "i32", [
-        t.numberLiteral(10)
-      ]);
+      const initNode = [
+        t.objectInstruction("const", "i32", [t.numberLiteral(10)]),
+        t.instruction("end")
+      ];
 
-      const node = t.global(t.globalType("i32", "const"), [initNode]);
+      const node = t.global(t.globalType("i32", "const"), initNode);
 
       const instance = globalvalue.createInstance(allocator, node);
 

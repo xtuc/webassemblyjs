@@ -281,6 +281,8 @@ describe("kernel exec - conversion instructions", () => {
           castIntoStackLocalOfType(type, value, nan, inf)
         );
 
+        op.code.push(t.instruction("end"));
+
         const stackFrame = createStackFrame(op.code, args);
         const res = executeStackFrame(stackFrame);
 

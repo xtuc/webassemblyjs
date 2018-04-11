@@ -37,12 +37,7 @@ export function createStackFrame(
     /**
      * For shared memory operations
      */
-    allocator,
-
-    /**
-     * Program counter, used to track the execution of the code
-     */
-    _pc: 0
+    allocator
   };
 }
 

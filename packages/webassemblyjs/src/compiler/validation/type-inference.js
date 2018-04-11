@@ -21,7 +21,13 @@ export function getType(instrs: Array<Instruction>): ?Array<Valtype> {
     return;
   }
 
-  const last = instrs[instrs.length - 1];
+  // FIXME(sven): this shoudln't be needed, we need to inject our end
+  // instructions after the validations
+  let last = instrs[instrs.length - 1];
+
+  if (last.id === "end") {
+    last = instrs[instrs.length - 2];
+  }
 
   // It's a ObjectInstruction
   if (typeof last.object === "string") {
