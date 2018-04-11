@@ -244,7 +244,7 @@ export function executeStackFrame(
       run();
 
       if (returnRegister !== null) {
-        returnRegister.forEach(pushResult);
+        frame.values.push(...returnRegister);
         returnRegister = null;
       }
     }
@@ -503,7 +503,7 @@ export function executeStackFrame(
         case "br": {
           // https://webassembly.github.io/spec/core/exec/instructions.html#exec-br
 
-          const [label /*, ...children*/] = instruction.args;
+          const [label, ...children] = instruction.args;
 
           if (label.type === "Identifier") {
             throw newRuntimeError(
@@ -579,13 +579,11 @@ export function executeStackFrame(
           stack = stack.slice(0, -(l + 1));
           framepointer -= l + 1;
 
-          // TODO(sven): that's a "on stack remplacement"?
-
-          // FIXME(sven): wast semantics
-          // addEndInstruction(children);
-          // createAndExecuteChildStackFrame(children, {
-          //   passCurrentContext: true
-          // });
+          // execute childrens
+          addEndInstruction(children);
+          createAndExecuteChildStackFrame(children, {
+            passCurrentContext: true
+          });
 
           return;
         }
