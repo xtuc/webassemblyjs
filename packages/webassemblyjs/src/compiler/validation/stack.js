@@ -672,9 +672,21 @@ function getType(moduleContext, stack, instruction) {
       break;
     }
     /**
+     * return
+     *
+     *
+     */
+    case "return": {
+      // Theres probably a nicer way to do this, but return is currently handled in `applyInstruction` directly
+      args = [];
+      result = [];
+      break;
+    }
+    /**
      * Skip type checking
      */
     default: {
+      throw new Error(`Unknown instruction ${instruction.id}.`);
       return false;
     }
   }
