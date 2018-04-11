@@ -1,10 +1,31 @@
 const template = require("@babel/template").default;
+const parseAndBuildMetadata = require("@babel/template/lib/parse").default;
+const smartFormater = require("@babel/template/lib/formatters").smart;
 
 function macro({types: t}) {
   const macroMap = {};
 
   function defineMacro(ident, body) {
-    macroMap[ident.name] = template(body.value);
+    let content = '';
+
+    if (t.isStringLiteral(body)) {
+      content = body.value;
+    }
+
+    // Just merge elements
+    if (t.isTemplateLiteral(body)) {
+      content = body.quasis.reduce((acc, e) => {
+        acc += e.value.raw;
+        return acc;
+      }, '');
+    }
+
+    const {placeholderNames} = parseAndBuildMetadata(smartFormater, content, {});
+
+    macroMap[ident.name] = {
+      run: template.smart(content),
+      placeholderNames,
+    }
   }
 
   return {
@@ -14,7 +35,6 @@ function macro({types: t}) {
 
         if (t.isIdentifier(node.callee, {name: "MACRO"})) {
           defineMacro(...node.arguments);
-
           path.remove();
         }
 
@@ -25,17 +45,23 @@ function macro({types: t}) {
           if (node.arguments.length > 0) {
             const {properties} = node.arguments[0];
 
+            const defaultRemplacements = {};
+
+            for (let entry of macro.placeholderNames.entries()) {
+              defaultRemplacements[entry[0]] = t.identifier("undefined");
+            }
+
             const remplacements = properties.reduce((acc, prop) => {
               const {key, value} = prop;
 
               acc[key.name] = value;
 
               return acc;
-            }, {});
+            }, defaultRemplacements);
 
-            path.replaceWith(macro(remplacements));
+            path.replaceWith(macro.run(remplacements));
           } else {
-            path.replaceWith(macro());
+            path.replaceWith(macro.run());
           }
         }
 

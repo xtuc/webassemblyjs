@@ -9,12 +9,16 @@ const t = require("@webassemblyjs/ast");
 
 MACRO(
   assert,
-  'if (!COND) { throw new RuntimeError("Assertion error: " + MSG);}'
+  `if (!COND) {
+    throw new RuntimeError("Assertion error: " + (MSG || "unknown"));
+  }`
 );
 
 MACRO(
   assertNItemsOnStack,
-  'if (frame.values.length < N) { throw new RuntimeError("Assertion error: expected " + N + " on the stack, found " + frame.values.length); }'
+  `if (frame.values.length < N) {
+    throw new RuntimeError("Assertion error: expected " + N + " on the stack, found " + frame.values.length);
+  }`
 );
 
 const {
@@ -87,7 +91,7 @@ export function executeStackFrame(
     }
 
     function setLocalByIndex(index: number, value: StackLocal) {
-      assert({ COND: typeof index === "number", MSG: "" });
+      assert({ COND: typeof index === "number" });
 
       frame.locals[index] = value;
     }
@@ -346,8 +350,7 @@ export function executeStackFrame(
           assert({
             COND:
               typeof loop.instr === "object" &&
-              typeof loop.instr.length !== "undefined",
-            MSG: ""
+              typeof loop.instr.length !== "undefined"
           });
 
           // 2. Enter the block instr∗ with label
@@ -399,8 +402,7 @@ export function executeStackFrame(
             const index = call.index.value;
 
             assert({
-              COND: typeof frame.originatingModule !== "undefined",
-              MSG: ""
+              COND: typeof frame.originatingModule !== "undefined"
             });
 
             // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
@@ -470,8 +472,7 @@ export function executeStackFrame(
           assert({
             COND:
               typeof block.instr === "object" &&
-              typeof block.instr.length !== "undefined",
-            MSG: ""
+              typeof block.instr.length !== "undefined"
           });
 
           if (block.instr.length > 0) {
