@@ -4,7 +4,7 @@ const t = require("@webassemblyjs/ast");
 const diff = require("jest-diff");
 const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 
-const codeFrame = require("../lib").default;
+const codeFrame = require("../lib").codeFrameFromAst;
 
 describe("code frame", () => {
   const m = t.program([

@@ -10,9 +10,14 @@ function repeat(char: string, nb: number): string {
 }
 
 // TODO(sven): allow arbitrary ast nodes
-export default function(ast: Program, loc: SourceLocation): string {
-  const source = print(ast);
+export function codeFrameFromAst(ast: Program, loc: SourceLocation): string {
+  return codeFrameFromSource(print(ast), loc);
+}
 
+export function codeFrameFromSource(
+  source: string,
+  loc: SourceLocation
+): string {
   const { start, end } = loc;
 
   let length = 1;
