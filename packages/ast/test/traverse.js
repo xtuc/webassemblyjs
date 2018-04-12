@@ -107,4 +107,56 @@ describe("AST traverse", () => {
       assert.equal(func.body[0].type, "CallInstruction");
     });
   });
+
+  describe("NodePath partial evalutation", () => {
+    it("should return the StackLocal value in func body", () => {
+      let called = false;
+
+      const fnBody = [
+        t.objectInstruction("const", "i32", [t.numberLiteral(12)])
+      ];
+
+      const root = t.func(null, [], [], fnBody);
+
+      traverse(root, {
+        Instr(path) {
+          called = true;
+
+          const res = path.evaluate();
+
+          assert.isOk(res);
+
+          assert.equal(res.type, "i32");
+          assert.equal(res.value.toNumber(), 12);
+        }
+      });
+
+      assert.isTrue(called, "Func visitor has not been called");
+    });
+
+    it("should return the StackLocal value in global initializer", () => {
+      let called = false;
+
+      const init = [t.objectInstruction("const", "i32", [t.numberLiteral(2)])];
+
+      const root = t.module(null, [
+        t.global(t.globalType("i32", "const"), init)
+      ]);
+
+      traverse(root, {
+        Global(path) {
+          called = true;
+
+          const res = path.evaluate(path.node.init);
+
+          assert.isOk(res);
+
+          assert.equal(res.type, "i32");
+          assert.equal(res.value.toNumber(), 2);
+        }
+      });
+
+      assert.isTrue(called, "Func visitor has not been called");
+    });
+  });
 });
