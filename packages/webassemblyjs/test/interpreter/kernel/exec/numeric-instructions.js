@@ -887,6 +887,8 @@ describe("kernel exec - numeric instructions", () => {
           castIntoStackLocalOfType(type, value, nan)
         );
 
+        op.code.push(t.instruction("end"));
+
         const stackFrame = createStackFrame(op.code, args);
         const res = executeStackFrame(stackFrame);
 

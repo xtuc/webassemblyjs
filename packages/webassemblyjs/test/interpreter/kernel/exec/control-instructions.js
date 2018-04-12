@@ -18,7 +18,8 @@ describe("kernel exec - control instruction", () => {
     const code = [
       t.instruction("nop"),
       t.instruction("nop"),
-      t.instruction("nop")
+      t.instruction("nop"),
+      t.instruction("end")
     ];
 
     const stackFrame = createStackFrame(code, []);
@@ -31,81 +32,72 @@ describe("kernel exec - control instruction", () => {
 
   describe("loop", () => {
     it("should execute the body of loop in a child stack frame", () => {
-      let maxDepth = 0;
+      let instructionExecuted = 0;
 
-      const loopCode = [t.instruction("nop"), t.instruction("nop")];
+      const loopCode = [
+        t.instruction("nop"),
+        t.instruction("nop"),
+        t.instruction("end")
+      ];
 
       const loop = [
-        t.loopInstruction(t.identifier("loop"), undefined, loopCode)
+        t.loopInstruction(t.identifier("loop"), undefined, loopCode),
+        t.instruction("end")
       ];
 
       const stackFrame = createStackFrame(loop, []);
-      stackFrame.trace = (depth, pc) => {
-        if (depth === 0) {
-          assert.equal(pc, 0);
-        }
-
-        if (depth === 1) {
-          assert.isAtLeast(pc, 0);
-          assert.isBelow(pc, 2);
-        }
-
-        if (maxDepth < depth) {
-          maxDepth = depth;
-        }
+      stackFrame.trace = () => {
+        instructionExecuted++;
       };
 
       executeStackFrame(stackFrame);
 
-      assert.equal(maxDepth, 1);
+      assert.equal(instructionExecuted, 5);
     });
   });
 
   describe("block", () => {
     it("should enter and execute an empty block", () => {
-      const code = [t.blockInstruction(t.identifier("label"), [])];
+      const code = [
+        t.blockInstruction(t.identifier("label"), []),
+        t.instruction("end")
+      ];
 
       const stackFrame = createStackFrame(code, []);
       executeStackFrame(stackFrame);
     });
 
     it("should enter a block and execute instructions", () => {
-      let maxDepth = 0;
       let instructionExecuted = 0;
 
       const code = [
         t.blockInstruction(t.identifier("label"), [
           t.instruction("nop"),
           t.instruction("nop"),
-          t.instruction("nop")
-        ])
+          t.instruction("nop"),
+          t.instruction("end")
+        ]),
+        t.instruction("end")
       ];
 
       const stackFrame = createStackFrame(code, []);
 
-      stackFrame.trace = (depth, pc) => {
+      stackFrame.trace = () => {
         instructionExecuted++;
-
-        if (depth === 0) {
-          assert.equal(pc, 0);
-        }
-
-        if (maxDepth < depth) {
-          maxDepth = depth;
-        }
       };
 
       executeStackFrame(stackFrame);
 
-      assert.equal(maxDepth, 1);
-      assert.equal(instructionExecuted, 4);
+      assert.equal(instructionExecuted, 6);
     });
 
     it("should remove the label when existing the block", () => {
       const code = [
         t.blockInstruction(t.identifier("label"), [
-          t.objectInstruction("const", "i32", [t.numberLiteral(10)])
-        ])
+          t.objectInstruction("const", "i32", [t.numberLiteral(10)]),
+          t.instruction("end")
+        ]),
+        t.instruction("end")
       ];
 
       const stackFrame = createStackFrame(code, []);
@@ -122,11 +114,15 @@ describe("kernel exec - control instruction", () => {
           t.identifier("label"),
           [],
           [],
-          [t.objectInstruction("const", "i32", [t.numberLiteral(2)])]
+          [
+            t.objectInstruction("const", "i32", [t.numberLiteral(2)]),
+            t.instruction("end")
+          ]
         ),
 
         t.objectInstruction("const", "i32", [t.numberLiteral(1)]),
-        t.instruction("br_if", [t.identifier("label")])
+        t.instruction("br_if", [t.identifier("label")]),
+        t.instruction("end")
       ];
 
       const stackFrame = createStackFrame(code, []);
@@ -142,13 +138,17 @@ describe("kernel exec - control instruction", () => {
           t.identifier("label"),
           [],
           [],
-          [t.objectInstruction("const", "i32", [t.numberLiteral(20)])]
+          [
+            t.objectInstruction("const", "i32", [t.numberLiteral(20)]),
+            t.instruction("end")
+          ]
         ),
 
         t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
         t.instruction("br_if", [t.identifier("label")]),
 
-        t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+        t.objectInstruction("const", "i32", [t.numberLiteral(1)]),
+        t.instruction("end")
       ];
 
       const stackFrame = createStackFrame(code, []);
@@ -164,15 +164,22 @@ describe("kernel exec - control instruction", () => {
       const code = [
         t.func(
           t.identifier("test"),
-          [],
-          [],
-          [t.objectInstruction("const", "i32", [t.numberLiteral(0)])]
+          [t.instruction("end")],
+          [t.instruction("end")],
+          [
+            t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
+            t.instruction("end")
+          ]
         ),
 
         t.ifInstruction(
           t.identifier("test"),
-          [][t.objectInstruction("const", "i32", [t.numberLiteral(10)])],
-          []
+          [t.instruction("end")],
+          [
+            t.objectInstruction("const", "i32", [t.numberLiteral(10)]),
+            t.instruction("end")
+          ],
+          [t.instruction("end")]
         )
       ];
 
@@ -188,12 +195,21 @@ describe("kernel exec - control instruction", () => {
           t.identifier("test"),
           [],
           [],
-          [t.objectInstruction("const", "i32", [t.numberLiteral(0)])]
+          [
+            t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
+            t.instruction("end")
+          ]
         ),
 
-        t.ifInstruction(t.identifier("test"), [], null, [
-          t.objectInstruction("const", "i32", [t.numberLiteral(10)])
-        ])
+        t.ifInstruction(
+          t.identifier("test"),
+          [t.instruction("end")],
+          [t.instruction("end")],
+          [
+            t.objectInstruction("const", "i32", [t.numberLiteral(10)]),
+            t.instruction("end")
+          ]
+        )
       ];
 
       const stackFrame = createStackFrame(code, []);
@@ -208,12 +224,21 @@ describe("kernel exec - control instruction", () => {
           t.identifier("test"),
           [],
           [],
-          [t.objectInstruction("const", "i32", [t.numberLiteral(1)])]
+          [
+            t.objectInstruction("const", "i32", [t.numberLiteral(1)]),
+            t.instruction("end")
+          ]
         ),
 
-        t.ifInstruction(t.identifier("test"), [], null, [
-          t.objectInstruction("const", "i32", [t.numberLiteral(10)])
-        ])
+        t.ifInstruction(
+          t.identifier("test"),
+          [t.instruction("end")],
+          [t.instruction("end")],
+          [
+            t.objectInstruction("const", "i32", [t.numberLiteral(10)]),
+            t.instruction("end")
+          ]
+        )
       ];
 
       const stackFrame = createStackFrame(code, []);

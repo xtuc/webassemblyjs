@@ -158,3 +158,5 @@ interface TableInstance {
 }
 
 type SignatureMap = { [string]: string } | [string, string];
+
+declare var MACRO: any;
