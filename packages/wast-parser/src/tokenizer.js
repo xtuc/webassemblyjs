@@ -3,6 +3,16 @@
 import { codeFrameColumns } from "@babel/code-frame";
 import { FSM, makeTransition } from "@webassemblyjs/helper-fsm";
 
+declare function unexpectedCharacter(): void;
+
+/**
+ * Throw an error in case the current character is invalid
+ */
+MACRO(
+  unexpectedCharacter,
+  'throw new Error(`Unexpected character "${char}"`);'
+);
+
 function showCodeFrame(source: string, line: number, column: number) {
   const loc = {
     start: { line, column }
@@ -174,13 +184,6 @@ function tokenize(input: string) {
   let line = 1;
 
   const tokens = [];
-
-  /**
-   * Throw an error in case the current character is invalid
-   */
-  function unexpectedCharacter() {
-    throw new Error(`Unexpected character "${char}"`);
-  }
 
   /**
    * Creates a pushToken function for a given type

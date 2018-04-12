@@ -1,0 +1,1 @@
+Unexpected instruction in function body, given keyword (func)
