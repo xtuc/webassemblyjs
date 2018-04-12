@@ -1,4 +1,4 @@
-(module
+(module 
   (func $foobar (param i32)
     (nop)
   )

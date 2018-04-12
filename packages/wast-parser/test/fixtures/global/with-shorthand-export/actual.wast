@@ -1,5 +1,8 @@
-(module
-  (global $test (export "a") i32 (i32.const 0))
-  (global (export "b") i32 (i32.const 1))
-  (global (export "c") (mut i32) (i32.const 1))
+(module 
+  (global $test i32 (i32.const 0))
+  (export "a")
+  (global i32 (i32.const 1))
+  (export "b")
+  (global (mut i32) (i32.const 1))
+  (export "c")
 )

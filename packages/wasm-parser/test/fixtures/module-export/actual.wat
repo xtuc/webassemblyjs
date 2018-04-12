@@ -1,4 +1,4 @@
-(module
+(module 
   (func)
-  (export "test" (func 0))
+  (export "test" (func $func_0))
 )

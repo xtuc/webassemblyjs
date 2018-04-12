@@ -1,7 +1,6 @@
-(module
+(module 
   (global i32 (i32.const 0))
-  (export "a" (global 0))
-
+  (export "a")
   (global $g1 i32 (i32.const 0))
-  (export "a" (global $g1))
+  (export "a")
 )

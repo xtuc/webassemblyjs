@@ -1,1 +1,3 @@
-(module (func))
+(module 
+  (func)
+)

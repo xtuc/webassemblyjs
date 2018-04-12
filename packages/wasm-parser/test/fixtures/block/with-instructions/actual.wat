@@ -1,4 +1,4 @@
-(module
+(module 
   (func
     (block
       (nop)

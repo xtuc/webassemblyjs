@@ -1,3 +1,3 @@
-(func (param i32 i64 i32))
-(func (param f64 i32))
-(func (param f64 f64 f64 f64 f32 f32 f32 i32 i64))
+(func (param i32) (param i64) (param i32))
+(func (param f64) (param i32))
+(func (param f64) (param f64) (param f64) (param f64) (param f32) (param f32) (param f32) (param i32) (param i64))

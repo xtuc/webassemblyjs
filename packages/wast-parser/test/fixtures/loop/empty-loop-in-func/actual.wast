@@ -1,4 +1,4 @@
 (func
- (loop)
- (loop $1)
+  (loop)
+  (loop $1)
 )

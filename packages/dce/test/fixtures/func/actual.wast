@@ -1,5 +1,6 @@
-(module
-  (func (export "test") (param i32)
+(module 
+  (func (param i32)
     (nop)
   )
+  (export "test" (func $func_0))
 )
