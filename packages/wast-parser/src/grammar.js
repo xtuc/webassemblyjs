@@ -240,7 +240,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.name); // const
 
         const numberLiteral = t.numberLiteral(token.value, "i32");
-        offset = t.instruction("const", [numberLiteral]);
+        offset = t.objectInstruction("const", "i32", [numberLiteral]);
         eatToken();
 
         eatTokenOfType(tokens.closeParen);
