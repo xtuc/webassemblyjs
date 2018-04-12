@@ -1,7 +1,15 @@
 // @flow
-declare var MACRO: any;
-declare var assert: any;
-declare var assertNItemsOnStack: any;
+
+type AssertArgs = {|
+  MSG?: string,
+  COND: boolean
+|};
+declare function assert(AssertArgs): void;
+
+type AssertNItemsOnStackArgs = {|
+  N: number
+|};
+declare function assertNItemsOnStack(AssertNItemsOnStackArgs): void;
 
 import { Memory } from "../runtime/values/memory";
 import { RuntimeError } from "../../errors";
