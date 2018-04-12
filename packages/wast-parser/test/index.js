@@ -11,6 +11,19 @@ const path = require("path");
 const { parse } = require("../lib");
 const { tokenize } = require("../lib/tokenizer");
 
+function compareMultilineString(a, b) {
+  const out = diff(a.trim(), b.trim());
+
+  if (out !== null && out !== NO_DIFF_MESSAGE) {
+    throw new Error("\n" + out);
+  }
+
+  // When one line the error is not caught
+  if (a.trim() !== b.trim()) {
+    throw new Error("Assertion error");
+  }
+}
+
 function createCheck(suite, ast) {
   const expectedFile = path.join(path.dirname(suite), "expected.json");
   const code = JSON.stringify(ast, null, 2);
@@ -27,16 +40,7 @@ function createCheck(suite, ast) {
     console.log("Write expected file", expectedFile);
   }
 
-  const out = diff(code.trim(), expected.trim());
-
-  if (out !== null && out !== NO_DIFF_MESSAGE) {
-    throw new Error("\n" + out);
-  }
-
-  // When one line the error is not caught
-  if (code.trim() !== expected.trim()) {
-    throw new Error("Assertion error");
-  }
+  compareMultilineString(code, expected);
 }
 
 describe("compiler", () => {
@@ -78,16 +82,8 @@ describe("compiler", () => {
             );
           }
 
-          if (
-            actualError !== false &&
-            expectedError !== false &&
-            actualError.message !== expectedError
-          ) {
-            throw new Error(
-              `Expected parser error "${expectedError}", but got "${
-                actualError.message
-              }".`
-            );
+          if (actualError !== false && expectedError !== false) {
+            compareMultilineString(actualError.message, expectedError);
           }
         });
       });
@@ -133,16 +129,8 @@ describe("compiler", () => {
             );
           }
 
-          if (
-            actualError !== false &&
-            expectedError !== false &&
-            actualError.message !== expectedError
-          ) {
-            throw new Error(
-              `Expected parser error "${expectedError}", but got "${
-                actualError.message
-              }".`
-            );
+          if (actualError !== false && expectedError !== false) {
+            compareMultilineString(actualError.message, expectedError);
           }
         });
       });

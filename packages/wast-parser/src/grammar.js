@@ -72,7 +72,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       if (token.type !== type) {
         throw new Error(
           "\n" +
-          codeFrameFromSource(source, token.loc) +
+            codeFrameFromSource(source, token.loc) +
             "Assertion error: expected token of type " +
             type +
             ", given " +
