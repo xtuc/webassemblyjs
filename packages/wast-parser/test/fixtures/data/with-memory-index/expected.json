@@ -11,6 +11,7 @@
       "offset": {
         "type": "Instr",
         "id": "const",
+        "object": "i32",
         "args": [
           {
             "type": "NumberLiteral",
