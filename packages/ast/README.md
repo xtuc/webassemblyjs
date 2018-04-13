@@ -22,25 +22,6 @@ traverse(ast, {
 });
 ```
 
-### Traverse and partial evaluation
-
-```js
-import { traverse } from "@webassemblyjs/ast";
-
-traverse(ast, {
-  Func(path) {
-    const res = path.evaluate();
-  }
-});
-
-// Or by specified an array of node
-traverse(ast, {
-  Global(path) {
-    const res = path.evaluate(path.node.init);
-  }
-});
-```
-
 ### Instruction signatures
 
 ```js
