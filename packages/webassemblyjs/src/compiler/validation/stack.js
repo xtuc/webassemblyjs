@@ -672,20 +672,12 @@ function getType(moduleContext, stack, instruction) {
       break;
     }
     /**
-     * return
-     *
-     *
+     * Unreachable code
      */
+    case "unreachable":
+    case "trap":
     case "return": {
       // Theres probably a nicer way to do this, but return is currently handled in `applyInstruction` directly
-      args = [];
-      result = [];
-      break;
-    }
-    /**
-     * trap
-     */
-    case "trap": {
       args = [];
       result = [];
       break;
