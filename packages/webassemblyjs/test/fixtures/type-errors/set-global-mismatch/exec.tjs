@@ -1,6 +1,0 @@
-it("should throw an error during instantiation when type checking fails", () => {
-  assert.throws(
-    () => WebAssembly.instantiateFromSource(watmodule),
-    "Global 0 is immutable"
-  );
-});
