@@ -608,6 +608,17 @@ export function callIndirectInstruction(
   };
 }
 
+export function callIndirectInstructionWithTypeRef(
+  typeRef: NumberLiteral | Identifier,
+  intrs: Array<Expression>
+): CallIndirectInstruction {
+  return {
+    type: "CallIndirectInstruction",
+    typeRef,
+    intrs
+  };
+}
+
 export function callIndirectInstructionIndex(
   index: Index
 ): CallIndirectInstruction {

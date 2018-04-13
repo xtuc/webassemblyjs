@@ -348,6 +348,8 @@ type CallIndirectInstruction = {
   // WAST
   params?: Array<FuncParam>,
   results?: Array<Valtype>,
+  typeRef?: Identifier | NumberLiteral,
+
   intrs?: Array<Expression>,
 
   // WAT

@@ -687,6 +687,55 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return t.loopInstruction(label, blockResult, instr);
     }
 
+    function parseCallIndirect(): CallIndirectInstruction {
+      let typeRef;
+      const params = [];
+      const results = [];
+      const instrs = [];
+
+      while (token.type !== tokens.closeParen) {
+        if (lookaheadAndCheck(tokens.openParen, keywords.type)) {
+          eatToken(); // (
+          eatToken(); // type
+          typeRef = parseTypeReference();
+        } else if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
+          eatToken(); // (
+          eatToken(); // param
+
+          /**
+           * Params can be empty:
+           * (params)`
+           */
+          if (token.type !== tokens.closeParen) {
+            params.push(...parseFuncParam());
+          }
+        } else if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
+          eatToken(); // (
+          eatToken(); // result
+
+          /**
+           * Results can be empty:
+           * (result)`
+           */
+          if (token.type !== tokens.closeParen) {
+            results.push(...parseFuncResult());
+          }
+        } else {
+          eatTokenOfType(tokens.openParen);
+
+          instrs.push(parseFuncInstr());
+        }
+
+        eatTokenOfType(tokens.closeParen);
+      }
+
+      if (typeRef !== undefined) {
+        return t.callIndirectInstructionWithTypeRef(typeRef, instrs);
+      } else {
+        return t.callIndirectInstruction(params, results, instrs);
+      }
+    }
+
     /**
      * Parses an export instruction
      *
@@ -1037,50 +1086,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         return parseBlock();
       } else if (isKeyword(token, keywords.call_indirect)) {
         eatToken(); // keyword
-
-        const params = [];
-        const results = [];
-        const instrs = [];
-
-        while (token.type !== tokens.closeParen) {
-          if (lookaheadAndCheck(tokens.openParen, keywords.type)) {
-            eatToken(); // (
-            eatToken(); // type
-
-            // TODO(sven): replace this with parseType in https://github.com/xtuc/webassemblyjs/pull/158
-            eatToken(); // whatever
-          } else if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
-            eatToken(); // (
-            eatToken(); // param
-
-            /**
-             * Params can be empty:
-             * (params)`
-             */
-            if (token.type !== tokens.closeParen) {
-              params.push(...parseFuncParam());
-            }
-          } else if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
-            eatToken(); // (
-            eatToken(); // result
-
-            /**
-             * Results can be empty:
-             * (result)`
-             */
-            if (token.type !== tokens.closeParen) {
-              results.push(...parseFuncResult());
-            }
-          } else {
-            eatTokenOfType(tokens.openParen);
-
-            instrs.push(parseFuncInstr());
-          }
-
-          eatTokenOfType(tokens.closeParen);
-        }
-
-        return t.callIndirectInstruction(params, results, instrs);
+        return parseCallIndirect();
       } else if (isKeyword(token, keywords.call)) {
         eatToken(); // keyword
 
