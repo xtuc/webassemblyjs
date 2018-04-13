@@ -683,6 +683,14 @@ function getType(moduleContext, stack, instruction) {
       break;
     }
     /**
+     * trap
+     */
+    case "trap": {
+      args = [];
+      result = [];
+      break;
+    }
+    /**
      * Skip type checking
      */
     default: {
