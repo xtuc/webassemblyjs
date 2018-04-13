@@ -1,11 +1,11 @@
-(module 
-  (func $asdf (result i32)
-    (loop
-      (nop)
-    )
-    (loop (result i32)
-      (i32.const 7)
-    )
+(module
+ (func (export "singular") (result i32)
+  (loop
+    (nop)
   )
-  (export "singular" (func $asdf))
+
+  (loop (result i32)
+    (i32.const 7)
+  )
+ )
 )

@@ -1,13 +1,11 @@
-(module 
-  (func $one (result i32)
-    (i32.const 1)
-  )
-  (func $ffa (result i32)
+(module
+  (func $one (result i32) (i32.const 1))
+
+  (func (export "callByName") (result i32)
     (call $one)
   )
-  (export "callByName" (func $ffa))
-  (func (result i32)
+
+  (func (export "callByIndex") (result i32)
     (call 1)
   )
-  (export "callByIndex" (func $func_2))
 )
