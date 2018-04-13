@@ -1,15 +1,5 @@
 // @flow
 
-const partialEvaluation = require("webassemblyjs/lib/interpreter/partial-evaluation");
-const {
-  Memory
-} = require("webassemblyjs/lib/interpreter/runtime/values/memory");
-const {
-  createAllocator
-} = require("webassemblyjs/lib/interpreter/kernel/memory");
-
-const t = require("./index");
-
 type Cb = (type: string, path: NodePath<Node>) => void;
 
 function removeNodeInBody(node: Node, fromNode: Node) {
@@ -52,30 +42,12 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
     Object.assign(node, newNode);
   }
 
-  function evaluate(customNode: ?Array<Node>): ?StackLocal {
-    let n = [node];
-
-    if (typeof customNode !== "undefined") {
-      n = customNode;
-    }
-
-    const memory = new Memory({ initial: 100 });
-    const allocator = createAllocator(memory);
-
-    const code = n;
-    // $FlowIgnore
-    code.push(t.instruction("end"));
-
-    return partialEvaluation.evaluate(allocator, code);
-  }
-
   return {
     node,
     parentPath,
 
     replaceWith,
-    remove,
-    evaluate
+    remove
   };
 }
 
