@@ -12,12 +12,13 @@ function indent(nb: number): string {
     .join("");
 }
 
+// TODO(sven): allow arbitrary ast nodes
 export function print(n: Node): string {
   if (n.type === "Program") {
     return printProgram(n, 0);
+  } else {
+    throw new Error("Unsupported node in print of type: " + String(n.type));
   }
-
-  return "()";
 }
 
 function printProgram(n: Program, depth: number): string {
@@ -99,10 +100,10 @@ function printModule(n: Module, depth: number): string {
     out += n.id;
   }
 
-  out += space;
-
   if (compact === false) {
     out += "\n";
+  } else {
+    out += space;
   }
 
   n.fields.forEach(field => {
