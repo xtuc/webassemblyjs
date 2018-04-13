@@ -48,8 +48,6 @@ class Repl extends React.Component {
           </div>
         </div>
 
-        <script src="https://bundle.run/@webassemblyjs/repl@1.2.3-1" />
-
         <script dangerouslySetInnerHTML={{__html: `var require = { paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.11.1/min/vs' } };`}} />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.11.1/min/vs/loader.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.11.1/min/vs/editor/editor.main.nls.js"></script>
