@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wast-printer",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "WebAssembly text format printer",
   "main": "lib/index.js",
   "keywords": [
@@ -17,8 +17,8 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/ast": "1.2.3",
-    "@webassemblyjs/wast-parser": "1.2.3",
+    "@webassemblyjs/ast": "1.2.4",
+    "@webassemblyjs/wast-parser": "1.2.4",
     "long": "^3.2.0"
   },
   "repository": {
