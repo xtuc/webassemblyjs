@@ -1,4 +1,4 @@
-(module 
+(module
   (type (func))
   (func)
 )

@@ -1,10 +1,10 @@
 // @flow
 import { parse32I } from "./number-literals";
 import { parseString } from "./string-literals";
+import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 const t = require("@webassemblyjs/ast");
 
 const { tokens, keywords } = require("./tokenizer");
-const { codeFrameColumns } = require("@babel/code-frame");
 
 type CreateUnexpectedTokenArgs = {|
   MSG: string
@@ -13,10 +13,11 @@ declare function createUnexpectedToken(CreateUnexpectedTokenArgs): void;
 
 MACRO(
   createUnexpectedToken,
-  `{
-    showCodeFrame(source, token.loc);
-    return new Error(MSG + ", given " + tokenToString(token));
-  }`
+  `return new Error(
+    "\n" +
+    codeFrameFromSource(source, token.loc) + "\n"
+    + MSG + ", given " + tokenToString(token)
+  );`
 );
 
 type AllArgs = {
@@ -32,12 +33,6 @@ function hasPlugin(name: string): boolean {
 
 function isKeyword(token: Object, id: string): boolean {
   return token.type === tokens.keyword && token.value === id;
-}
-
-function showCodeFrame(source: string, loc: SourceLocation) {
-  const out = codeFrameColumns(source, loc);
-
-  process.stdout.write(out + "\n");
 }
 
 function tokenToString(token: Object): string {
@@ -75,10 +70,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
     function eatTokenOfType(type: string) {
       if (token.type !== type) {
-        showCodeFrame(source, token.loc);
-
         throw new Error(
-          "Assertion error: expected token of type " +
+          "\n" +
+            codeFrameFromSource(source, token.loc) +
+            "Assertion error: expected token of type " +
             type +
             ", given " +
             tokenToString(token)
@@ -1217,9 +1212,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseFuncExport(funcId: Identifier) {
       if (token.type !== tokens.string) {
-        throw new Error(
-          "Function export expected a string, " + token.type + " given"
-        );
+        throw createUnexpectedToken({
+          MSG: "Function export expected a string"
+        });
       }
 
       const name = token.value;

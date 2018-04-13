@@ -1,1 +1,5 @@
+nan::1234
+   ^
+
+
 Unexpected character ":"

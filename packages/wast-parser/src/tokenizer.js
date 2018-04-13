@@ -1,7 +1,7 @@
 // @flow
 
-import { codeFrameColumns } from "@babel/code-frame";
 import { FSM, makeTransition } from "@webassemblyjs/helper-fsm";
+import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 
 declare function unexpectedCharacter(): void;
 
@@ -10,17 +10,16 @@ declare function unexpectedCharacter(): void;
  */
 MACRO(
   unexpectedCharacter,
-  'throw new Error(`Unexpected character "${char}"`);'
+  'throw new Error(getCodeFrame(input, line, column) + `Unexpected character "${char}"`);'
 );
 
-function showCodeFrame(source: string, line: number, column: number) {
+// eslint-disable-next-line
+function getCodeFrame(source: string, line: number, column: number) {
   const loc = {
     start: { line, column }
   };
 
-  const out = codeFrameColumns(source, loc);
-
-  process.stdout.write(out + "\n");
+  return "\n" + codeFrameFromSource(source, loc) + "\n";
 }
 
 const WHITESPACE = /\s/;
@@ -470,8 +469,6 @@ function tokenize(input: string) {
 
       continue;
     }
-
-    showCodeFrame(input, line, column);
 
     unexpectedCharacter();
   }
