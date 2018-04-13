@@ -104,6 +104,7 @@ const NUMERIC_SEPARATOR = "_";
  */
 type NumberLiteralState =
   | "START"
+  | "AFTER_SIGN"
   | "HEX"
   | "HEX_FRAC"
   | "NAN_HEX"
@@ -118,7 +119,14 @@ type NumberLiteralState =
 const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
   {
     START: [
-      makeTransition(/-|\+/, "START"),
+      makeTransition(/-|\+/, "AFTER_SIGN"),
+      makeTransition(/nan:0x/, "NAN_HEX", { n: 6 }),
+      makeTransition(/nan|inf/, "STOP", { n: 3 }),
+      makeTransition(/0x/, "HEX", { n: 2 }),
+      makeTransition(/[0-9]/, "DEC"),
+      makeTransition(/\./, "DEC_FRAC")
+    ],
+    AFTER_SIGN: [
       makeTransition(/nan:0x/, "NAN_HEX", { n: 6 }),
       makeTransition(/nan|inf/, "STOP", { n: 3 }),
       makeTransition(/0x/, "HEX", { n: 2 }),
