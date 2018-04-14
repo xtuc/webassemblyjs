@@ -190,6 +190,8 @@ export function funcWithTypeRef(
   return {
     type: "Func",
     name,
+    params: [],
+    result: [],
     typeRef,
     body
   };

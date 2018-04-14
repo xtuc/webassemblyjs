@@ -260,9 +260,9 @@ type Func = {
   // Only in WAST
   name: ?Index,
 
-  params?: Array<FuncParam>,
-  result?: Array<Valtype>,
-  typeRef?: Identifier | NumberLiteral,
+  params: Array<FuncParam>,
+  result: Array<Valtype>,
+  typeRef?: Index,
 
   body: Array<Instruction>,
 
@@ -348,7 +348,7 @@ type CallIndirectInstruction = {
   // WAST
   params?: Array<FuncParam>,
   results?: Array<Valtype>,
-  typeRef?: Identifier | NumberLiteral,
+  typeRef?: Index,
 
   intrs?: Array<Expression>,
 

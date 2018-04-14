@@ -25,6 +25,8 @@
         "value": "func_0",
         "raw": ""
       },
+      "params": [],
+      "result": [],
       "typeRef": {
         "type": "Identifier",
         "value": "foo"
