@@ -193,7 +193,10 @@ describe("insert a node", () => {
       [t.objectInstruction("const", "i32", [t.numberLiteral(1)])]
     );
 
-    const functype = t.typeInstructionFunc(func.params, func.result);
+    const functype = t.typeInstructionFunc(
+      func.signature.params,
+      func.signature.results
+    );
     const funcindex = t.indexInFuncSection(t.indexLiteral(0));
 
     it("should insert the node in existing sections", () => {
