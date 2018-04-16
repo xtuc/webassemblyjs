@@ -405,7 +405,15 @@ function printFunc(n: Func, depth: number): string {
       out += ")";
     });
   } else {
-    // TODO: (colineberhardt) add support for printing function type references
+    const index = (n.signature: Index);
+    out += space;
+    out += "(";
+    out += "type";
+    out += space;
+
+    out += printIndex(index);
+
+    out += ")";
   }
 
   if (n.body.length > 0) {

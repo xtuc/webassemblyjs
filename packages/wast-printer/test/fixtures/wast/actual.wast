@@ -111,6 +111,9 @@
   (func)
   (func $test)
 
+  (func (type $t))
+  (func (type 0))
+
   (start $test)
   (start 0)
 
