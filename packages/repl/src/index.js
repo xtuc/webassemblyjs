@@ -119,22 +119,13 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
   function assert_return(node) {
     const [action, ...args] = node.args;
 
-    let expectedRes;
-
     addEndInstruction(args);
-    const expectedEvaluation = partialEvaluation.evaluate(allocator, args);
-
-    if (expectedEvaluation !== undefined) {
-      expectedRes = expectedEvaluation.value.toString();
-    }
+    const expectedRes = partialEvaluation.evaluate(allocator, args);
 
     if (action.type === "Instr" && action.id === "invoke") {
       const actualRes = invoke(action);
 
-      assert(
-        actualRes == expectedRes,
-        `expected "${expectedRes}", "${actualRes}" given`
-      );
+      assertSameStackLocal(actualRes, expectedRes);
     } else if (action.type === "Instr" && action.id === "get") {
       let id;
 
@@ -151,10 +142,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
 
       const actualRes = module.exports[id.value];
 
-      assert(
-        actualRes == expectedRes,
-        `expected "${expectedRes}", "${actualRes}" given`
-      );
+      assertSameStackLocal(actualRes, expectedRes);
     } else {
       throw new Error("Unsupported action in assert_return: " + action.id);
     }
@@ -201,8 +189,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       }
     });
 
-    const res = module.exports[name.value](...argValues);
-    return res;
+    return module.exports[name.value](...argValues);
   }
 
   /**
@@ -234,6 +221,28 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     }
   }
 
+  function assertSameStackLocal(actual, expected) {
+    if (actual === undefined && expected === undefined) {
+      return;
+    }
+
+    const actualType = actual.type;
+    const expectedType = expected.type;
+
+    assert(
+      actualType === expectedType,
+      `Type expected "${expectedType}", "${actualType}" given`
+    );
+
+    const actualValue = actual.value.toString();
+    const expectedValue = expected.value.toString();
+
+    assert(
+      actualValue === expectedValue,
+      `Value expected "${expectedValue}", "${actualValue}" given`
+    );
+  }
+
   function countChar(char) {
     return str =>
       str.split("").reduce((acc, e) => {
@@ -262,7 +271,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
 
   function createModuleInstanceFromAst(moduleNode) {
     const internalInstanceOptions = {
-      checkForI64InSignature: false
+      checkForI64InSignature: false,
+      returnStackLocal: true
     };
 
     const importObject = {

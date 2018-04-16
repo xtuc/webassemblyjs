@@ -15,7 +15,7 @@ export function createHostfunc(
   moduleinst: ModuleInstance,
   exportinst: ExportInstance,
   allocator: Allocator,
-  { checkForI64InSignature }: InternalInstanceOptions
+  { checkForI64InSignature, returnStackLocal }: InternalInstanceOptions
 ): Hostfunc {
   return function hostfunc(...args): ?any {
     const exportinstAddr = exportinst.value.addr;
@@ -150,13 +150,20 @@ export function createHostfunc(
 
     // stackFrame.trace = trace;
 
-    return executeStackFrameAndGetResult(stackFrame);
+    return executeStackFrameAndGetResult(stackFrame, returnStackLocal);
   };
 }
 
-export function executeStackFrameAndGetResult(stackFrame: StackFrame): any {
+export function executeStackFrameAndGetResult(
+  stackFrame: StackFrame,
+  returnStackLocal: boolean
+): any {
   try {
     const res = executeStackFrame(stackFrame);
+
+    if (returnStackLocal === true) {
+      return res;
+    }
 
     if (res != null && res.value != null) {
       return res.value.toNumber();
