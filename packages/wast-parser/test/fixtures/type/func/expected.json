@@ -4,8 +4,9 @@
     {
       "type": "TypeInstruction",
       "functype": {
+        "type": "Signature",
         "params": [],
-        "result": []
+        "results": []
       }
     },
     {
@@ -15,38 +16,42 @@
         "value": "t"
       },
       "functype": {
+        "type": "Signature",
         "params": [],
-        "result": []
+        "results": []
       }
     },
     {
       "type": "TypeInstruction",
       "functype": {
+        "type": "Signature",
         "params": [
           {
             "valtype": "i32"
           }
         ],
-        "result": []
+        "results": []
       }
     },
     {
       "type": "TypeInstruction",
       "functype": {
+        "type": "Signature",
         "params": [
           {
             "id": "x",
             "valtype": "i32"
           }
         ],
-        "result": []
+        "results": []
       }
     },
     {
       "type": "TypeInstruction",
       "functype": {
+        "type": "Signature",
         "params": [],
-        "result": [
+        "results": [
           "i32"
         ]
       }
@@ -54,12 +59,13 @@
     {
       "type": "TypeInstruction",
       "functype": {
+        "type": "Signature",
         "params": [
           {
             "valtype": "i32"
           }
         ],
-        "result": [
+        "results": [
           "i32"
         ]
       }
@@ -67,13 +73,14 @@
     {
       "type": "TypeInstruction",
       "functype": {
+        "type": "Signature",
         "params": [
           {
             "id": "x",
             "valtype": "i32"
           }
         ],
-        "result": [
+        "results": [
           "i32"
         ]
       }
@@ -81,6 +88,7 @@
     {
       "type": "TypeInstruction",
       "functype": {
+        "type": "Signature",
         "params": [
           {
             "valtype": "f32"
@@ -89,7 +97,7 @@
             "valtype": "f64"
           }
         ],
-        "result": []
+        "results": []
       }
     }
   ]

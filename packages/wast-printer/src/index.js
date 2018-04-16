@@ -73,7 +73,7 @@ function printTypeInstruction(n: TypeInstruction): string {
     out += ")";
   });
 
-  n.functype.result.forEach(result => {
+  n.functype.results.forEach(result => {
     out += space;
     out += "(";
     out += "result";

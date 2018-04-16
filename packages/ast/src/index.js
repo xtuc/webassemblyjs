@@ -592,16 +592,13 @@ export function memIndexLiteral(value: number): Memidx {
 
 export function typeInstructionFunc(
   params: Array<FuncParam> = [],
-  result: Array<Valtype> = [],
+  results: Array<Valtype> = [],
   id: ?Index
 ): TypeInstruction {
   return {
     type: "TypeInstruction",
     id,
-    functype: {
-      params,
-      result
-    }
+    functype: functionSignature(params, results)
   };
 }
 

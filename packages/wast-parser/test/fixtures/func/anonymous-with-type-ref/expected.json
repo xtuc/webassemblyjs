@@ -4,12 +4,13 @@
     {
       "type": "TypeInstruction",
       "functype": {
+        "type": "Signature",
         "params": [
           {
             "valtype": "i32"
           }
         ],
-        "result": [
+        "results": [
           "i32"
         ]
       }

@@ -474,10 +474,7 @@ type TypeInstruction = {
 
   type: "TypeInstruction",
   id: ?Index,
-  functype: {
-    params: Array<FuncParam>,
-    result: Array<Valtype>
-  }
+  functype: Signature
 };
 
 type Start = {
