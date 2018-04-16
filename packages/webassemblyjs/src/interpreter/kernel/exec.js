@@ -234,9 +234,14 @@ export function executeStackFrame(
          */
         if (typeof func.name === "object") {
           if (func.name.type === "Identifier") {
+            if (func.signature.type !== "Signature") {
+              newRuntimeError(
+                "Function signatures must be denormalised before execution"
+              );
+            }
             frame.labels.push({
               value: func,
-              arity: func.params.length,
+              arity: func.signature.params.length,
               id: func.name
             });
           }

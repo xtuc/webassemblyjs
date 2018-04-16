@@ -159,29 +159,39 @@ export function moduleExport(
   };
 }
 
+export function functionSignature(
+  params: Array<FuncParam>,
+  results: Array<Valtype>
+): Signature {
+  return {
+    type: "Signature",
+    params,
+    results
+  };
+}
+
 export function func(
   name: ?Index,
   params: Array<FuncParam>,
-  result: Array<Valtype>,
+  results: Array<Valtype>,
   body: Array<Instruction>
 ): Func {
   assert(typeof params === "object" && typeof params.length !== "undefined");
-  assert(typeof result === "object" && typeof result.length !== "undefined");
+  assert(typeof results === "object" && typeof results.length !== "undefined");
   assert(typeof body === "object" && typeof body.length !== "undefined");
   assert(typeof name !== "string");
 
   return {
     type: "Func",
     name,
-    params,
-    result,
+    signature: functionSignature(params, results),
     body
   };
 }
 
 export function funcWithTypeRef(
   name: ?Index,
-  typeRef: Identifier | NumberLiteral,
+  typeRef: Index,
   body: Array<Instruction>
 ): Func {
   assert(typeof body === "object" && typeof body.length !== "undefined");
@@ -190,9 +200,7 @@ export function funcWithTypeRef(
   return {
     type: "Func",
     name,
-    params: [],
-    result: [],
-    typeRef,
+    signature: typeRef,
     body
   };
 }

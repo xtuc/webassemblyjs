@@ -1,5 +1,5 @@
 // @flow
-
+import { RuntimeError } from "../../errors";
 import { traverse } from "@webassemblyjs/ast";
 const { getType, typeEq } = require("./type-inference");
 
@@ -8,9 +8,16 @@ export default function validate(ast: Program): Array<string> {
 
   traverse(ast, {
     Func({ node }: NodePath<Func>) {
+      if (node.signature.type !== "Signature") {
+        throw new RuntimeError(
+          "Function signatures must be denormalised before execution"
+        );
+      }
+
+      const signature = (node.signature: Signature);
       // Since only one return is allowed at the moment, we don't need to check
       // them all.
-      const resultType = node.result;
+      const resultType = signature.results;
 
       const inferedResultType = getType(node.body);
 

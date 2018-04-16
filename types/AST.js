@@ -53,6 +53,15 @@ type Index =
   | Labelidx
   | Identifier; // WAST shorthand
 
+type Signature = {
+  ...BaseNode,
+  type: "Signature",
+  params: Array<FuncParam>,
+  results: Array<Valtype>
+};
+
+type SignatureOrTypeRef = Index | Signature;
+
 type Valtype = "i32" | "i64" | "f32" | "f64" | "u32" | "label";
 type ExportDescr = "Func" | "Table" | "Memory" | "Global";
 type Mutability = "const" | "var";
@@ -260,9 +269,7 @@ type Func = {
   // Only in WAST
   name: ?Index,
 
-  params: Array<FuncParam>,
-  result: Array<Valtype>,
-  typeRef?: Index,
+  signature: SignatureOrTypeRef,
 
   body: Array<Instruction>,
 

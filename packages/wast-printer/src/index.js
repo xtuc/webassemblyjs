@@ -381,27 +381,32 @@ function printFunc(n: Func, depth: number): string {
     }
   }
 
-  n.params.forEach(param => {
-    out += space;
-    out += "(";
-    out += "param";
-    out += space;
+  if (n.signature.type === "Signature") {
+    const signature = (n.signature: Signature);
+    signature.params.forEach(param => {
+      out += space;
+      out += "(";
+      out += "param";
+      out += space;
 
-    out += printFuncParam(param);
+      out += printFuncParam(param);
 
-    out += ")";
-  });
+      out += ")";
+    });
 
-  n.result.forEach(result => {
-    out += space;
-    out += "(";
-    out += "result";
+    signature.results.forEach(result => {
+      out += space;
+      out += "(";
+      out += "result";
 
-    out += space;
-    out += result;
+      out += space;
+      out += result;
 
-    out += ")";
-  });
+      out += ")";
+    });
+  } else {
+    // TODO: (colineberhardt) add support for printing function type references
+  }
 
   if (n.body.length > 0) {
     if (compact === false) {
