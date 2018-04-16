@@ -234,7 +234,7 @@ function printModuleImportDescr(n: ImportDescr): string {
       out += printIdentifier(n.id);
     }
 
-    n.params.forEach(param => {
+    n.signature.params.forEach(param => {
       out += space;
       out += "(";
       out += "param";
@@ -244,7 +244,7 @@ function printModuleImportDescr(n: ImportDescr): string {
       out += ")";
     });
 
-    n.results.forEach(result => {
+    n.signature.results.forEach(result => {
       out += space;
       out += "(";
       out += "result";

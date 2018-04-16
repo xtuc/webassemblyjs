@@ -478,8 +478,7 @@ export function funcImportDescr(
   return {
     type: "FuncImportDescr",
     id,
-    params,
-    results
+    signature: functionSignature(params, results)
   };
 }
 

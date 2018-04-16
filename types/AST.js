@@ -384,8 +384,7 @@ type FuncImportDescr = {
 
   type: "FuncImportDescr",
   id: Identifier,
-  params: Array<FuncParam>,
-  results: Array<Valtype>
+  signature: Signature
 };
 
 type ImportDescr = FuncImportDescr | GlobalType | Memory | Table;
