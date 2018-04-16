@@ -48,5 +48,6 @@ type InstansitatedInstanceAndModule = {
 };
 
 type InternalInstanceOptions = {
-  checkForI64InSignature: boolean
+  checkForI64InSignature: boolean,
+  returnStackLocal: boolean
 };
