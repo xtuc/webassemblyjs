@@ -1,9 +1,5 @@
-/* global monaco */
+/* global webassemblyjs, monaco */
 "use strict";
-
-const TIMEOUT_IN_SEC = 30;
-
-let timeoutHandler;
 
 const REGEXP_NUMBER = /[+\-]?(?:nan(?::0x[0-9a-fA-F]+)?|infinity|inf|0x[0-9a-fA-F]+\.?[0-9a-fA-F]*p[+\/-]?\d+|\d+(?:\.\d*)?[eE][+\-]?\d*|\d+\.\d*|0x[0-9a-fA-F]+|\d+)/;
 
@@ -51,31 +47,14 @@ const defaultCode = `(module
 
 let lastCode = defaultCode;
 
-/**
- * Worker
- */
-
-if (!window.Worker) {
-  throw new Error("Unsupported environment");
-}
-
-const w = new Worker("/js/repl-worker.js");
-
-/**
- * Worker
- */
-
 function main() {
+  if (typeof webassemblyjs === "undefined") {
+    throw new Error("webassemblyjs has not been loaded");
+  }
+
   configureMonaco();
 
   const output = document.getElementById("output");
-
-  w.onmessage = function(e) {
-    const txt = e.data;
-    output.innerText = txt;
-
-    clearTimeout(timeoutHandler);
-  };
 
   const editor = monaco.editor.create(document.getElementById("container"), {
     value: defaultCode,
@@ -100,24 +79,19 @@ function main() {
     }
   });
 
-  function exec(code) {
+  function exec(source) {
     output.innerText = ""; // clear ouput before next iteration
 
-    w.postMessage(code);
+    try {
+      const module = webassemblyjs.instantiateFromSource(source);
 
-    if (timeoutHandler !== undefined) {
-      clearTimeout(timeoutHandler);
+      output.innerText =
+        "OK. The module is accessible via `module0` in the developer console.";
+
+      window["module0"] = module;
+    } catch (e) {
+      output.innerText = e;
     }
-
-    // Check after some time if we got the response
-    timeoutHandler = setTimeout(() => {
-      w.terminate();
-
-      output.innerText = `
-        Execution timing out and the worker has been killed.
-        Please reload the page.
-      `;
-    }, TIMEOUT_IN_SEC * 1000);
   }
 
   exec(defaultCode);
