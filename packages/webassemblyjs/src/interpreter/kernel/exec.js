@@ -235,7 +235,7 @@ export function executeStackFrame(
         if (typeof func.name === "object") {
           if (func.name.type === "Identifier") {
             if (func.signature.type !== "Signature") {
-              newRuntimeError(
+              throw newRuntimeError(
                 "Function signatures must be denormalised before execution"
               );
             }
