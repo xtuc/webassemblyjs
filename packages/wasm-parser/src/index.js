@@ -11,7 +11,7 @@ const defaultDecoderOpts = {
 
 // traverses the AST, locating function name metadata, which is then
 // used to update index-based identifiers with function names
-function restoreNames(ast) {
+function restoreFunctionNames(ast) {
   const functionNames = [];
 
   t.traverse(ast, {
@@ -71,12 +71,53 @@ function restoreNames(ast) {
   });
 }
 
+function restoreLocalNames(ast) {
+  const localNames = [];
+
+  t.traverse(ast, {
+    LocalNameMetadata({ node }) {
+      localNames.push({
+        name: node.value,
+        localIndex: node.localIndex,
+        functionIndex: node.functionIndex
+      });
+    }
+  });
+
+  if (!localNames.length) {
+    return;
+  }
+
+  t.traverse(ast, {
+    Func({ node }: NodePath<Func>) {
+      const signature = node.signature;
+      if (signature.type !== "Signature") {
+        return;
+      }
+
+      // $FlowIgnore
+      const nodeName: Identifier = node.name;
+      const indexBasedFunctionName = nodeName.value;
+      const functionIndex = Number(indexBasedFunctionName.replace("func_", ""));
+      signature.params.forEach((param, paramIndex) => {
+        const paramName = localNames.find(
+          f => f.localIndex === paramIndex && f.functionIndex === functionIndex
+        );
+        if (paramName) {
+          param.id = paramName.name;
+        }
+      });
+    }
+  });
+}
+
 export function decode(buf: ArrayBuffer, customOpts: Object): Program {
   const opts: DecoderOpts = Object.assign({}, defaultDecoderOpts, customOpts);
   const ast = decoder.decode(buf, opts);
 
   if (!opts.ignoreCustomNameSection) {
-    restoreNames(ast);
+    restoreFunctionNames(ast);
+    restoreLocalNames(ast);
   }
 
   return ast;

@@ -49,11 +49,15 @@ function createCheck(actualWatPath) {
   // read the wasm file and strip custom metadata
   const bin = toArrayBuffer(readFileSync(actualWasmPath));
   const ast = stripMetadata(decode(bin));
-  const actual = JSON.stringify(ast, null, 2);
+  const actual = JSON.stringify(ast, Object.keys(ast).sort(), 2);
 
   // parse the wat file to create the expected AST
   const astFromWat = parse(actualWat);
-  const expected = JSON.stringify(astFromWat, null, 2);
+  const expected = JSON.stringify(
+    astFromWat,
+    Object.keys(astFromWat).sort(),
+    2
+  );
 
   const out = diff(expected.trim(), actual.trim());
 
