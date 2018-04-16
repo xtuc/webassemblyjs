@@ -26,7 +26,7 @@ function configureMonaco() {
         [REGEXP_KEYWORD, "keyword"],
         [REGEXP_KEYWORD_ASSERTS, "keyword"],
         [REGEXP_NUMBER, "number"],
-        [/\$([a-zA-Z0-9_`\+\-\*\/\\\^~=<>!\?@#$%&|:\.]+)/, "variable-2"],
+        [/\$([a-zA-Z0-9_`\+\-\*\/\\\^~=<>!\?@#$%&|:\.]+)/, "variable"],
         [REGEXP_STRING, "string"],
         [/;;.*$/, "comment"]
       ]
@@ -104,6 +104,10 @@ function main() {
     output.innerText = ""; // clear ouput before next iteration
 
     w.postMessage(code);
+
+    if (timeoutHandler !== undefined) {
+      clearTimeout(timeoutHandler);
+    }
 
     // Check after some time if we got the response
     timeoutHandler = setTimeout(() => {
