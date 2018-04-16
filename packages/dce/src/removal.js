@@ -1,16 +1,7 @@
-const { traverse } = require("@webassemblyjs/ast");
+const t = require("@webassemblyjs/ast");
 
-function replaceWithEmptyFunc(func) {
-  const emptyFunc = {
-    type: "Func",
-    params: [],
-    result: [],
-    body: [],
-    name: null
-  };
+const emptyFunc = t.func(null, [], [], []);
 
-  Object.assign(func, emptyFunc);
-}
 module.exports = function removeFunc(moduleExport, ast) {
   const exportName = moduleExport.name;
 
@@ -19,10 +10,10 @@ module.exports = function removeFunc(moduleExport, ast) {
 
   // console.log(`Remove unused "${exportName}"`);
 
-  traverse(ast, {
+  t.traverse(ast, {
     Func(path) {
       if (path.node.name.value === funcName) {
-        replaceWithEmptyFunc(path.node);
+        path.replaceWith(emptyFunc);
         // console.log('\t> remove func');
       }
     },
