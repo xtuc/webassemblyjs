@@ -99,6 +99,8 @@
   (table $a 10 anyfunc)
   (func)
   (func $test)
+  (func (type $t))
+  (func (type 0))
   (start $test)
   (start 0)
   (elem 0 (offset (i32.const 0)))

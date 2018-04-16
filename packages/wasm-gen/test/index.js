@@ -4,6 +4,13 @@ const t = require("@webassemblyjs/ast");
 const { encodeNode } = require("../lib");
 const encoder = require("../lib/encoder");
 
+function callIndirectInstructionIndex(index) {
+  return {
+    type: "CallIndirectInstruction",
+    index
+  };
+}
+
 const fixtures = [
   {
     name: "ModuleImport - should generate a i32 global",
@@ -77,7 +84,7 @@ const fixtures = [
 
   {
     name: "a CallIndirectInstruction",
-    node: t.callIndirectInstructionIndex(t.indexLiteral(10)),
+    node: callIndirectInstructionIndex(t.indexLiteral(10)),
     expected: [0x11, 0x0a, 0x00]
   },
 

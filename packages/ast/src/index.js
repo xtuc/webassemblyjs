@@ -159,22 +159,48 @@ export function moduleExport(
   };
 }
 
+export function functionSignature(
+  params: Array<FuncParam>,
+  results: Array<Valtype>
+): Signature {
+  return {
+    type: "Signature",
+    params,
+    results
+  };
+}
+
 export function func(
   name: ?Index,
   params: Array<FuncParam>,
-  result: Array<Valtype>,
+  results: Array<Valtype>,
   body: Array<Instruction>
 ): Func {
   assert(typeof params === "object" && typeof params.length !== "undefined");
-  assert(typeof result === "object" && typeof result.length !== "undefined");
+  assert(typeof results === "object" && typeof results.length !== "undefined");
   assert(typeof body === "object" && typeof body.length !== "undefined");
   assert(typeof name !== "string");
 
   return {
     type: "Func",
     name,
-    params,
-    result,
+    signature: functionSignature(params, results),
+    body
+  };
+}
+
+export function funcWithTypeRef(
+  name: ?Index,
+  typeRef: Index,
+  body: Array<Instruction>
+): Func {
+  assert(typeof body === "object" && typeof body.length !== "undefined");
+  assert(typeof name !== "string");
+
+  return {
+    type: "Func",
+    name,
+    signature: typeRef,
     body
   };
 }
@@ -452,8 +478,7 @@ export function funcImportDescr(
   return {
     type: "FuncImportDescr",
     id,
-    params,
-    results
+    signature: functionSignature(params, results)
   };
 }
 
@@ -566,16 +591,13 @@ export function memIndexLiteral(value: number): Memidx {
 
 export function typeInstructionFunc(
   params: Array<FuncParam> = [],
-  result: Array<Valtype> = [],
+  results: Array<Valtype> = [],
   id: ?Index
 ): TypeInstruction {
   return {
     type: "TypeInstruction",
     id,
-    functype: {
-      params,
-      result
-    }
+    functype: functionSignature(params, results)
   };
 }
 
@@ -586,18 +608,19 @@ export function callIndirectInstruction(
 ): CallIndirectInstruction {
   return {
     type: "CallIndirectInstruction",
-    params,
-    results,
+    signature: functionSignature(params, results),
     intrs
   };
 }
 
-export function callIndirectInstructionIndex(
-  index: Index
+export function callIndirectInstructionWithTypeRef(
+  typeRef: Index,
+  intrs: Array<Expression>
 ): CallIndirectInstruction {
   return {
     type: "CallIndirectInstruction",
-    index
+    signature: typeRef,
+    intrs
   };
 }
 

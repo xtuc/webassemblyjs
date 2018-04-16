@@ -12,8 +12,11 @@
             "value": "func_0",
             "raw": ""
           },
-          "params": [],
-          "result": [],
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
           "body": []
         }
       ]

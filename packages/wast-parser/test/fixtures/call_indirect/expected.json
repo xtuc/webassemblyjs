@@ -3,8 +3,11 @@
   "body": [
     {
       "type": "CallIndirectInstruction",
-      "params": [],
-      "results": [],
+      "signature": {
+        "type": "NumberLiteral",
+        "value": 0,
+        "raw": "0"
+      },
       "intrs": [
         {
           "type": "Instr",
@@ -22,12 +25,58 @@
     },
     {
       "type": "CallIndirectInstruction",
-      "params": [
+      "signature": {
+        "type": "Identifier",
+        "value": "foo"
+      },
+      "intrs": [
         {
-          "valtype": "i64"
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0,
+              "raw": "0"
+            }
+          ]
         }
-      ],
-      "results": [],
+      ]
+    },
+    {
+      "type": "CallIndirectInstruction",
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
+      "intrs": [
+        {
+          "type": "Instr",
+          "id": "const",
+          "object": "i32",
+          "args": [
+            {
+              "type": "NumberLiteral",
+              "value": 0,
+              "raw": "0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "CallIndirectInstruction",
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "i64"
+          }
+        ],
+        "results": []
+      },
       "intrs": [
         {
           "type": "Instr",
@@ -60,21 +109,24 @@
     },
     {
       "type": "CallIndirectInstruction",
-      "params": [
-        {
-          "valtype": "i64"
-        },
-        {
-          "valtype": "f64"
-        },
-        {
-          "valtype": "i32"
-        },
-        {
-          "valtype": "i64"
-        }
-      ],
-      "results": [],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "i64"
+          },
+          {
+            "valtype": "f64"
+          },
+          {
+            "valtype": "i32"
+          },
+          {
+            "valtype": "i64"
+          }
+        ],
+        "results": []
+      },
       "intrs": [
         {
           "type": "Instr",
@@ -146,8 +198,11 @@
     },
     {
       "type": "CallIndirectInstruction",
-      "params": [],
-      "results": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "intrs": [
         {
           "type": "Instr",
@@ -174,10 +229,13 @@
           "args": [
             {
               "type": "CallIndirectInstruction",
-              "params": [],
-              "results": [
-                "i32"
-              ],
+              "signature": {
+                "type": "Signature",
+                "params": [],
+                "results": [
+                  "i32"
+                ]
+              },
               "intrs": [
                 {
                   "type": "Instr",
@@ -208,10 +266,13 @@
           "args": [
             {
               "type": "CallIndirectInstruction",
-              "params": [],
-              "results": [
-                "i32"
-              ],
+              "signature": {
+                "type": "Signature",
+                "params": [],
+                "results": [
+                  "i32"
+                ]
+              },
               "intrs": [
                 {
                   "type": "Instr",
@@ -242,14 +303,17 @@
           "args": [
             {
               "type": "CallIndirectInstruction",
-              "params": [
-                {
-                  "valtype": "i64"
-                }
-              ],
-              "results": [
-                "i32"
-              ],
+              "signature": {
+                "type": "Signature",
+                "params": [
+                  {
+                    "valtype": "i64"
+                  }
+                ],
+                "results": [
+                  "i32"
+                ]
+              },
               "intrs": [
                 {
                   "type": "Instr",
@@ -295,23 +359,26 @@
           "args": [
             {
               "type": "CallIndirectInstruction",
-              "params": [
-                {
-                  "valtype": "i64"
-                },
-                {
-                  "valtype": "f64"
-                },
-                {
-                  "valtype": "i32"
-                },
-                {
-                  "valtype": "i64"
-                }
-              ],
-              "results": [
-                "i32"
-              ],
+              "signature": {
+                "type": "Signature",
+                "params": [
+                  {
+                    "valtype": "i64"
+                  },
+                  {
+                    "valtype": "f64"
+                  },
+                  {
+                    "valtype": "i32"
+                  },
+                  {
+                    "valtype": "i64"
+                  }
+                ],
+                "results": [
+                  "i32"
+                ]
+              },
               "intrs": [
                 {
                   "type": "Instr",
@@ -396,14 +463,10 @@
           "args": [
             {
               "type": "CallIndirectInstruction",
-              "params": [
-                {
-                  "valtype": "i64"
-                }
-              ],
-              "results": [
-                "i64"
-              ],
+              "signature": {
+                "type": "Identifier",
+                "value": "over-i64"
+              },
               "intrs": [
                 {
                   "type": "Instr",

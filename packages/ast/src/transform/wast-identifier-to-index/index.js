@@ -62,7 +62,14 @@ function transformFuncPath(
   globalsInProgram: Array<Index>
 ) {
   const funcNode = funcPath.node;
-  const { params } = funcNode;
+
+  const signature = funcNode.signature;
+  if (signature.type !== "Signature") {
+    throw new Error(
+      "Function signatures must be denormalised before execution"
+    );
+  }
+  const params = signature.params;
 
   traverse(funcNode, {
     Instr(instrPath: NodePath<GenericInstruction>) {

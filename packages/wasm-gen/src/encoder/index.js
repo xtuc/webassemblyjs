@@ -214,7 +214,7 @@ export function encodeTypeInstruction(n: TypeInstruction): Array<Byte> {
   const out = [0x60];
 
   const params = n.functype.params.map(x => x.valtype).map(encodeValtype);
-  const results = n.functype.result.map(encodeValtype);
+  const results = n.functype.results.map(encodeValtype);
 
   out.push(...encodeVec(params));
   out.push(...encodeVec(results));

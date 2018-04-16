@@ -12,8 +12,11 @@
             "value": "func_0",
             "raw": ""
           },
-          "params": [],
-          "result": [],
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
           "body": []
         },
         {
@@ -34,10 +37,13 @@
             "value": "func_1",
             "raw": ""
           },
-          "params": [],
-          "result": [
-            "i32"
-          ],
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": [
+              "i32"
+            ]
+          },
           "body": []
         },
         {
@@ -58,12 +64,15 @@
             "value": "func_2",
             "raw": ""
           },
-          "params": [
-            {
-              "valtype": "i32"
-            }
-          ],
-          "result": [],
+          "signature": {
+            "type": "Signature",
+            "params": [
+              {
+                "valtype": "i32"
+              }
+            ],
+            "results": []
+          },
           "body": []
         },
         {

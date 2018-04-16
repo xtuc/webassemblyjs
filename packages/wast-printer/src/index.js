@@ -74,7 +74,7 @@ function printTypeInstruction(n: TypeInstruction): string {
     out += ")";
   });
 
-  n.functype.result.forEach(result => {
+  n.functype.results.forEach(result => {
     out += space;
     out += "(";
     out += "result";
@@ -301,7 +301,7 @@ function printModuleImportDescr(n: ImportDescr): string {
       out += printIdentifier(n.id);
     }
 
-    n.params.forEach(param => {
+    n.signature.params.forEach(param => {
       out += space;
       out += "(";
       out += "param";
@@ -311,7 +311,7 @@ function printModuleImportDescr(n: ImportDescr): string {
       out += ")";
     });
 
-    n.results.forEach(result => {
+    n.signature.results.forEach(result => {
       out += space;
       out += "(";
       out += "result";
@@ -448,27 +448,40 @@ function printFunc(n: Func, depth: number): string {
     }
   }
 
-  n.params.forEach(param => {
+  if (n.signature.type === "Signature") {
+    const signature = (n.signature: Signature);
+    signature.params.forEach(param => {
+      out += space;
+      out += "(";
+      out += "param";
+      out += space;
+
+      out += printFuncParam(param);
+
+      out += ")";
+    });
+
+    signature.results.forEach(result => {
+      out += space;
+      out += "(";
+      out += "result";
+
+      out += space;
+      out += result;
+
+      out += ")";
+    });
+  } else {
+    const index = (n.signature: Index);
     out += space;
     out += "(";
-    out += "param";
+    out += "type";
     out += space;
 
-    out += printFuncParam(param);
+    out += printIndex(index);
 
     out += ")";
-  });
-
-  n.result.forEach(result => {
-    out += space;
-    out += "(";
-    out += "result";
-
-    out += space;
-    out += result;
-
-    out += ")";
-  });
+  }
 
   if (n.body.length > 0) {
     if (compact === false) {

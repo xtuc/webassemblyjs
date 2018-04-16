@@ -7,8 +7,11 @@
         "type": "Identifier",
         "value": "dummy"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -18,14 +21,17 @@
         "value": "func_1",
         "raw": ""
       },
-      "params": [
-        {
-          "valtype": "i32"
-        }
-      ],
-      "result": [
-        "i32"
-      ],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "i32"
+          }
+        ],
+        "results": [
+          "i32"
+        ]
+      },
       "body": [
         {
           "type": "IfInstruction",

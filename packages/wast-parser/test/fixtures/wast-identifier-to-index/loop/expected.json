@@ -7,8 +7,11 @@
         "type": "Identifier",
         "value": "a"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -18,10 +21,13 @@
         "value": "func_1",
         "raw": ""
       },
-      "params": [],
-      "result": [
-        "i32"
-      ],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": [
+          "i32"
+        ]
+      },
       "body": [
         {
           "type": "LoopInstruction",
