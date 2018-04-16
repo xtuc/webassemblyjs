@@ -27,8 +27,11 @@
             "type": "Identifier",
             "value": "main"
           },
-          "params": [],
-          "result": [],
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
           "body": [
             {
               "type": "Instr",

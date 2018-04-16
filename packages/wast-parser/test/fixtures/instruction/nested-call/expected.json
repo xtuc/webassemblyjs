@@ -7,8 +7,11 @@
         "type": "Identifier",
         "value": "name"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -18,8 +21,11 @@
         "value": "func_1",
         "raw": ""
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": [
         {
           "type": "CallInstruction",

@@ -8,10 +8,13 @@
         "value": "func_0",
         "raw": ""
       },
-      "params": [],
-      "result": [
-        "i32"
-      ],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": [
+          "i32"
+        ]
+      },
       "body": [
         {
           "type": "Instr",

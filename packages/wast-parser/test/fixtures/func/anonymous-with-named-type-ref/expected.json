@@ -25,9 +25,7 @@
         "value": "func_0",
         "raw": ""
       },
-      "params": [],
-      "result": [],
-      "typeRef": {
+      "signature": {
         "type": "Identifier",
         "value": "foo"
       },

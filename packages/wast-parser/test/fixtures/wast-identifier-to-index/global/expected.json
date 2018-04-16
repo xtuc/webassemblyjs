@@ -60,8 +60,11 @@
         "value": "func_0",
         "raw": ""
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": [
         {
           "type": "Instr",
@@ -83,8 +86,11 @@
         "value": "func_1",
         "raw": ""
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": [
         {
           "type": "Instr",

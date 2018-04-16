@@ -11,8 +11,11 @@
             "type": "Identifier",
             "value": "funcfoo"
           },
-          "params": [],
-          "result": [],
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
           "body": [
             {
               "type": "Instr",

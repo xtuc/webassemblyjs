@@ -21,9 +21,7 @@
         "value": "func_0",
         "raw": ""
       },
-      "params": [],
-      "result": [],
-      "typeRef": {
+      "signature": {
         "type": "NumberLiteral",
         "value": 0,
         "raw": "0"

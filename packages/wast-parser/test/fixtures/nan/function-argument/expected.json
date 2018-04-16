@@ -11,14 +11,17 @@
             "type": "Identifier",
             "value": "reinterpret_f32_i32"
           },
-          "params": [
-            {
-              "valtype": "f32"
-            }
-          ],
-          "result": [
-            "i32"
-          ],
+          "signature": {
+            "type": "Signature",
+            "params": [
+              {
+                "valtype": "f32"
+              }
+            ],
+            "results": [
+              "i32"
+            ]
+          },
           "body": [
             {
               "type": "Instr",

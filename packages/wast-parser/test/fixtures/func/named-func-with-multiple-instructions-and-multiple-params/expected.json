@@ -7,19 +7,22 @@
         "type": "Identifier",
         "value": "add"
       },
-      "params": [
-        {
-          "id": "lhs",
-          "valtype": "i32"
-        },
-        {
-          "id": "rhs",
-          "valtype": "i32"
-        }
-      ],
-      "result": [
-        "i32"
-      ],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "id": "lhs",
+            "valtype": "i32"
+          },
+          {
+            "id": "rhs",
+            "valtype": "i32"
+          }
+        ],
+        "results": [
+          "i32"
+        ]
+      },
       "body": [
         {
           "type": "Instr",

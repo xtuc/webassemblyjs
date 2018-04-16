@@ -7,8 +7,11 @@
         "type": "Identifier",
         "value": "funca"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -18,21 +21,24 @@
         "value": "func_1",
         "raw": ""
       },
-      "params": [
-        {
-          "id": "c",
-          "valtype": "f64"
-        },
-        {
-          "id": "a",
-          "valtype": "i32"
-        },
-        {
-          "id": "b",
-          "valtype": "i64"
-        }
-      ],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "id": "c",
+            "valtype": "f64"
+          },
+          {
+            "id": "a",
+            "valtype": "i32"
+          },
+          {
+            "id": "b",
+            "valtype": "i64"
+          }
+        ],
+        "results": []
+      },
       "body": [
         {
           "type": "Instr",
@@ -180,8 +186,11 @@
         "type": "Identifier",
         "value": "funcb"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     }
   ]
