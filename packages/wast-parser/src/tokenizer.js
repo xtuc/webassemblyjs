@@ -1,16 +1,25 @@
 // @flow
 
-import { codeFrameColumns } from "@babel/code-frame";
 import { FSM, makeTransition } from "@webassemblyjs/helper-fsm";
+import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 
-function showCodeFrame(source: string, line: number, column: number) {
+declare function unexpectedCharacter(): void;
+
+/**
+ * Throw an error in case the current character is invalid
+ */
+MACRO(
+  unexpectedCharacter,
+  'throw new Error(getCodeFrame(input, line, column) + `Unexpected character "${char}"`);'
+);
+
+// eslint-disable-next-line
+function getCodeFrame(source: string, line: number, column: number) {
   const loc = {
     start: { line, column }
   };
 
-  const out = codeFrameColumns(source, loc);
-
-  process.stdout.write(out + "\n");
+  return "\n" + codeFrameFromSource(source, loc) + "\n";
 }
 
 const WHITESPACE = /\s/;
@@ -94,6 +103,7 @@ const NUMERIC_SEPARATOR = "_";
  */
 type NumberLiteralState =
   | "START"
+  | "AFTER_SIGN"
   | "HEX"
   | "HEX_FRAC"
   | "NAN_HEX"
@@ -108,7 +118,14 @@ type NumberLiteralState =
 const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
   {
     START: [
-      makeTransition(/-|\+/, "START"),
+      makeTransition(/-|\+/, "AFTER_SIGN"),
+      makeTransition(/nan:0x/, "NAN_HEX", { n: 6 }),
+      makeTransition(/nan|inf/, "STOP", { n: 3 }),
+      makeTransition(/0x/, "HEX", { n: 2 }),
+      makeTransition(/[0-9]/, "DEC"),
+      makeTransition(/\./, "DEC_FRAC")
+    ],
+    AFTER_SIGN: [
       makeTransition(/nan:0x/, "NAN_HEX", { n: 6 }),
       makeTransition(/nan|inf/, "STOP", { n: 3 }),
       makeTransition(/0x/, "HEX", { n: 2 }),
@@ -174,13 +191,6 @@ function tokenize(input: string) {
   let line = 1;
 
   const tokens = [];
-
-  /**
-   * Throw an error in case the current character is invalid
-   */
-  function unexpectedCharacter() {
-    throw new Error(`Unexpected character "${char}"`);
-  }
 
   /**
    * Creates a pushToken function for a given type
@@ -459,8 +469,6 @@ function tokenize(input: string) {
 
       continue;
     }
-
-    showCodeFrame(input, line, column);
 
     unexpectedCharacter();
   }

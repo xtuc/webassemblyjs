@@ -1,0 +1,27 @@
+/**
+ * Original file is testsuite/br.wast
+ */
+it("should branch correctly", () => {
+  const { exports } = WebAssembly.instantiateFromSource(watmodule);
+
+  assert.equal(exports["type-i32"](), undefined);
+  // assert.equal(exports['type-i64'](), undefined);
+  assert.equal(exports["type-f32"](), undefined);
+  assert.equal(exports["type-f64"](), undefined);
+
+  assert.equal(exports["type-i32-value"](), 1);
+  // assert.equal(exports['type-i64-value'](), 2);
+  assert.equal(exports["type-f32-value"](), 3);
+  assert.equal(exports["type-f64-value"](), 4);
+
+  assert.equal(exports["as-block-first"](), undefined);
+  assert.equal(exports["as-block-mid"](), undefined);
+  assert.equal(exports["as-block-last"](), undefined);
+  assert.equal(exports["as-block-value"](), 2);
+
+  assert.equal(exports["as-loop-first"](), 3);
+  assert.equal(exports["as-loop-mid"](), 4);
+  assert.equal(exports["as-loop-last"](), 5);
+
+  assert.equal(exports["as-br-value"](), 9);
+});

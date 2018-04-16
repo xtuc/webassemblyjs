@@ -27,6 +27,12 @@ export function isConst(instrs: Array<Instruction>): boolean {
       return true;
     }
 
+    // FIXME(sven): this shoudln't be needed, we need to inject our end
+    // instructions after the validations
+    if (instr.id === "end") {
+      return true;
+    }
+
     return false;
   }, true);
 }

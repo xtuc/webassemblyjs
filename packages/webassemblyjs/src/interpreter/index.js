@@ -42,7 +42,8 @@ export class Instance {
      * Pass internal options
      */
     let internalInstanceOptions: InternalInstanceOptions = {
-      checkForI64InSignature: true
+      checkForI64InSignature: true,
+      returnStackLocal: false
     };
 
     if (typeof importObject._internalInstanceOptions === "object") {
@@ -94,7 +95,11 @@ export class Instance {
           throw new RuntimeError("Global instance has not been instantiated");
         }
 
-        this.exports[exportinst.name] = globalinst.value.toNumber();
+        if (internalInstanceOptions.returnStackLocal === true) {
+          this.exports[exportinst.name] = globalinst;
+        } else {
+          this.exports[exportinst.name] = globalinst.value.toNumber();
+        }
       }
 
       if (exportinst.value.type === "Memory") {
@@ -143,7 +148,7 @@ export class Instance {
     );
 
     // Ignore the result
-    executeStackFrameAndGetResult(stackFrame);
+    executeStackFrameAndGetResult(stackFrame, /* returnStackLocal */ true);
   }
 }
 

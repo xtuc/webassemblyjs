@@ -19,7 +19,8 @@ export function createInstance(
 
   // None or multiple constant expressions in the initializer seems not possible
   // TODO(sven): find a specification reference for that
-  if (node.init.length > 1 || node.init.length === 0) {
+  // FIXME(sven): +1 because of the implicit end, change the order of validations
+  if (node.init.length > 2 || node.init.length === 1) {
     throw new CompileError("type mismatch");
   }
 

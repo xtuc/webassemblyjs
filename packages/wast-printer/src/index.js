@@ -12,12 +12,13 @@ function indent(nb: number): string {
     .join("");
 }
 
+// TODO(sven): allow arbitrary ast nodes
 export function print(n: Node): string {
   if (n.type === "Program") {
     return printProgram(n, 0);
+  } else {
+    throw new Error("Unsupported node in print of type: " + String(n.type));
   }
-
-  return "()";
 }
 
 function printProgram(n: Program, depth: number): string {
@@ -99,10 +100,10 @@ function printModule(n: Module, depth: number): string {
     out += n.id;
   }
 
-  out += space;
-
   if (compact === false) {
     out += "\n";
+  } else {
+    out += space;
   }
 
   n.fields.forEach(field => {
@@ -161,6 +162,16 @@ function printModule(n: Module, depth: number): string {
         break;
       }
 
+      case "Elem": {
+        out += printElem(field, depth);
+        break;
+      }
+
+      case "Data": {
+        out += printData(field, depth);
+        break;
+      }
+
       default:
         throw new Error(
           "Unsupported node in printModule: " + String(field.type)
@@ -170,6 +181,62 @@ function printModule(n: Module, depth: number): string {
     if (compact === false) {
       out += "\n";
     }
+  });
+
+  out += ")";
+
+  return out;
+}
+
+function printData(n: Data, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "data";
+  out += space;
+
+  out += printIndex(n.memoryIndex);
+  out += space;
+
+  out += printInstruction(n.offset, depth);
+  out += space;
+
+  out += '"';
+
+  n.init.values.forEach(byte => {
+    out += String.fromCharCode(byte);
+  });
+
+  out += '"';
+
+  out += ")";
+
+  return out;
+}
+
+function printElem(n: Elem, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "elem";
+
+  out += space;
+  out += printIndex(n.table);
+
+  const [firstOffset] = n.offset;
+
+  out += space;
+
+  out += "(";
+  out += "offset";
+  out += space;
+
+  out += printInstruction(firstOffset, depth);
+  out += ")";
+
+  n.funcs.forEach(func => {
+    out += space;
+    out += printIndex(func);
   });
 
   out += ")";

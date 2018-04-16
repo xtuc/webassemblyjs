@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-edit",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -16,13 +16,13 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/ast": "1.2.3",
-    "@webassemblyjs/helper-buffer": "1.2.3",
-    "@webassemblyjs/helper-wasm-bytecode": "1.2.3",
-    "@webassemblyjs/helper-wasm-section": "1.2.3",
-    "@webassemblyjs/wasm-gen": "1.2.3",
-    "@webassemblyjs/wasm-parser": "1.2.3",
-    "@webassemblyjs/wast-printer": "1.2.3",
+    "@webassemblyjs/ast": "1.2.5",
+    "@webassemblyjs/helper-buffer": "1.2.5",
+    "@webassemblyjs/helper-wasm-bytecode": "1.2.5",
+    "@webassemblyjs/helper-wasm-section": "1.2.5",
+    "@webassemblyjs/wasm-gen": "1.2.5",
+    "@webassemblyjs/wasm-parser": "1.2.5",
+    "@webassemblyjs/wast-printer": "1.2.5",
     "debug": "^3.1.0"
   }
 }

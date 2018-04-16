@@ -2,6 +2,8 @@
   (import "module" "name" (func $name (param i32) (result i32)))
   (import "m" "a" (global (mut i32)))
   (import "m" "a" (global i32))
+  (import "a" "b" (table 1 anyfunc))
+  (import "c" "d" (table 5 25 anyfunc))
 
   (global $test i32 (i32.const 0))
   (global i32 (i32.const 1_1_4))
@@ -117,6 +119,13 @@
   (start $test)
   (start 0)
 
-  (import "a" "b" (table 1 anyfunc))
-  (import "c" "d" (table 5 25 anyfunc))
+  (elem (offset (i32.const 0)))
+  (elem (offset (i32.const 0)) $f $f)
+  (elem $t (i32.const 0))
+  (elem $t (i32.const 0) $f $f)
+  (elem $t (offset (i32.const 0)))
+  (elem $t (offset (i32.const 0)) $f $f)
+
+  (data (i32.const 25) "abc")
+  (data 1 (i32.const 25) "abc")
 )

@@ -31,6 +31,8 @@ describe("kernel exec - parametric instructions", () => {
 
   operations.forEach(op => {
     it(op.name + " should result in a correct state", () => {
+      op.code.push(t.instruction("end"));
+
       const stackFrame = createStackFrame(op.code, op.args);
       const res = executeStackFrame(stackFrame);
 
@@ -43,7 +45,7 @@ describe("kernel exec - parametric instructions", () => {
   });
 
   it("should drop if no values is on the stack", () => {
-    const code = [t.instruction("drop", [])];
+    const code = [t.instruction("drop", []), t.instruction("end")];
 
     const stackFrame = createStackFrame(code, []);
     const fn = () => executeStackFrame(stackFrame);

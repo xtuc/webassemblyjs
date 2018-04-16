@@ -1,10 +1,24 @@
 // @flow
 import { parse32I } from "./number-literals";
 import { parseString } from "./string-literals";
+import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 const t = require("@webassemblyjs/ast");
 
 const { tokens, keywords } = require("./tokenizer");
-const { codeFrameColumns } = require("@babel/code-frame");
+
+type CreateUnexpectedTokenArgs = {|
+  MSG: string
+|};
+declare function createUnexpectedToken(CreateUnexpectedTokenArgs): void;
+
+MACRO(
+  createUnexpectedToken,
+  `return new Error(
+    "\n" +
+    codeFrameFromSource(source, token.loc) + "\n"
+    + MSG + ", given " + tokenToString(token)
+  );`
+);
 
 type AllArgs = {
   args: Array<Expression>,
@@ -19,12 +33,6 @@ function hasPlugin(name: string): boolean {
 
 function isKeyword(token: Object, id: string): boolean {
   return token.type === tokens.keyword && token.value === id;
-}
-
-function showCodeFrame(source: string, loc: SourceLocation) {
-  const out = codeFrameColumns(source, loc);
-
-  process.stdout.write(out + "\n");
 }
 
 function tokenToString(token: Object): string {
@@ -62,10 +70,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
     function eatTokenOfType(type: string) {
       if (token.type !== type) {
-        showCodeFrame(source, token.loc);
-
         throw new Error(
-          "Assertion error: expected token of type " +
+          "\n" +
+            codeFrameFromSource(source, token.loc) +
+            "Assertion error: expected token of type " +
             type +
             ", given " +
             tokenToString(token)
@@ -165,8 +173,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // export
 
         if (token.type !== tokens.string) {
-          showCodeFrame(source, token.loc);
-          throw new Error("Expected string in export, given " + token.type);
+          throw createUnexpectedToken({
+            MSG: "Expected string in export"
+          });
         }
 
         const name = token.value;
@@ -226,7 +235,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.name); // const
 
         const numberLiteral = t.numberLiteral(token.value, "i32");
-        offset = t.instruction("const", [numberLiteral]);
+        offset = t.objectInstruction("const", "i32", [numberLiteral]);
         eatToken();
 
         eatTokenOfType(tokens.closeParen);
@@ -295,8 +304,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken(); // export
 
           if (token.type !== tokens.string) {
-            showCodeFrame(source, token.loc);
-            throw new Error("Expected string in export, given " + token.type);
+            throw createUnexpectedToken({
+              MSG: "Expected string in export"
+            });
           }
 
           const exportName = token.value;
@@ -330,8 +340,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           eatToken();
         } else {
-          showCodeFrame(source, token.loc);
-          throw new Error("Unexpected token of type " + tokenToString(token));
+          throw createUnexpectedToken({
+            MSG: "Unexpected token"
+          });
         }
       }
 
@@ -397,10 +408,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
             fnResult.push(...parseFuncResult());
           } else {
-            showCodeFrame(source, token.loc);
-            throw new Error(
-              "Unexpected token in import of type: " + token.type
-            );
+            throw createUnexpectedToken({
+              MSG: "Unexpected token in import of type"
+            });
           }
 
           eatTokenOfType(tokens.closeParen);
@@ -486,10 +496,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           // Instruction
           instr.push(parseFuncInstr());
         } else {
-          showCodeFrame(source, token.loc);
-          throw new Error(
-            "Unexpected token in block body of type: " + token.type
-          );
+          throw createUnexpectedToken({
+            MSG: "Unexpected token in block body of type"
+          });
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -563,10 +572,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             ) {
               consequent.push(parseFuncInstr());
             } else {
-              showCodeFrame(source, token.loc);
-              throw new Error(
-                "Unexpected token in consequent body of type: " + token.type
-              );
+              throw createUnexpectedToken({
+                MSG: "Unexpected token in consequent body of type"
+              });
             }
 
             eatTokenOfType(tokens.closeParen);
@@ -594,10 +602,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             ) {
               alternate.push(parseFuncInstr());
             } else {
-              showCodeFrame(source, token.loc);
-              throw new Error(
-                "Unexpected token in alternate body of type: " + token.type
-              );
+              throw createUnexpectedToken({
+                MSG: "Unexpected token in alternate body of type"
+              });
             }
 
             eatTokenOfType(tokens.closeParen);
@@ -622,6 +629,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           continue;
         }
+
+        throw createUnexpectedToken({
+          MSG: "Unexpected token in if body"
+        });
       }
 
       return t.ifInstruction(
@@ -675,10 +686,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           // Instruction
           instr.push(parseFuncInstr());
         } else {
-          showCodeFrame(source, token.loc);
-          throw new Error(
-            "Unexpected token in loop body of type: " + token.type
-          );
+          throw createUnexpectedToken({
+            MSG: "Unexpected token in loop body"
+          });
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -909,22 +919,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           args.push(t.identifier(token.value));
 
           eatToken();
-        }
-
-        // Handle locals
-        if (token.type === tokens.valtype) {
+        } else if (token.type === tokens.valtype) {
+          // Handle locals
           args.push(t.valtype(token.value));
 
           eatToken();
-        }
-
-        if (token.type === tokens.string) {
+        } else if (token.type === tokens.string) {
           args.push(t.stringLiteral(token.value));
 
           eatToken();
-        }
-
-        if (token.type === tokens.number) {
+        } else if (token.type === tokens.number) {
           args.push(
             // TODO(sven): refactor the type signature handling
             // https://github.com/xtuc/webassemblyjs/pull/129 is a good start
@@ -933,12 +937,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           );
 
           eatToken();
-        }
-
-        /**
-         * Maybe some nested instructions
-         */
-        if (token.type === tokens.openParen) {
+        } else if (token.type === tokens.openParen) {
+          /**
+           * Maybe some nested instructions
+           */
           eatToken();
 
           // Instruction
@@ -949,15 +951,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           ) {
             args.push(parseFuncInstr());
           } else {
-            showCodeFrame(source, token.loc);
-            throw new Error(
-              "Unexpected token in nested instruction of type: " + token.type
-            );
+            throw createUnexpectedToken({
+              MSG: "Unexpected token in nested instruction"
+            });
           }
 
           if (token.type === tokens.closeParen) {
             eatToken();
           }
+        } else {
+          throw createUnexpectedToken({
+            MSG: "Unexpected token in instruction argument"
+          });
         }
       }
 
@@ -1133,10 +1138,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         return module;
       } else {
-        showCodeFrame(source, token.loc);
-        throw new Error(
-          "Unexpected instruction in function body: " + tokenToString(token)
-        );
+        throw createUnexpectedToken({
+          MSG: "Unexpected instruction in function body"
+        });
       }
     }
 
@@ -1200,10 +1204,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           // Instruction
           fnBody.push(parseFuncInstr());
         } else {
-          showCodeFrame(source, token.loc);
-          throw new Error(
-            "Unexpected token in func body of type: " + token.type
-          );
+          throw createUnexpectedToken({
+            MSG: "Unexpected token in func body"
+          });
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -1223,9 +1226,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseFuncExport(funcId: Identifier) {
       if (token.type !== tokens.string) {
-        throw new Error(
-          "Function export expected a string, " + token.type + " given"
-        );
+        throw createUnexpectedToken({
+          MSG: "Function export expected a string"
+        });
       }
 
       const name = token.value;
@@ -1308,8 +1311,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const results = [];
 
       if (token.type !== tokens.valtype) {
-        showCodeFrame(source, token.loc);
-        throw new Error("Unexpected token in func result: " + token.type);
+        throw createUnexpectedToken({
+          MSG: "Unexpected token in func result"
+        });
       }
 
       const valtype = token.value;
@@ -1415,8 +1419,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // (
 
         if (isKeyword(token, keywords.mut) === false) {
-          showCodeFrame(source, token.loc);
-          throw new Error("Unsupported global type, expected mut");
+          throw createUnexpectedToken({
+            MSG: "Unsupported global type, expected mut"
+          });
         }
 
         eatToken(); // mut
@@ -1428,8 +1433,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       if (type === undefined) {
-        showCodeFrame(source, token.loc);
-        throw new TypeError("Could not determine global type");
+        throw createUnexpectedToken({
+          MSG: "Could not determine global type"
+        });
       }
 
       maybeIgnoreComment();
@@ -1558,8 +1564,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           eatTokenOfType(tokens.closeParen);
         } else {
-          showCodeFrame(source, token.loc);
-          throw new Error("Unsupported token in elem: " + tokenToString(token));
+          throw createUnexpectedToken({
+            MSG: "Unsupported token in elem"
+          });
         }
       }
 
@@ -1710,8 +1717,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       return node;
     }
 
-    showCodeFrame(source, token.loc);
-    throw new TypeError("Unknown token: " + token.type);
+    throw createUnexpectedToken({
+      MSG: "Unknown token"
+    });
   }
 
   const body = [];
