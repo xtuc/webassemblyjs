@@ -80,7 +80,7 @@ type StackFrame = {
 };
 
 type StackLocal = {
-  type: Valtype | "Signal",
+  type: Valtype,
   value: any
 };
 
@@ -142,8 +142,6 @@ type Label = {
   value: any,
   id: ?Identifier
 };
-
-type Signal = number;
 
 interface Allocator {
   malloc(Bytes): Addr;
