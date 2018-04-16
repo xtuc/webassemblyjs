@@ -629,6 +629,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           continue;
         }
+
+        throw createUnexpectedToken({
+          MSG: "Unexpected token in if body"
+        });
       }
 
       return t.ifInstruction(
@@ -683,7 +687,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           instr.push(parseFuncInstr());
         } else {
           throw createUnexpectedToken({
-            MSG: "Unexpected token in loop body of type"
+            MSG: "Unexpected token in loop body"
           });
         }
 
@@ -866,22 +870,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           args.push(t.identifier(token.value));
 
           eatToken();
-        }
-
-        // Handle locals
-        if (token.type === tokens.valtype) {
+        } else if (token.type === tokens.valtype) {
+          // Handle locals
           args.push(t.valtype(token.value));
 
           eatToken();
-        }
-
-        if (token.type === tokens.string) {
+        } else if (token.type === tokens.string) {
           args.push(t.stringLiteral(token.value));
 
           eatToken();
-        }
-
-        if (token.type === tokens.number) {
+        } else if (token.type === tokens.number) {
           args.push(
             // TODO(sven): refactor the type signature handling
             // https://github.com/xtuc/webassemblyjs/pull/129 is a good start
@@ -890,12 +888,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           );
 
           eatToken();
-        }
-
-        /**
-         * Maybe some nested instructions
-         */
-        if (token.type === tokens.openParen) {
+        } else if (token.type === tokens.openParen) {
+          /**
+           * Maybe some nested instructions
+           */
           eatToken();
 
           // Instruction
@@ -914,6 +910,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           if (token.type === tokens.closeParen) {
             eatToken();
           }
+        } else {
+          throw createUnexpectedToken({
+            MSG: "Unexpected token in instruction argument"
+          });
         }
       }
 
