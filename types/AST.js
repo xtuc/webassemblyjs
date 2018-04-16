@@ -352,10 +352,7 @@ type CallIndirectInstruction = {
 
   type: "CallIndirectInstruction",
 
-  // WAST
-  params?: Array<FuncParam>,
-  results?: Array<Valtype>,
-  typeRef?: Index,
+  signature: SignatureOrTypeRef,
 
   intrs?: Array<Expression>,
 

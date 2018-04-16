@@ -612,29 +612,19 @@ export function callIndirectInstruction(
 ): CallIndirectInstruction {
   return {
     type: "CallIndirectInstruction",
-    params,
-    results,
+    signature: functionSignature(params, results),
     intrs
   };
 }
 
 export function callIndirectInstructionWithTypeRef(
-  typeRef: NumberLiteral | Identifier,
+  typeRef: Index,
   intrs: Array<Expression>
 ): CallIndirectInstruction {
   return {
     type: "CallIndirectInstruction",
-    typeRef,
+    signature: typeRef,
     intrs
-  };
-}
-
-export function callIndirectInstructionIndex(
-  index: Index
-): CallIndirectInstruction {
-  return {
-    type: "CallIndirectInstruction",
-    index
   };
 }
 
