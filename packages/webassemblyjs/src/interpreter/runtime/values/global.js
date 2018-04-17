@@ -1,7 +1,7 @@
 // @flow
 
-import { isConst } from "../../../compiler/validation/is-const";
-import { getType, typeEq } from "../../../compiler/validation/type-inference";
+import { isConst } from "@webassemblyjs/validations";
+import { getType, typeEq } from "@webassemblyjs/validations";
 
 const { evaluate } = require("../../partial-evaluation");
 const { CompileError } = require("../../../errors");
