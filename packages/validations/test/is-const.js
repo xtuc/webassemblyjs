@@ -3,7 +3,7 @@
 const t = require("@webassemblyjs/ast");
 const { assert } = require("chai");
 
-const { isConst } = require("../lib/compiler/validation/is-const");
+const { isConst } = require("../lib/is-const");
 
 function i32ConstOf(v) {
   return t.objectInstruction("const", "i32", [t.numberLiteral(v)]);
