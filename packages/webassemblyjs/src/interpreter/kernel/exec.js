@@ -18,14 +18,20 @@ const t = require("@webassemblyjs/ast");
 MACRO(
   assert,
   `if (!COND) {
-    throw new RuntimeError("Assertion error: " + (MSG || "unknown"));
+    const e = new RuntimeError("Assertion error: " + (MSG || "unknown"));
+    e._appstack = stack;
+
+    throw e;
   }`
 );
 
 MACRO(
   assertNItemsOnStack,
   `if (frame.values.length < N) {
-    throw new RuntimeError("Assertion error: expected " + N + " on the stack, found " + frame.values.length);
+    const e = new RuntimeError("Assertion error: expected " + N + " on the stack, found " + frame.values.length);
+    e._appstack = stack;
+
+    throw e;
   }`
 );
 
@@ -127,7 +133,7 @@ export function executeStackFrame(
 
       if (typeof type === "string" && v.type !== type) {
         throw newRuntimeError(
-          "Internal failure: expected value of type " +
+          "expected value of type " +
             type +
             " on top of the stack, type given: " +
             v.type
@@ -151,18 +157,18 @@ export function executeStackFrame(
 
       if (c2.type !== type2) {
         throw newRuntimeError(
-          "Internal failure: expected c2 value of type " +
+          "expected c2 value of type " +
             type2 +
-            " on top of the stack, give type: " +
+            " on top of the stack, given type: " +
             c2.type
         );
       }
 
       if (c1.type !== type1) {
         throw newRuntimeError(
-          "Internal failure: expected c1 value of type " +
+          "expected c1 value of type " +
             type1 +
-            " on top of the stack, give type: " +
+            " on top of the stack, given type: " +
             c1.type
         );
       }
@@ -240,7 +246,10 @@ export function executeStackFrame(
     }
 
     function newRuntimeError(msg) {
-      return new RuntimeError(msg);
+      const e = new RuntimeError(msg);
+      e._appstack = stack;
+
+      throw e;
     }
 
     function createAndExecuteChildStackFrame(

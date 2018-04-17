@@ -1038,6 +1038,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      * func_type:   ( type <var> )? <param>* <result>*
      */
     function parseFuncInstr(): Instruction {
+      const startLoc = token.loc.start;
+
       /**
        * A simple instruction
        */
@@ -1062,10 +1064,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
 
         if (token.type === tokens.closeParen) {
+          const endLoc = token.loc.end;
+
           if (typeof object === "undefined") {
-            return t.instruction(name);
+            return t.withLoc(t.instruction(name), endLoc, startLoc);
           } else {
-            return t.objectInstruction(name, object, []);
+            return t.withLoc(
+              t.objectInstruction(name, object, []),
+              endLoc,
+              startLoc
+            );
           }
         }
 
@@ -1073,10 +1081,20 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         const { args, namedArgs } = parseFuncInstrArguments(signature);
 
+        const endLoc = token.loc.end;
+
         if (typeof object === "undefined") {
-          return t.instruction(name, args, namedArgs);
+          return t.withLoc(
+            t.instruction(name, args, namedArgs),
+            endLoc,
+            startLoc
+          );
         } else {
-          return t.objectInstruction(name, object, args, namedArgs);
+          return t.withLoc(
+            t.objectInstruction(name, object, args, namedArgs),
+            endLoc,
+            startLoc
+          );
         }
       } else if (isKeyword(token, keywords.loop)) {
         /**

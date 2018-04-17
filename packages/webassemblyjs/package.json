@@ -21,6 +21,7 @@
     "@webassemblyjs/ast": "1.2.5",
     "@webassemblyjs/wasm-parser": "1.2.5",
     "@webassemblyjs/wast-parser": "1.2.5",
+    "@webassemblyjs/helper-code-frame": "1.2.5",
     "long": "^3.2.0"
   },
   "devDependencies": {

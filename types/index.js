@@ -49,6 +49,8 @@ type GlobalInstance = {
 };
 
 type ModuleInstance = {
+  _ast: Program,
+
   types: any,
 
   funcaddrs: Array<FuncAddr>,

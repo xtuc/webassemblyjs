@@ -10,13 +10,18 @@ function repeat(char: string, nb: number): string {
 }
 
 // TODO(sven): allow arbitrary ast nodes
-export function codeFrameFromAst(ast: Program, loc: SourceLocation): string {
-  return codeFrameFromSource(print(ast), loc);
+export function codeFrameFromAst(
+  ast: Program,
+  loc: SourceLocation,
+  message?: string
+): string {
+  return codeFrameFromSource(print(ast), loc, message);
 }
 
 export function codeFrameFromSource(
   source: string,
-  loc: SourceLocation
+  loc: SourceLocation,
+  message?: string
 ): string {
   const { start, end } = loc;
 
@@ -36,6 +41,12 @@ export function codeFrameFromSource(
       acc += repeat(" ", start.column - 1);
       acc += repeat("^", length);
       acc += "\n";
+
+      if (typeof message === "string") {
+        acc += repeat(" ", start.column - 1);
+        acc += message;
+        acc += "\n\n";
+      }
     }
 
     return acc;

@@ -17,7 +17,7 @@ function toArrayBuffer(buf) {
 function jsonTraverse(o, func) {
   func(o);
   for (const i in o) {
-    if (o[i] !== null && typeof o[i] == "object") {
+    if (o[i] !== null && typeof o[i] === "object") {
       jsonTraverse(o[i], func);
     }
   }

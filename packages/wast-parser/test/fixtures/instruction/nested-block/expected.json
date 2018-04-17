@@ -41,7 +41,17 @@
                   "value": 150,
                   "raw": "150"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 4
+                },
+                "end": {
+                  "line": 4,
+                  "column": 17
+                }
+              }
             },
             {
               "type": "BlockInstruction",
@@ -62,7 +72,17 @@
                       "value": 150,
                       "raw": "150"
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 6,
+                      "column": 6
+                    },
+                    "end": {
+                      "line": 6,
+                      "column": 19
+                    }
+                  }
                 }
               ],
               "result": null

@@ -19,7 +19,17 @@
               "value": 0,
               "raw": "0"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 6
+            },
+            "end": {
+              "line": 1,
+              "column": 17
+            }
+          }
         }
       ],
       "consequent": [],
@@ -43,7 +53,17 @@
               "value": 0,
               "raw": "0"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 5
+            },
+            "end": {
+              "line": 2,
+              "column": 16
+            }
+          }
         }
       ],
       "consequent": [],
@@ -66,7 +86,17 @@
               "value": 0,
               "raw": "0"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 8
+            },
+            "end": {
+              "line": 3,
+              "column": 19
+            }
+          }
         }
       ],
       "consequent": [],
@@ -89,7 +119,17 @@
               "value": 0,
               "raw": "0"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 8
+            },
+            "end": {
+              "line": 4,
+              "column": 19
+            }
+          }
         }
       ],
       "consequent": [],

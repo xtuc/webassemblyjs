@@ -12,7 +12,17 @@
           "inf": true,
           "raw": "inf"
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 15
+        }
+      }
     },
     {
       "type": "Instr",
@@ -25,7 +35,17 @@
           "inf": true,
           "raw": "-inf"
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 15
+        }
+      }
     }
   ]
 }

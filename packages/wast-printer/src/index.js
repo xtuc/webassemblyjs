@@ -16,6 +16,8 @@ function indent(nb: number): string {
 export function print(n: Node): string {
   if (n.type === "Program") {
     return printProgram(n, 0);
+  } else if (n.type === "Instr") {
+    return printInstruction(n, 0);
   } else {
     throw new Error("Unsupported node in print of type: " + String(n.type));
   }
