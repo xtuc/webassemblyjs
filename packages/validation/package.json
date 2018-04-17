@@ -1,5 +1,5 @@
 {
-  "name": "@webassemblyjs/validations",
+  "name": "@webassemblyjs/validation",
   "version": "1.2.3",
   "description": "Module AST validations",
   "main": "lib/index.js",

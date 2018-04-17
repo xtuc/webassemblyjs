@@ -4,7 +4,7 @@ import { transform } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-i
 
 const t = require("@webassemblyjs/ast");
 
-import validateAST from "@webassemblyjs/validations";
+import validateAST from "@webassemblyjs/validation";
 const { CompileError } = require("../../errors");
 
 export class Module {
