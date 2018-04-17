@@ -261,9 +261,6 @@ function tokenize(input: string) {
         }
       }
 
-      // Shift by the length of the string
-      column += text.length;
-
       pushCommentToken(text, { type: "leading" });
 
       continue;
@@ -287,14 +284,12 @@ function tokenize(input: string) {
 
         text += char;
 
+        eatCharacter();
+
         if (isNewLine(char)) {
           line++;
           column = 0;
-        } else {
-          column++;
         }
-
-        eatCharacter();
       }
 
       pushCommentToken(text, { type: "block" });
@@ -345,9 +340,6 @@ function tokenize(input: string) {
         eatCharacter();
       }
 
-      // Shift by the length of the string
-      column += value.length;
-
       pushIdentifierToken(value);
 
       continue;
@@ -388,9 +380,6 @@ function tokenize(input: string) {
         value += char;
         eatCharacter();
       }
-
-      // Shift by the length of the string
-      column += value.length;
 
       eatCharacter();
 
@@ -441,9 +430,6 @@ function tokenize(input: string) {
       if (typeof keywords[value] === "string") {
         pushKeywordToken(value);
 
-        // Shift by the length of the string
-        column += value.length;
-
         continue;
       }
 
@@ -453,9 +439,6 @@ function tokenize(input: string) {
       if (valtypes.indexOf(value) !== -1) {
         pushValtypeToken(value);
 
-        // Shift by the length of the string
-        column += value.length;
-
         continue;
       }
 
@@ -463,9 +446,6 @@ function tokenize(input: string) {
        * Handle literals
        */
       pushNameToken(value);
-
-      // Shift by the length of the string
-      column += value.length;
 
       continue;
     }
