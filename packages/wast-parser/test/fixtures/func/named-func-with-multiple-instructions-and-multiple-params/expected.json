@@ -33,7 +33,17 @@
               "value": 0,
               "raw": "0"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 14
+            }
+          }
         },
         {
           "type": "Instr",
@@ -44,13 +54,33 @@
               "value": 1,
               "raw": "1"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 14
+            }
+          }
         },
         {
           "type": "Instr",
           "id": "add",
           "object": "i32",
-          "args": []
+          "args": [],
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 3
+            },
+            "end": {
+              "line": 4,
+              "column": 10
+            }
+          }
         }
       ]
     }

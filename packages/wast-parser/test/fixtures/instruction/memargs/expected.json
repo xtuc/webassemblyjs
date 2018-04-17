@@ -16,7 +16,17 @@
               "value": 0,
               "raw": "0"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 33
+            },
+            "end": {
+              "line": 1,
+              "column": 44
+            }
+          }
         }
       ],
       "namedArgs": {
@@ -29,6 +39,16 @@
           "type": "NumberLiteral",
           "value": 1,
           "raw": "1"
+        }
+      },
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 45
         }
       }
     }

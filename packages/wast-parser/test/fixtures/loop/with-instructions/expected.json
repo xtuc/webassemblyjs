@@ -26,12 +26,32 @@
             {
               "type": "Instr",
               "id": "nop",
-              "args": []
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 5
+                },
+                "end": {
+                  "line": 3,
+                  "column": 8
+                }
+              }
             },
             {
               "type": "Instr",
               "id": "nop",
-              "args": []
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 5
+                },
+                "end": {
+                  "line": 4,
+                  "column": 8
+                }
+              }
             }
           ]
         }

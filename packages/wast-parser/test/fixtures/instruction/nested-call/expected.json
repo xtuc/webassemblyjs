@@ -45,7 +45,17 @@
                   "value": 16,
                   "raw": "16"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 5
+                },
+                "end": {
+                  "line": 4,
+                  "column": 17
+                }
+              }
             }
           ]
         }
