@@ -24,7 +24,17 @@
               "value": -0.125,
               "raw": "-0x1p-3"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 20
+            }
+          }
         }
       ]
     }

@@ -67,9 +67,29 @@
                       "value": 4,
                       "raw": "4"
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 38
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 49
+                    }
+                  }
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 32
+                },
+                "end": {
+                  "line": 3,
+                  "column": 50
+                }
+              }
             },
             {
               "type": "Instr",
@@ -81,7 +101,17 @@
                   "value": 2,
                   "raw": "2"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 53
+                },
+                "end": {
+                  "line": 3,
+                  "column": 64
+                }
+              }
             }
           ]
         }

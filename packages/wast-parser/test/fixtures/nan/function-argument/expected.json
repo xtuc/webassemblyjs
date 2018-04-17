@@ -32,13 +32,33 @@
                   "value": 0,
                   "raw": "0"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 4
+                },
+                "end": {
+                  "line": 3,
+                  "column": 15
+                }
+              }
             },
             {
               "type": "Instr",
               "id": "reinterpret/f32",
               "object": "i32",
-              "args": []
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 4
+                },
+                "end": {
+                  "line": 4,
+                  "column": 23
+                }
+              }
             }
           ]
         },
@@ -61,9 +81,29 @@
                   "nan": true,
                   "raw": "nan"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 6,
+                  "column": 33
+                },
+                "end": {
+                  "line": 6,
+                  "column": 46
+                }
+              }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 3
+            },
+            "end": {
+              "line": 6,
+              "column": 47
+            }
+          }
         },
         {
           "type": "ModuleExport",

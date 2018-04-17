@@ -27,7 +27,17 @@
             {
               "type": "Instr",
               "id": "nop",
-              "args": []
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 4
+                },
+                "end": {
+                  "line": 5,
+                  "column": 7
+                }
+              }
             }
           ],
           "alternate": []

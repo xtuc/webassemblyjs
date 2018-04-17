@@ -17,7 +17,7 @@ function toArrayBuffer(buf) {
 function jsonTraverse(o, func) {
   func(o);
   for (const i in o) {
-    if (o[i] !== null && typeof o[i] == "object") {
+    if (o[i] !== null && typeof o[i] === "object") {
       jsonTraverse(o[i], func);
     }
   }
@@ -52,7 +52,7 @@ function createCheck(actualWatPath) {
   const actual = JSON.stringify(ast, null, 2);
 
   // parse the wat file to create the expected AST
-  const astFromWat = parse(actualWat);
+  const astFromWat = stripMetadata(parse(actualWat));
   const expected = JSON.stringify(astFromWat, null, 2);
 
   const out = diff(expected.trim(), actual.trim());

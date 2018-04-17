@@ -23,7 +23,17 @@
                   "value": 0,
                   "raw": "0"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 9
+                },
+                "end": {
+                  "line": 2,
+                  "column": 20
+                }
+              }
             }
           ],
           "funcs": []
@@ -46,7 +56,17 @@
                   "value": 0,
                   "raw": "0"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 9
+                },
+                "end": {
+                  "line": 3,
+                  "column": 20
+                }
+              }
             }
           ],
           "funcs": [
@@ -74,7 +94,17 @@
                   "value": 0,
                   "raw": "0"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 17
+                },
+                "end": {
+                  "line": 5,
+                  "column": 28
+                }
+              }
             }
           ],
           "funcs": []
@@ -90,7 +120,17 @@
             {
               "type": "Instr",
               "id": "nop",
-              "args": []
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 6,
+                  "column": 17
+                },
+                "end": {
+                  "line": 6,
+                  "column": 20
+                }
+              }
             },
             {
               "type": "Instr",
@@ -102,7 +142,17 @@
                   "value": 0,
                   "raw": "0"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 6,
+                  "column": 23
+                },
+                "end": {
+                  "line": 6,
+                  "column": 34
+                }
+              }
             }
           ],
           "funcs": []
@@ -125,7 +175,17 @@
                   "value": 1,
                   "raw": "1"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 8,
+                  "column": 11
+                },
+                "end": {
+                  "line": 8,
+                  "column": 22
+                }
+              }
             }
           ],
           "funcs": [
@@ -157,7 +217,17 @@
                   "value": 1,
                   "raw": "1"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 9,
+                  "column": 11
+                },
+                "end": {
+                  "line": 9,
+                  "column": 22
+                }
+              }
             }
           ],
           "funcs": [
