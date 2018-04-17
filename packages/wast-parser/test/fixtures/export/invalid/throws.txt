@@ -1,5 +1,5 @@
 (func (export a))
-               ^
+              ^
 
 
 Function export expected a string, given name
