@@ -30,14 +30,44 @@
                   "value": 1,
                   "raw": "1"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 11
+                },
+                "end": {
+                  "line": 2,
+                  "column": 22
+                }
+              }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 23
+            }
+          }
         },
         {
           "type": "Instr",
           "id": "return",
-          "args": []
+          "args": [],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 9
+            }
+          }
         }
       ]
     }

@@ -24,7 +24,17 @@
               "value": 1234,
               "raw": "1234"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 17
+            }
+          }
         }
       ]
     }

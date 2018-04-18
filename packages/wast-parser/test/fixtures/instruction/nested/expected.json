@@ -28,9 +28,29 @@
                   "value": 4,
                   "raw": "4"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 9
+                },
+                "end": {
+                  "line": 2,
+                  "column": 20
+                }
+              }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 21
+            }
+          }
         },
         {
           "type": "Instr",
@@ -63,9 +83,29 @@
                           "value": 8,
                           "raw": "8"
                         }
-                      ]
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 3,
+                          "column": 25
+                        },
+                        "end": {
+                          "line": 3,
+                          "column": 36
+                        }
+                      }
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 19
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 37
+                    }
+                  }
                 },
                 {
                   "type": "Instr",
@@ -77,12 +117,32 @@
                       "value": 1,
                       "raw": "1"
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 40
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 51
+                    }
+                  }
                 }
               ],
               "result": null
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 53
+            }
+          }
         },
         {
           "type": "Instr",
@@ -111,9 +171,29 @@
                           "value": 4,
                           "raw": "4"
                         }
-                      ]
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 7,
+                          "column": 13
+                        },
+                        "end": {
+                          "line": 7,
+                          "column": 24
+                        }
+                      }
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 7,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 7,
+                      "column": 25
+                    }
+                  }
                 },
                 {
                   "type": "Instr",
@@ -146,9 +226,29 @@
                                   "value": 8,
                                   "raw": "8"
                                 }
-                              ]
+                              ],
+                              "loc": {
+                                "start": {
+                                  "line": 8,
+                                  "column": 29
+                                },
+                                "end": {
+                                  "line": 8,
+                                  "column": 40
+                                }
+                              }
                             }
-                          ]
+                          ],
+                          "loc": {
+                            "start": {
+                              "line": 8,
+                              "column": 23
+                            },
+                            "end": {
+                              "line": 8,
+                              "column": 41
+                            }
+                          }
                         },
                         {
                           "type": "Instr",
@@ -160,12 +260,32 @@
                               "value": 1,
                               "raw": "1"
                             }
-                          ]
+                          ],
+                          "loc": {
+                            "start": {
+                              "line": 8,
+                              "column": 44
+                            },
+                            "end": {
+                              "line": 8,
+                              "column": 55
+                            }
+                          }
                         }
                       ],
                       "result": null
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 8,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 8,
+                      "column": 57
+                    }
+                  }
                 },
                 {
                   "type": "Instr",
@@ -177,12 +297,32 @@
                       "value": 32,
                       "raw": "32"
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 9,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 9,
+                      "column": 19
+                    }
+                  }
                 }
               ],
               "result": "i32"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 3
+            },
+            "end": {
+              "line": 11,
+              "column": 2
+            }
+          }
         },
         {
           "type": "Instr",
@@ -203,7 +343,17 @@
                   "value": 10,
                   "raw": "10"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 13,
+                  "column": 12
+                },
+                "end": {
+                  "line": 13,
+                  "column": 24
+                }
+              }
             },
             {
               "type": "Instr",
@@ -214,9 +364,29 @@
                   "value": 0,
                   "raw": "0"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 13,
+                  "column": 27
+                },
+                "end": {
+                  "line": 13,
+                  "column": 38
+                }
+              }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 13,
+              "column": 3
+            },
+            "end": {
+              "line": 13,
+              "column": 39
+            }
+          }
         },
         {
           "type": "Instr",
@@ -259,7 +429,17 @@
                               "value": 8,
                               "raw": "8"
                             }
-                          ]
+                          ],
+                          "loc": {
+                            "start": {
+                              "line": 17,
+                              "column": 22
+                            },
+                            "end": {
+                              "line": 17,
+                              "column": 33
+                            }
+                          }
                         },
                         {
                           "type": "Instr",
@@ -270,11 +450,41 @@
                               "value": 0,
                               "raw": "0"
                             }
-                          ]
+                          ],
+                          "loc": {
+                            "start": {
+                              "line": 17,
+                              "column": 36
+                            },
+                            "end": {
+                              "line": 17,
+                              "column": 47
+                            }
+                          }
                         }
-                      ]
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 17,
+                          "column": 13
+                        },
+                        "end": {
+                          "line": 17,
+                          "column": 48
+                        }
+                      }
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 17,
+                      "column": 7
+                    },
+                    "end": {
+                      "line": 17,
+                      "column": 49
+                    }
+                  }
                 },
                 {
                   "type": "Instr",
@@ -286,7 +496,17 @@
                       "value": 4,
                       "raw": "4"
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 17,
+                      "column": 52
+                    },
+                    "end": {
+                      "line": 17,
+                      "column": 63
+                    }
+                  }
                 }
               ],
               "result": "i32"
@@ -301,9 +521,29 @@
                   "value": 1,
                   "raw": "1"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 19,
+                  "column": 5
+                },
+                "end": {
+                  "line": 19,
+                  "column": 16
+                }
+              }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 3
+            },
+            "end": {
+              "line": 20,
+              "column": 2
+            }
+          }
         }
       ]
     }

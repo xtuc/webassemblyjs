@@ -35,15 +35,13 @@ function isNewLine(char: string): boolean {
   return char.charCodeAt(0) === 10 || char.charCodeAt(0) === 13;
 }
 
-function Token(type, value, line, column, opts = {}) {
+function Token(type, value, start, end, opts = {}) {
   const token = {
     type,
     value,
     loc: {
-      start: {
-        line,
-        column
-      }
+      start,
+      end
     }
   };
 
@@ -199,7 +197,14 @@ function tokenize(input: string) {
     return function(v: string | number, opts: Object = {}) {
       const startColumn = opts.startColumn || column;
       delete opts.startColumn;
-      tokens.push(Token(type, v, line, startColumn, opts));
+
+      const endColumn = opts.endColumn || startColumn + String(v).length - 1;
+      delete opts.endColumn;
+
+      const start = { line, column: startColumn };
+      const end = { line, column: endColumn };
+
+      tokens.push(Token(type, v, start, end, opts));
     };
   }
 
@@ -261,9 +266,6 @@ function tokenize(input: string) {
         }
       }
 
-      // Shift by the length of the string
-      column += text.length;
-
       pushCommentToken(text, { type: "leading" });
 
       continue;
@@ -287,14 +289,12 @@ function tokenize(input: string) {
 
         text += char;
 
+        eatCharacter();
+
         if (isNewLine(char)) {
           line++;
           column = 0;
-        } else {
-          column++;
         }
-
-        eatCharacter();
       }
 
       pushCommentToken(text, { type: "block" });
@@ -345,9 +345,6 @@ function tokenize(input: string) {
         eatCharacter();
       }
 
-      // Shift by the length of the string
-      column += value.length;
-
       pushIdentifierToken(value);
 
       continue;
@@ -359,13 +356,15 @@ function tokenize(input: string) {
       char === "-" ||
       char === "+"
     ) {
+      const startColumn = column;
+
       const value = numberLiteralFSM.run(input.slice(current));
 
       if (value === "") {
         unexpectedCharacter();
       }
 
-      pushNumberToken(value);
+      pushNumberToken(value, { startColumn });
       eatCharacter(value.length);
 
       if (char && !PARENS.test(char) && !WHITESPACE.test(char)) {
@@ -376,9 +375,11 @@ function tokenize(input: string) {
     }
 
     if (char === '"') {
+      const startColumn = column;
+
       let value = "";
 
-      eatCharacter();
+      eatCharacter(); // "
 
       while (char !== '"') {
         if (isNewLine(char)) {
@@ -386,15 +387,14 @@ function tokenize(input: string) {
         }
 
         value += char;
-        eatCharacter();
+        eatCharacter(); // char
       }
 
-      // Shift by the length of the string
-      column += value.length;
+      eatCharacter(); // "
 
-      eatCharacter();
+      const endColumn = column;
 
-      pushStringToken(value);
+      pushStringToken(value, { startColumn, endColumn });
 
       continue;
     }
@@ -439,10 +439,7 @@ function tokenize(input: string) {
        */
       // $FlowIgnore
       if (typeof keywords[value] === "string") {
-        pushKeywordToken(value);
-
-        // Shift by the length of the string
-        column += value.length;
+        pushKeywordToken(value, { startColumn });
 
         continue;
       }
@@ -451,10 +448,7 @@ function tokenize(input: string) {
        * Handle types
        */
       if (valtypes.indexOf(value) !== -1) {
-        pushValtypeToken(value);
-
-        // Shift by the length of the string
-        column += value.length;
+        pushValtypeToken(value, { startColumn });
 
         continue;
       }
@@ -462,10 +456,7 @@ function tokenize(input: string) {
       /*
        * Handle literals
        */
-      pushNameToken(value);
-
-      // Shift by the length of the string
-      column += value.length;
+      pushNameToken(value, { startColumn });
 
       continue;
     }
