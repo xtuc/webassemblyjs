@@ -5,7 +5,6 @@ export default function getType(moduleContext, stack, instruction) {
   let result = [];
   let error;
 
-
   switch (instruction.id) {
     /**
      * This is actually not an instruction, but we parse it as such.
@@ -388,11 +387,40 @@ export default function getType(moduleContext, stack, instruction) {
       break;
     }
     /**
+     * memory.size
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-memory-size
+     */
+    case "size": {
+      if (!moduleContext.hasMemory(0)) {
+        error = `Module does not have memory 0`;
+        break;
+      }
+      args = [];
+      result = ["i32"];
+      break;
+    }
+    /**
+     * memory.grow
+     *
+     * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-memory-grow
+     */
+    case "grow": {
+      if (!moduleContext.hasMemory(0)) {
+        error = `Module does not have memory 0`;
+        break;
+      }
+      args = ["i32"];
+      result = ["i32"];
+      break;
+    }
+
+    /**
      * Skip type checking
      */
     default: {
       throw new Error(`Unknown instruction ${instruction.id}.`);
-      return false;
+      break;
     }
   }
 
