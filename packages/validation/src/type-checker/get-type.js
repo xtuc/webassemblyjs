@@ -1,6 +1,9 @@
+import { ANY } from "./types";
+
 export default function getType(moduleContext, stack, instruction) {
   let args = [];
   let result = [];
+  let error;
 
   switch (instruction.id) {
     /**
@@ -15,13 +18,13 @@ export default function getType(moduleContext, stack, instruction) {
     }
     case "select": {
       if (stack.length < 3) {
-        errors.push(`Stack contains too few arguments for select`);
+        error = `Stack contains too few arguments for select`;
         return false;
       }
       const first = stack[stack.length - 2];
       const second = stack[stack.length - 3];
       if (first !== second) {
-        errors.push(`Type mismatch in select`);
+        error = `Type mismatch in select`;
         return false;
       }
       args = ["i32", first, first];
@@ -36,7 +39,7 @@ export default function getType(moduleContext, stack, instruction) {
     case "get_global": {
       const index = instruction.args[0].value;
       if (!moduleContext.hasGlobal(index)) {
-        errors.push(`Module does not have global ${index}`);
+        error = `Module does not have global ${index}`;
         return false;
       }
       args = [];
@@ -51,11 +54,11 @@ export default function getType(moduleContext, stack, instruction) {
     case "set_global": {
       const index = instruction.args[0].value;
       if (!moduleContext.hasGlobal(index)) {
-        errors.push(`Module does not have global ${index}`);
+        error = `Module does not have global ${index}`;
         return false;
       }
       if (!moduleContext.isMutableGlobal(index)) {
-        errors.push(`Global ${index} is immutable`);
+        error = `Global ${index} is immutable`;
         return false;
       }
       args = [moduleContext.getGlobal(index)];
@@ -70,7 +73,7 @@ export default function getType(moduleContext, stack, instruction) {
     case "set_local": {
       const index = instruction.args[0].value;
       if (!moduleContext.hasLocal(index)) {
-        errors.push(`Function does not have local ${index}`);
+        error = `Function does not have local ${index}`;
         return false;
       }
       args = [moduleContext.getLocal(index)];
@@ -85,7 +88,7 @@ export default function getType(moduleContext, stack, instruction) {
     case "tee_local": {
       const index = instruction.args[0].value;
       if (!moduleContext.hasLocal(index)) {
-        errors.push(`Function does not have local ${index}`);
+        error = `Function does not have local ${index}`;
         return false;
       }
       args = [moduleContext.getLocal(index)];
@@ -100,7 +103,7 @@ export default function getType(moduleContext, stack, instruction) {
     case "get_local": {
       const index = instruction.args[0].value;
       if (!moduleContext.hasLocal(index)) {
-        errors.push(`Function does not have local ${index}`);
+        error = `Function does not have local ${index}`;
         return false;
       }
       args = [];
@@ -154,9 +157,7 @@ export default function getType(moduleContext, stack, instruction) {
      */
     case "call": {
       if (!moduleContext.hasFunction(instruction.index.value)) {
-        errors.push(
-          `Call to undefined function index ${instruction.index.value}.`
-        );
+        error = `Call to undefined function index ${instruction.index.value}.`;
         return false;
       }
       ({ args, result } = moduleContext.getFunction(instruction.index.value));
@@ -313,7 +314,7 @@ export default function getType(moduleContext, stack, instruction) {
     case "br": {
       const index = instruction.args[0].value;
       if (!moduleContext.getLabel(index)) {
-        errors.push(`Label ${index} does not exist`);
+        error = `Label ${index} does not exist`;
         return false;
       }
       args = moduleContext.getLabel(index);
@@ -328,7 +329,7 @@ export default function getType(moduleContext, stack, instruction) {
     case "br_if": {
       const index = instruction.args[0].value;
       if (!moduleContext.getLabel(index)) {
-        errors.push(`Label ${index} does not exist`);
+        error = `Label ${index} does not exist`;
         return false;
       }
       args = [...moduleContext.getLabel(index), "i32"];
@@ -348,7 +349,7 @@ export default function getType(moduleContext, stack, instruction) {
     case "load32_u":
     case "load32_s": {
       if (!moduleContext.hasMemory(0)) {
-        errors.push(`Module does not have memory 0`);
+        error = `Module does not have memory 0`;
       }
       // TODO Alignment check
       args = ["i32"];
@@ -365,7 +366,7 @@ export default function getType(moduleContext, stack, instruction) {
     case "store16":
     case "store32": {
       if (!moduleContext.hasMemory(0)) {
-        errors.push(`Module does not have memory 0`);
+        error = `Module does not have memory 0`;
       }
       // TODO Alignment check
       args = [instruction.object, "i32"];
@@ -394,6 +395,7 @@ export default function getType(moduleContext, stack, instruction) {
 
   return {
     args,
-    result
+    result,
+    error
   };
 }

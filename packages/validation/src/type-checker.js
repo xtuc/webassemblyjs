@@ -2,10 +2,9 @@ import { traverse } from "@webassemblyjs/ast";
 
 import ModuleContext from "./type-checker/module-context.js";
 import getType from "./type-checker/get-type.js";
+import { ANY } from "./type-checker/types.js";
 
 let errors = [];
-
-const ANY = "ANY";
 
 function checkTypes(a, b) {
   if (a === ANY && b) {
@@ -111,6 +110,11 @@ function applyInstruction(moduleContext, stack, instruction) {
   }
 
   const type = getType(moduleContext, stack, instruction);
+
+  if (type.error) {
+    errors.push(type.error);
+    return false;
+  }
 
   // Structured control flow
   // Update context
