@@ -40,4 +40,12 @@ describe("denormalize type references", () => {
     const expected = loadJSON("reference-by-name-expected.json");
     compareMultilineString(expected, transformed);
   });
+
+  it("supports call indirect", () => {
+    const input = loadJSON("reference-call-indirect.json");
+    const transformed = copy(input);
+    transform(transformed);
+    const expected = loadJSON("reference-call-indirect-expected.json");
+    compareMultilineString(expected, transformed);
+  });
 });

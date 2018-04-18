@@ -1,0 +1,63 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "TypeInstruction",
+      "id": {
+        "type": "Identifier",
+        "value": "foo"
+      },
+      "functype": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "i32"
+          }
+        ],
+        "results": [
+          "i32"
+        ]
+      }
+    },
+    {
+      "type": "TypeInstruction",
+      "functype": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "i32"
+          }
+        ],
+        "results": []
+      }
+    },
+    {
+      "type": "CallIndirectInstruction",
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "i32"
+          }
+        ],
+        "results": []
+      },
+      "intrs": []
+    },
+    {
+      "type": "CallIndirectInstruction",
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "i32"
+          }
+        ],
+        "results": [
+          "i32"
+        ]
+      },
+      "intrs": []
+    }
+  ]
+}
