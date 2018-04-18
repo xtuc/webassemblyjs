@@ -11,7 +11,7 @@ const { assert } = require("chai");
 
 describe("validation", () => {
   const testSuites = glob.sync(
-    "packages/validations/test/fixtures/**/module.wast"
+    "packages/validation/test/fixtures/**/module.wast"
   );
 
   testSuites.forEach(suite => {
