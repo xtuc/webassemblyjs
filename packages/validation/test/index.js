@@ -29,7 +29,7 @@ describe("validation", () => {
         const ast = parse(module);
         const errors = validations.stack(ast);
 
-        const out = diff(errors.join("\n"), expectedErrors.join("\n"));
+        const out = diff(expectedErrors.join("\n"), errors.join("\n"));
 
         if (out !== null && out !== NO_DIFF_MESSAGE) {
           throw new Error("\n" + out);
