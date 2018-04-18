@@ -1,4 +1,3 @@
-;; named params have not been implemented in wasm parser yet
 (module
   (func $add (param $lhs i32) (param $rhs i32) (result i32)
     (get_local 0)

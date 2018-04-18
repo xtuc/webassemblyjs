@@ -68,6 +68,7 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
 
     case "SectionMetadata":
     case "FunctionNameMetadata":
+    case "LocalNameMetadata":
     case "ModuleExport":
     case "Data":
     case "Memory":
@@ -96,6 +97,11 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
       if (typeof n.functionNames !== "undefined") {
         // $FlowIgnore
         n.functionNames.forEach(x => walk(x, cb, path));
+      }
+
+      if (typeof n.localNames !== "undefined") {
+        // $FlowIgnore
+        n.localNames.forEach(x => walk(x, cb, path));
       }
       break;
     }

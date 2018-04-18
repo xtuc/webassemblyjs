@@ -92,6 +92,7 @@ type Node =
   | Module
   | SectionMetadata
   | FunctionNameMetadata
+  | LocalNameMetadata
   | BinaryModule
   | QuoteModule
   | Func
@@ -217,7 +218,8 @@ type ModuleMetadata = {
 
   type: "ModuleMetadata",
   sections: Array<SectionMetadata>,
-  functionNames?: Array<FunctionNameMetadata>
+  functionNames?: Array<FunctionNameMetadata>,
+  localNames?: Array<LocalNameMetadata>
 };
 
 type FunctionNameMetadata = {
@@ -226,6 +228,15 @@ type FunctionNameMetadata = {
   type: "FunctionNameMetadata",
   value: string,
   index: number
+};
+
+type LocalNameMetadata = {
+  ...BaseNode,
+
+  type: "LocalNameMetadata",
+  value: string,
+  localIndex: number,
+  functionIndex: number
 };
 
 type SectionMetadata = {
