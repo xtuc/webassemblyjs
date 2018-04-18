@@ -987,9 +987,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const subSectionSizeInBytesu32 = readU32();
     eatBytes(subSectionSizeInBytesu32.nextIndex);
 
-    const numbeOfFunctionsu32 = readU32();
-    const numbeOfFunctions = numbeOfFunctionsu32.value;
-    eatBytes(numbeOfFunctionsu32.nextIndex);
+    const numberOfFunctionsu32 = readU32();
+    const numbeOfFunctions = numberOfFunctionsu32.value;
+    eatBytes(numberOfFunctionsu32.nextIndex);
 
     for (let i = 0; i < numbeOfFunctions; i++) {
       const indexu32 = readU32();

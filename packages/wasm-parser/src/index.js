@@ -23,7 +23,7 @@ function restoreFunctionNames(ast) {
     }
   });
 
-  if (!functionNames.length) {
+  if (functionNames.length === 0) {
     return;
   }
 
@@ -84,7 +84,7 @@ function restoreLocalNames(ast) {
     }
   });
 
-  if (!localNames.length) {
+  if (localNames.length === 0) {
     return;
   }
 
