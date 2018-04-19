@@ -1,6 +1,7 @@
 // @flow
 
-import { transform } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
+import { transform as wastIdentifierToIndex } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
+import { transform as denormalizeTypeReferences } from "@webassemblyjs/ast/lib/transform/denormalize-type-references";
 
 const t = require("@webassemblyjs/ast");
 
@@ -36,7 +37,8 @@ export function createCompiledModule(ast: Program): CompiledModule {
 
   // Do compile-time ast manipulation in order to remove WAST
   // semantics during execution
-  transform(ast);
+  denormalizeTypeReferences(ast);
+  wastIdentifierToIndex(ast);
 
   validateAST(ast);
 
