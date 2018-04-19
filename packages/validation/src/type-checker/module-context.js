@@ -12,9 +12,9 @@ export default class ModuleContext {
     this.labels = [];
   }
 
-  resetStackFrame() {
+  resetStackFrame(expectedResult) {
     this.locals = [];
-    this.labels = [];
+    this.labels = [expectedResult];
   }
 
   /**
@@ -46,6 +46,10 @@ export default class ModuleContext {
 
   getLabel(index) {
     return this.labels[index];
+  }
+
+  popLabel() {
+    this.labels.pop();
   }
 
   /**

@@ -68,7 +68,7 @@ export default function validate(ast) {
     Func(path) {
       const expectedResult = path.node.result;
 
-      moduleContext.resetStackFrame();
+      moduleContext.resetStackFrame(expectedResult);
 
       // Parameters are local variables
       path.node.params.forEach(p => moduleContext.addLocal(p.valtype));
@@ -132,6 +132,8 @@ function applyInstruction(moduleContext, stack, instruction) {
         []
       )
     ];
+
+    moduleContext.popLabel();
   }
 
   // Used for branches
@@ -161,6 +163,8 @@ function applyInstruction(moduleContext, stack, instruction) {
       );
     }
     stackConsequent.forEach((x, i) => x === checkTypes(x, stackAlternate[i]));
+
+    moduleContext.popLabel();
 
     // Add to existing stack
     stack = [...stack, ...stackConsequent];
