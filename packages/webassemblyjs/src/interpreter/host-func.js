@@ -2,6 +2,8 @@
 
 const t = require("@webassemblyjs/ast");
 
+import { codeFrameFromAst } from "@webassemblyjs/helper-code-frame";
+
 import { RuntimeError } from "../errors";
 const {
   castIntoStackLocalOfType
@@ -172,10 +174,24 @@ export function executeStackFrameAndGetResult(
     if (e instanceof ExecutionHasBeenTrapped) {
       throw e;
     } else {
-      const err = new RuntimeError(e.message);
-      err.stack = e.stack;
+      const stack = e._appstack;
 
-      throw err;
+      if (typeof stack !== "undefined") {
+        const activeFrame = stack[stack.length - 1];
+
+        const instruction = activeFrame.code[activeFrame._pc - 1];
+        const ast = activeFrame.originatingModule._ast;
+
+        const codeframeWithMessage = codeFrameFromAst(
+          ast,
+          instruction.loc,
+          e.message
+        );
+
+        throw new RuntimeError("\n" + codeframeWithMessage);
+      } else {
+        throw e;
+      }
     }
   }
 }

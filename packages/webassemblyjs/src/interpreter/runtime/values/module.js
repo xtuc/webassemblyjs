@@ -1,6 +1,6 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast";
+import { traverse, program } from "@webassemblyjs/ast";
 import * as WebAssemblyMemory from "./memory";
 
 const { RuntimeError, LinkError, CompileError } = require("../../../errors");
@@ -390,7 +390,9 @@ export function createInstance(
     tableaddrs: [],
     memaddrs: [],
     globaladdrs: [],
-    exports: []
+    exports: [],
+
+    _ast: program([n])
   };
 
   /**

@@ -1,0 +1,26 @@
+const expectedError = `
+(module
+  (func (result i32)
+    (i32.const 1)
+    (i32.add)
+    ^^^^^^^^
+    expected c1 value of type i32 on top of the stack, given type: label
+
+    (end)
+  )
+  (export "add" (func $func_0))
+)
+`;
+
+it("should throw malformed stack", () => {
+  const m = WebAssembly.instantiateFromSource(watmodule);
+
+  const { add } = m.exports;
+
+  try {
+    add();
+    assert.isTrue(false, "add did not throw");
+  } catch (e) {
+    assert.equal(e.message.trim(), expectedError.trim());
+  }
+});
