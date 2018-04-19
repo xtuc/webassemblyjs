@@ -1,5 +1,6 @@
 // @flow
-import { RuntimeError } from "../../errors";
+
+import { RuntimeError } from "webassemblyjs/lib/errors";
 import { traverse } from "@webassemblyjs/ast";
 const { getType, typeEq } = require("./type-inference");
 
