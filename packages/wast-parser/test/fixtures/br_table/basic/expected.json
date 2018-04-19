@@ -33,7 +33,17 @@
               "value": 3,
               "raw": "3"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 17
+            }
+          }
         }
       ]
     }

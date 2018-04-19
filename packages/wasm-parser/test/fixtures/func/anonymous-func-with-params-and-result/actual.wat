@@ -1,4 +1,3 @@
-;; named params have not been implemented in wasm parser yet
 (module
   (func (param $a i32) (param $b i32) (result i32))
 )

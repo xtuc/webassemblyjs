@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-code-frame",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "",
   "main": "lib/index.js",
   "repository": {
@@ -13,9 +13,9 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/wast-printer": "1.2.5"
+    "@webassemblyjs/wast-printer": "1.2.6"
   },
   "devDependencies": {
-    "@webassemblyjs/ast": "1.2.5"
+    "@webassemblyjs/ast": "1.2.6"
   }
 }

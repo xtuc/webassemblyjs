@@ -44,17 +44,33 @@ export function functionNameMetadata(
   };
 }
 
+export function localNameMetadata(
+  value: string,
+  localIndex: number,
+  functionIndex: number
+): LocalNameMetadata {
+  return {
+    type: "LocalNameMetadata",
+    value,
+    localIndex,
+    functionIndex
+  };
+}
+
 export function moduleMetadata(
   sections: Array<SectionMetadata>,
-  functionNames: Array<FunctionNameMetadata>
+  functionNames: Array<FunctionNameMetadata>,
+  localNames: Array<LocalNameMetadata>
 ): ModuleMetadata {
   const n: ModuleMetadata = {
     type: "ModuleMetadata",
     sections
   };
-
   if (functionNames.length) {
     n.functionNames = functionNames;
+  }
+  if (localNames.length) {
+    n.localNames = localNames;
   }
   return n;
 }

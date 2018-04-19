@@ -17,12 +17,32 @@
         {
           "type": "Instr",
           "id": "nop",
-          "args": []
+          "args": [],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 6
+            }
+          }
         },
         {
           "type": "Instr",
           "id": "end",
-          "args": []
+          "args": [],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 6
+            }
+          }
         }
       ]
     },
@@ -49,7 +69,17 @@
             {
               "type": "Instr",
               "id": "nop",
-              "args": []
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 7,
+                  "column": 12
+                },
+                "end": {
+                  "line": 7,
+                  "column": 15
+                }
+              }
             },
             {
               "type": "Instr",
@@ -61,14 +91,44 @@
                   "value": 1,
                   "raw": "1"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 7,
+                  "column": 18
+                },
+                "end": {
+                  "line": 7,
+                  "column": 29
+                }
+              }
             },
             {
               "type": "Instr",
               "id": "end",
-              "args": []
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 7,
+                  "column": 32
+                },
+                "end": {
+                  "line": 7,
+                  "column": 35
+                }
+              }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 3
+            },
+            "end": {
+              "line": 7,
+              "column": 36
+            }
+          }
         }
       ]
     }

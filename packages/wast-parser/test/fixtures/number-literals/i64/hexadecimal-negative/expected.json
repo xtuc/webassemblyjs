@@ -27,7 +27,17 @@
               },
               "raw": "-0x1A0"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 19
+            }
+          }
         }
       ]
     }
