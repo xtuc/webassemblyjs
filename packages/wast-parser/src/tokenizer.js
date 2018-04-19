@@ -180,7 +180,11 @@ const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
   "STOP"
 );
 
-function tokenize(input: string) {
+type Args = {
+  onParseError: OnParserErrorDebugHook
+};
+
+function tokenize(input: string, { onParseError }: Args) {
   let current: number = 0;
   let char = input[current];
 

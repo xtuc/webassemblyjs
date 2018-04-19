@@ -51,3 +51,9 @@ type InternalInstanceOptions = {
   checkForI64InSignature: boolean,
   returnStackLocal: boolean
 };
+
+type DebugHooks = {
+  onParseError: OnParserErrorDebugHook
+};
+
+type OnParserErrorDebugHook = (message: string, loc: SourceLocation) => void;

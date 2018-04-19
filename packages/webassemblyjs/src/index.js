@@ -61,6 +61,20 @@ const WebAssembly = {
     return new Instance(module, importObject);
   },
 
+  debug(
+    content: string,
+    importObject: ImportObject = {},
+    hooks: DebugHooks
+  ): Instance {
+    const { onParseError } = hooks;
+
+    const ast = parse(content, { onParseError });
+
+    const module = createCompiledModule(ast);
+
+    return new Instance(module, importObject);
+  },
+
   Instance,
   Module,
   Memory,
