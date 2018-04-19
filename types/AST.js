@@ -92,6 +92,7 @@ type Node =
   | Module
   | SectionMetadata
   | FunctionNameMetadata
+  | Signature
   | LocalNameMetadata
   | BinaryModule
   | QuoteModule
