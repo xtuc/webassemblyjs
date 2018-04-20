@@ -1008,6 +1008,7 @@ export function executeStackFrame(
 
           switch (object) {
             case "i32":
+            case "u32":
               pushResult(
                 i32.createValueFromArrayBuffer(
                   memory.buffer,
@@ -1033,6 +1034,9 @@ export function executeStackFrame(
             case "f64":
               pushResult(f64.createValueFromArrayBuffer(memory.buffer, ptr));
               break;
+
+            default:
+              throw new RuntimeError("Unsupported " + object + " load");
           }
 
           break;
