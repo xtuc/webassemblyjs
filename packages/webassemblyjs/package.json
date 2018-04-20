@@ -21,6 +21,7 @@
     "@webassemblyjs/ast": "1.2.6",
     "@webassemblyjs/wasm-parser": "1.2.6",
     "@webassemblyjs/wast-parser": "1.2.6",
+    "@webassemblyjs/validation": "1.2.6",
     "long": "^3.2.0"
   },
   "devDependencies": {

@@ -17,6 +17,7 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [helper-wasm-section](https://github.com/xtuc/webassemblyjs/tree/master/packages/helper-wasm-section) - Section manipulation helpers
 - [leb128](https://github.com/xtuc/webassemblyjs/tree/master/packages/leb128) - `LEB128` decoding
 - [repl](https://github.com/xtuc/webassemblyjs/tree/master/packages/repl) - WebAssembly REPL.
+- [validation](https://github.com/xtuc/webassemblyjs/tree/master/packages/validation) - Module AST validations
 - [wasm-edit](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-edit) - Replace in-place an AST node in the binary.
 - [wasm-gen](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-gen) - WebAssembly binary format printer
 - [wasm-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-parser) - WebAssembly binary format parser
