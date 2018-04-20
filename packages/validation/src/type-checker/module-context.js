@@ -20,7 +20,7 @@ export default class ModuleContext {
   /**
    * Functions
    */
-  addFunction({ params: args, result }) {
+  addFunction({ params: args, results: result }) {
     args = args.map(arg => arg.valtype);
     this.funcs.push({ args, result });
   }

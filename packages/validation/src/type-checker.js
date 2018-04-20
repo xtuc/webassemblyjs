@@ -31,7 +31,7 @@ export default function validate(ast) {
   ast.body[0].fields.forEach(field => {
     switch (field.type) {
       case "Func": {
-        moduleContext.addFunction(field);
+        moduleContext.addFunction(field.signature);
         break;
       }
       case "Global": {
@@ -66,16 +66,18 @@ export default function validate(ast) {
   // Simulate stack types throughout all function bodies
   traverse(ast, {
     Func(path) {
-      const expectedResult = path.node.result;
+      const expectedResult = path.node.signature.results;
 
       moduleContext.resetStackFrame(expectedResult);
 
       // Parameters are local variables
-      path.node.params.forEach(p => moduleContext.addLocal(p.valtype));
+      path.node.signature.params.forEach(p =>
+        moduleContext.addLocal(p.valtype)
+      );
 
       const resultingStack = path.node.body.reduce(
         applyInstruction.bind(null, moduleContext),
-        path.node.params.map(arg => arg.valtype)
+        path.node.signature.params.map(arg => arg.valtype)
       );
 
       // Compare the two
