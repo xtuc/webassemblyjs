@@ -1,4 +1,4 @@
-import { ANY } from "./types";
+import { ANY, POLYMORPHIC } from "./types";
 
 export default function getType(moduleContext, stack, instruction) {
   let args = [];
@@ -318,7 +318,7 @@ export default function getType(moduleContext, stack, instruction) {
         break;
       }
       args = moduleContext.getLabel(index);
-      result = []; // Technically arbitrary but we don't implement that currently
+      result = [POLYMORPHIC];
       break;
     }
     /**

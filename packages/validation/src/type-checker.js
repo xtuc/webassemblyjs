@@ -2,9 +2,10 @@ import { traverse } from "@webassemblyjs/ast";
 
 import ModuleContext from "./type-checker/module-context.js";
 import getType from "./type-checker/get-type.js";
-import { ANY } from "./type-checker/types.js";
+import { ANY, POLYMORPHIC } from "./type-checker/types.js";
 
 let errors = [];
+let stopFuncCheck = false;
 
 function checkTypes(a, b) {
   if (a === ANY && b) {
@@ -22,6 +23,7 @@ function checkTypes(a, b) {
 
   if (a !== b) {
     errors.push(`Expected type ${a} but got ${b || "none"}.`);
+    stopFuncCheck = true;
   }
 }
 
@@ -71,6 +73,7 @@ export default function validate(ast) {
   // Simulate stack types throughout all function bodies
   traverse(ast, {
     Func(path) {
+      stopFuncCheck = false;
       const expectedResult = path.node.signature.results;
 
       moduleContext.resetStackFrame(expectedResult);
@@ -85,12 +88,23 @@ export default function validate(ast) {
         path.node.signature.params.map(arg => arg.valtype)
       );
 
+      if (stopFuncCheck) {
+        return;
+      }
+
       // Compare the two
       let actual;
       if (resultingStack !== false) {
-        expectedResult.map((type, i) => {
-          actual = resultingStack[resultingStack.length - 1 - i];
+        let j = resultingStack.length - 1;
+        expectedResult.map(type => {
+          actual = resultingStack[j];
+
+          if (actual === POLYMORPHIC) {
+            return;
+          }
+
           checkTypes(type, actual);
+          ++j;
         });
       }
     }
@@ -101,7 +115,7 @@ export default function validate(ast) {
 
 function applyInstruction(moduleContext, stack, instruction) {
   // Return was called, skip everything
-  if (stack.return) {
+  if (stack.return || stack === false) {
     return stack;
   }
 
@@ -147,29 +161,52 @@ function applyInstruction(moduleContext, stack, instruction) {
   if (instruction.type === "IfInstruction") {
     moduleContext.addLabel(type.result);
 
-    const stackConsequent = [
-      ...stack,
-      ...instruction.consequent.reduce(
-        applyInstruction.bind(null, moduleContext),
-        []
-      )
-    ];
+    const stackConsequent = instruction.consequent.reduce(
+      applyInstruction.bind(null, moduleContext),
+      []
+    );
 
-    const stackAlternate = [
-      ...stack,
-      ...instruction.alternate.reduce(
-        applyInstruction.bind(null, moduleContext),
-        []
-      )
-    ];
+    const stackAlternate = instruction.alternate.reduce(
+      applyInstruction.bind(null, moduleContext),
+      []
+    );
 
-    // Compare the two branches
-    if (stackConsequent.length !== stackAlternate.length) {
+    let i = 0;
+    let j = 0;
+    let compareLengths = true;
+    while (i < stackConsequent.length && j < stackAlternate.length) {
+      if (
+        stackConsequent[i] === POLYMORPHIC ||
+        stackAlternate[j] === POLYMORPHIC
+      ) {
+        compareLengths = false;
+        break;
+      }
+
+      checkTypes(stackConsequent[i], stackAlternate[j]);
+      ++i;
+      ++j;
+    }
+
+    while (compareLengths && i < stackConsequent.length) {
+      if (stackConsequent[i] === POLYMORPHIC) {
+        compareLengths = false;
+      }
+      ++i;
+    }
+
+    while (compareLengths && j < stackConsequent.length) {
+      if (stackConsequent[j] === POLYMORPHIC) {
+        compareLengths = false;
+      }
+      ++j;
+    }
+
+    if (compareLengths && stackConsequent.length !== stackAlternate.length) {
       errors.push(
         `Type mismatch in if, got ${stackConsequent} and ${stackAlternate}`
       );
     }
-    stackConsequent.forEach((x, i) => x === checkTypes(x, stackAlternate[i]));
 
     moduleContext.popLabel();
 
@@ -197,14 +234,13 @@ function applyInstruction(moduleContext, stack, instruction) {
     return stack;
   }
 
-  // No type available for this instruction, skip the rest.
-  if (stack === false || type === false) {
-    return false;
-  }
-
   let actual;
 
   type.args.forEach(argType => {
+    if (stack[stack.length - 1] === POLYMORPHIC) {
+      return;
+    }
+
     actual = stack.pop();
     checkTypes(argType, actual);
   });

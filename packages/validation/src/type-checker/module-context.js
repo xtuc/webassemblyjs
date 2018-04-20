@@ -49,7 +49,7 @@ export default class ModuleContext {
   }
 
   popLabel() {
-    this.labels.pop();
+    this.labels.shift();
   }
 
   /**

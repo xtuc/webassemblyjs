@@ -18,4 +18,8 @@
 	)
 	(br 1)
   )
+  (func (result f32)
+	(f32.const 0)
+	(br 0)
+  )
 )
