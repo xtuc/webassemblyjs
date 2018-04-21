@@ -58,6 +58,10 @@ export default function validate(ast) {
             );
             break;
           }
+          case "FuncImportDescr": {
+            moduleContext.importFunction(field.descr.signature);
+            break;
+          }
         }
         break;
       }

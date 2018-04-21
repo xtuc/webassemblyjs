@@ -25,6 +25,11 @@ export default class ModuleContext {
     this.funcs.push({ args, result });
   }
 
+  importFunction({ params: args, results: result }) {
+    args = args.map(arg => arg.valtype);
+    this.funcs.unshift({ args, result });
+  }
+
   hasFunction(index) {
     return this.funcs.length > index && index >= 0;
   }
