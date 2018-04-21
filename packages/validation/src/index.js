@@ -17,3 +17,6 @@ export default function validateAST(ast: Program) {
     throw new Error(errorMessage);
   }
 }
+
+export { isConst } from "./is-const";
+export { getType, typeEq } from "./type-inference";

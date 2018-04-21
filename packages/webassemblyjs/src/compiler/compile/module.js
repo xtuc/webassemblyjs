@@ -5,7 +5,7 @@ import { transform as denormalizeTypeReferences } from "@webassemblyjs/ast/lib/t
 
 const t = require("@webassemblyjs/ast");
 
-import validateAST from "../validation";
+import validateAST from "@webassemblyjs/validation";
 const { CompileError } = require("../../errors");
 
 export class Module {

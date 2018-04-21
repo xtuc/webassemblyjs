@@ -1,0 +1,24 @@
+{
+  "name": "@webassemblyjs/validation",
+  "version": "1.2.6",
+  "description": "Module AST validations",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Sven Sauleau",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "@webassemblyjs/ast": "1.2.6"
+  },
+  "devDependencies": {
+    "@webassemblyjs/wast-parser": "1.2.3"
+  }
+}
