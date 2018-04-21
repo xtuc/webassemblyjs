@@ -1,4 +1,4 @@
-(module 
+(module
   (func (result i32)
     (loop (result f32)
       (f32.const 0)

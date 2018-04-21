@@ -1,4 +1,4 @@
-(module 
+(module
   (func (result f64)
     (f64.const 0)
     (drop)
@@ -17,14 +17,16 @@
     (nop)
     (drop)
   )
-(func
-	(f64.const 0)
-	(f32.const 1)
-	(i32.const 0)
-	(select)
-	(drop)
-)
-(func $arity-0 (select (nop) (nop) (i32.const 1)))
+  (func
+    (f64.const 0)
+    (f32.const 1)
+    (i32.const 0)
+    (select)
+    (drop)
+  )
+  (func $arity-0
+    (select (nop) (nop) (i32.const 1))
+  )
   (global (mut i32) (i32.const 17))
   (func
     (f32.const 0)
