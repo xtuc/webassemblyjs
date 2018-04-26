@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@webassemblyjs/wast-parser": "1.2.6",
-    "wabt": "^1.0.0"
+    "wabt": "^1.0.0",
+    "@webassemblyjs/helper-test-framework": "1.2.6"
   }
 }

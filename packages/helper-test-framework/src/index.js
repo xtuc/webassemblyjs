@@ -8,7 +8,7 @@ const diff = require("jest-diff");
 const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
 
 const THROWS_TXT = "throws.txt";
-const NOOP_PRE = () => "";
+const NOOP_FN = () => "";
 
 export function getFixtures(
   dirname: string,
@@ -47,7 +47,7 @@ function compareStrings(actual: string, expected: string) {
 
 export function compareWithExpected(
   fixtures: Array<string>,
-  pre: (string, string) => string = NOOP_PRE,
+  pre: (string, string) => string = NOOP_FN,
   expectedFilename: string = "expected.wast"
 ) {
   fixtures.forEach(suite => {
@@ -85,6 +85,23 @@ export function compareWithExpected(
 
         writeExpectedFile(expectedFile, actual);
       }
+
+      compareStrings(actual, expected);
+    });
+  });
+}
+
+export function compare(
+  fixtures: Array<string>,
+  getActual: (string, string) => string = NOOP_FN,
+  getExpected: (string, string) => string = NOOP_FN
+) {
+  fixtures.forEach(suite => {
+    it(suite, () => {
+      const input = readFileSync(suite, "utf8");
+
+      const actual = getActual(input, suite);
+      const expected = getExpected(input, suite);
 
       compareStrings(actual, expected);
     });
