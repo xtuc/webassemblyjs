@@ -1,0 +1,11 @@
+{
+  "name": "@webassemblyjs/stdlib",
+  "version": "0.0.3",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sven Sauleau",
+  "license": "ISC"
+}
