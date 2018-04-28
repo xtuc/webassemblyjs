@@ -25,7 +25,8 @@
     "long": "^3.2.0"
   },
   "devDependencies": {
-    "@webassemblyjs/floating-point-hex-parser": "1.2.6"
+    "@webassemblyjs/floating-point-hex-parser": "1.2.6",
+    "@webassemblyjs/helper-test-framework": "1.2.6"
   },
   "repository": {
     "type": "git",
