@@ -1562,6 +1562,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const decodedElementInCodeSection = state.elementsInCodeSection[funcIndex];
 
     if (opts.ignoreCodeSection === false) {
+      if (typeof decodedElementInCodeSection === "undefined") {
+        throw new CompileError("func " + toHex(funcIndex) + " code not found");
+      }
+
       body = decodedElementInCodeSection.code;
     }
 
