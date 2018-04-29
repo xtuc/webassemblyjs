@@ -4,6 +4,8 @@ import { encodeU32 } from "@webassemblyjs/wasm-gen";
 import { getSectionMetadata } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
+const debug = require("debug")("wasm");
+
 export function resizeSectionByteSize(
   ast: Program,
   uint8Buffer: Uint8Array,
@@ -23,6 +25,13 @@ export function resizeSectionByteSize(
 
   // Update AST
   sectionMetadata.size = newSectionSize;
+
+  debug(
+    "resize byte size section=%s detla=%d newValue=%s",
+    section,
+    deltaBytes,
+    newSectionSize
+  );
 
   return overrideBytesInBuffer(
     uint8Buffer,
@@ -59,6 +68,13 @@ export function resizeSectionVecSize(
 
   // Update AST
   sectionMetadata.vectorOfSize = newValue;
+
+  debug(
+    "resize vec size section=%s detla=%d newValue=%s",
+    section,
+    deltaElements,
+    newValue
+  );
 
   return overrideBytesInBuffer(
     uint8Buffer,

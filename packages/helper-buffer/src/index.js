@@ -1,5 +1,7 @@
 // @flow
 
+const debug = require("debug")("wasm");
+
 function concatUint8Arrays(...arrays: Array<Uint8Array>) {
   const totalLength = arrays.reduce((a, b) => a + b.length, 0);
   const result = new Uint8Array(totalLength);
@@ -25,6 +27,13 @@ export function overrideBytesInBuffer(
 ): Uint8Array {
   const beforeBytes = buffer.slice(0, startLoc);
   const afterBytes = buffer.slice(endLoc, buffer.length);
+
+  debug(
+    "overrideBytesInBuffer start=%d end=%d newBytes=%s",
+    startLoc,
+    endLoc,
+    newBytes.toString()
+  );
 
   // replacement is empty, we can omit it
   if (newBytes.length === 0) {
