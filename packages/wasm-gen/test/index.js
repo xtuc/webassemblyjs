@@ -53,19 +53,25 @@ const fixtures = [
   },
 
   {
-    name: "(func (result i32))",
+    name: "(type (func))",
+    node: t.typeInstructionFunc([], []),
+    expected: [0x60, 0x00, 0x00]
+  },
+
+  {
+    name: "(type (func (result i32)))",
     node: t.typeInstructionFunc([], ["i32"]),
     expected: [0x60, 0x00, 0x01, 0x7f]
   },
 
   {
-    name: "(func (param i32))",
+    name: "(type (func (param i32)))",
     node: t.typeInstructionFunc([t.funcParam("i32")], []),
     expected: [0x60, 0x01, 0x7f, 0x00]
   },
 
   {
-    name: "(func (param i32) (result i32))",
+    name: "(type (func (param i32) (result i32)))",
     node: t.typeInstructionFunc([t.funcParam("i32")], ["i32"]),
     expected: [0x60, 0x01, 0x7f, 0x01, 0x7f]
   },
