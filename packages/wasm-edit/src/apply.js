@@ -144,7 +144,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
      */
     uint8Buffer = removeSection(ast, uint8Buffer, "start");
 
-    const deltaBytes = -sectionMetadata.size;
+    const deltaBytes = -sectionMetadata.size.value;
 
     return { uint8Buffer, deltaBytes, deltaElements };
   }
@@ -192,7 +192,7 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
   const newByteArray = encodeNode(node);
 
   // start at the end of the section
-  const start = sectionMetadata.startOffset + sectionMetadata.size + 1;
+  const start = sectionMetadata.startOffset + sectionMetadata.size.value + 1;
 
   const end = start;
 

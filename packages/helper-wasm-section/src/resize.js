@@ -19,12 +19,12 @@ export function resizeSectionByteSize(
   }
 
   // Encode the current value to know the number of bytes to override
-  const oldSizeInBytes = encodeU32(sectionMetadata.size);
+  const oldSizeInBytes = encodeU32(sectionMetadata.size.value);
 
-  const newSectionSize = sectionMetadata.size + deltaBytes;
+  const newSectionSize = sectionMetadata.size.value + deltaBytes;
 
   // Update AST
-  sectionMetadata.size = newSectionSize;
+  sectionMetadata.size.value = newSectionSize;
 
   debug(
     "resize byte size section=%s detla=%d newValue=%s",
@@ -54,20 +54,20 @@ export function resizeSectionVecSize(
   }
 
   // Section has no vector
-  if (sectionMetadata.vectorOfSize === -1) {
+  if (sectionMetadata.vectorOfSize.value === -1) {
     return uint8Buffer;
   }
 
   // Encode the current value to know the number of bytes to override
-  const oldSizeInBytes = encodeU32(sectionMetadata.vectorOfSize);
+  const oldSizeInBytes = encodeU32(sectionMetadata.vectorOfSize.value);
 
-  const newValue = sectionMetadata.vectorOfSize + deltaElements;
+  const newValue = sectionMetadata.vectorOfSize.value + deltaElements;
   const newBytes = encodeU32(newValue);
 
   const start = sectionMetadata.startOffset + 1;
 
   // Update AST
-  sectionMetadata.vectorOfSize = newValue;
+  sectionMetadata.vectorOfSize.value = newValue;
 
   debug(
     "resize vec size section=%s detla=%d newValue=%s",

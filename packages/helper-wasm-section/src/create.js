@@ -53,7 +53,7 @@ export function createEmptySection(
 
     debug("create empty section=%s start=%d end=%d", section, start, end);
   } else {
-    start = lastSection.startOffset + lastSection.size + 1;
+    start = lastSection.startOffset + lastSection.size.value + 1;
     end = start;
 
     debug(
@@ -65,8 +65,8 @@ export function createEmptySection(
     );
   }
 
-  const size = 1; // empty vector
-  const vectorOfSize = 0;
+  const size = t.numberLiteral(1); // empty vector + future first element
+  const vectorOfSize = t.numberLiteral(0);
 
   const sectionMetadata = t.sectionMetadata(
     section,

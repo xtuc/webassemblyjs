@@ -40,7 +40,7 @@ describe("create", () => {
     assert.equal(res.sectionMetadata.type, "SectionMetadata");
     assert.equal(res.sectionMetadata.section, sectionName);
     assert.equal(res.sectionMetadata.startOffset, 9);
-    assert.equal(res.sectionMetadata.size, 1);
+    assert.equal(res.sectionMetadata.size.value, 1);
   });
 
   it("should create an section and preserve section order", () => {

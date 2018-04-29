@@ -77,8 +77,13 @@ const fixtures = [
   },
 
   {
+    node: t.sectionMetadata(
+      "import",
+      0,
+      t.numberLiteral(1),
+      t.numberLiteral(0)
+    ),
     name: "an empty ImportSection",
-    node: t.sectionMetadata("import", 0, 1, 0),
     expected: [0x02, 0x01, 0x00]
   },
 

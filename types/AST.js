@@ -248,10 +248,10 @@ type SectionMetadata = {
 
   // after the section id byte
   startOffset: number,
-  size: number,
+  size: NumberLiteral,
 
   // Size of the vector in the section (if any)
-  vectorOfSize: number
+  vectorOfSize: NumberLiteral
 };
 
 type BinaryModule = {

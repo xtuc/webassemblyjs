@@ -151,8 +151,8 @@ export function encodeSectionMetadata(n: SectionMetadata): Array<Byte> {
   }
 
   out.push(sectionId);
-  out.push(...encodeU32(n.size));
-  out.push(...encodeU32(n.vectorOfSize));
+  out.push(...encodeU32(n.size.value));
+  out.push(...encodeU32(n.vectorOfSize.value));
 
   return out;
 }

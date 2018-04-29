@@ -18,7 +18,7 @@ export function removeSection(
   const replacement = [];
 
   const startsIncludingId = sectionMetadata.startOffset - 1;
-  const ends = sectionMetadata.startOffset + sectionMetadata.size + 1;
+  const ends = sectionMetadata.startOffset + sectionMetadata.size.value + 1;
 
   return overrideBytesInBuffer(
     uint8Buffer,

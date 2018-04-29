@@ -32,7 +32,7 @@ function getThrowsFile(dirname: string) {
   }
 }
 
-function compareStrings(actual: string, expected: string) {
+export function compareStrings(actual: string, expected: string) {
   actual = actual.trim();
   expected = expected.trim();
 
