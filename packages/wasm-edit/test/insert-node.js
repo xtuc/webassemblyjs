@@ -260,14 +260,17 @@ describe("insert a node", () => {
     //   (global i32 (i32.const 1))
     //   (type (func))
     // )
-    // bin = add(bin, [global, functype, global, functype]);
-    bin = add(bin, [global, functype]);
+    bin = add(bin, [global, functype, global, functype]);
 
     const expected = makeBuffer(
       encodeHeader(),
       encodeVersion(1),
-      [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
-      [constants.sections.global, 0x06, 0x01, 0x7f, 0x00, 0x41, 0x01, 0x0b]
+      [constants.sections.type, 0x07, 0x02],
+      /* 1 */ [0x60, 0x00, 0x00],
+      /* 2 */ [0x60, 0x00, 0x00],
+      [constants.sections.global, 0x0b, 0x02],
+      /* 1 */ [0x7f, 0x00, 0x41, 0x01, 0x0b],
+      /* 2 */ [0x7f, 0x00, 0x41, 0x01, 0x0b]
     );
 
     compareArrayBuffers(bin, expected);
