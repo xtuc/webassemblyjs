@@ -1541,6 +1541,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         if (opts.ignoreDataSection === true) {
           eatBytes(sectionSizeInBytes); // eat the entire section
+
+          dumpSep("ignore data (" + sectionSizeInBytes + " bytes)");
+
           return { nodes: [], metadata };
         } else {
           const startPosition = getPosition();
@@ -1574,20 +1577,30 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const sectionName = readUTF8String();
         eatBytes(sectionName.nextIndex);
 
+        dump([], `section name (${sectionName.value})`);
+
         const remainingBytes = sectionSizeInBytes - sectionName.nextIndex;
 
         if (sectionName.value === "name") {
           metadata.push(...parseNameSection(remainingBytes));
         } else {
           // We don't parse otehr custom section
-          eatBytes(remainingBytes);
+          eatBytes(remainingBytes - 1 /* UTF8 vector size */);
+
+          dumpSep(
+            "ignore custom " +
+              JSON.stringify(sectionName.value) +
+              " section (" +
+              remainingBytes +
+              " bytes)"
+          );
         }
 
         return { nodes: [], metadata };
       }
     }
 
-    throw new CompileError("Unexpected section: " + JSON.stringify(sectionId));
+    throw new CompileError("Unexpected section: " + toHex(sectionId));
   }
 
   parseModuleHeader();
