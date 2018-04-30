@@ -144,7 +144,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
      */
     uint8Buffer = removeSection(ast, uint8Buffer, "start");
 
-    const deltaBytes = -sectionMetadata.size.value;
+    const deltaBytes = -(sectionMetadata.size.value + 1) /* section id */;
 
     return { uint8Buffer, deltaBytes, deltaElements };
   }
@@ -242,6 +242,7 @@ export function applyOperations(
      */
     if (state.deltaBytes !== 0) {
       ops.forEach(op => {
+        // We don't need to handle add ops, they are positioning independent
         switch (op.kind) {
           case "update":
             shiftLocNodeByDelta(op.oldNode, state.deltaBytes);

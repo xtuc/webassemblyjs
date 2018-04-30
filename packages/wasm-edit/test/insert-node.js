@@ -243,4 +243,33 @@ describe("insert a node", () => {
       compareArrayBuffers(newBinary, expectedBinary2);
     });
   });
+
+  it("should insert nodes in multiple sections multiple times (implies updating the underlying AST)", () => {
+    let bin;
+
+    const global = t.global(t.globalType("i32", "const"), [
+      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+    ]);
+
+    const functype = t.typeInstructionFunc([], []);
+
+    // (module)
+    bin = makeBuffer(encodeHeader(), encodeVersion(1));
+
+    // (module
+    //   (global i32 (i32.const 1))
+    //   (type (func))
+    // )
+    // bin = add(bin, [global, functype, global, functype]);
+    bin = add(bin, [global, functype]);
+
+    const expected = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.type, 0x04, 0x01, 0x60, 0x00, 0x00],
+      [constants.sections.global, 0x06, 0x01, 0x7f, 0x00, 0x41, 0x01, 0x0b]
+    );
+
+    compareArrayBuffers(bin, expected);
+  });
 });

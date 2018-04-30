@@ -1,10 +1,10 @@
 // @flow
 
 import { encodeU32 } from "@webassemblyjs/wasm-gen";
-import { getSectionMetadata } from "@webassemblyjs/ast";
+import { getSectionMetadata, traverse } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-const debug = require("debug")("wasm");
+const debug = require("debug")("wasm:resizesection");
 
 export function resizeSectionByteSize(
   ast: Program,
@@ -18,13 +18,44 @@ export function resizeSectionByteSize(
     throw new Error("Section metadata not found");
   }
 
-  // Encode the current value to know the number of bytes to override
-  const oldSizeInBytes = encodeU32(sectionMetadata.size.value);
+  if (typeof sectionMetadata.size.loc === "undefined") {
+    throw new Error("SectionMetadata " + section + " has no loc");
+  }
+
+  // keep old node location to be overriden
+  const start = sectionMetadata.size.loc.start.column;
+  const end = sectionMetadata.size.loc.end.column;
 
   const newSectionSize = sectionMetadata.size.value + deltaBytes;
+  const newBytes = encodeU32(newSectionSize);
 
-  // Update AST
+  /**
+   * update AST
+   */
   sectionMetadata.size.value = newSectionSize;
+  sectionMetadata.size.loc.end.column = start + newBytes.length;
+
+  // Once we hit our section every that is after needs to be shifted by the delta
+  let encounteredSection = false;
+
+  traverse(ast, {
+    SectionMetadata(path) {
+      if (path.node.section === section) {
+        encounteredSection = true;
+        return;
+      }
+
+      if (encounteredSection === true) {
+        path.shift(deltaBytes);
+
+        debug(
+          "shift section section=%s detla=%d",
+          path.node.section,
+          deltaBytes
+        );
+      }
+    }
+  });
 
   debug(
     "resize byte size section=%s detla=%d newValue=%s",
@@ -33,12 +64,7 @@ export function resizeSectionByteSize(
     newSectionSize
   );
 
-  return overrideBytesInBuffer(
-    uint8Buffer,
-    sectionMetadata.startOffset,
-    sectionMetadata.startOffset + oldSizeInBytes.length,
-    encodeU32(newSectionSize)
-  );
+  return overrideBytesInBuffer(uint8Buffer, start, end, newBytes);
 }
 
 export function resizeSectionVecSize(
@@ -53,21 +79,25 @@ export function resizeSectionVecSize(
     throw new Error("Section metadata not found");
   }
 
+  if (typeof sectionMetadata.vectorOfSize.loc === "undefined") {
+    throw new Error("SectionMetadata " + section + " has no loc");
+  }
+
   // Section has no vector
   if (sectionMetadata.vectorOfSize.value === -1) {
     return uint8Buffer;
   }
 
-  // Encode the current value to know the number of bytes to override
-  const oldSizeInBytes = encodeU32(sectionMetadata.vectorOfSize.value);
+  // keep old node location to be overriden
+  const start = sectionMetadata.vectorOfSize.loc.start.column;
+  const end = sectionMetadata.vectorOfSize.loc.end.column;
 
   const newValue = sectionMetadata.vectorOfSize.value + deltaElements;
   const newBytes = encodeU32(newValue);
 
-  const start = sectionMetadata.startOffset + 1;
-
   // Update AST
   sectionMetadata.vectorOfSize.value = newValue;
+  sectionMetadata.vectorOfSize.loc.end.column = start + newBytes.length;
 
   debug(
     "resize vec size section=%s detla=%d newValue=%s",
@@ -76,10 +106,5 @@ export function resizeSectionVecSize(
     newValue
   );
 
-  return overrideBytesInBuffer(
-    uint8Buffer,
-    start,
-    start + oldSizeInBytes.length,
-    newBytes
-  );
+  return overrideBytesInBuffer(uint8Buffer, start, end, newBytes);
 }
