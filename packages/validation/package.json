@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/validation",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Module AST validations",
   "main": "lib/index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
-    "@webassemblyjs/ast": "1.2.6"
+    "@webassemblyjs/ast": "1.2.7"
   },
   "devDependencies": {
     "@webassemblyjs/wast-parser": "1.2.3"
