@@ -247,11 +247,18 @@ describe("insert a node", () => {
   it("should insert nodes in multiple sections multiple times (implies updating the underlying AST)", () => {
     let bin;
 
+    const index = t.numberLiteral(0);
+
     const global = t.global(t.globalType("i32", "const"), [
       t.objectInstruction("const", "i32", [t.numberLiteral(1)])
     ]);
 
     const functype = t.typeInstructionFunc([], []);
+
+    const funcindex = t.indexInFuncSection(index);
+    const moduleExport = t.moduleExport("foo", "Func", index);
+
+    const func = t.func(t.identifier("foo"), [], [], []);
 
     // (module)
     bin = makeBuffer(encodeHeader(), encodeVersion(1));
@@ -260,7 +267,15 @@ describe("insert a node", () => {
     //   (global i32 (i32.const 1))
     //   (type (func))
     // )
-    bin = add(bin, [global, functype, global, functype]);
+    bin = add(bin, [
+      func,
+      global,
+      functype,
+      global,
+      functype,
+      funcindex,
+      moduleExport
+    ]);
 
     const expected = makeBuffer(
       encodeHeader(),
@@ -268,9 +283,15 @@ describe("insert a node", () => {
       [constants.sections.type, 0x07, 0x02],
       /* 1 */ [0x60, 0x00, 0x00],
       /* 2 */ [0x60, 0x00, 0x00],
+      [constants.sections.func, 0x02, 0x01],
+      /* 1 */ [0x00],
       [constants.sections.global, 0x0b, 0x02],
       /* 1 */ [0x7f, 0x00, 0x41, 0x01, 0x0b],
-      /* 2 */ [0x7f, 0x00, 0x41, 0x01, 0x0b]
+      /* 2 */ [0x7f, 0x00, 0x41, 0x01, 0x0b],
+      [constants.sections.export, 0x07, 0x01],
+      /* 1 */ [0x03, 102, 111, 111, 0x00, 0x00],
+      [constants.sections.code, 0x04, 0x01],
+      /* 1 */ [0x02, 0x00, 0x0b]
     );
 
     compareArrayBuffers(bin, expected);
