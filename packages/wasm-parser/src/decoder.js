@@ -268,7 +268,6 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   function parseVec<T>(cast: Byte => T): Array<T> {
-    // Int on 1byte
     const u32 = readU32();
     const length = u32.value;
     eatBytes(u32.nextIndex);
@@ -319,10 +318,26 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       if (type == types.func) {
         dump([type], "func");
 
-        const paramValtypes: Array<Valtype> = parseVec(b => valtypes[b]);
+        const paramValtypes: Array<Valtype> = parseVec(b => {
+          const t = valtypes[b];
+
+          if (typeof t === "undefined") {
+            throw new Error("Unknown func parameter valtype: " + toHex(b));
+          }
+
+          return t;
+        });
         const params = paramValtypes.map(v => t.funcParam(v));
 
-        const result: Array<Valtype> = parseVec(b => valtypes[b]);
+        const result: Array<Valtype> = parseVec(b => {
+          const t = valtypes[b];
+
+          if (typeof t === "undefined") {
+            throw new Error("Unknown func result valtype: " + toHex(b));
+          }
+
+          return t;
+        });
 
         const endLoc = getPosition();
 

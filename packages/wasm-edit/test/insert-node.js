@@ -12,6 +12,31 @@ const {
 
 const { add } = require("../lib");
 
+// FIXME: move this elsewhere
+function hexdumpToBuffer(str) {
+  let lines = str.split("\n");
+
+  // remove any leading left whitespace
+  lines = lines.map(line => line.trim());
+
+  const bytes = lines.reduce((acc, line) => {
+    let cols = line.split(" ");
+
+    // remove the offset, left column
+    cols.shift();
+
+    cols = cols.filter(x => x !== "");
+
+    const bytes = cols.map(x => parseInt(x, 16));
+
+    acc.push(...bytes);
+
+    return acc;
+  }, []);
+
+  return Buffer.from(bytes);
+}
+
 describe("insert a node", () => {
   describe("ModuleImport", () => {
     // (module
@@ -296,4 +321,60 @@ describe("insert a node", () => {
 
     compareArrayBuffers(bin, expected);
   });
+
+  it("should insert type instructions with LEB128 padded type section size", () => {
+    const functype = t.typeInstructionFunc([], []);
+
+    let bin;
+
+    // (module)
+    bin = hexdumpToBuffer(`
+      00000000  00 61 73 6d 01 00 00 00  01 81 80 80 80 00 00
+    `);
+
+    // (module
+    //   (type (func))
+    // )
+    bin = add(bin, [functype, functype]);
+
+    const expected = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.type, 0x07, 0x02],
+      /* 1 */ [0x60, 0x00, 0x00],
+      /* 2 */ [0x60, 0x00, 0x00]
+    );
+
+    compareArrayBuffers(bin, expected);
+  });
+
+  it.only("test", () => {
+    const functype = t.typeInstructionFunc([], []);
+
+    let bin;
+
+    // (module)
+    bin = hexdumpToBuffer(`
+      00000000  00 61 73 6d 01 00 00 00  01 81 80 80 80 00 00
+      00000010  06 81 80 80 80 00
+    `);
+
+    // (module
+    //   (type (func))
+    //   (type (func))
+    // )
+    bin = add(bin, [functype, functype]);
+
+    const expected = makeBuffer(
+      encodeHeader(),
+      encodeVersion(1),
+      [constants.sections.type, 0x07, 0x02],
+      /* 1 */ [0x60, 0x00, 0x00],
+      /* 2 */ [0x60, 0x00, 0x00],
+      [constants.sections.global, 0x01, 0x00]
+    );
+
+    compareArrayBuffers(bin, expected);
+  });
 });
+

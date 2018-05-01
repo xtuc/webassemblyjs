@@ -32,7 +32,8 @@ export function overrideBytesInBuffer(
     "overrideBytesInBuffer start=%d end=%d newBytes=%s",
     startLoc,
     endLoc,
-    newBytes.toString()
+    // $FlowIgnore
+    newBytes.map(dec => dec.toString("16")).join()
   );
 
   // replacement is empty, we can omit it

@@ -86,6 +86,8 @@ function applyUpdate(
             const newValue = node.metadata.bodySize + bodySizeDeltaBytes;
             const newByteArray = encodeU32(newValue);
 
+            debug("resize func body newValue=%d", newValue);
+
             // function body size byte
             // FIXME(sven): only handles one byte u32
             const start = node.loc.start.column;
@@ -192,11 +194,20 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
   const newByteArray = encodeNode(node);
 
   // start at the end of the section
-  const start = sectionMetadata.startOffset + sectionMetadata.size.value + 1;
+  // the section size doesn't include the encoded u32 length (of the actual size)
+  // and of the vector size, we need to add them to the section size.
+  const u32EncodedLengths =
+    sectionMetadata.size.loc.end.column -
+    sectionMetadata.size.loc.start.column +
+    (sectionMetadata.vectorOfSize.loc.end.column -
+      sectionMetadata.vectorOfSize.loc.start.column);
+
+  const start =
+    sectionMetadata.startOffset +
+    u32EncodedLengths +
+    sectionMetadata.size.value;
 
   const end = start;
-
-  debug("add node=%s section=%s after=%d", node.type, sectionName, start);
 
   uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
 
@@ -204,6 +215,15 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    * Update section
    */
   const deltaBytes = newByteArray.length;
+
+  debug(
+    "add node=%s section=%s after=%d deltaBytes=%s deltaElements=%s",
+    node.type,
+    sectionName,
+    start,
+    deltaBytes,
+    deltaElements
+  );
 
   return { uint8Buffer, deltaBytes, deltaElements };
 }

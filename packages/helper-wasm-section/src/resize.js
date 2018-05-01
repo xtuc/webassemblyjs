@@ -33,7 +33,29 @@ export function resizeSectionByteSize(
    * update AST
    */
   sectionMetadata.size.value = newSectionSize;
-  sectionMetadata.size.loc.end.column = start + newBytes.length;
+
+  const oldu32EncodedLen = end - start;
+  const newu32EncodedLen = newBytes.length;
+
+  // For padded LEB128 we can end up resizing the section again because we don't
+  // use the same encoding (thus number of bytes)
+  if (newu32EncodedLen !== oldu32EncodedLen) {
+    const deltaInSizeEncoding = newu32EncodedLen - oldu32EncodedLen;
+
+    sectionMetadata.size.loc.end.column = start + newu32EncodedLen;
+
+    debug(
+      "LEB128 encoding size changed section=%s detla=%s",
+      section,
+      deltaInSizeEncoding
+    );
+
+    deltaBytes += deltaInSizeEncoding;
+
+    // move the vec size pointer size the section size is now smaller
+    sectionMetadata.vectorOfSize.loc.start.column += deltaInSizeEncoding;
+    sectionMetadata.vectorOfSize.loc.end.column += deltaInSizeEncoding;
+  }
 
   // Once we hit our section every that is after needs to be shifted by the delta
   let encounteredSection = false;
@@ -58,10 +80,11 @@ export function resizeSectionByteSize(
   });
 
   debug(
-    "resize byte size section=%s detla=%d newValue=%s",
+    "resize byte size section=%s newValue=%s start=%d end=%d",
     section,
-    deltaBytes,
-    newSectionSize
+    newSectionSize,
+    start,
+    end
   );
 
   return overrideBytesInBuffer(uint8Buffer, start, end, newBytes);
