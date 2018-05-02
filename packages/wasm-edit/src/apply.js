@@ -193,23 +193,14 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    */
   const newByteArray = encodeNode(node);
 
-  // FIXME(sven): allow LEB128 u32 encoded bigger than 1 byte
-  // size u32 + vectorOfSize u32
-  const start = sectionMetadata.startOffset + 1 + 1;
-
-  // // start at the end of the section
-  // // the section size doesn't include the encoded u32 length (of the actual size)
-  // // and of the vector size, we need to add them to the section size.
-  // const u32EncodedLengths =
-  //   sectionMetadata.size.loc.end.column -
-  //   sectionMetadata.size.loc.start.column +
-  //   (sectionMetadata.vectorOfSize.loc.end.column -
-  //     sectionMetadata.vectorOfSize.loc.start.column);
-
-  // const start =
-  //   sectionMetadata.startOffset +
-  //   u32EncodedLengths +
-  //   sectionMetadata.size.value;
+  // The size of the section doesn't include the storage of the size itself
+  // we need to manually add it here
+  // FIXME(sven): preprocess it into the AST?
+  const start =
+    sectionMetadata.startOffset +
+    sectionMetadata.size.value +
+    (sectionMetadata.size.loc.end.column -
+      sectionMetadata.size.loc.start.column);
 
   const end = start;
 
