@@ -20,6 +20,7 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [validation](https://github.com/xtuc/webassemblyjs/tree/master/packages/validation) - Module AST validations
 - [wasm-edit](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-edit) - Replace in-place an AST node in the binary.
 - [wasm-gen](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-gen) - WebAssembly binary format printer
+- [wasm-opt](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-opt) - WASM optimizer
 - [wasm-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-parser) - WebAssembly binary format parser
 - [wast-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-parser) - WebAssembly text format parser
 - [wast-printer](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-printer) - WebAssembly text format printer

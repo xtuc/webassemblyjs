@@ -130,9 +130,13 @@ export function module(
 export function sectionMetadata(
   section: SectionName,
   startOffset: number,
-  size: number,
-  vectorOfSize: number = -1
+  size: NumberLiteral,
+  // $FlowIgnore
+  vectorOfSize: NumberLiteral = numberLiteral(-1)
 ): SectionMetadata {
+  assert(size.type === "NumberLiteral");
+  assert(vectorOfSize.type === "NumberLiteral");
+
   return {
     type: "SectionMetadata",
     section,
@@ -673,5 +677,5 @@ export function isAnonymous(ident: Identifier): boolean {
 
 export { traverse, traverseWithHooks } from "./traverse";
 export { signatures } from "./signatures";
-export { getSectionMetadata } from "./utils";
+export { getSectionMetadata, sortSectionMetadata } from "./utils";
 export { cloneNode } from "./clone";

@@ -86,6 +86,8 @@ function applyUpdate(
             const newValue = node.metadata.bodySize + bodySizeDeltaBytes;
             const newByteArray = encodeU32(newValue);
 
+            debug("resize func body newValue=%d", newValue);
+
             // function body size byte
             // FIXME(sven): only handles one byte u32
             const start = node.loc.start.column;
@@ -144,7 +146,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
      */
     uint8Buffer = removeSection(ast, uint8Buffer, "start");
 
-    const deltaBytes = -sectionMetadata.size;
+    const deltaBytes = -(sectionMetadata.size.value + 1) /* section id */;
 
     return { uint8Buffer, deltaBytes, deltaElements };
   }
@@ -191,12 +193,16 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    */
   const newByteArray = encodeNode(node);
 
-  // start at the end of the section
-  const start = sectionMetadata.startOffset + sectionMetadata.size + 1;
+  // The size of the section doesn't include the storage of the size itself
+  // we need to manually add it here
+  // FIXME(sven): preprocess it into the AST?
+  const start =
+    sectionMetadata.startOffset +
+    sectionMetadata.size.value +
+    (sectionMetadata.size.loc.end.column -
+      sectionMetadata.size.loc.start.column);
 
   const end = start;
-
-  debug("add node=%s section=%s after=%d", node.type, sectionName, start);
 
   uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
 
@@ -204,6 +210,15 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    * Update section
    */
   const deltaBytes = newByteArray.length;
+
+  debug(
+    "add node=%s section=%s after=%d deltaBytes=%s deltaElements=%s",
+    node.type,
+    sectionName,
+    start,
+    deltaBytes,
+    deltaElements
+  );
 
   return { uint8Buffer, deltaBytes, deltaElements };
 }
@@ -242,6 +257,7 @@ export function applyOperations(
      */
     if (state.deltaBytes !== 0) {
       ops.forEach(op => {
+        // We don't need to handle add ops, they are positioning independent
         switch (op.kind) {
           case "update":
             shiftLocNodeByDelta(op.oldNode, state.deltaBytes);

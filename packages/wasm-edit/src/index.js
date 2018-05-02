@@ -3,6 +3,8 @@
 import { decode } from "@webassemblyjs/wasm-parser";
 import { traverseWithHooks } from "@webassemblyjs/ast";
 import { cloneNode } from "@webassemblyjs/ast/lib/clone";
+import { shrinkPaddedLEB128 } from "@webassemblyjs/wasm-opt";
+
 import { applyOperations } from "./apply";
 
 function hashNode(node: Node): string {
@@ -15,8 +17,15 @@ const decoderOpts = {
   ignoreDataSection: true
 };
 
+function preprocess(ab: ArrayBuffer): ArrayBuffer {
+  const optBin = shrinkPaddedLEB128(new Uint8Array(ab));
+  return optBin.buffer;
+}
+
 export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
   const operations: Array<Operation> = [];
+
+  ab = preprocess(ab);
 
   const ast = decode(ab, decoderOpts);
 
@@ -52,10 +61,13 @@ export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
 }
 
 export function add(ab: ArrayBuffer, newNodes: Array<Node>): ArrayBuffer {
+  ab = preprocess(ab);
+
   const ast = decode(ab, decoderOpts);
 
   let uint8Buffer = new Uint8Array(ab);
 
+  // Map node into operations
   const operations = newNodes.map(n => ({
     kind: "add",
     node: n

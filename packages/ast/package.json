@@ -11,6 +11,7 @@
   "author": "Sven Sauleau",
   "license": "GPL-2.0",
   "dependencies": {
+    "@webassemblyjs/helper-wasm-bytecode": "1.2.7",
     "@webassemblyjs/wast-parser": "1.2.7",
     "webassemblyjs": "1.2.7"
   },
