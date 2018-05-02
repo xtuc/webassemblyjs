@@ -37,18 +37,11 @@ export function resizeSectionByteSize(
   const oldu32EncodedLen = end - start;
   const newu32EncodedLen = newBytes.length;
 
-  // For padded LEB128 we can end up resizing the section again because we don't
-  // use the same encoding (thus number of bytes)
+  // the new u32 has a different encoded length
   if (newu32EncodedLen !== oldu32EncodedLen) {
     const deltaInSizeEncoding = newu32EncodedLen - oldu32EncodedLen;
 
     sectionMetadata.size.loc.end.column = start + newu32EncodedLen;
-
-    debug(
-      "LEB128 encoding size changed section=%s detla=%s",
-      section,
-      deltaInSizeEncoding
-    );
 
     deltaBytes += deltaInSizeEncoding;
 

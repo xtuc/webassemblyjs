@@ -260,7 +260,7 @@ describe("insert a node", () => {
         encodeVersion(1),
         [constants.sections.type, 0x09, 0x02, 0x60, 0x00, 0x01, 0x7f],
         [0x60, 0x00, 0x01, 0x7f],
-        [constants.sections.func, 0x03, 0x02, 0x00, 0x01],
+        [constants.sections.func, 0x03, 0x02, 0x01, 0x00],
         [constants.sections.code, 0x0b, 0x02, 0x04, 0x00, 0x41, 0x01, 0x0b],
         [0x04, 0x00, 0x41, 0x01, 0x0b]
       );
@@ -330,41 +330,15 @@ describe("insert a node", () => {
     // (module)
     bin = hexdumpToBuffer(`
       00000000  00 61 73 6d 01 00 00 00  01 81 80 80 80 00 00
-    `);
-
-    // (module
-    //   (type (func))
-    // )
-    bin = add(bin, [functype, functype]);
-
-    const expected = makeBuffer(
-      encodeHeader(),
-      encodeVersion(1),
-      [constants.sections.type, 0x07, 0x02],
-      /* 1 */ [0x60, 0x00, 0x00],
-      /* 2 */ [0x60, 0x00, 0x00]
-    );
-
-    compareArrayBuffers(bin, expected);
-  });
-
-  it.only("test", () => {
-    const functype = t.typeInstructionFunc([], []);
-
-    let bin;
-
-    // (module)
-    bin = hexdumpToBuffer(`
-      00000000  00 61 73 6d 01 00 00 00  01 81 80 80 80 00 00
       00000010  06 81 80 80 80 00
     `);
 
+    bin = add(bin, [functype, functype]);
+
     // (module
     //   (type (func))
     //   (type (func))
     // )
-    bin = add(bin, [functype, functype]);
-
     const expected = makeBuffer(
       encodeHeader(),
       encodeVersion(1),
