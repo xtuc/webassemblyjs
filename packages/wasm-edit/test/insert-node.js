@@ -351,4 +351,3 @@ describe("insert a node", () => {
     compareArrayBuffers(bin, expected);
   });
 });
-
