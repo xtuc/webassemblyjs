@@ -18,7 +18,6 @@
   "dependencies": {
     "@webassemblyjs/ast": "1.2.7",
     "@webassemblyjs/helper-buffer": "1.2.7",
-    "@webassemblyjs/helper-test-framework": "1.2.7",
     "@webassemblyjs/helper-wasm-bytecode": "1.2.7",
     "@webassemblyjs/helper-wasm-section": "1.2.7",
     "@webassemblyjs/wasm-gen": "1.2.7",
@@ -26,5 +25,8 @@
     "@webassemblyjs/wast-printer": "1.2.7",
     "@webassemblyjs/wasm-opt": "1.2.7",
     "debug": "^3.1.0"
+  },
+  "devDependencies": {
+    "@webassemblyjs/helper-test-framework": "1.2.7"
   }
 }

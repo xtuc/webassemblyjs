@@ -318,26 +318,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       if (type == types.func) {
         dump([type], "func");
 
-        const paramValtypes: Array<Valtype> = parseVec(b => {
-          const t = valtypes[b];
-
-          if (typeof t === "undefined") {
-            throw new Error("Unknown func parameter valtype: " + toHex(b));
-          }
-
-          return t;
-        });
+        const paramValtypes: Array<Valtype> = parseVec(b => valtypes[b]);
         const params = paramValtypes.map(v => t.funcParam(v));
 
-        const result: Array<Valtype> = parseVec(b => {
-          const t = valtypes[b];
-
-          if (typeof t === "undefined") {
-            throw new Error("Unknown func result valtype: " + toHex(b));
-          }
-
-          return t;
-        });
+        const result: Array<Valtype> = parseVec(b => valtypes[b]);
 
         const endLoc = getPosition();
 
