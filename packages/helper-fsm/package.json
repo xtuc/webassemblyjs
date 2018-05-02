@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-fsm",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "FSM implementation",
   "main": "lib/index.js",
   "author": "Mauro Bringolf",
