@@ -13,6 +13,8 @@ for D in ./packages/*; do
     echo "launch pretest target for $D ..."
 done
 
+echo $OPTS
+
 wait
 
 ./node_modules/.bin/mocha "$PACKAGES/test/**/*.js" \

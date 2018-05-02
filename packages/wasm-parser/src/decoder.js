@@ -117,7 +117,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
      * - Function section
      * - Import section
      */
-    functionsInModule: []
+    functionsInModule: [],
+
+    /**
+     * Decoded tables from:
+     * - Table section
+     */
+    tablesInModule: []
   };
 
   function isEOF(): boolean {
@@ -512,8 +518,18 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
-        console.warn("Unsupported export type table");
-        return;
+        const table = state.tablesInModule[index];
+
+        if (typeof table === "undefined") {
+          throw new CompileError(
+            `entry not found at index ${index} in table section`
+          );
+        }
+
+        id = t.cloneNode(table.id);
+        id = t.withRaw(id, String(index));
+
+        signature = null;
       } else if (exportTypes[typeIndex] === "Mem") {
         const memNode = state.memoriesInModule[index];
 
@@ -1152,6 +1168,22 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     }
 
     return t.memory(t.limits(min, max), t.indexLiteral(i));
+  }
+
+  // https://webassembly.github.io/spec/binary/modules.html#table-section
+  function parseTableSection(numberOfElements: number) {
+    const tables = [];
+
+    dump([numberOfElements], "num elements");
+
+    for (let i = 0; i < numberOfElements; i++) {
+      const tablesNode = parseTableType(i);
+
+      state.tablesInModule.push(tablesNode);
+      tables.push(tablesNode);
+    }
+
+    return tables;
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#memory-section
