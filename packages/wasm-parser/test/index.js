@@ -44,7 +44,7 @@ describe("Binary decoder", () => {
 
     // read the WASM file and strip custom metadata
     const ast = stripMetadata(decode(buffer));
-    const actual = JSON.stringify(ast, Object.keys(ast).sort(), 2);
+    const actual = JSON.stringify(ast, null, 2);
 
     return actual;
   };
@@ -53,11 +53,7 @@ describe("Binary decoder", () => {
     // parse the wat file to create the expected AST
     const astFromWat = parse(f);
 
-    const expected = JSON.stringify(
-      astFromWat,
-      Object.keys(astFromWat).sort(),
-      2
-    );
+    const expected = JSON.stringify(astFromWat, null, 2);
 
     return expected;
   };
