@@ -1,7 +1,6 @@
 // @flow
 
 import { traverse } from "@webassemblyjs/ast";
-import { decode } from "@webassemblyjs/wasm-parser";
 import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
@@ -31,14 +30,10 @@ function shiftFollowingSections(ast, { section }, deltaInSizeEncoding) {
   });
 }
 
-export function shrinkPaddedLEB128(uint8Buffer: Uint8Array): Uint8Array {
-  const opts = {
-    ignoreCodeSection: true,
-    ignoreDataSection: true
-  };
-
-  const ast = decode(uint8Buffer.buffer, opts);
-
+export function shrinkPaddedLEB128(
+  ast: Program,
+  uint8Buffer: Uint8Array
+): Uint8Array {
   traverse(ast, {
     SectionMetadata({ node }) {
       /**
