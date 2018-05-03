@@ -10,30 +10,26 @@ const { parse } = require("@webassemblyjs/wast-parser");
 const { decode } = require("../lib");
 const { traverse } = require("@webassemblyjs/ast");
 
-function jsonTraverse(o, func) {
-  func(o);
-  for (const i in o) {
-    if (o[i] !== null && typeof o[i] === "object") {
-      jsonTraverse(o[i], func);
-    }
-  }
-}
-
 // remove the additional metadata from the wasm parser
 function stripMetadata(ast) {
-  jsonTraverse(ast, node => {
-    delete node.metadata;
-    delete node.loc;
-  });
   traverse(ast, {
     // currently the WAT parser does not support function type definitions
     TypeInstruction(path) {
       path.remove();
+    },
+
+    Node({ node }) {
+      delete node.metadata;
+      delete node.loc;
+      delete node.raw;
     }
   });
+
   return ast;
 }
 
+// - Expected is wasm-parser
+// + Received is wast-parser
 describe("Binary decoder", () => {
   const testSuites = getFixtures(__dirname, "fixtures", "**/actual.wat");
 
@@ -44,20 +40,16 @@ describe("Binary decoder", () => {
 
     // read the WASM file and strip custom metadata
     const ast = stripMetadata(decode(buffer));
-    const actual = JSON.stringify(ast, Object.keys(ast).sort(), 2);
+    const actual = JSON.stringify(ast, null, 2);
 
     return actual;
   };
 
   const getExpected = f => {
     // parse the wat file to create the expected AST
-    const astFromWat = parse(f);
+    const astFromWat = stripMetadata(parse(f));
 
-    const expected = JSON.stringify(
-      astFromWat,
-      Object.keys(astFromWat).sort(),
-      2
-    );
+    const expected = JSON.stringify(astFromWat, null, 2);
 
     return expected;
   };

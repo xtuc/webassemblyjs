@@ -296,6 +296,10 @@ export function traverse(n: Node, visitors: Object) {
   walk(
     n,
     (type: string, path: NodePath<Node>) => {
+      if (typeof visitors["Node"] === "function") {
+        visitors["Node"](path);
+      }
+
       if (typeof visitors[type] === "function") {
         visitors[type](path);
       }
