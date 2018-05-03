@@ -526,8 +526,12 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = t.cloneNode(table.id);
-        id = t.withRaw(id, String(index));
+        if (table.name != null) {
+          id = t.identifier(table.name.value + "");
+        } else {
+          id = t.identifier(getUniqueName("table"));
+          id = t.withRaw(id, ""); // preserve anonymous
+        }
 
         signature = null;
       } else if (exportTypes[typeIndex] === "Mem") {
@@ -956,18 +960,6 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return t.table(elementType, t.limits(min, max));
   }
 
-  // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
-  function parseTableSection(numberOfTable: number) {
-    const tables = [];
-
-    for (let i = 0; i < numberOfTable; i++) {
-      const tableNode = parseTableType();
-      tables.push(tableNode);
-    }
-
-    return tables;
-  }
-
   // https://webassembly.github.io/spec/binary/types.html#global-types
   function parseGlobalType(): GlobalType {
     const valtypeByte = readByte();
@@ -1177,7 +1169,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     dump([numberOfElements], "num elements");
 
     for (let i = 0; i < numberOfElements; i++) {
-      const tablesNode = parseTableType(i);
+      const tablesNode = parseTableType();
 
       state.tablesInModule.push(tablesNode);
       tables.push(tablesNode);

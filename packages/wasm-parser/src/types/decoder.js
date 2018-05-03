@@ -64,9 +64,7 @@ type DecodedElementInCodeSection = {
 
 type DecodedModuleMemory = Memory;
 
-type DecodedModuleTable = {
-  id: Identifier
-};
+type DecodedModuleTable = Table;
 
 type State = {
   typesInModule: Array<DecodedModuleType>,
