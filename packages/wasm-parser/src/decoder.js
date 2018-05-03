@@ -919,6 +919,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
   function parseTableType(): Table {
+    let name = t.identifier(getUniqueName("table"));
+
     const elementTypeByte = readByte();
     eatBytes(1);
 
@@ -939,25 +941,25 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     if (limitHasMaximum[limitType] === true) {
       const u32min = readU32();
-      min = u32min.value;
+      min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
 
       dump([min], "min");
 
       const u32max = readU32();
-      max = u32max.value;
+      max = parseInt(u32max.value);
       eatBytes(u32max.nextIndex);
 
       dump([max], "max");
     } else {
       const u32min = readU32();
-      min = u32min.value;
+      min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
 
       dump([min], "min");
     }
 
-    return t.table(elementType, t.limits(min, max));
+    return t.table(elementType, t.limits(min, max), name);
   }
 
   // https://webassembly.github.io/spec/binary/types.html#global-types
@@ -1141,19 +1143,19 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     if (limitHasMaximum[limitType] === true) {
       const u32min = readU32();
-      min = u32min.value;
+      min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
 
       dump([min], "min");
 
       const u32max = readU32();
-      max = u32max.value;
+      max = parseInt(u32max.value);
       eatBytes(u32max.nextIndex);
 
       dump([max], "max");
     } else {
       const u32min = readU32();
-      min = u32min.value;
+      min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
 
       dump([min], "min");

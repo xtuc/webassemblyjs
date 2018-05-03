@@ -523,6 +523,12 @@ export function table(
 }
 
 export function limits(min: number, max?: number): Limit {
+  assert(typeof min === "number");
+
+  if (typeof max !== "undefined") {
+    assert(typeof max === "number");
+  }
+
   return {
     type: "Limit",
     min,
