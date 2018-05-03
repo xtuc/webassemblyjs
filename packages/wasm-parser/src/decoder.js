@@ -319,7 +319,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([type], "func");
 
         const paramValtypes: Array<Valtype> = parseVec(b => valtypes[b]);
-        const params = paramValtypes.map(v => t.funcParam(v));
+        const params = paramValtypes.map(v => t.funcParam(/*valtype*/ v));
 
         const result: Array<Valtype> = parseVec(b => valtypes[b]);
 

@@ -482,8 +482,8 @@ export function globalImportDescr(
 
 export function funcParam(valtype: Valtype, id: ?string): FuncParam {
   return {
-    valtype,
-    id
+    id,
+    valtype
   };
 }
 
