@@ -12,8 +12,7 @@ class OptimizerError extends Error {
 
 const decoderOpts = {
   ignoreCodeSection: true,
-  ignoreDataSection: true,
-  dump: true
+  ignoreDataSection: true
 };
 
 import { shrinkPaddedLEB128 as makeShrinkPaddedLEB128 } from "./leb128.js";
