@@ -5,6 +5,8 @@ import { decode } from "@webassemblyjs/wasm-parser";
 class OptimizerError extends Error {
   constructor(name, initalError) {
     super("Error while optimizing: " + name + ": " + initalError.message);
+
+    this.stack = initalError.stack;
   }
 }
 

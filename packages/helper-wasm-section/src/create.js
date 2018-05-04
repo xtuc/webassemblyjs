@@ -23,6 +23,12 @@ function findLastSection(
 
   for (let i = 0, len = moduleSections.length; i < len; i++) {
     const section = moduleSections[i];
+
+    // Ignore custom section since they can actually occur everywhere
+    if (section.section === "custom") {
+      continue;
+    }
+
     const sectionId = constants.sections[section.section];
 
     if (targetSectionId > lastId && targetSectionId < sectionId) {
@@ -32,6 +38,8 @@ function findLastSection(
     lastId = sectionId;
     lastSection = section;
   }
+
+  return lastSection;
 }
 
 export function createEmptySection(
@@ -44,14 +52,14 @@ export function createEmptySection(
 
   let start, end;
 
-  if (lastSection == null) {
-    /**
-     * It's the first section
-     */
+  /**
+   * It's the first section
+   */
+  if (lastSection == null || lastSection.section === "custom") {
     start = 8 /* wasm header size */;
     end = start;
 
-    debug("create empty section=%s start=%d end=%d", section, start, end);
+    debug("create empty section=%s first", section);
   } else {
     start = lastSection.startOffset + lastSection.size.value + 1;
     end = start;

@@ -4,6 +4,8 @@ import { decode } from "@webassemblyjs/wasm-parser";
 import { traverseWithHooks } from "@webassemblyjs/ast";
 import { cloneNode } from "@webassemblyjs/ast/lib/clone";
 import { shrinkPaddedLEB128 } from "@webassemblyjs/wasm-opt";
+import { getSectionForNode } from "@webassemblyjs/helper-wasm-section";
+import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 import { applyOperations } from "./apply";
 
@@ -20,6 +22,22 @@ const decoderOpts = {
 function preprocess(ab: ArrayBuffer): ArrayBuffer {
   const optBin = shrinkPaddedLEB128(new Uint8Array(ab));
   return optBin.buffer;
+}
+
+function sortBySectionOrder(nodes: Array<Node>) {
+  nodes.sort((a, b) => {
+    const sectionA = getSectionForNode(a);
+    const sectionB = getSectionForNode(b);
+
+    const aId = constants.sections[sectionA];
+    const bId = constants.sections[sectionB];
+
+    if (typeof aId !== "number" || typeof bId !== "number") {
+      throw new Error("Section id not found");
+    }
+
+    return aId > bId;
+  });
 }
 
 export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
@@ -62,6 +80,9 @@ export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
 
 export function add(ab: ArrayBuffer, newNodes: Array<Node>): ArrayBuffer {
   ab = preprocess(ab);
+
+  // Sort nodes by insertion order
+  sortBySectionOrder(newNodes);
 
   const ast = decode(ab, decoderOpts);
 
