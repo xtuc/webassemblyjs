@@ -64,6 +64,8 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
     removeNodeInBody(node, parentNode);
 
     node._deleted = true;
+
+    debug("delete path %s", node.type);
   }
 
   // TODO(sven): do it the good way, changing the node from the parent
@@ -104,7 +106,6 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
     case "SectionMetadata":
     case "FunctionNameMetadata":
     case "LocalNameMetadata":
-    case "ModuleExport":
     case "Data":
     case "Memory":
     case "Elem":
@@ -124,9 +125,18 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
       break;
     }
 
+    case "ModuleExport": {
+      const path = createPath(n, parentPath);
+      cb(n.type, path);
+
+      walk(n.descr.id, cb, path);
+
+      break;
+    }
+
     case "ModuleMetadata": {
       const path = createPath(n, parentPath);
-      cb(n.type, createPath(n, path));
+      cb(n.type, path);
       n.sections.forEach(x => walk(x, cb, path));
 
       if (typeof n.functionNames !== "undefined") {
@@ -296,6 +306,10 @@ export function traverse(n: Node, visitors: Object) {
   walk(
     n,
     (type: string, path: NodePath<Node>) => {
+      if (typeof visitors["Node"] === "function") {
+        visitors["Node"](path);
+      }
+
       if (typeof visitors[type] === "function") {
         visitors[type](path);
       }

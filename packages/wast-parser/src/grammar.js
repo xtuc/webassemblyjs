@@ -326,11 +326,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           /**
            * Table type
            */
-          const min = token.value;
+          const min = parseInt(token.value);
           eatToken();
 
           if (token.type === tokens.number) {
-            const max = token.value;
+            const max = parseInt(token.value);
             eatToken();
 
             limit = t.limits(min, max);
@@ -378,7 +378,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error("Expected a string, " + token.type + " given.");
       }
 
-      let funcName = token.value;
+      const name = token.value;
+
+      let fnName = t.identifier(`${moduleName}.${name}`);
       eatToken();
 
       eatTokenOfType(tokens.openParen);
@@ -392,7 +394,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const fnResult = [];
 
         if (token.type === tokens.identifier) {
-          funcName = token.value;
+          fnName = t.identifier(token.value);
           eatToken();
         }
 
@@ -416,11 +418,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatTokenOfType(tokens.closeParen);
         }
 
-        if (typeof funcName === "undefined") {
+        if (typeof fnName === "undefined") {
           throw new Error("Imported function must have a name");
         }
 
-        descr = t.funcImportDescr(t.identifier(funcName), fnParams, fnResult);
+        descr = t.funcImportDescr(fnName, fnParams, fnResult);
       } else if (isKeyword(token, keywords.global)) {
         eatToken(); // keyword
 
@@ -455,7 +457,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       eatTokenOfType(tokens.closeParen);
       eatTokenOfType(tokens.closeParen);
 
-      return t.moduleImport(moduleName, funcName, descr);
+      return t.moduleImport(moduleName, name, descr);
     }
 
     /**

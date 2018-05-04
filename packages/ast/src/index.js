@@ -482,8 +482,8 @@ export function globalImportDescr(
 
 export function funcParam(valtype: Valtype, id: ?string): FuncParam {
   return {
-    valtype,
-    id
+    id,
+    valtype
   };
 }
 
@@ -523,6 +523,12 @@ export function table(
 }
 
 export function limits(min: number, max?: number): Limit {
+  assert(typeof min === "number");
+
+  if (typeof max !== "undefined") {
+    assert(typeof max === "number");
+  }
+
   return {
     type: "Limit",
     min,

@@ -103,7 +103,7 @@ function restoreLocalNames(ast) {
         const paramName = localNames.find(
           f => f.localIndex === paramIndex && f.functionIndex === functionIndex
         );
-        if (paramName) {
+        if (paramName && paramName.name !== "") {
           param.id = paramName.name;
         }
       });
