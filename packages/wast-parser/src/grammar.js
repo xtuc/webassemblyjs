@@ -326,11 +326,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           /**
            * Table type
            */
-          const min = token.value;
+          const min = parseInt(token.value);
           eatToken();
 
           if (token.type === tokens.number) {
-            const max = token.value;
+            const max = parseInt(token.value);
             eatToken();
 
             limit = t.limits(min, max);

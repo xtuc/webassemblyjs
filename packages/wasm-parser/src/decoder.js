@@ -117,7 +117,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
      * - Function section
      * - Import section
      */
-    functionsInModule: []
+    functionsInModule: [],
+
+    /**
+     * Decoded tables from:
+     * - Table section
+     */
+    tablesInModule: []
   };
 
   function isEOF(): boolean {
@@ -512,8 +518,22 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
-        console.warn("Unsupported export type table");
-        return;
+        const table = state.tablesInModule[index];
+
+        if (typeof table === "undefined") {
+          throw new CompileError(
+            `entry not found at index ${index} in table section`
+          );
+        }
+
+        if (table.name != null) {
+          id = t.identifier(table.name.value + "");
+        } else {
+          id = t.identifier(getUniqueName("table"));
+          id = t.withRaw(id, ""); // preserve anonymous
+        }
+
+        signature = null;
       } else if (exportTypes[typeIndex] === "Mem") {
         const memNode = state.memoriesInModule[index];
 
@@ -899,6 +919,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
   function parseTableType(): Table {
+    let name = t.identifier(getUniqueName("table"));
+
     const elementTypeByte = readByte();
     eatBytes(1);
 
@@ -919,37 +941,25 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     if (limitHasMaximum[limitType] === true) {
       const u32min = readU32();
-      min = u32min.value;
+      min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
 
       dump([min], "min");
 
       const u32max = readU32();
-      max = u32max.value;
+      max = parseInt(u32max.value);
       eatBytes(u32max.nextIndex);
 
       dump([max], "max");
     } else {
       const u32min = readU32();
-      min = u32min.value;
+      min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
 
       dump([min], "min");
     }
 
-    return t.table(elementType, t.limits(min, max));
-  }
-
-  // https://webassembly.github.io/spec/binary/modules.html#binary-tablesec
-  function parseTableSection(numberOfTable: number) {
-    const tables = [];
-
-    for (let i = 0; i < numberOfTable; i++) {
-      const tableNode = parseTableType();
-      tables.push(tableNode);
-    }
-
-    return tables;
+    return t.table(elementType, t.limits(min, max), name);
   }
 
   // https://webassembly.github.io/spec/binary/types.html#global-types
@@ -1133,25 +1143,41 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     if (limitHasMaximum[limitType] === true) {
       const u32min = readU32();
-      min = u32min.value;
+      min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
 
       dump([min], "min");
 
       const u32max = readU32();
-      max = u32max.value;
+      max = parseInt(u32max.value);
       eatBytes(u32max.nextIndex);
 
       dump([max], "max");
     } else {
       const u32min = readU32();
-      min = u32min.value;
+      min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
 
       dump([min], "min");
     }
 
     return t.memory(t.limits(min, max), t.indexLiteral(i));
+  }
+
+  // https://webassembly.github.io/spec/binary/modules.html#table-section
+  function parseTableSection(numberOfElements: number) {
+    const tables = [];
+
+    dump([numberOfElements], "num elements");
+
+    for (let i = 0; i < numberOfElements; i++) {
+      const tablesNode = parseTableType();
+
+      state.tablesInModule.push(tablesNode);
+      tables.push(tablesNode);
+    }
+
+    return tables;
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#memory-section
