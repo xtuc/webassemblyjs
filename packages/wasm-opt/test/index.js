@@ -18,7 +18,6 @@ describe("wasm optimizer", () => {
       );
 
       const actual = opt.shrinkPaddedLEB128(bin);
-      console.log("actual", actual);
 
       const expected = fromHexdump(`
         00000000  00 61 73 6d 01 00 00 00  01 01 00

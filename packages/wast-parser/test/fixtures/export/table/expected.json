@@ -10,7 +10,7 @@
           "elementType": "anyfunc",
           "limits": {
             "type": "Limit",
-            "min": "0"
+            "min": 0
           },
           "name": {
             "type": "Identifier",

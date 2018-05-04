@@ -19,9 +19,9 @@ function stripMetadata(ast) {
     },
 
     Node({ node }) {
+      delete node.raw;
       delete node.metadata;
       delete node.loc;
-      delete node.raw;
     }
   });
 
@@ -33,8 +33,8 @@ function stripMetadata(ast) {
 describe("Binary decoder", () => {
   const testSuites = getFixtures(__dirname, "fixtures", "**/actual.wat");
 
+  // convert the WAT fixture to WASM
   const getActual = (f, suite) => {
-    // convert the WAT fixture to WASM
     const module = wabt.parseWat(suite, f);
     const { buffer } = module.toBinary({ write_debug_names: true });
 
@@ -45,11 +45,10 @@ describe("Binary decoder", () => {
     return actual;
   };
 
+  // parse the wat file to create the expected AST
   const getExpected = f => {
-    // parse the wat file to create the expected AST
-    const astFromWat = stripMetadata(parse(f));
-
-    const expected = JSON.stringify(astFromWat, null, 2);
+    const ast = stripMetadata(parse(f));
+    const expected = JSON.stringify(ast, null, 2);
 
     return expected;
   };

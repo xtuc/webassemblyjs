@@ -10,7 +10,7 @@
         "elementType": "anyfunc",
         "limits": {
           "type": "Limit",
-          "min": "1"
+          "min": 1
         },
         "name": {
           "type": "Identifier",
@@ -28,8 +28,8 @@
         "elementType": "anyfunc",
         "limits": {
           "type": "Limit",
-          "min": "5",
-          "max": "25"
+          "min": 5,
+          "max": 25
         },
         "name": {
           "type": "Identifier",

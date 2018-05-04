@@ -416,7 +416,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       } else if (descrType === "global") {
         importDescr = parseGlobalType();
       } else if (descrType === "table") {
-        importDescr = parseTableType();
+        importDescr = parseTableType(i);
       } else if (descrType === "mem") {
         const memoryNode = parseMemoryType(0);
 
@@ -918,8 +918,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
-  function parseTableType(): Table {
-    let name = t.identifier(getUniqueName("table"));
+  function parseTableType(index: number): Table {
+    const name = t.withRaw(t.identifier(getUniqueName("table")), String(index));
 
     const elementTypeByte = readByte();
     eatBytes(1);
@@ -1171,7 +1171,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     dump([numberOfElements], "num elements");
 
     for (let i = 0; i < numberOfElements; i++) {
-      const tablesNode = parseTableType();
+      const tablesNode = parseTableType(i);
 
       state.tablesInModule.push(tablesNode);
       tables.push(tablesNode);
