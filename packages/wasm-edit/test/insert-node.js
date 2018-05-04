@@ -21,7 +21,7 @@ describe("insert a node", () => {
     const expectedBinary = makeBuffer(
       encodeHeader(),
       encodeVersion(1),
-      [0x02, 0x08, 0x01, 0x01, 0x61],
+      [constants.sections.import, 0x08, 0x01, 0x01, 0x61],
       [0x01, 0x62, 0x02, 0x00, 0x01]
     );
 
@@ -39,7 +39,7 @@ describe("insert a node", () => {
     it("should insert the node with existing empty section", () => {
       // (module)
       const actualBinary = makeBuffer(encodeHeader(), encodeVersion(1), [
-        /* Empty import section*/ 0x02,
+        constants.sections.import,
         0x01,
         0x00
       ]);
