@@ -686,6 +686,7 @@ export { signatures } from "./signatures";
 export {
   isInstruction,
   getSectionMetadata,
-  sortSectionMetadata
+  sortSectionMetadata,
+  orderedInsertNode
 } from "./utils";
 export { cloneNode } from "./clone";

@@ -1,8 +1,12 @@
 // @flow
 
 import { encodeNode } from "@webassemblyjs/wasm-gen";
-import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
-import { getSectionMetadata, traverse } from "@webassemblyjs/ast";
+import { encodeU32, encodeFuncBody } from "@webassemblyjs/wasm-gen/lib/encoder";
+import {
+  orderedInsertNode,
+  getSectionMetadata,
+  traverse
+} from "@webassemblyjs/ast";
 import {
   resizeSectionByteSize,
   resizeSectionVecSize,
@@ -225,7 +229,18 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
     end: { line: -1, column: start + deltaBytes }
   };
 
-  // TODO(sven): add the node in the AST, sorted by location
+  // for func add the additional metadata in the AST
+  if (node.type === "Func") {
+    // the size is the first byte
+    // FIXME(sven): handle LEB128 correctly here
+    const bodySize = newByteArray[0];
+
+    node.metadata = { bodySize };
+  }
+
+  if (node.type !== "IndexInFuncSection") {
+    orderedInsertNode(ast.body[0], node);
+  }
 
   return { uint8Buffer, deltaBytes, deltaElements };
 }

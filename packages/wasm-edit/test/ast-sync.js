@@ -20,9 +20,13 @@ function ASTToString(ast) {
       delete node.raw;
     },
 
-    // we compare only module's metadata for now
-    Module({ node }) {
-      delete node.fields;
+    Identifier({ node }) {
+      delete node.raw;
+    },
+
+    // wasm doesn't add locations for Global nodes
+    Global({ node }) {
+      delete node.loc;
     }
   });
 
@@ -44,7 +48,7 @@ function removeNodesOfType(t) {
 }
 
 function makeFuncNodes(i, params = [], results = [], body = []) {
-  const id = t.identifier(getUniqueName());
+  const id = t.identifier(getUniqueName("func"));
   const func = t.func(id, params, results, body);
 
   const functype = t.typeInstructionFunc(params, results);
@@ -57,7 +61,14 @@ function makeFuncNodes(i, params = [], results = [], body = []) {
 function makeFuncExportNode(i) {
   const name = getUniqueName();
 
-  return t.moduleExport(name, "Func", i);
+  return t.moduleExport(name, "Func", t.numberLiteral(i));
+}
+
+function makeFuncImportNode() {
+  const module = getUniqueName();
+  const name = getUniqueName();
+
+  return t.moduleImport(module, name, t.funcImportDescr(name, [], []));
 }
 
 describe("AST synchronization", () => {
@@ -74,11 +85,11 @@ describe("AST synchronization", () => {
   const steps = [
     b => addWithAST(ast, b, []),
     b => editWithAST(ast, b, {}),
-    b => addWithAST(ast, b, [makeGlobalNode(1)]),
+    b => addWithAST(ast, b, [makeGlobalNode(10)]),
     b => editWithAST(ast, b, removeNodesOfType("TypeInstruction")),
-    b => addWithAST(ast, b, [makeGlobalNode(2)]),
     b => addWithAST(ast, b, makeFuncNodes(0)),
-    b => addWithAST(ast, b, [makeFuncExportNode(0)])
+    b => addWithAST(ast, b, [makeFuncExportNode(0)]),
+    b => addWithAST(ast, b, [makeFuncImportNode()])
   ];
 
   it("should run steps", function() {
@@ -101,6 +112,7 @@ describe("AST synchronization", () => {
         throw e;
       }
 
+      // check that it's still valid
       WebAssembly.Module(stepBin);
 
       return stepBin;

@@ -49,3 +49,36 @@ export function isInstruction(n: Node) {
     n.type === "IfInstruction"
   );
 }
+
+export function orderedInsertNode(m: Module, n: Node) {
+  // FIXME(sven): this is duplicated
+  const assertNodeHasLoc = n => {
+    if (n.loc == null) throw new Error("Missing loc location");
+  };
+
+  assertNodeHasLoc(n);
+
+  let didInsert = false;
+
+  m.fields = m.fields.reduce((acc, field) => {
+    assertNodeHasLoc(field);
+
+    // $FlowIgnore: assertNodeHasLoc ensures that
+    const fieldEndCol = field.loc.end.column;
+
+    // $FlowIgnore: assertNodeHasLoc ensures that
+    if (n.loc.start.column < fieldEndCol) {
+      didInsert = true;
+      acc.push(n);
+    }
+
+    acc.push(field);
+
+    return acc;
+  }, []);
+
+  // Handles empty modules or n is the last element
+  if (didInsert === false) {
+    m.fields.push(n);
+  }
+}
