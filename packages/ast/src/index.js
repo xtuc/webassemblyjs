@@ -683,5 +683,9 @@ export function isAnonymous(ident: Identifier): boolean {
 
 export { traverse, traverseWithHooks } from "./traverse";
 export { signatures } from "./signatures";
-export { getSectionMetadata, sortSectionMetadata } from "./utils";
+export {
+  isInstruction,
+  getSectionMetadata,
+  sortSectionMetadata
+} from "./utils";
 export { cloneNode } from "./clone";

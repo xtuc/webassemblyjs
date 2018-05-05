@@ -103,7 +103,6 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
       break;
     }
 
-    case "SectionMetadata":
     case "FunctionNameMetadata":
     case "LocalNameMetadata":
     case "Data":
@@ -122,6 +121,16 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
     case "BlockComment":
     case "Identifier": {
       cb(n.type, createPath(n, parentPath));
+      break;
+    }
+
+    case "SectionMetadata": {
+      const path = createPath(n, parentPath);
+      cb(n.type, path);
+
+      walk(n.size, cb, path);
+      walk(n.vectorOfSize, cb, path);
+
       break;
     }
 

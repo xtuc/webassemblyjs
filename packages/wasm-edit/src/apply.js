@@ -220,6 +220,13 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
     deltaElements
   );
 
+  node.loc = {
+    start: { line: -1, column: start },
+    end: { line: -1, column: start + deltaBytes }
+  };
+
+  // TODO(sven): add the node in the AST, sorted by location
+
   return { uint8Buffer, deltaBytes, deltaElements };
 }
 

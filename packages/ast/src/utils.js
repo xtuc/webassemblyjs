@@ -38,3 +38,14 @@ export function sortSectionMetadata(m: Module) {
     return aId > bId;
   });
 }
+
+export function isInstruction(n: Node) {
+  return (
+    n.type === "Instr" ||
+    n.type === "CallInstruction" ||
+    n.type === "CallIndirectInstruction" ||
+    n.type === "BlockInstruction" ||
+    n.type === "LoopInstruction" ||
+    n.type === "IfInstruction"
+  );
+}

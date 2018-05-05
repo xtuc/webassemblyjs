@@ -13,12 +13,6 @@ function hashNode(node: Node): string {
   return JSON.stringify(node);
 }
 
-const decoderOpts = {
-  // FIXME(sven): detection based on the Instr doesn't work for add()
-  // ignoreCodeSection: true,
-  ignoreDataSection: true
-};
-
 function preprocess(ab: ArrayBuffer): ArrayBuffer {
   const optBin = shrinkPaddedLEB128(new Uint8Array(ab));
   return optBin.buffer;
@@ -42,11 +36,18 @@ function sortBySectionOrder(nodes: Array<Node>) {
 }
 
 export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
-  const operations: Array<Operation> = [];
-
   ab = preprocess(ab);
 
-  const ast = decode(ab, decoderOpts);
+  const ast = decode(ab);
+  return editWithAST(ast, ab, visitors);
+}
+
+export function editWithAST(
+  ast: Program,
+  ab: ArrayBuffer,
+  visitors: Object
+): ArrayBuffer {
+  const operations: Array<Operation> = [];
 
   let uint8Buffer = new Uint8Array(ab);
 
@@ -82,10 +83,17 @@ export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
 export function add(ab: ArrayBuffer, newNodes: Array<Node>): ArrayBuffer {
   ab = preprocess(ab);
 
+  const ast = decode(ab);
+  return addWithAST(ast, ab, newNodes);
+}
+
+export function addWithAST(
+  ast: Program,
+  ab: ArrayBuffer,
+  newNodes: Array<Node>
+): ArrayBuffer {
   // Sort nodes by insertion order
   sortBySectionOrder(newNodes);
-
-  const ast = decode(ab, decoderOpts);
 
   let uint8Buffer = new Uint8Array(ab);
 
