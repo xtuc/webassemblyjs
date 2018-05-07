@@ -111,6 +111,19 @@ function restoreLocalNames(ast) {
   });
 }
 
+function restoreModuleName(ast) {
+  t.traverse(ast, {
+    ModuleNameMetadata(moduleNameMetadataPath: NodePath<ModuleNameMetadata>) {
+      // update module
+      t.traverse(ast, {
+        Module({ node }: NodePath<Module>) {
+          node.id = moduleNameMetadataPath.node.value;
+        }
+      });
+    }
+  });
+}
+
 export function decode(buf: ArrayBuffer, customOpts: Object): Program {
   const opts: DecoderOpts = Object.assign({}, defaultDecoderOpts, customOpts);
   const ast = decoder.decode(buf, opts);
@@ -118,6 +131,7 @@ export function decode(buf: ArrayBuffer, customOpts: Object): Program {
   if (!opts.ignoreCustomNameSection) {
     restoreFunctionNames(ast);
     restoreLocalNames(ast);
+    restoreModuleName(ast);
   }
 
   return ast;

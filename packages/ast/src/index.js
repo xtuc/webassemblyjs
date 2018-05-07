@@ -33,6 +33,13 @@ export function signature(object: string, name: string): SignatureMap {
   return sign[0];
 }
 
+export function moduleNameMetadata(value: string): ModuleNameMetadata {
+  return {
+    type: "ModuleNameMetadata",
+    value
+  };
+}
+
 export function functionNameMetadata(
   value: string,
   index: number
