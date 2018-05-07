@@ -92,6 +92,7 @@ type Node =
   | Module
   | SectionMetadata
   | FunctionNameMetadata
+  | ModuleNameMetadata
   | Signature
   | LocalNameMetadata
   | BinaryModule
@@ -221,6 +222,13 @@ type ModuleMetadata = {
   sections: Array<SectionMetadata>,
   functionNames?: Array<FunctionNameMetadata>,
   localNames?: Array<LocalNameMetadata>
+};
+
+type ModuleNameMetadata = {
+  ...BaseNode,
+
+  type: "ModuleNameMetadata",
+  value: string
 };
 
 type FunctionNameMetadata = {
