@@ -1,8 +1,9 @@
 // @flow
 
 import { encodeNode } from "@webassemblyjs/wasm-gen";
-import { encodeU32, encodeFuncBody } from "@webassemblyjs/wasm-gen/lib/encoder";
+import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
 import {
+  assertHasLoc,
   orderedInsertNode,
   getSectionMetadata,
   traverse
@@ -25,22 +26,12 @@ type State = {
   deltaElements: number
 };
 
-function assertNodeHasLoc(n: Node) {
-  if (n.loc == null || n.loc.start == null || n.loc.end == null) {
-    throw new Error(
-      `Internal failure: can not replace node (${JSON.stringify(
-        n.type
-      )}) without loc information`
-    );
-  }
-}
-
 function shiftLocNodeByDelta(node: Node, delta: number) {
-  assertNodeHasLoc(node);
+  assertHasLoc(node);
 
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   node.loc.start.column += delta;
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   node.loc.end.column += delta;
 }
 
@@ -51,7 +42,7 @@ function applyUpdate(
 ): State {
   const deltaElements = 0;
 
-  assertNodeHasLoc(oldNode);
+  assertHasLoc(oldNode);
 
   const sectionName = getSectionForNode(newNode);
   const replacementByteArray = encodeNode(newNode);
@@ -61,9 +52,9 @@ function applyUpdate(
    */
   uint8Buffer = overrideBytesInBuffer(
     uint8Buffer,
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     oldNode.loc.start.column,
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     oldNode.loc.end.column,
     replacementByteArray
   );
@@ -81,7 +72,7 @@ function applyUpdate(
         // Update func's body size if needed
         if (funcHasThisIntr === true) {
           // These are the old functions locations informations
-          assertNodeHasLoc(node);
+          assertHasLoc(node);
 
           const oldNodeSize = encodeNode(oldNode).length;
           const bodySizeDeltaBytes = replacementByteArray.length - oldNodeSize;
@@ -114,7 +105,7 @@ function applyUpdate(
    */
   const deltaBytes =
     replacementByteArray.length -
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     (oldNode.loc.end.column - oldNode.loc.start.column);
 
   // Init location informations
@@ -124,11 +115,11 @@ function applyUpdate(
   };
 
   // Update new node end position
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   newNode.loc.start.column = oldNode.loc.start.column;
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   newNode.loc.end.column =
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     oldNode.loc.start.column + replacementByteArray.length;
 
   return { uint8Buffer, deltaBytes, deltaElements };
@@ -137,7 +128,7 @@ function applyUpdate(
 function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
   const deltaElements = -1; // since we removed an element
 
-  assertNodeHasLoc(node);
+  assertHasLoc(node);
 
   const sectionName = getSectionForNode(node);
 
@@ -160,9 +151,9 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
 
   uint8Buffer = overrideBytesInBuffer(
     uint8Buffer,
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     node.loc.start.column,
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     node.loc.end.column,
     replacement
   );
@@ -171,7 +162,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    * Update section
    */
 
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   const deltaBytes = -(node.loc.end.column - node.loc.start.column);
 
   return { uint8Buffer, deltaBytes, deltaElements };

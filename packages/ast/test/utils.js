@@ -76,4 +76,20 @@ describe("AST utils", () => {
       assert.deepEqual(nodes, ["TypeInstruction", "BlockComment"]);
     });
   });
+
+  describe("assert has loc", () => {
+    it("should throw when no location", () => {
+      const n = t.blockComment("");
+      const fn = () => t.assertHasLoc(n);
+
+      assert.throws(fn, "no location");
+    });
+
+    it("should NOT throw when no location", () => {
+      const n = t.blockComment("");
+      n.loc = locOnCol(100);
+
+      t.assertHasLoc(n);
+    });
+  });
 });

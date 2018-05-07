@@ -687,6 +687,7 @@ export {
   isInstruction,
   getSectionMetadata,
   sortSectionMetadata,
-  orderedInsertNode
+  orderedInsertNode,
+  assertHasLoc
 } from "./utils";
 export { cloneNode } from "./clone";

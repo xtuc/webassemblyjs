@@ -51,22 +51,17 @@ export function isInstruction(n: Node) {
 }
 
 export function orderedInsertNode(m: Module, n: Node) {
-  // FIXME(sven): this is duplicated
-  const assertNodeHasLoc = n => {
-    if (n.loc == null) throw new Error("Missing loc location");
-  };
-
-  assertNodeHasLoc(n);
+  assertHasLoc(n);
 
   let didInsert = false;
 
   m.fields = m.fields.reduce((acc, field) => {
-    assertNodeHasLoc(field);
+    assertHasLoc(field);
 
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     const fieldEndCol = field.loc.end.column;
 
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     if (n.loc.start.column < fieldEndCol) {
       didInsert = true;
       acc.push(n);
@@ -80,5 +75,15 @@ export function orderedInsertNode(m: Module, n: Node) {
   // Handles empty modules or n is the last element
   if (didInsert === false) {
     m.fields.push(n);
+  }
+}
+
+export function assertHasLoc(n: Node) {
+  if (n.loc == null || n.loc.start == null || n.loc.end == null) {
+    throw new Error(
+      `Internal failure: node (${JSON.stringify(
+        n.type
+      )}) has no location information`
+    );
   }
 }
