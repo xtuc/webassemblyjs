@@ -115,7 +115,7 @@ export function decode(buf: ArrayBuffer, customOpts: Object): Program {
   const opts: DecoderOpts = Object.assign({}, defaultDecoderOpts, customOpts);
   const ast = decoder.decode(buf, opts);
 
-  if (!opts.ignoreCustomNameSection) {
+  if (opts.ignoreCustomNameSection === false) {
     restoreFunctionNames(ast);
     restoreLocalNames(ast);
   }

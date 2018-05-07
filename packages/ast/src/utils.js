@@ -55,6 +55,11 @@ export function orderedInsertNode(m: Module, n: Node) {
 
   let didInsert = false;
 
+  if (n.type === "ModuleExport") {
+    m.fields.push(n);
+    return;
+  }
+
   m.fields = m.fields.reduce((acc, field) => {
     assertHasLoc(field);
 
@@ -86,4 +91,15 @@ export function assertHasLoc(n: Node) {
       )}) has no location information`
     );
   }
+}
+
+export function getEndOfSection(s: SectionMetadata): number {
+  assertHasLoc(s.size);
+
+  return (
+    s.startOffset +
+    s.size.value +
+    // $FlowIgnore
+    (s.size.loc.end.column - s.size.loc.start.column)
+  );
 }

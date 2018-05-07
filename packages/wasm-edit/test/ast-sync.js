@@ -24,6 +24,15 @@ function ASTToString(ast) {
       delete node.raw;
     },
 
+    // wast will restore the name where wasm uses an index.
+    ModuleExport({ node }) {
+      node.descr.id = t.numberLiteral(0);
+    },
+
+    ModuleImport({ node }) {
+      node.descr.id = t.numberLiteral(0);
+    },
+
     // wasm doesn't add locations for Global nodes
     Global({ node }) {
       delete node.loc;
@@ -68,7 +77,13 @@ function makeFuncImportNode() {
   const module = getUniqueName();
   const name = getUniqueName();
 
-  return t.moduleImport(module, name, t.funcImportDescr(name, [], []));
+  const typeidx = 0;
+
+  return t.moduleImport(
+    module,
+    name,
+    t.funcImportDescr(t.numberLiteral(typeidx), [], [])
+  );
 }
 
 describe("AST synchronization", () => {

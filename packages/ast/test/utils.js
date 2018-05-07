@@ -75,6 +75,26 @@ describe("AST utils", () => {
 
       assert.deepEqual(nodes, ["TypeInstruction", "BlockComment"]);
     });
+
+    it("should add ModuleImport and ModuleExport and the end", () => {
+      const m = t.module(null, [firstType]);
+
+      const exportNode = t.moduleExport("f", "Func", 1);
+
+      exportNode.loc = locOnCol(1);
+
+      t.orderedInsertNode(m, exportNode);
+
+      t.orderedInsertNode(m, firstType);
+
+      const nodes = m.fields.map(x => x.type);
+
+      assert.deepEqual(nodes, [
+        "TypeInstruction",
+        "TypeInstruction",
+        "ModuleExport"
+      ]);
+    });
   });
 
   describe("assert has loc", () => {
@@ -90,6 +110,29 @@ describe("AST utils", () => {
       n.loc = locOnCol(100);
 
       t.assertHasLoc(n);
+    });
+  });
+
+  describe("get end of section", () => {
+    it("should get the end of the section", () => {
+      const startOffset = 0;
+      const size = t.numberLiteral(10);
+      size.loc = locOnCol(10);
+
+      const vectorOfSize = t.numberLiteral(1);
+      vectorOfSize.loc = locOnCol(10);
+
+      const section = t.sectionMetadata(
+        "code",
+        startOffset,
+        size,
+        vectorOfSize
+      );
+
+      const end = t.getEndOfSection(section);
+
+      assert.typeOf(end, "number");
+      assert.equal(end, 11);
     });
   });
 });

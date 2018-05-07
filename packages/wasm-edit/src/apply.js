@@ -6,7 +6,8 @@ import {
   assertHasLoc,
   orderedInsertNode,
   getSectionMetadata,
-  traverse
+  traverse,
+  getEndOfSection
 } from "@webassemblyjs/ast";
 import {
   resizeSectionByteSize,
@@ -190,12 +191,7 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
 
   // The size of the section doesn't include the storage of the size itself
   // we need to manually add it here
-  // FIXME(sven): preprocess it into the AST?
-  const start =
-    sectionMetadata.startOffset +
-    sectionMetadata.size.value +
-    (sectionMetadata.size.loc.end.column -
-      sectionMetadata.size.loc.start.column);
+  const start = getEndOfSection(sectionMetadata);
 
   const end = start;
 
