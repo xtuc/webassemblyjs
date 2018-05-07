@@ -992,7 +992,6 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   function parseNameModule() {
     const name = readUTF8String();
     eatBytes(name.nextIndex);
-    console.log(name);
 
     return [t.moduleNameMetadata(name.value)];
   }
