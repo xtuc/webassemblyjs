@@ -1233,12 +1233,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         );
       }
 
-      let bytes: Array<Byte> = parseVec(b => b);
-
-      // FIXME(sven): the Go binary can store > 100kb of data here
-      // my testing suite doesn't handle that.
-      // Disabling for now.
-      bytes = [];
+      const bytes: Array<Byte> = parseVec(b => b);
 
       dump([], "init");
 
