@@ -96,6 +96,11 @@
     (f32.const 0x1.b7p-1)
     (f32.const inf)
     (f32.const -inf)
+
+    (call_indirect (i32.const 0))
+    (call_indirect (param i64) (i64.const 0) (i32.const 0))
+    (call_indirect (result i32) (i32.const 0))
+    (call_indirect (type $baaa) (i32.const 16))
   )
 
   ;; a
