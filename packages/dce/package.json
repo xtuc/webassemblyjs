@@ -14,7 +14,7 @@
     "access": "public"
   },
   "author": "Sven Sauleau",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.0.0-beta.39",
     "@babel/traverse": "^7.0.0-beta.39",

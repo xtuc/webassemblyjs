@@ -30,4 +30,4 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 
 ## Licence
 
-[GNU General Public License, version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
+[MIT - Sven Sauleau <sven.sauleau@xtuc.fr>](https://github.com/xtuc/webassemblyjs/blob/master/LICENCE)

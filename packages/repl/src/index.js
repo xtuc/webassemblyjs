@@ -157,7 +157,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
 
     if (first.type === "Identifier") {
       // Module name
-      // TODO(sven):: ignore for now since we need to add an Identifier on the
+      // TODO(sven): ignore for now since we need to add an Identifier on the
       // module
 
       name = args.shift();

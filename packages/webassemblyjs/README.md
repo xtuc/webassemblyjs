@@ -21,7 +21,3 @@ WebAssembly.instantiate(buff)
 ```
 
 See [WebAssembly MDN documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly) for more information about the WebAssembly API.
-
-## Licence
-
-[GNU General Public License, version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
