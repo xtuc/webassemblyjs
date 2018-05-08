@@ -201,13 +201,14 @@ function printData(n: Data, depth: number): string {
   out += printInstruction(n.offset, depth);
   out += space;
 
-  out += '"';
+  let value = "";
 
   n.init.values.forEach(byte => {
-    out += String.fromCharCode(byte);
+    value += String.fromCharCode(byte);
   });
 
-  out += '"';
+  // Avoid non-displayable characters
+  out += JSON.stringify(value);
 
   out += ")";
 
