@@ -63,7 +63,6 @@ type Signature = {
 type SignatureOrTypeRef = Index | Signature;
 
 type Valtype = "i32" | "i64" | "f32" | "f64" | "u32" | "label";
-type ExportDescr = "Func" | "Table" | "Memory" | "Global";
 type Mutability = "const" | "var";
 type InstructionType = "Instr" | ControlInstruction;
 type ControlInstruction =
@@ -389,15 +388,22 @@ type CallIndirectInstruction = {
   index?: Index
 };
 
+type ExportDescrType = "Func" | "Table" | "Memory" | "Global";
+
+type ExportDescr = {
+  ...BaseNode,
+
+  type: "ModuleExportDescr",
+  exportType: ExportDescrType,
+  id: Index
+};
+
 type ModuleExport = {
   ...BaseNode,
 
   type: "ModuleExport",
   name: string,
-  descr: {
-    exportType: ExportDescr,
-    id: Index
-  }
+  descr: ExportDescr
 };
 
 type Limit = {

@@ -46,6 +46,7 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
+            "type": "ModuleExportDescr",
             "exportType": "Global",
             "id": {
               "type": "Identifier",
@@ -94,6 +95,7 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
+            "type": "ModuleExportDescr",
             "exportType": "Global",
             "id": {
               "type": "Identifier",
