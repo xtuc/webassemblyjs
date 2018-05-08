@@ -30,4 +30,4 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 
 ## Licence
 
-[MIT - Sven Sauleau <sven.sauleau@xtuc.fr>](https://github.com/xtuc/webassemblyjs/blob/master/LICENCE)
+[MIT](https://github.com/xtuc/webassemblyjs/blob/master/LICENCE)
