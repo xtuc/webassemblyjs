@@ -109,7 +109,7 @@
           "type": "ModuleExport",
           "name": "reinterpret_f32_i32",
           "descr": {
-            "type": "Func",
+            "exportType": "Func",
             "id": {
               "type": "Identifier",
               "value": "reinterpret_f32_i32"

@@ -9,7 +9,7 @@
           "type": "ModuleExport",
           "name": "add",
           "descr": {
-            "type": "Func",
+            "exportType": "Func",
             "id": {
               "type": "Identifier",
               "value": "add"

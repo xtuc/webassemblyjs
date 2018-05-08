@@ -870,7 +870,7 @@ function printModuleExport(n: ModuleExport): string {
   out += space;
   out += quote(n.name);
 
-  if (n.descr.type === "Func") {
+  if (n.descr.exportType === "Func") {
     out += space;
     out += "(";
     out += "func";

@@ -395,7 +395,7 @@ type ModuleExport = {
   type: "ModuleExport",
   name: string,
   descr: {
-    type: ExportDescr,
+    exportType: ExportDescr,
     id: Index
   }
 };

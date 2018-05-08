@@ -46,7 +46,7 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Global",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "global_0",
@@ -94,7 +94,7 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Global",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "g1"

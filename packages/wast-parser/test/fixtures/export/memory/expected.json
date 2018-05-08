@@ -21,7 +21,7 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Memory",
+            "exportType": "Memory",
             "id": {
               "type": "Identifier",
               "value": "memory_0",

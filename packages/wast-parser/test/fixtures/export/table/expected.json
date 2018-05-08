@@ -22,7 +22,7 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Table",
+            "exportType": "Table",
             "id": {
               "type": "Identifier",
               "value": "table_0",
