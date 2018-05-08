@@ -11,7 +11,7 @@
     "access": "public"
   },
   "author": "Sven Sauleau",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "dependencies": {
     "@webassemblyjs/wast-printer": "1.3.1"
   },

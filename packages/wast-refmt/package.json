@@ -7,7 +7,7 @@
     "wast-refmt": "lib/cli.js"
   },
   "author": "Sven Sauleau",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "dependencies": {
     "@webassemblyjs/wast-parser": "1.3.1",
     "@webassemblyjs/wast-printer": "1.3.1"

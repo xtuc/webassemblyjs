@@ -21,7 +21,7 @@
     "access": "public"
   },
   "author": "Sven Sauleau",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "bin": {
     "wasmgen": "src/cli.js"
   },
