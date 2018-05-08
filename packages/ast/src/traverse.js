@@ -105,6 +105,7 @@ function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
 
     case "SectionMetadata":
     case "FunctionNameMetadata":
+    case "ModuleNameMetadata":
     case "LocalNameMetadata":
     case "Data":
     case "Memory":

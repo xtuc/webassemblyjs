@@ -289,6 +289,32 @@ function printBlockComment(n: BlockComment): string {
   return out;
 }
 
+function printSignature(n: Signature): string {
+  let out = "";
+
+  n.params.forEach(param => {
+    out += space;
+    out += "(";
+    out += "param";
+    out += space;
+
+    out += printFuncParam(param);
+    out += ")";
+  });
+
+  n.results.forEach(result => {
+    out += space;
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += result;
+    out += ")";
+  });
+
+  return out;
+}
+
 function printModuleImportDescr(n: ImportDescr): string {
   let out = "";
 
@@ -301,25 +327,7 @@ function printModuleImportDescr(n: ImportDescr): string {
       out += printIdentifier(n.id);
     }
 
-    n.signature.params.forEach(param => {
-      out += space;
-      out += "(";
-      out += "param";
-      out += space;
-
-      out += printFuncParam(param);
-      out += ")";
-    });
-
-    n.signature.results.forEach(result => {
-      out += space;
-      out += "(";
-      out += "result";
-      out += space;
-
-      out += result;
-      out += ")";
-    });
+    out += printSignature(n.signature);
 
     out += ")";
   }
@@ -449,28 +457,7 @@ function printFunc(n: Func, depth: number): string {
   }
 
   if (n.signature.type === "Signature") {
-    const signature = (n.signature: Signature);
-    signature.params.forEach(param => {
-      out += space;
-      out += "(";
-      out += "param";
-      out += space;
-
-      out += printFuncParam(param);
-
-      out += ")";
-    });
-
-    signature.results.forEach(result => {
-      out += space;
-      out += "(";
-      out += "result";
-
-      out += space;
-      out += result;
-
-      out += ")";
-    });
+    out += printSignature(n.signature);
   } else {
     const index = (n.signature: Index);
     out += space;
@@ -523,6 +510,10 @@ function printInstruction(n: Instruction, depth: number): string {
       // $FlowIgnore
       return printCallInstruction(n, depth + 1);
 
+    case "CallIndirectInstruction":
+      // $FlowIgnore
+      return printCallIndirectIntruction(n, depth + 1);
+
     case "LoopInstruction":
       // $FlowIgnore
       return printLoopInstruction(n, depth + 1);
@@ -530,6 +521,54 @@ function printInstruction(n: Instruction, depth: number): string {
     default:
       throw new Error("Unsupported instruction: " + JSON.stringify(n.type));
   }
+}
+
+function printCallIndirectIntruction(
+  n: CallIndirectInstruction,
+  depth: number
+): string {
+  let out = "";
+
+  out += "(";
+  out += "call_indirect";
+
+  if (n.signature.type === "Signature") {
+    out += printSignature(n.signature);
+  } else if (n.signature.type === "Identifier") {
+    out += space;
+
+    out += "(";
+    out += "type";
+
+    out += space;
+    out += printIdentifier(n.signature);
+
+    out += ")";
+  } else {
+    throw new Error(
+      "CallIndirectInstruction: unsupported signature " +
+        JSON.stringify(n.signature.type)
+    );
+  }
+
+  out += space;
+
+  if (n.intrs != null) {
+    // $FlowIgnore
+    n.intrs.forEach((i, index) => {
+      // $FlowIgnore
+      out += printInstruction(i, depth + 1);
+
+      // $FlowIgnore
+      if (index !== n.intrs.length - 1) {
+        out += space;
+      }
+    });
+  }
+
+  out += ")";
+
+  return out;
 }
 
 function printLoopInstruction(n: LoopInstruction, depth: number): string {
