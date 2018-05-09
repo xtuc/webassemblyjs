@@ -1199,6 +1199,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         fnName = t.withRaw(fnName, ""); // preserve anonymous
       }
 
+      maybeIgnoreComment();
+
       while (token.type === tokens.openParen) {
         eatToken();
 
