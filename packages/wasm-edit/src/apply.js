@@ -13,10 +13,10 @@ import {
   resizeSectionByteSize,
   resizeSectionVecSize,
   createEmptySection,
-  removeSection,
-  getSectionForNode
+  removeSection
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
+import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
 
 const debug = require("debug")("wasm");
 
@@ -195,8 +195,6 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
 
   const end = start;
 
-  uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
-
   /**
    * Update section
    */
@@ -210,6 +208,8 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
     deltaBytes,
     deltaElements
   );
+
+  uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
 
   node.loc = {
     start: { line: -1, column: start },

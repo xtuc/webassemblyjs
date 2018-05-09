@@ -36,6 +36,11 @@ function ASTToString(ast) {
     // wasm doesn't add locations for Global nodes
     Global({ node }) {
       delete node.loc;
+    },
+
+    // Instr's loc are not updated
+    Instr({ node }) {
+      delete node.loc;
     }
   });
 
@@ -57,6 +62,8 @@ function removeNodesOfType(t) {
 }
 
 function makeFuncNodes(i, params = [], results = [], body = []) {
+  body.push(t.instruction("nop"));
+
   const id = t.identifier(getUniqueName("func"));
   const func = t.func(id, params, results, body);
 
@@ -100,10 +107,13 @@ describe("AST synchronization", () => {
   const steps = [
     b => addWithAST(ast, b, []),
     b => editWithAST(ast, b, {}),
+
     b => addWithAST(ast, b, [makeGlobalNode(10)]),
     b => editWithAST(ast, b, removeNodesOfType("TypeInstruction")),
+
     b => addWithAST(ast, b, makeFuncNodes(0)),
     b => addWithAST(ast, b, [makeFuncExportNode(0)]),
+
     b => addWithAST(ast, b, [makeFuncImportNode()])
   ];
 

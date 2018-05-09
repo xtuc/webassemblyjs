@@ -4,34 +4,6 @@ type Cb = (type: string, path: NodePath<Node>) => void;
 
 const debug = require("debug")("ast:traverse");
 
-function shift(node: Node, delta: number) {
-  if (node.type === "SectionMetadata") {
-    node.startOffset += delta;
-
-    if (typeof node.size.loc === "object") {
-      // $FlowIgnore
-      node.size.loc.start.column += delta;
-      // $FlowIgnore
-      node.size.loc.end.column += delta;
-    }
-
-    if (typeof node.vectorOfSize.loc === "object") {
-      // $FlowIgnore
-      node.vectorOfSize.loc.start.column += delta;
-      // $FlowIgnore
-      node.vectorOfSize.loc.end.column += delta;
-    }
-
-    debug("shifted %s startOffset=%d", node.type, node.startOffset);
-  } else {
-    // // $FlowIgnore
-    // node.loc.start.column += delta;
-    // // $FlowIgnore
-    // node.loc.end.column += delta;
-    throw new Error("Can not shift node " + JSON.stringify(node.type));
-  }
-}
-
 function removeNodeInBody(node: Node, fromNode: Node) {
   switch (fromNode.type) {
     case "ModuleMetadata":
@@ -83,8 +55,7 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
     parentPath,
 
     replaceWith,
-    remove,
-    shift: delta => shift(node, delta)
+    remove
   };
 }
 

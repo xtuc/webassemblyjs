@@ -125,7 +125,7 @@ export function createEmptySection(
       }
 
       if (encounteredSection === true) {
-        path.shift(deltaBytes);
+        t.shiftSection(ast, path.node, deltaBytes);
 
         debug(
           "shift section section=%s detla=%d",

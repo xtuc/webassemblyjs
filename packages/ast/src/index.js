@@ -697,6 +697,7 @@ export {
   sortSectionMetadata,
   orderedInsertNode,
   assertHasLoc,
-  getEndOfSection
+  getEndOfSection,
+  shiftSection
 } from "./utils";
 export { cloneNode } from "./clone";

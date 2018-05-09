@@ -1,6 +1,6 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast";
+import { traverse, shiftSection } from "@webassemblyjs/ast";
 import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
@@ -18,7 +18,7 @@ function shiftFollowingSections(ast, { section }, deltaInSizeEncoding) {
       }
 
       if (encounteredSection === true) {
-        path.shift(deltaInSizeEncoding);
+        shiftSection(ast, path.node, deltaInSizeEncoding);
 
         debug(
           "shift section section=%s detla=%d",
