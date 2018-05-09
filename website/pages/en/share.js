@@ -17,13 +17,9 @@ class Share extends React.Component {
           href="https://www.xtuc.fr/editor.css"
         />
 
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="/css/share.css"
-        />
+        <link rel="stylesheet" type="text/css" href="/css/share.css" />
 
-        <div style={{marginTop: "30px", textAlign: "center"}}>
+        <div style={{ marginTop: "30px", textAlign: "center" }}>
           <input type="file" id="upload" />
           <button id="download">download module.wasm</button>
         </div>
@@ -32,10 +28,12 @@ class Share extends React.Component {
           <div className="window-header">
             <div className="action-buttons" />
 
-            <span className="language"><code>wasmgen -o text</code></span>
+            <span className="language">
+              <code>wasmgen -o text</code>
+            </span>
           </div>
           <div className="window-body" id="wasmgen-editor">
-            <pre className="code-output" id="wasmgen-output"></pre>
+            <pre className="code-output" id="wasmgen-output" />
           </div>
         </div>
 
@@ -43,10 +41,12 @@ class Share extends React.Component {
           <div className="window-header">
             <div className="action-buttons" />
 
-            <span className="language"><code>wasm2wast</code></span>
+            <span className="language">
+              <code>wasm2wast</code>
+            </span>
           </div>
           <div className="window-body" id="wasm2wast-editor">
-            <pre className="code-output" id="wasm2wast-output"></pre>
+            <pre className="code-output" id="wasm2wast-output" />
           </div>
         </div>
 
@@ -55,8 +55,9 @@ class Share extends React.Component {
         <script src="https://bundle.run/@webassemblyjs/wast-printer@1.3.3" />
         <script src="/js/share.js" />
 
-        <p style={{textAlign: 'center'}}>
-          You can find more information about these tools <a href="/docs/usage.html">here</a>.
+        <p style={{ textAlign: "center" }}>
+          You can find more information about these tools{" "}
+          <a href="/docs/usage.html">here</a>.
         </p>
       </Container>
     );

@@ -28,7 +28,7 @@ class Repl extends React.Component {
           <div className="window" style={{ width: "45%" }}>
             <div className="window-header">
               <div className="action-buttons" />
-              <span className="language">Editor</span>
+              <span className="language">WAST editor</span>
             </div>
             <div className="window-body" style={{ height: "60vh" }}>
               <div id="container" style={{width: "100%", height: "100%"}}></div>
@@ -38,12 +38,10 @@ class Repl extends React.Component {
           <div className="window" style={{ width: "45%" }}>
             <div className="window-header">
               <div className="action-buttons" />
-              <span className="language">Console</span>
+              <span className="language">JavaScript console</span>
             </div>
             <div className="window-body" style={{ height: "60vh" }}>
-              <pre className="code-output">
-                <code className="language-js" id="output" />
-              </pre>
+              <div id="console" style={{width: "100%", height: "100%"}}></div>
             </div>
           </div>
         </div>
