@@ -8,7 +8,7 @@ module.exports = function countRefByName(ast, name) {
       // We don't need to count the export, we are going to remove it aswell
       // that doesn't cover the case of exporting multiple times the same element
       // FIXME(sven): refactor this
-      if (parentPath.node.type === "ModuleExport") {
+      if (parentPath.node.type === "ModuleExportDescr") {
         return;
       }
 

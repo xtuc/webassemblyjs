@@ -45,7 +45,7 @@ function tokenToString(token: Object): string {
 
 type ParserState = {
   registredExportedElements: Array<{
-    type: ExportDescr,
+    exportType: ExportDescrType,
     name: string,
     id: Index
   }>
@@ -182,7 +182,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
 
         state.registredExportedElements.push({
-          type: "Memory",
+          exportType: "Memory",
           name,
           id
         });
@@ -313,7 +313,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
 
           state.registredExportedElements.push({
-            type: "Table",
+            exportType: "Table",
             name: exportName,
             id: name
           });
@@ -875,7 +875,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (state.registredExportedElements.length > 0) {
           state.registredExportedElements.forEach(decl => {
-            moduleFields.push(t.moduleExport(decl.name, decl.type, decl.id));
+            moduleFields.push(
+              t.moduleExport(decl.name, decl.exportType, decl.id)
+            );
           });
 
           state.registredExportedElements = [];
@@ -1265,7 +1267,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const id = t.identifier(funcId.value);
 
       state.registredExportedElements.push({
-        type: "Func",
+        exportType: "Func",
         name,
         id
       });
@@ -1401,7 +1403,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.string);
 
         state.registredExportedElements.push({
-          type: "Global",
+          exportType: "Global",
           name: exportName,
           id: name
         });

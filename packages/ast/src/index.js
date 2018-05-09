@@ -173,14 +173,15 @@ export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
 
 export function moduleExport(
   name: string,
-  type: ExportDescr,
+  exportType: ExportDescrType,
   id: Index
 ): ModuleExport {
   return {
     type: "ModuleExport",
     name,
     descr: {
-      type,
+      type: "ModuleExportDescr",
+      exportType,
       id
     }
   };
