@@ -698,6 +698,7 @@ export {
   orderedInsertNode,
   assertHasLoc,
   getEndOfSection,
-  shiftSection
+  shiftSection,
+  shiftLoc
 } from "./utils";
 export { cloneNode } from "./clone";

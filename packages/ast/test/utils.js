@@ -135,4 +135,79 @@ describe("AST utils", () => {
       assert.equal(end, 11);
     });
   });
+
+  describe("shift", () => {
+    describe("node", () => {
+      it("should shift by position delta", () => {
+        const n = t.numberLiteral(10);
+        n.loc = locOnCol(10);
+
+        t.shiftLoc(n, +10);
+
+        assert.equal(n.loc.start.column, 20);
+        assert.equal(n.loc.end.column, 21);
+      });
+
+      it("should shift by negative delta", () => {
+        const n = t.numberLiteral(10);
+        n.loc = locOnCol(10);
+
+        t.shiftLoc(n, -10);
+
+        assert.equal(n.loc.start.column, 0);
+        assert.equal(n.loc.end.column, 1);
+      });
+    });
+
+    describe("section", () => {
+      it("should shift section metadata by positive delta", () => {
+        const program = t.program([]);
+
+        const startOffset = 0;
+
+        const size = t.numberLiteral(10);
+        size.loc = locOnCol(10);
+
+        const vectorOfSize = t.numberLiteral(1);
+        vectorOfSize.loc = locOnCol(10);
+
+        const section = t.sectionMetadata(
+          "code",
+          startOffset,
+          size,
+          vectorOfSize
+        );
+
+        t.shiftSection(program, section, +10);
+
+        assert.equal(section.startOffset, 10);
+      });
+
+      it("should shift section and correspondign nodes", () => {
+        const type = t.typeInstructionFunc([], []);
+        type.loc = locOnCol(10);
+
+        const program = t.program([t.module(null, [type])]);
+
+        const startOffset = 0;
+
+        const size = t.numberLiteral(10);
+        size.loc = locOnCol(10);
+
+        const vectorOfSize = t.numberLiteral(1);
+        vectorOfSize.loc = locOnCol(10);
+
+        const section = t.sectionMetadata(
+          "type",
+          startOffset,
+          size,
+          vectorOfSize
+        );
+
+        t.shiftSection(program, section, +10);
+
+        assert.equal(type.loc.start.column, 20);
+      });
+    });
+  });
 });
