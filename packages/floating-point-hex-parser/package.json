@@ -1,7 +1,7 @@
 {
   "name": "@webassemblyjs/floating-point-hex-parser",
   "scripts": {
-    "pretest": "[ -f ./test/fuzzing/parse.out ] || gcc ./test/fuzzing/parse.c -o ./test/fuzzing/parse.out -lm -Wall"
+    "build-fuzzer": "[ -f ./test/fuzzing/parse.out ] || gcc ./test/fuzzing/parse.c -o ./test/fuzzing/parse.out -lm -Wall"
   },
   "repository": {
     "type": "git",
