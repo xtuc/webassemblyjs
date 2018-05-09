@@ -44,7 +44,7 @@ function restoreFunctionNames(ast) {
 
     // Also update the reference in the export
     ModuleExport({ node }: NodePath<ModuleExport>) {
-      if (node.descr.type === "Func") {
+      if (node.descr.exportType === "Func") {
         // $FlowIgnore
         const nodeName: Identifier = node.descr.id;
         const indexBasedFunctionName = nodeName.value;
@@ -111,6 +111,19 @@ function restoreLocalNames(ast) {
   });
 }
 
+function restoreModuleName(ast) {
+  t.traverse(ast, {
+    ModuleNameMetadata(moduleNameMetadataPath: NodePath<ModuleNameMetadata>) {
+      // update module
+      t.traverse(ast, {
+        Module({ node }: NodePath<Module>) {
+          node.id = moduleNameMetadataPath.node.value;
+        }
+      });
+    }
+  });
+}
+
 export function decode(buf: ArrayBuffer, customOpts: Object): Program {
   const opts: DecoderOpts = Object.assign({}, defaultDecoderOpts, customOpts);
   const ast = decoder.decode(buf, opts);
@@ -118,6 +131,7 @@ export function decode(buf: ArrayBuffer, customOpts: Object): Program {
   if (opts.ignoreCustomNameSection === false) {
     restoreFunctionNames(ast);
     restoreLocalNames(ast);
+    restoreModuleName(ast);
   }
 
   return ast;

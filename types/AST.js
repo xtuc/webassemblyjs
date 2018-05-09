@@ -63,7 +63,6 @@ type Signature = {
 type SignatureOrTypeRef = Index | Signature;
 
 type Valtype = "i32" | "i64" | "f32" | "f64" | "u32" | "label";
-type ExportDescr = "Func" | "Table" | "Memory" | "Global";
 type Mutability = "const" | "var";
 type InstructionType = "Instr" | ControlInstruction;
 type ControlInstruction =
@@ -92,6 +91,7 @@ type Node =
   | Module
   | SectionMetadata
   | FunctionNameMetadata
+  | ModuleNameMetadata
   | Signature
   | LocalNameMetadata
   | BinaryModule
@@ -221,6 +221,13 @@ type ModuleMetadata = {
   sections: Array<SectionMetadata>,
   functionNames?: Array<FunctionNameMetadata>,
   localNames?: Array<LocalNameMetadata>
+};
+
+type ModuleNameMetadata = {
+  ...BaseNode,
+
+  type: "ModuleNameMetadata",
+  value: string
 };
 
 type FunctionNameMetadata = {
@@ -381,15 +388,22 @@ type CallIndirectInstruction = {
   index?: Index
 };
 
+type ExportDescrType = "Func" | "Table" | "Memory" | "Global";
+
+type ExportDescr = {
+  ...BaseNode,
+
+  type: "ModuleExportDescr",
+  exportType: ExportDescrType,
+  id: Index
+};
+
 type ModuleExport = {
   ...BaseNode,
 
   type: "ModuleExport",
   name: string,
-  descr: {
-    type: ExportDescr,
-    id: Index
-  }
+  descr: ExportDescr
 };
 
 type Limit = {

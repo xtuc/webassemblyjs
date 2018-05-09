@@ -47,14 +47,102 @@ const defaultCode = `(module
 
 let lastCode = defaultCode;
 
+function createConsole(id) {
+  const stdout = document.getElementById(id);
+
+  const endl = "\n";
+  const tab = "  ";
+
+  const stdoutEditor = monaco.editor.create(stdout, {
+    value: 'module0.exports.get();',
+    language: "JavaScript",
+  });
+
+  return {
+    init() {
+      // Add a content widget (scrolls inline with text)
+      this._contentWidget = {
+        allowEditorOverflow: true,
+        domNode: null,
+        getId: function() {
+          return 'my.content.widget';
+        },
+        getDomNode: function() {
+          if (!this.domNode) {
+            this.domNode = document.createElement('div');
+            this.domNode.innerHTML = '';
+            this.domNode.style.background = 'black';
+
+            this.domNode.style.top = '20px';
+          }
+          return this.domNode;
+        },
+        getPosition: function() {
+          const {lineNumber} = stdoutEditor.getPosition();
+
+          return {
+            position: {
+              lineNumber: lineNumber + 1,
+              column: 0
+            },
+            preference: [
+              monaco.editor.ContentWidgetPositionPreference.BELOW
+            ]
+          };
+        }
+      };
+
+      stdoutEditor.addContentWidget(this._contentWidget);
+
+      stdoutEditor.onKeyUp((e) => {
+        this.exec();
+      });
+
+      stdoutEditor.onDidChangeCursorPosition(x => {
+        stdoutEditor.layoutContentWidget(this._contentWidget);
+      });
+    },
+
+    exec() {
+      const code = stdoutEditor.getValue();
+
+      try {
+        const result = eval(code);
+        console.log(result);
+
+        // if (typeof result === "number") {
+          this.info("result: " + result);
+        // }
+      } catch (e) {
+        this.fail(e);
+      }
+    },
+
+    clear() {
+      this._contentWidget.getDomNode().innerHTML = "";
+    },
+
+    info(msg) {
+      this.clear();
+      this._contentWidget.getDomNode().innerHTML += msg + endl;
+    },
+
+    fail(msg) {
+      this.clear();
+      this._contentWidget.getDomNode().innerText += msg + endl;
+    }
+  };
+}
+
 function main() {
   if (typeof webassemblyjs === "undefined") {
     throw new Error("webassemblyjs has not been loaded");
   }
 
-  configureMonaco();
+  const ownConsole = createConsole("console");
+  ownConsole.init();
 
-  const output = document.getElementById("output");
+  configureMonaco();
 
   const editor = monaco.editor.create(document.getElementById("container"), {
     value: defaultCode,
@@ -79,18 +167,58 @@ function main() {
     }
   });
 
+  var errorWidget = {
+    allowEditorOverflow: true,
+    domNode: null,
+    getId: function() {
+      return 'error.widget';
+    },
+    getDomNode: function() {
+      if (!this.domNode) {
+        this.domNode = document.createElement('div');
+        this.domNode.innerHTML = "";
+        this.domNode.style.backgroundColor = 'black';
+      }
+
+      return this.domNode;
+    },
+    getPosition: function() {
+      const {lineNumber} = editor.getPosition();
+
+      return {
+        position: { lineNumber: lineNumber + 1, column: 0 },
+        preference: [
+          monaco.editor.ContentWidgetPositionPreference.BELOW
+        ]
+      };
+    }
+  };
+
+  editor.onDidChangeCursorPosition(x => {
+    editor.layoutContentWidget(errorWidget);
+  });
+
+  editor.addContentWidget(errorWidget);
+
+  function fail(e) {
+    errorWidget.getDomNode().innerHTML = "<pre>" + e + "</pre>";
+    editor.layoutContentWidget(errorWidget);
+  }
+
   function exec(source) {
-    output.innerText = ""; // clear ouput before next iteration
+    ownConsole.clear(); // clear ouput before next iteration
 
     try {
       const module = webassemblyjs.instantiateFromSource(source);
 
-      output.innerText =
-        "OK. The module is accessible via `module0` in the developer console.";
+      // Reset error if any
+      errorWidget.getDomNode().innerHTML = "";
 
       window["module0"] = module;
+
+      ownConsole.exec();
     } catch (e) {
-      output.innerText = e;
+      fail(e);
     }
   }
 

@@ -33,6 +33,13 @@ export function signature(object: string, name: string): SignatureMap {
   return sign[0];
 }
 
+export function moduleNameMetadata(value: string): ModuleNameMetadata {
+  return {
+    type: "ModuleNameMetadata",
+    value
+  };
+}
+
 export function functionNameMetadata(
   value: string,
   index: number
@@ -166,14 +173,15 @@ export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
 
 export function moduleExport(
   name: string,
-  type: ExportDescr,
+  exportType: ExportDescrType,
   id: Index
 ): ModuleExport {
   return {
     type: "ModuleExport",
     name,
     descr: {
-      type,
+      type: "ModuleExportDescr",
+      exportType,
       id
     }
   };

@@ -1,7 +1,7 @@
 const { traverse } = require("@webassemblyjs/ast");
 
 function printExport(moduleExport, funcsTable) {
-  if (moduleExport.descr.type === "Func") {
+  if (moduleExport.descr.exportType === "Func") {
     const funcNode = funcsTable[moduleExport.descr.id.value];
     const params = funcNode.params.map(x => x.valtype).join(", ");
     const results = funcNode.result.join(", ") || "void";
@@ -9,7 +9,7 @@ function printExport(moduleExport, funcsTable) {
     return "- " + moduleExport.name + "(" + params + "): " + results;
   }
 
-  return "- Unknown (type " + moduleExport.descr.type + ")";
+  return "- Unknown (type " + moduleExport.descr.exportType + ")";
 }
 
 function printImport(moduleImport) {
