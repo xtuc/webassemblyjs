@@ -138,7 +138,7 @@ describe("AST synchronization", () => {
       }
 
       // check that it's still valid
-      WebAssembly.Module(stepBin);
+      new WebAssembly.Module(stepBin);
 
       return stepBin;
     }, bin);
