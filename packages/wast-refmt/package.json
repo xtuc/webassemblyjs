@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wast-refmt",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "WAST refmt",
   "main": "lib/index.js",
   "bin": {
@@ -9,8 +9,8 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/wast-parser": "1.3.3",
-    "@webassemblyjs/wast-printer": "1.3.3"
+    "@webassemblyjs/wast-parser": "1.4.0",
+    "@webassemblyjs/wast-printer": "1.4.0"
   },
   "repository": {
     "type": "git",
