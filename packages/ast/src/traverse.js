@@ -2,7 +2,7 @@
 
 type Cb = (type: string, path: NodePath<Node>) => void;
 
-const debug = require("debug")("wasm:traverse");
+const debug = require("debug")("ast:traverse");
 
 function shift(node: Node, delta: number) {
   if (node.type === "SectionMetadata") {
@@ -88,24 +88,26 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
   };
 }
 
-function walk(n: Node, cb: Cb, parentPath: ?NodePath<Node>) {
-  if (n._deleted === true) {
+// recursively walks the AST starting at the given node. The callback is invoked for
+// and object that has a 'type' property.
+function walk(node: Node, callback: Cb, parentPath: ?NodePath<Node>) {
+  if (node._deleted === true) {
     return;
   }
 
-  const path = createPath(n, parentPath);
+  const path = createPath(node, parentPath);
   // $FlowIgnore
-  cb(n.type, path);
+  callback(node.type, path);
 
-  Object.keys(n).forEach((prop: string) => {
-    const value = n[prop];
-    if (!value) {
+  Object.keys(node).forEach((prop: string) => {
+    const value = node[prop];
+    if (value === null || value === undefined) {
       return;
     }
     const valueAsArray = Array.isArray(value) ? value : [value];
     valueAsArray.forEach(v => {
-      if (v.hasOwnProperty("type")) {
-        walk(v, cb, path);
+      if (typeof v.type === "string") {
+        walk(v, callback, path);
       }
     });
   });
