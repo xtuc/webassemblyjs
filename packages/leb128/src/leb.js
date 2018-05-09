@@ -131,7 +131,7 @@ function encodedLength(encodedBuffer, index) {
   result++; // to account for the last byte
 
   if (index + result > encodedBuffer.length) {
-    throw new Error("Bogus encoding");
+    throw new Error("integer representation too long");
   }
 
   return result;
@@ -220,7 +220,7 @@ function decodeInt32(encodedBuffer, index) {
   bufs.free(result.value);
 
   if (value < MIN_INT32 || value > MAX_INT32) {
-    throw new Error("Result out of range");
+    throw new Error("integer too large");
   }
 
   return { value: value, nextIndex: result.nextIndex };
@@ -282,7 +282,7 @@ function decodeUInt32(encodedBuffer, index) {
   bufs.free(result.value);
 
   if (value > MAX_UINT32) {
-    throw new Error("Result out of range");
+    throw new Error("integer too large");
   }
 
   return { value: value, nextIndex: result.nextIndex };
@@ -307,7 +307,7 @@ function decodeUInt64(encodedBuffer, index) {
   bufs.free(result.value);
 
   if (value > MAX_UINT64) {
-    throw new Error("Result out of range");
+    throw new Error("integer too large");
   }
 
   return { value: value, nextIndex: result.nextIndex, lossy: parsed.lossy };

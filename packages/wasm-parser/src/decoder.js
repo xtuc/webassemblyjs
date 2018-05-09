@@ -783,7 +783,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           []
         );
 
-        eatBytes(1); // 0x00 - reserved byte
+        const flagU32 = readU32();
+        const flag = flagU32.value; // 0x00 - reserved byte
+        eatBytes(flagU32.nextIndex);
+
+        if (flag !== 0) {
+          throw new CompileError("zero flag expected");
+        }
 
         code.push(callNode);
         instructionAlreadyCreated = true;
@@ -807,17 +813,33 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         /**
          * Memory instructions
          */
-        const aligun32 = readU32();
-        const align = aligun32.value;
-        eatBytes(aligun32.nextIndex);
 
-        dump([align], "align");
+        if (
+          instruction.name === "grow_memory" ||
+          instruction.name === "current_memory"
+        ) {
+          const indexU32 = readU32();
+          const index = indexU32.value;
+          eatBytes(indexU32.nextIndex);
 
-        const offsetu32 = readU32();
-        const offset = offsetu32.value;
-        eatBytes(offsetu32.nextIndex);
+          if (index !== 0) {
+            throw new Error("zero flag expected");
+          }
 
-        dump([offset], "offset");
+          dump([index], "index");
+        } else {
+          const aligun32 = readU32();
+          const align = aligun32.value;
+          eatBytes(aligun32.nextIndex);
+
+          dump([align], "align");
+
+          const offsetu32 = readU32();
+          const offset = offsetu32.value;
+          eatBytes(offsetu32.nextIndex);
+
+          dump([offset], "offset");
+        }
       } else if (instructionByte >= 0x41 && instructionByte <= 0x44) {
         /**
          * Numeric instructions
