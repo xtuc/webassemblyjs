@@ -33,7 +33,7 @@ watch:
 test-ci: test test-whitelisted-spec lint
 
 test: build
-	./scripts/test.sh
+	./scripts/test.sh --timeout 4000
 
 test-whitelisted-spec:
 	$(REPL) $(SPEC_TEST_DIR)/exports.wast
