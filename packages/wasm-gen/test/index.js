@@ -43,11 +43,11 @@ const fixtures = [
   },
 
   {
-    name: "a func(): i32 ModuleImport",
+    name: "a (func (result i32)) ModuleImport",
     node: t.moduleImport(
       "a",
       "b",
-      t.funcImportDescr(t.indexLiteral(0), [], ["i32"])
+      t.funcImportDescr(t.numberLiteral(0), [], ["i32"])
     ),
     expected: [0x01, 0x61, 0x01, 0x62, 0x00, 0x00]
   },

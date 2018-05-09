@@ -1447,28 +1447,26 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
+        const startPosition = getPosition();
+
+        const u32 = readU32();
+        const numberOfFuncs = u32.value;
+        eatBytes(u32.nextIndex);
+
+        const endPosition = getPosition();
+
         const metadata = t.sectionMetadata(
           "code",
           startOffset,
-          sectionSizeInBytesNode
+          sectionSizeInBytesNode,
+          t.withLoc(t.numberLiteral(numberOfFuncs), endPosition, startPosition)
         );
 
         if (opts.ignoreCodeSection === true) {
-          eatBytes(sectionSizeInBytes); // eat the entire section
+          const remainingBytes = sectionSizeInBytes - u32.nextIndex;
+
+          eatBytes(remainingBytes); // eat the entire section
         } else {
-          const startPosition = getPosition();
-
-          const u32 = readU32();
-          const numberOfFuncs = u32.value;
-          eatBytes(u32.nextIndex);
-          const endPosition = getPosition();
-
-          metadata.vectorOfSize = t.withLoc(
-            t.numberLiteral(numberOfFuncs),
-            endPosition,
-            startPosition
-          );
-
           parseCodeSection(numberOfFuncs);
         }
 

@@ -1,7 +1,7 @@
 // @flow
 
 import { encodeU32 } from "@webassemblyjs/wasm-gen";
-import { getSectionMetadata, traverse } from "@webassemblyjs/ast";
+import { getSectionMetadata, traverse, shiftSection } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
 const debug = require("debug")("wasm:resizesection");
@@ -61,7 +61,7 @@ export function resizeSectionByteSize(
       }
 
       if (encounteredSection === true) {
-        path.shift(deltaBytes);
+        shiftSection(ast, path.node, deltaBytes);
 
         debug(
           "shift section section=%s detla=%d",
