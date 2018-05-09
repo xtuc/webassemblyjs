@@ -95,6 +95,8 @@ describe("kernel exec - memory instructions", () => {
 
   operations.forEach(op => {
     it(op.name + " should result in a correct state", () => {
+      op.code.push(t.instruction("end"));
+
       const stackFrame = createStackFrame(op.code, op.args);
       const res = executeStackFrame(stackFrame);
 
@@ -102,7 +104,10 @@ describe("kernel exec - memory instructions", () => {
         throw new Error("No result");
       }
 
-      assert.isTrue(res.value.equals(op.resEqual));
+      assert.isTrue(
+        res.value.equals(op.resEqual),
+        res.value + " != " + op.resEqual
+      );
     });
   });
 });

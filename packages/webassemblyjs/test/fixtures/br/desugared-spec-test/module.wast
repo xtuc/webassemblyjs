@@ -1,0 +1,56 @@
+;; testsuite/br.wast
+;; Test `br` operator
+
+(module
+  ;; Auxiliary definition
+  (func $dummy)
+
+  (func (export "type-i32") (block (drop (i32.ctz (br 0)))))
+  (func (export "type-i64") (block (drop (i64.ctz (br 0)))))
+  (func (export "type-f32") (block (drop (f32.neg (br 0)))))
+  (func (export "type-f64") (block (drop (f64.neg (br 0)))))
+
+  (func (export "type-i32-value") (result i32)
+    (block (result i32) (i32.const 1) (br 0) (i32.ctz))
+  )
+  (func (export "type-i64-value") (result i64)
+    (block (result i64) (i64.const 2) (br 0) (i64.ctz))
+  )
+  (func (export "type-f32-value") (result f32)
+    (block (result f32) (f32.const 3) (br 0) (f32.neg))
+  )
+  (func (export "type-f64-value") (result f64)
+    (block (result f64) (f64.const 4) (br 0) (f64.neg))
+  )
+
+  (func (export "as-block-first")
+    (block (br 0) (call $dummy))
+  )
+  (func (export "as-block-mid")
+    (block (call $dummy) (br 0) (call $dummy))
+  )
+  (func (export "as-block-last")
+    (block (nop) (call $dummy) (br 0))
+  )
+  (func (export "as-block-value") (result i32)
+    (block (result i32) (nop) (call $dummy) (br 0 (i32.const 2)))
+  )
+
+  (func (export "as-loop-first") (result i32)
+    (block (result i32) (loop (result i32) (br 1 (i32.const 3)) (i32.const 2)))
+  )
+  (func (export "as-loop-mid") (result i32)
+    (block (result i32)
+      (loop (result i32) (call $dummy) (br 1 (i32.const 4)) (i32.const 2))
+    )
+  )
+  (func (export "as-loop-last") (result i32)
+    (block (result i32)
+      (loop (result i32) (nop) (call $dummy) (br 1 (i32.const 5)))
+    )
+  )
+
+  (func (export "as-br-value") (result i32)
+    (block (result i32) (br 0 (br 0 (i32.const 9))))
+  )
+)

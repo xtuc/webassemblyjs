@@ -11,8 +11,11 @@
             "type": "Identifier",
             "value": "fn"
           },
-          "params": [],
-          "result": [],
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
           "body": []
         },
         {

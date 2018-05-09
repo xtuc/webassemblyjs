@@ -53,8 +53,16 @@ type Index =
   | Labelidx
   | Identifier; // WAST shorthand
 
+type Signature = {
+  ...BaseNode,
+  type: "Signature",
+  params: Array<FuncParam>,
+  results: Array<Valtype>
+};
+
+type SignatureOrTypeRef = Index | Signature;
+
 type Valtype = "i32" | "i64" | "f32" | "f64" | "u32" | "label";
-type ExportDescr = "Func" | "Table" | "Memory" | "Global";
 type Mutability = "const" | "var";
 type InstructionType = "Instr" | ControlInstruction;
 type ControlInstruction =
@@ -83,6 +91,9 @@ type Node =
   | Module
   | SectionMetadata
   | FunctionNameMetadata
+  | ModuleNameMetadata
+  | Signature
+  | LocalNameMetadata
   | BinaryModule
   | QuoteModule
   | Func
@@ -208,7 +219,15 @@ type ModuleMetadata = {
 
   type: "ModuleMetadata",
   sections: Array<SectionMetadata>,
-  functionNames?: Array<FunctionNameMetadata>
+  functionNames?: Array<FunctionNameMetadata>,
+  localNames?: Array<LocalNameMetadata>
+};
+
+type ModuleNameMetadata = {
+  ...BaseNode,
+
+  type: "ModuleNameMetadata",
+  value: string
 };
 
 type FunctionNameMetadata = {
@@ -219,18 +238,36 @@ type FunctionNameMetadata = {
   index: number
 };
 
+type LocalNameMetadata = {
+  ...BaseNode,
+
+  type: "LocalNameMetadata",
+  value: string,
+  localIndex: number,
+  functionIndex: number
+};
+
+/**
+ * SectionMetadata
+ *
+ * | id                              | section size             | section vector size          | ... body bytes                |
+ * |---------------------------------|--------------------------|------------------------------|-------------------------------|
+ * | u32                             | LEB128 u32 (1...5 bytes) | LEB128 u32 (1...5 bytes)     | n bytes                       |
+ * |                                 | SectionMetadata size     | SectionMetadata vectorOfSize |                               |
+ * | SectionMetadata Start offset -> |                          |                              |                               |
+ */
 type SectionMetadata = {
   ...BaseNode,
 
   type: "SectionMetadata",
   section: SectionName,
 
-  // after the section id byte
   startOffset: number,
-  size: number,
+
+  size: NumberLiteral,
 
   // Size of the vector in the section (if any)
-  vectorOfSize: number
+  vectorOfSize: NumberLiteral
 };
 
 type BinaryModule = {
@@ -260,8 +297,8 @@ type Func = {
   // Only in WAST
   name: ?Index,
 
-  params: Array<FuncParam>,
-  result: Array<Valtype>,
+  signature: SignatureOrTypeRef,
+
   body: Array<Instruction>,
 
   // Means that it has been imported from the outside js
@@ -343,13 +380,22 @@ type CallIndirectInstruction = {
 
   type: "CallIndirectInstruction",
 
-  // WAST
-  params?: Array<FuncParam>,
-  results?: Array<Valtype>,
+  signature: SignatureOrTypeRef,
+
   intrs?: Array<Expression>,
 
   // WAT
   index?: Index
+};
+
+type ExportDescrType = "Func" | "Table" | "Memory" | "Global";
+
+type ExportDescr = {
+  ...BaseNode,
+
+  type: "ModuleExportDescr",
+  exportType: ExportDescrType,
+  id: Index
 };
 
 type ModuleExport = {
@@ -357,10 +403,7 @@ type ModuleExport = {
 
   type: "ModuleExport",
   name: string,
-  descr: {
-    type: ExportDescr,
-    id: Index
-  }
+  descr: ExportDescr
 };
 
 type Limit = {
@@ -376,8 +419,7 @@ type FuncImportDescr = {
 
   type: "FuncImportDescr",
   id: Identifier,
-  params: Array<FuncParam>,
-  results: Array<Valtype>
+  signature: Signature
 };
 
 type ImportDescr = FuncImportDescr | GlobalType | Memory | Table;
@@ -466,10 +508,7 @@ type TypeInstruction = {
 
   type: "TypeInstruction",
   id: ?Index,
-  functype: {
-    params: Array<FuncParam>,
-    result: Array<Valtype>
-  }
+  functype: Signature
 };
 
 type Start = {

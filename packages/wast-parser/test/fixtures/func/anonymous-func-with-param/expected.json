@@ -8,13 +8,16 @@
         "value": "func_0",
         "raw": ""
       },
-      "params": [
-        {
-          "id": "p",
-          "valtype": "i32"
-        }
-      ],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "id": "p",
+            "valtype": "i32"
+          }
+        ],
+        "results": []
+      },
       "body": []
     },
     {
@@ -24,13 +27,16 @@
         "value": "func_1",
         "raw": ""
       },
-      "params": [
-        {
-          "id": "P",
-          "valtype": "i64"
-        }
-      ],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "id": "P",
+            "valtype": "i64"
+          }
+        ],
+        "results": []
+      },
       "body": []
     },
     {
@@ -40,13 +46,16 @@
         "value": "func_2",
         "raw": ""
       },
-      "params": [
-        {
-          "id": "$",
-          "valtype": "f32"
-        }
-      ],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "id": "$",
+            "valtype": "f32"
+          }
+        ],
+        "results": []
+      },
       "body": []
     },
     {
@@ -56,13 +65,16 @@
         "value": "func_3",
         "raw": ""
       },
-      "params": [
-        {
-          "id": "$",
-          "valtype": "f64"
-        }
-      ],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "id": "$",
+            "valtype": "f64"
+          }
+        ],
+        "results": []
+      },
       "body": []
     }
   ]

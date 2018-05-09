@@ -7,8 +7,11 @@
         "type": "Identifier",
         "value": "a"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -17,8 +20,11 @@
         "type": "Identifier",
         "value": "test"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -28,8 +34,11 @@
         "value": "func_2",
         "raw": ""
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": [
         {
           "type": "CallInstruction",

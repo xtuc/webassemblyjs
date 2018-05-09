@@ -7,8 +7,11 @@
         "type": "Identifier",
         "value": "test"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -17,8 +20,11 @@
         "type": "Identifier",
         "value": "TEST"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -27,8 +33,11 @@
         "type": "Identifier",
         "value": "!"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -37,8 +46,11 @@
         "type": "Identifier",
         "value": "$"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     }
   ]

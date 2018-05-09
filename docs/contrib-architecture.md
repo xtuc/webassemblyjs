@@ -50,10 +50,6 @@ The stack call depth is unspecified currently by WebAssembly and is controlled b
 
 Our runtime instance values.
 
-### Signals
-
-- `trap` signal which aborts the execution
-
 ## Notes
 
 -  Text format supports floating point hexadecimals as described in this article [maurobringolf.ch/2017/12/hexadecimal-floating-point-notation](https://maurobringolf.ch/2017/12/hexadecimal-floating-point-notation)

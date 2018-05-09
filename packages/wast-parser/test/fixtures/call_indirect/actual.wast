@@ -1,3 +1,6 @@
+(call_indirect (type 0) (i32.const 0))
+(call_indirect (type $foo) (i32.const 0))
+
 (call_indirect (i32.const 0))
 (call_indirect (param i64) (i64.const 0) (i32.const 0))
 (call_indirect (param i64) (param) (param f64 i32 i64)

@@ -11,6 +11,13 @@ const constants = require("@webassemblyjs/helper-wasm-bytecode");
 
 const { add, edit } = require("../lib");
 
+function callIndirectInstructionIndex(index) {
+  return {
+    type: "CallIndirectInstruction",
+    index
+  };
+}
+
 describe("replace a node", () => {
   it("should replace the ModuleImport", () => {
     const actualBinary = makeBuffer(
@@ -139,7 +146,7 @@ describe("replace a node", () => {
     const newBinary = edit(actualBinary, {
       Instr(path) {
         if (path.node.id === "get_global") {
-          const newNode = t.callIndirectInstructionIndex(t.indexLiteral(0));
+          const newNode = callIndirectInstructionIndex(t.indexLiteral(0));
           path.replaceWith(newNode);
         }
       }

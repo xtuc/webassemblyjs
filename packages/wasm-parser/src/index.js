@@ -11,7 +11,7 @@ const defaultDecoderOpts = {
 
 // traverses the AST, locating function name metadata, which is then
 // used to update index-based identifiers with function names
-function restoreNames(ast) {
+function restoreFunctionNames(ast) {
   const functionNames = [];
 
   t.traverse(ast, {
@@ -23,7 +23,7 @@ function restoreNames(ast) {
     }
   });
 
-  if (!functionNames.length) {
+  if (functionNames.length === 0) {
     return;
   }
 
@@ -44,7 +44,7 @@ function restoreNames(ast) {
 
     // Also update the reference in the export
     ModuleExport({ node }: NodePath<ModuleExport>) {
-      if (node.descr.type === "Func") {
+      if (node.descr.exportType === "Func") {
         // $FlowIgnore
         const nodeName: Identifier = node.descr.id;
         const indexBasedFunctionName = nodeName.value;
@@ -71,12 +71,67 @@ function restoreNames(ast) {
   });
 }
 
+function restoreLocalNames(ast) {
+  const localNames = [];
+
+  t.traverse(ast, {
+    LocalNameMetadata({ node }) {
+      localNames.push({
+        name: node.value,
+        localIndex: node.localIndex,
+        functionIndex: node.functionIndex
+      });
+    }
+  });
+
+  if (localNames.length === 0) {
+    return;
+  }
+
+  t.traverse(ast, {
+    Func({ node }: NodePath<Func>) {
+      const signature = node.signature;
+      if (signature.type !== "Signature") {
+        return;
+      }
+
+      // $FlowIgnore
+      const nodeName: Identifier = node.name;
+      const indexBasedFunctionName = nodeName.value;
+      const functionIndex = Number(indexBasedFunctionName.replace("func_", ""));
+      signature.params.forEach((param, paramIndex) => {
+        const paramName = localNames.find(
+          f => f.localIndex === paramIndex && f.functionIndex === functionIndex
+        );
+        if (paramName && paramName.name !== "") {
+          param.id = paramName.name;
+        }
+      });
+    }
+  });
+}
+
+function restoreModuleName(ast) {
+  t.traverse(ast, {
+    ModuleNameMetadata(moduleNameMetadataPath: NodePath<ModuleNameMetadata>) {
+      // update module
+      t.traverse(ast, {
+        Module({ node }: NodePath<Module>) {
+          node.id = moduleNameMetadataPath.node.value;
+        }
+      });
+    }
+  });
+}
+
 export function decode(buf: ArrayBuffer, customOpts: Object): Program {
   const opts: DecoderOpts = Object.assign({}, defaultDecoderOpts, customOpts);
   const ast = decoder.decode(buf, opts);
 
   if (!opts.ignoreCustomNameSection) {
-    restoreNames(ast);
+    restoreFunctionNames(ast);
+    restoreLocalNames(ast);
+    restoreModuleName(ast);
   }
 
   return ast;

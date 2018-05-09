@@ -21,7 +21,7 @@ export function print(ast: Node) {
 
   traverse(ast, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
-      if (node.descr.type === "Func") {
+      if (node.descr.exportType === "Func") {
         out.exports[node.descr.id.value] = node;
       }
     },

@@ -19,7 +19,8 @@ describe("kernel exec - administrative instructions", () => {
       t.instruction("nop"),
       t.instruction("trap"),
       t.instruction("nop"),
-      t.instruction("nop")
+      t.instruction("nop"),
+      t.instruction("end")
     ];
 
     const stackFrame = createStackFrame(code, []);
@@ -33,7 +34,7 @@ describe("kernel exec - administrative instructions", () => {
     }
 
     assert.notEqual(code.length, framepc + 1);
-    assert.equal(framepc, 1);
+    assert.equal(framepc, 2);
   });
 
   it("should stop executing the stackframe at unreachable", () => {
@@ -44,7 +45,8 @@ describe("kernel exec - administrative instructions", () => {
       t.instruction("nop"),
       t.instruction("unreachable"),
       t.instruction("nop"),
-      t.instruction("nop")
+      t.instruction("nop"),
+      t.instruction("end")
     ];
 
     const stackFrame = createStackFrame(code, []);
@@ -58,6 +60,6 @@ describe("kernel exec - administrative instructions", () => {
     }
 
     assert.notEqual(code.length, framepc + 1);
-    assert.equal(framepc, 1);
+    assert.equal(framepc, 2);
   });
 });

@@ -11,14 +11,17 @@
           "type": "Identifier",
           "value": "name"
         },
-        "params": [
-          {
-            "valtype": "i32"
-          }
-        ],
-        "results": [
-          "i32"
-        ]
+        "signature": {
+          "type": "Signature",
+          "params": [
+            {
+              "valtype": "i32"
+            }
+          ],
+          "results": [
+            "i32"
+          ]
+        }
       }
     }
   ]

@@ -1,0 +1,1 @@
+(func (result 1))

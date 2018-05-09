@@ -80,7 +80,7 @@ type StackFrame = {
 };
 
 type StackLocal = {
-  type: Valtype | "Signal",
+  type: Valtype,
   value: any
 };
 
@@ -143,8 +143,6 @@ type Label = {
   id: ?Identifier
 };
 
-type Signal = number;
-
 interface Allocator {
   malloc(Bytes): Addr;
   get(Addr): any;
@@ -158,3 +156,5 @@ interface TableInstance {
 }
 
 type SignatureMap = { [string]: string } | [string, string];
+
+declare var MACRO: any;

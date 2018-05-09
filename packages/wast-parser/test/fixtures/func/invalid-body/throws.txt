@@ -1,0 +1,5 @@
+(func (func))
+       ^^^^
+
+
+Unexpected instruction in function body, given keyword (func)

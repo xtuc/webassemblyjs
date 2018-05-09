@@ -8,18 +8,21 @@
         "value": "func_0",
         "raw": ""
       },
-      "params": [
-        {
-          "valtype": "i32"
-        },
-        {
-          "valtype": "i64"
-        },
-        {
-          "valtype": "i32"
-        }
-      ],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "i32"
+          },
+          {
+            "valtype": "i64"
+          },
+          {
+            "valtype": "i32"
+          }
+        ],
+        "results": []
+      },
       "body": []
     },
     {
@@ -29,15 +32,18 @@
         "value": "func_1",
         "raw": ""
       },
-      "params": [
-        {
-          "valtype": "f64"
-        },
-        {
-          "valtype": "i32"
-        }
-      ],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "f64"
+          },
+          {
+            "valtype": "i32"
+          }
+        ],
+        "results": []
+      },
       "body": []
     },
     {
@@ -47,36 +53,39 @@
         "value": "func_2",
         "raw": ""
       },
-      "params": [
-        {
-          "valtype": "f64"
-        },
-        {
-          "valtype": "f64"
-        },
-        {
-          "valtype": "f64"
-        },
-        {
-          "valtype": "f64"
-        },
-        {
-          "valtype": "f32"
-        },
-        {
-          "valtype": "f32"
-        },
-        {
-          "valtype": "f32"
-        },
-        {
-          "valtype": "i32"
-        },
-        {
-          "valtype": "i64"
-        }
-      ],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "f64"
+          },
+          {
+            "valtype": "f64"
+          },
+          {
+            "valtype": "f64"
+          },
+          {
+            "valtype": "f64"
+          },
+          {
+            "valtype": "f32"
+          },
+          {
+            "valtype": "f32"
+          },
+          {
+            "valtype": "f32"
+          },
+          {
+            "valtype": "i32"
+          },
+          {
+            "valtype": "i64"
+          }
+        ],
+        "results": []
+      },
       "body": []
     }
   ]

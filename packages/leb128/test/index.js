@@ -36,6 +36,12 @@ describe("LEB128", () => {
       assert.equal(u32.value, 165675008);
       assert.equal(u32.nextIndex, 4);
     });
+
+    it("5 byte", () => {
+      u32 = decodeUInt32(Buffer.from([0x89, 0x80, 0x80, 0x80, 0x00]));
+      assert.equal(u32.value, 9);
+      assert.equal(u32.nextIndex, 5);
+    });
   });
 
   // FIXME(sven): reenable that we have two's complement

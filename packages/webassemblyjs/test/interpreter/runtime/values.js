@@ -219,11 +219,12 @@ describe("module create interface", () => {
 
   describe("global", () => {
     it("should have a value", () => {
-      const initNode = t.objectInstruction("const", "i32", [
-        t.numberLiteral(10)
-      ]);
+      const initNode = [
+        t.objectInstruction("const", "i32", [t.numberLiteral(10)]),
+        t.instruction("end")
+      ];
 
-      const node = t.global(t.globalType("i32", "const"), [initNode]);
+      const node = t.global(t.globalType("i32", "const"), initNode);
 
       const instance = globalvalue.createInstance(allocator, node);
 
@@ -240,11 +241,13 @@ describe("module create interface", () => {
       }
     };
 
+    const params = [t.funcParam("i32"), t.funcParam("i32")];
+
     const node = t.module("module", [
       t.moduleImport(
         "env",
         "test",
-        t.funcImportDescr(t.identifier("foo"), ["i32", "i32"], [])
+        t.funcImportDescr(t.identifier("foo"), params, [])
       )
     ]);
 
@@ -262,7 +265,8 @@ describe("module create interface", () => {
     assert.equal(func.code, externalFunctions.env.test);
 
     assert.typeOf(func.type, "array");
-    assert.deepEqual(func.type[0], ["i32", "i32"]);
+    assert.equal(func.type[0][0].valtype, "i32");
+    assert.equal(func.type[0][1].valtype, "i32");
     assert.deepEqual(func.type[1], []);
   });
 });

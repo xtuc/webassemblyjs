@@ -23,7 +23,17 @@
                   "value": 0,
                   "raw": "0"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 15
+                },
+                "end": {
+                  "line": 2,
+                  "column": 26
+                }
+              }
             }
           ],
           "name": {
@@ -36,7 +46,8 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "global_0",
@@ -62,7 +73,17 @@
                   "value": 0,
                   "raw": "0"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 19
+                },
+                "end": {
+                  "line": 5,
+                  "column": 30
+                }
+              }
             }
           ],
           "name": {
@@ -74,7 +95,8 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "g1"

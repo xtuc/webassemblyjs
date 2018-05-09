@@ -8,8 +8,11 @@
         "value": "func_0",
         "raw": ""
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": [
         {
           "type": "IfInstruction",
@@ -23,14 +26,34 @@
             {
               "type": "Instr",
               "id": "nop",
-              "args": []
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 7
+                },
+                "end": {
+                  "line": 5,
+                  "column": 10
+                }
+              }
             }
           ],
           "alternate": [
             {
               "type": "Instr",
               "id": "nop",
-              "args": []
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 8,
+                  "column": 7
+                },
+                "end": {
+                  "line": 8,
+                  "column": 10
+                }
+              }
             }
           ]
         }

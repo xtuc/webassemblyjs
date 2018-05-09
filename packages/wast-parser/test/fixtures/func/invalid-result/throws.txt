@@ -1,0 +1,5 @@
+(func (result 1))
+              ^
+
+
+Unexpected token in func result, given number

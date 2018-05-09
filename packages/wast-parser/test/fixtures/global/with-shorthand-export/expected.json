@@ -23,7 +23,17 @@
                   "value": 0,
                   "raw": "0"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 34
+                },
+                "end": {
+                  "line": 2,
+                  "column": 45
+                }
+              }
             }
           ],
           "name": {
@@ -35,7 +45,8 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "test"
@@ -60,7 +71,17 @@
                   "value": 1,
                   "raw": "1"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 28
+                },
+                "end": {
+                  "line": 3,
+                  "column": 39
+                }
+              }
             }
           ],
           "name": {
@@ -73,7 +94,8 @@
           "type": "ModuleExport",
           "name": "b",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "global_1",
@@ -99,7 +121,17 @@
                   "value": 1,
                   "raw": "1"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 34
+                },
+                "end": {
+                  "line": 4,
+                  "column": 45
+                }
+              }
             }
           ],
           "name": {
@@ -112,7 +144,8 @@
           "type": "ModuleExport",
           "name": "c",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "global_2",

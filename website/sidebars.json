@@ -13,7 +13,8 @@
       "contrib-architecture",
       "contrib-wat-vs-wast",
       "contrib-transform-wast-identifier-to-index",
-      "contrib-thirdparty-licenses"
+      "contrib-thirdparty-licenses",
+      "contrib-ast"
     ]
   }
 }

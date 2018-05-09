@@ -28,9 +28,29 @@
                   "value": 12,
                   "raw": "12"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 17
+                },
+                "end": {
+                  "line": 1,
+                  "column": 29
+                }
+              }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 11
+            },
+            "end": {
+              "line": 1,
+              "column": 30
+            }
+          }
         },
         {
           "type": "Instr",
@@ -42,7 +62,17 @@
               "value": 2,
               "raw": "2"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 33
+            },
+            "end": {
+              "line": 1,
+              "column": 44
+            }
+          }
         },
         {
           "type": "Instr",
@@ -54,7 +84,17 @@
               "value": 3,
               "raw": "3"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 47
+            },
+            "end": {
+              "line": 1,
+              "column": 58
+            }
+          }
         }
       ]
     }

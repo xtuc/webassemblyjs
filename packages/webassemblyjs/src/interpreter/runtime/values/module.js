@@ -38,8 +38,9 @@ function instantiateImports(
   function handleFuncImport(node: ModuleImport, descr: FuncImportDescr) {
     const element = getExternalElementOrThrow(node.module, node.name);
 
-    const params = descr.params != null ? descr.params : [];
-    const results = descr.results != null ? descr.results : [];
+    const params = descr.signature.params != null ? descr.signature.params : [];
+    const results =
+      descr.signature.results != null ? descr.signature.results : [];
 
     const externFuncinstance = externvalue.createFuncInstance(
       element,
@@ -304,7 +305,7 @@ function instantiateExports(
       moduleInstance.exports.push({
         name: node.name,
         value: {
-          type: node.descr.type,
+          type: node.descr.exportType,
           addr: instantiatedItem.addr
         }
       });
@@ -317,7 +318,7 @@ function instantiateExports(
 
   traverse(n, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
-      switch (node.descr.type) {
+      switch (node.descr.exportType) {
         case "Func": {
           createModuleExport(
             node,

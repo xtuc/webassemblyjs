@@ -1,9 +1,11 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast";
-import { transform } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
+import { transform as wastIdentifierToIndex } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
+import { transform as denormalizeTypeReferences } from "@webassemblyjs/ast/lib/transform/denormalize-type-references";
 
-import validateAST from "../validation";
+const t = require("@webassemblyjs/ast");
+
+import validateAST from "@webassemblyjs/validation";
 const { CompileError } = require("../../errors");
 
 export class Module {
@@ -19,8 +21,6 @@ export class Module {
     imports: Array<CompiledModuleImportDescr>,
     start?: Funcidx
   ) {
-    validateAST(ast);
-
     this._ast = ast;
     this._start = start;
 
@@ -37,11 +37,14 @@ export function createCompiledModule(ast: Program): CompiledModule {
 
   // Do compile-time ast manipulation in order to remove WAST
   // semantics during execution
-  transform(ast);
+  denormalizeTypeReferences(ast);
+  wastIdentifierToIndex(ast);
 
-  traverse(ast, {
+  validateAST(ast);
+
+  t.traverse(ast, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
-      if (node.descr.type === "Func") {
+      if (node.descr.exportType === "Func") {
         exports.push({
           name: node.name,
           kind: "function"
@@ -55,6 +58,33 @@ export function createCompiledModule(ast: Program): CompiledModule {
       }
 
       start = node.index;
+    }
+  });
+
+  /**
+   * Adds missing end instructions
+   */
+  t.traverse(ast, {
+    Func({ node }: NodePath<Func>) {
+      node.body.push(t.instruction("end"));
+    },
+
+    Global({ node }: NodePath<Global>) {
+      node.init.push(t.instruction("end"));
+    },
+
+    IfInstruction({ node }: NodePath<IfInstruction>) {
+      node.test.push(t.instruction("end"));
+      node.consequent.push(t.instruction("end"));
+      node.alternate.push(t.instruction("end"));
+    },
+
+    BlockInstruction({ node }: NodePath<BlockInstruction>) {
+      node.instr.push(t.instruction("end"));
+    },
+
+    LoopInstruction({ node }: NodePath<LoopInstruction>) {
+      node.instr.push(t.instruction("end"));
     }
   });
 

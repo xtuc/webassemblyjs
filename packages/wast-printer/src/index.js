@@ -12,12 +12,13 @@ function indent(nb: number): string {
     .join("");
 }
 
+// TODO(sven): allow arbitrary ast nodes
 export function print(n: Node): string {
   if (n.type === "Program") {
     return printProgram(n, 0);
+  } else {
+    throw new Error("Unsupported node in print of type: " + String(n.type));
   }
-
-  return "()";
 }
 
 function printProgram(n: Program, depth: number): string {
@@ -73,7 +74,7 @@ function printTypeInstruction(n: TypeInstruction): string {
     out += ")";
   });
 
-  n.functype.result.forEach(result => {
+  n.functype.results.forEach(result => {
     out += space;
     out += "(";
     out += "result";
@@ -99,10 +100,10 @@ function printModule(n: Module, depth: number): string {
     out += n.id;
   }
 
-  out += space;
-
   if (compact === false) {
     out += "\n";
+  } else {
+    out += space;
   }
 
   n.fields.forEach(field => {
@@ -161,6 +162,16 @@ function printModule(n: Module, depth: number): string {
         break;
       }
 
+      case "Elem": {
+        out += printElem(field, depth);
+        break;
+      }
+
+      case "Data": {
+        out += printData(field, depth);
+        break;
+      }
+
       default:
         throw new Error(
           "Unsupported node in printModule: " + String(field.type)
@@ -170,6 +181,63 @@ function printModule(n: Module, depth: number): string {
     if (compact === false) {
       out += "\n";
     }
+  });
+
+  out += ")";
+
+  return out;
+}
+
+function printData(n: Data, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "data";
+  out += space;
+
+  out += printIndex(n.memoryIndex);
+  out += space;
+
+  out += printInstruction(n.offset, depth);
+  out += space;
+
+  let value = "";
+
+  n.init.values.forEach(byte => {
+    value += String.fromCharCode(byte);
+  });
+
+  // Avoid non-displayable characters
+  out += JSON.stringify(value);
+
+  out += ")";
+
+  return out;
+}
+
+function printElem(n: Elem, depth: number): string {
+  let out = "";
+
+  out += "(";
+  out += "elem";
+
+  out += space;
+  out += printIndex(n.table);
+
+  const [firstOffset] = n.offset;
+
+  out += space;
+
+  out += "(";
+  out += "offset";
+  out += space;
+
+  out += printInstruction(firstOffset, depth);
+  out += ")";
+
+  n.funcs.forEach(func => {
+    out += space;
+    out += printIndex(func);
   });
 
   out += ")";
@@ -222,6 +290,32 @@ function printBlockComment(n: BlockComment): string {
   return out;
 }
 
+function printSignature(n: Signature): string {
+  let out = "";
+
+  n.params.forEach(param => {
+    out += space;
+    out += "(";
+    out += "param";
+    out += space;
+
+    out += printFuncParam(param);
+    out += ")";
+  });
+
+  n.results.forEach(result => {
+    out += space;
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += result;
+    out += ")";
+  });
+
+  return out;
+}
+
 function printModuleImportDescr(n: ImportDescr): string {
   let out = "";
 
@@ -234,25 +328,7 @@ function printModuleImportDescr(n: ImportDescr): string {
       out += printIdentifier(n.id);
     }
 
-    n.params.forEach(param => {
-      out += space;
-      out += "(";
-      out += "param";
-      out += space;
-
-      out += printFuncParam(param);
-      out += ")";
-    });
-
-    n.results.forEach(result => {
-      out += space;
-      out += "(";
-      out += "result";
-      out += space;
-
-      out += result;
-      out += ")";
-    });
+    out += printSignature(n.signature);
 
     out += ")";
   }
@@ -381,27 +457,19 @@ function printFunc(n: Func, depth: number): string {
     }
   }
 
-  n.params.forEach(param => {
+  if (n.signature.type === "Signature") {
+    out += printSignature(n.signature);
+  } else {
+    const index = (n.signature: Index);
     out += space;
     out += "(";
-    out += "param";
+    out += "type";
     out += space;
 
-    out += printFuncParam(param);
+    out += printIndex(index);
 
     out += ")";
-  });
-
-  n.result.forEach(result => {
-    out += space;
-    out += "(";
-    out += "result";
-
-    out += space;
-    out += result;
-
-    out += ")";
-  });
+  }
 
   if (n.body.length > 0) {
     if (compact === false) {
@@ -443,6 +511,10 @@ function printInstruction(n: Instruction, depth: number): string {
       // $FlowIgnore
       return printCallInstruction(n, depth + 1);
 
+    case "CallIndirectInstruction":
+      // $FlowIgnore
+      return printCallIndirectIntruction(n, depth + 1);
+
     case "LoopInstruction":
       // $FlowIgnore
       return printLoopInstruction(n, depth + 1);
@@ -450,6 +522,54 @@ function printInstruction(n: Instruction, depth: number): string {
     default:
       throw new Error("Unsupported instruction: " + JSON.stringify(n.type));
   }
+}
+
+function printCallIndirectIntruction(
+  n: CallIndirectInstruction,
+  depth: number
+): string {
+  let out = "";
+
+  out += "(";
+  out += "call_indirect";
+
+  if (n.signature.type === "Signature") {
+    out += printSignature(n.signature);
+  } else if (n.signature.type === "Identifier") {
+    out += space;
+
+    out += "(";
+    out += "type";
+
+    out += space;
+    out += printIdentifier(n.signature);
+
+    out += ")";
+  } else {
+    throw new Error(
+      "CallIndirectInstruction: unsupported signature " +
+        JSON.stringify(n.signature.type)
+    );
+  }
+
+  out += space;
+
+  if (n.intrs != null) {
+    // $FlowIgnore
+    n.intrs.forEach((i, index) => {
+      // $FlowIgnore
+      out += printInstruction(i, depth + 1);
+
+      // $FlowIgnore
+      if (index !== n.intrs.length - 1) {
+        out += space;
+      }
+    });
+  }
+
+  out += ")";
+
+  return out;
 }
 
 function printLoopInstruction(n: LoopInstruction, depth: number): string {
@@ -751,7 +871,7 @@ function printModuleExport(n: ModuleExport): string {
   out += space;
   out += quote(n.name);
 
-  if (n.descr.type === "Func") {
+  if (n.descr.exportType === "Func") {
     out += space;
     out += "(";
     out += "func";

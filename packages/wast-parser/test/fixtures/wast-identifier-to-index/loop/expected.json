@@ -7,8 +7,11 @@
         "type": "Identifier",
         "value": "a"
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": []
     },
     {
@@ -18,10 +21,13 @@
         "value": "func_1",
         "raw": ""
       },
-      "params": [],
-      "result": [
-        "i32"
-      ],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": [
+          "i32"
+        ]
+      },
       "body": [
         {
           "type": "LoopInstruction",
@@ -61,9 +67,29 @@
                       "value": 4,
                       "raw": "4"
                     }
-                  ]
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 3,
+                      "column": 38
+                    },
+                    "end": {
+                      "line": 3,
+                      "column": 49
+                    }
+                  }
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 32
+                },
+                "end": {
+                  "line": 3,
+                  "column": 50
+                }
+              }
             },
             {
               "type": "Instr",
@@ -75,7 +101,17 @@
                   "value": 2,
                   "raw": "2"
                 }
-              ]
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 53
+                },
+                "end": {
+                  "line": 3,
+                  "column": 64
+                }
+              }
             }
           ]
         }

@@ -1,0 +1,136 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
+      "body": [
+        {
+          "type": "Instr",
+          "id": "nop",
+          "args": [],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 6
+            }
+          }
+        },
+        {
+          "type": "Instr",
+          "id": "end",
+          "args": [],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 6
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_1",
+        "raw": ""
+      },
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": [
+          "i32"
+        ]
+      },
+      "body": [
+        {
+          "type": "Instr",
+          "id": "add",
+          "object": "i32",
+          "args": [
+            {
+              "type": "Instr",
+              "id": "nop",
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 7,
+                  "column": 12
+                },
+                "end": {
+                  "line": 7,
+                  "column": 15
+                }
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "const",
+              "object": "i32",
+              "args": [
+                {
+                  "type": "NumberLiteral",
+                  "value": 1,
+                  "raw": "1"
+                }
+              ],
+              "loc": {
+                "start": {
+                  "line": 7,
+                  "column": 18
+                },
+                "end": {
+                  "line": 7,
+                  "column": 29
+                }
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "end",
+              "args": [],
+              "loc": {
+                "start": {
+                  "line": 7,
+                  "column": 32
+                },
+                "end": {
+                  "line": 7,
+                  "column": 35
+                }
+              }
+            }
+          ],
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 3
+            },
+            "end": {
+              "line": 7,
+              "column": 36
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

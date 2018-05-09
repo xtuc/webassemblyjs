@@ -4,6 +4,13 @@ const t = require("@webassemblyjs/ast");
 const { encodeNode } = require("../lib");
 const encoder = require("../lib/encoder");
 
+function callIndirectInstructionIndex(index) {
+  return {
+    type: "CallIndirectInstruction",
+    index
+  };
+}
+
 const fixtures = [
   {
     name: "ModuleImport - should generate a i32 global",
@@ -46,26 +53,37 @@ const fixtures = [
   },
 
   {
-    name: "(func (result i32))",
+    name: "(type (func))",
+    node: t.typeInstructionFunc([], []),
+    expected: [0x60, 0x00, 0x00]
+  },
+
+  {
+    name: "(type (func (result i32)))",
     node: t.typeInstructionFunc([], ["i32"]),
     expected: [0x60, 0x00, 0x01, 0x7f]
   },
 
   {
-    name: "(func (param i32))",
+    name: "(type (func (param i32)))",
     node: t.typeInstructionFunc([t.funcParam("i32")], []),
     expected: [0x60, 0x01, 0x7f, 0x00]
   },
 
   {
-    name: "(func (param i32) (result i32))",
+    name: "(type (func (param i32) (result i32)))",
     node: t.typeInstructionFunc([t.funcParam("i32")], ["i32"]),
     expected: [0x60, 0x01, 0x7f, 0x01, 0x7f]
   },
 
   {
+    node: t.sectionMetadata(
+      "import",
+      0,
+      t.numberLiteral(1),
+      t.numberLiteral(0)
+    ),
     name: "an empty ImportSection",
-    node: t.sectionMetadata("import", 0, 1, 0),
     expected: [0x02, 0x01, 0x00]
   },
 
@@ -77,7 +95,7 @@ const fixtures = [
 
   {
     name: "a CallIndirectInstruction",
-    node: t.callIndirectInstructionIndex(t.indexLiteral(10)),
+    node: callIndirectInstructionIndex(t.indexLiteral(10)),
     expected: [0x11, 0x0a, 0x00]
   },
 

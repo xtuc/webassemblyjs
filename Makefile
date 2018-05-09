@@ -13,7 +13,7 @@ MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 
 SPEC_TEST_DIR = testsuite
 
-REPL = $(NODE) ./packages/cli/lib/repl.js
+REPL = $(NODE) ./packages/repl/lib/bin.js
 
 .PHONY: test build
 
@@ -33,16 +33,13 @@ watch:
 test-ci: test test-whitelisted-spec lint
 
 test: build
-	./scripts/test.sh
+	./scripts/test.sh --timeout 4000
 
 test-whitelisted-spec:
 	$(REPL) $(SPEC_TEST_DIR)/exports.wast
 	$(REPL) $(SPEC_TEST_DIR)/globals.wast
 	$(REPL) $(SPEC_TEST_DIR)/i32.wast
 	$(REPL) $(SPEC_TEST_DIR)/binary.wast
-
-test-spec:
-	./spec/test/core/run.py --wasm ./lib/bin/repl.js
 
 lint:
 	$(ESLINT) packages

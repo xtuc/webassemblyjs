@@ -1,0 +1,33 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "TypeInstruction",
+      "functype": {
+        "type": "Signature",
+        "params": [
+          {
+            "valtype": "i32"
+          }
+        ],
+        "results": [
+          "i32"
+        ]
+      }
+    },
+    {
+      "type": "Func",
+      "name": {
+        "type": "Identifier",
+        "value": "func_0",
+        "raw": ""
+      },
+      "signature": {
+        "type": "NumberLiteral",
+        "value": 0,
+        "raw": "0"
+      },
+      "body": []
+    }
+  ]
+}

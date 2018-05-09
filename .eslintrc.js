@@ -51,7 +51,8 @@ module.exports = {
     ecmaVersion: 8
   },
   globals: {
-    "React": true
+    "React": true,
+    MACRO: true
   },
   env: {
     node: true,

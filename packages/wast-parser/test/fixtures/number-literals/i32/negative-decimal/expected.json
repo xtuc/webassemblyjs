@@ -8,8 +8,11 @@
         "value": "func_0",
         "raw": ""
       },
-      "params": [],
-      "result": [],
+      "signature": {
+        "type": "Signature",
+        "params": [],
+        "results": []
+      },
       "body": [
         {
           "type": "Instr",
@@ -21,7 +24,17 @@
               "value": -90909,
               "raw": "-90909"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 19
+            }
+          }
         }
       ]
     }
