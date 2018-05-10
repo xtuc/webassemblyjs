@@ -1,5 +1,5 @@
 init:
-  - git config --global core.autocrlf true
+  - git config --global core.autocrlf false
 
 install:
   # Get the latest stable version of Node.js
