@@ -2,6 +2,7 @@ init:
   - git config --global core.autocrlf true
 
 install:
+  - choco install make
   - make boostrap
 
 test_script:
