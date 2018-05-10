@@ -4,14 +4,16 @@ init:
 install:
   # Get the latest stable version of Node.js
   - ps: Install-Product node $env:nodejs_version
-  - choco install make mingw
+  - choco install make
   # - make bootstrap
   -  npm install --global lerna
+  - npm i
   - lerna bootstrap
 
 test_script:
   - node --version
   - npm --version
+  - SET PATH=%PATH%;c:\MinGW\bin
   - make test-ci
 
 environment:
