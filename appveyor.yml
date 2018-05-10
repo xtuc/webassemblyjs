@@ -5,7 +5,9 @@ install:
   # Get the latest stable version of Node.js
   - ps: Install-Product node $env:nodejs_version
   - choco install make
-  - make bootstrap
+  # - make bootstrap
+  -  npm install --global lerna
+  - lerna bootstrap
 
 test_script:
   - node --version
@@ -14,3 +16,5 @@ test_script:
 
 environment:
   nodejs_version: "10"
+
+build: off
