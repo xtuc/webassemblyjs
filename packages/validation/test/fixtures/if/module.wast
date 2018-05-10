@@ -56,10 +56,10 @@
   (func (param i32) (result i32)
     (if (result i32)
       (then
-        (i32.const)
+        (i32.const 0)
       )
       (else
-        (f32.const)
+        (f32.const 0)
       )
     )
   )

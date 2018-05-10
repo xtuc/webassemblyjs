@@ -19,7 +19,9 @@
     "@webassemblyjs/ast": "1.4.0"
   },
   "devDependencies": {
+    "wabt": "^1.0.0",
     "@webassemblyjs/wast-parser": "1.4.0",
+    "@webassemblyjs/wasm-parser": "1.4.0",
     "@webassemblyjs/helper-test-framework": "1.4.0"
   }
 }
