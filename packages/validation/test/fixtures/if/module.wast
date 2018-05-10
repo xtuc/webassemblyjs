@@ -5,6 +5,7 @@
       (else)
     )
   )
+
   (func $type-if-operand-missing-in-block
     (i32.const 0)
     (loop
@@ -14,6 +15,7 @@
         )
     )
   )
+
   (func $type-if-operand-missing-in-if
     (i32.const 0)
     (i32.const 0)
@@ -27,6 +29,7 @@
       (else)
     )
   )
+
   (func $type-if-operand-missing-in-else
     (i32.const 0)
     (i32.const 0)
@@ -44,6 +47,7 @@
     )
     (drop)
   )
+
   (func $type-if-operand-missing-in-block
     (i32.const 0)
     (block
@@ -53,7 +57,9 @@
         )
     )
   )
+
   (func (param i32) (result i32)
+  	(get_local 0)
     (if (result i32)
       (then
         (i32.const 0)

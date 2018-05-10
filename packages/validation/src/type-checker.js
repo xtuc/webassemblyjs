@@ -100,29 +100,40 @@ export default function validate(ast) {
       }
 
       // Compare the two
-      let actual;
-      if (resultingStack !== false) {
-        let j = resultingStack.length - 1;
-        expectedResult.map(type => {
-          actual = resultingStack[j];
-
-          if (actual === POLYMORPHIC || stopFuncCheck) {
-            return;
-          }
-
-          checkTypes(type, actual);
-          ++j;
-        });
-      }
+      checkStacks(expectedResult, resultingStack);
     }
   });
 
   return errors;
 }
 
+function checkStacks(expectedStack, actualStack) {
+  if (actualStack !== false) {
+    let j = actualStack.length - 1;
+    for (let i = 0; i < expectedStack.length; ++i) {
+      const expected = expectedStack[i];
+      const actual = actualStack[j];
+
+      if (actual === POLYMORPHIC || stopFuncCheck) {
+        return;
+      }
+
+      checkTypes(expected, actual);
+      --j;
+    }
+
+    // There are still types left on the resulting stack
+    if (j >= 0) {
+      errors.push(
+        `Stack contains additional type ${actualStack.slice(0, j + 1)}.`
+      );
+    }
+  }
+}
+
 function applyInstruction(moduleContext, stack, instruction) {
   // Return was called, skip everything
-  if (stack.return || stack === false) {
+  if (stack === false || stack.return) {
     return stack;
   }
 
@@ -168,20 +179,39 @@ function applyInstruction(moduleContext, stack, instruction) {
   ) {
     moduleContext.addLabel(type.result);
 
-    stack = [
-      ...stack,
-      ...instruction.instr.reduce(
-        applyInstruction.bind(null, moduleContext),
-        []
-      )
-    ];
+    const newStack = instruction.instr.reduce(
+      applyInstruction.bind(null, moduleContext),
+      []
+    );
+
+    if (!stopFuncCheck) {
+      checkStacks(type.result, newStack);
+    }
+    stack = [...stack, ...newStack];
 
     moduleContext.popLabel();
-  }
-
-  // Used for branches
-  if (instruction.type === "IfInstruction") {
+  } else if (instruction.type === "IfInstruction") {
     moduleContext.addLabel(type.result);
+
+    // Condition can be nested as well
+    if (instruction.test) {
+      stack = instruction.test.reduce(
+        applyInstruction.bind(null, moduleContext),
+        stack
+      );
+    }
+
+    let actual;
+    for (let i = 0; i < type.args.length; ++i) {
+      const argType = type.args[i];
+
+      if (stack[stack.length - 1] === POLYMORPHIC || stopFuncCheck) {
+        return false;
+      }
+
+      actual = stack.pop();
+      checkTypes(argType, actual);
+    }
 
     const stackConsequent = instruction.consequent.reduce(
       applyInstruction.bind(null, moduleContext),
@@ -230,29 +260,30 @@ function applyInstruction(moduleContext, stack, instruction) {
       );
     }
 
+    checkStacks(type.result, stackConsequent);
+
     moduleContext.popLabel();
 
     // Add to existing stack
     stack = [...stack, ...stackConsequent];
-  }
-
-  if (instruction.id === "return") {
+  } else if (instruction.id === "return") {
     stack.return = true;
     return stack;
-  }
+  } else {
+    let actual;
+    for (let i = 0; i < type.args.length; ++i) {
+      const argType = type.args[i];
 
-  let actual;
+      if (stack[stack.length - 1] === POLYMORPHIC || stopFuncCheck) {
+        return false;
+      }
 
-  type.args.forEach(argType => {
-    if (stack[stack.length - 1] === POLYMORPHIC || stopFuncCheck) {
-      return;
+      actual = stack.pop();
+      checkTypes(argType, actual);
     }
 
-    actual = stack.pop();
-    checkTypes(argType, actual);
-  });
-
-  stack = [...stack, ...type.result];
+    stack = [...stack, ...type.result];
+  }
 
   return stack;
 }
