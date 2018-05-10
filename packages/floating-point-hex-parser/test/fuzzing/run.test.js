@@ -8,7 +8,7 @@ const numberOfRuns = process.env.FUZZ_AMOUNT
 const fuzzerBin = "./packages/floating-point-hex-parser/test/fuzzing/parse.out";
 const testCases = [];
 
-if (process.env["DISABLE_FUZZER_TEST"] === "") {
+if (typeof process.env["DISABLE_FUZZER_TEST"] === "undefined") {
   for (let i = 1; i < numberOfRuns; ++i) {
     const output = execFileSync(fuzzerBin, [i], {
       encoding: "utf8"
