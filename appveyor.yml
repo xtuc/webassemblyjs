@@ -1,6 +1,3 @@
-init:
-  - git config --global core.autocrlf false
-
 install:
   # Get the latest stable version of Node.js
   - ps: Install-Product node $env:NODEJS_VERSION
@@ -11,7 +8,6 @@ install:
 test_script:
   - node --version
   - npm --version
-  - SET PATH=%PATH%;c:\MinGW\bin
   - make TEST_TIMEOUT=6000 test-ci
 
 environment:
