@@ -1,0 +1,17 @@
+{
+  "name": "@webassemblyjs/webpack-repro",
+  "version": "1.4.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@webassemblyjs/ast": "1.4.0",
+    "@webassemblyjs/wasm-edit": "1.4.0",
+    "@webassemblyjs/wasm-parser": "1.4.0"
+  },
+  "private": true
+}

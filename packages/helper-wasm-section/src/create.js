@@ -5,7 +5,7 @@ import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 const t = require("@webassemblyjs/ast");
-const debug = require("debug")("wasm");
+const debug = require("debug")("wasm:createsection");
 
 type Res = { uint8Buffer: Uint8Array, sectionMetadata: SectionMetadata };
 
@@ -23,6 +23,12 @@ function findLastSection(
 
   for (let i = 0, len = moduleSections.length; i < len; i++) {
     const section = moduleSections[i];
+
+    // Ignore custom section since they can actually occur everywhere
+    if (section.section === "custom") {
+      continue;
+    }
+
     const sectionId = constants.sections[section.section];
 
     if (targetSectionId > lastId && targetSectionId < sectionId) {
@@ -32,6 +38,8 @@ function findLastSection(
     lastId = sectionId;
     lastSection = section;
   }
+
+  return lastSection;
 }
 
 export function createEmptySection(
@@ -44,16 +52,16 @@ export function createEmptySection(
 
   let start, end;
 
-  if (lastSection == null) {
-    /**
-     * It's the first section
-     */
+  /**
+   * It's the first section
+   */
+  if (lastSection == null || lastSection.section === "custom") {
     start = 8 /* wasm header size */;
     end = start;
 
-    debug("create empty section=%s start=%d end=%d", section, start, end);
+    debug("create empty section=%s first", section);
   } else {
-    start = lastSection.startOffset + lastSection.size + 1;
+    start = lastSection.startOffset + lastSection.size.value + 1;
     end = start;
 
     debug(
@@ -65,25 +73,68 @@ export function createEmptySection(
     );
   }
 
-  const size = 1; // empty vector
-  const vectorOfSize = 0;
+  // section id
+  start += 1;
 
-  const sectionMetadata = t.sectionMetadata(
-    section,
-    start + 1, // ignore the section id from the AST
-    size,
-    vectorOfSize
+  const sizeStartLoc = { line: -1, column: start };
+  const sizeEndLoc = { line: -1, column: start + 1 };
+
+  // 1 byte for the empty vector
+  const size = t.withLoc(t.numberLiteral(1), sizeEndLoc, sizeStartLoc);
+
+  const vectorOfSizeStartLoc = { line: -1, column: sizeEndLoc.column };
+  const vectorOfSizeEndLoc = { line: -1, column: sizeEndLoc.column + 1 };
+
+  const vectorOfSize = t.withLoc(
+    t.numberLiteral(0),
+    vectorOfSizeEndLoc,
+    vectorOfSizeStartLoc
   );
+
+  const sectionMetadata = t.sectionMetadata(section, start, size, vectorOfSize);
 
   const sectionBytes = encodeNode(sectionMetadata);
 
-  uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, sectionBytes);
+  uint8Buffer = overrideBytesInBuffer(
+    uint8Buffer,
+    start - 1,
+    end,
+    sectionBytes
+  );
 
   // Add section into the AST for later lookups
   if (typeof ast.body[0].metadata === "object") {
     // $FlowIgnore: metadata can not be empty
     ast.body[0].metadata.sections.push(sectionMetadata);
+
+    t.sortSectionMetadata(ast.body[0]);
   }
+
+  /**
+   * Update AST
+   */
+  // Once we hit our section every that is after needs to be shifted by the delta
+  const deltaBytes = +sectionBytes.length;
+  let encounteredSection = false;
+
+  t.traverse(ast, {
+    SectionMetadata(path) {
+      if (path.node.section === section) {
+        encounteredSection = true;
+        return;
+      }
+
+      if (encounteredSection === true) {
+        t.shiftSection(ast, path.node, deltaBytes);
+
+        debug(
+          "shift section section=%s detla=%d",
+          path.node.section,
+          deltaBytes
+        );
+      }
+    }
+  });
 
   return { uint8Buffer, sectionMetadata };
 }

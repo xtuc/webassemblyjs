@@ -6,6 +6,8 @@ cd $ROOT_DIR
 
 OPTS="$@"
 
+npm run build-fuzzer --prefix ./packages/floating-point-hex-parser
+
 for D in ./packages/*; do
   if [ ! -d "${D}/src" ]; then
     continue

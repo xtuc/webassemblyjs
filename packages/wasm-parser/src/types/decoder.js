@@ -64,9 +64,12 @@ type DecodedElementInCodeSection = {
 
 type DecodedModuleMemory = Memory;
 
+type DecodedModuleTable = Table;
+
 type State = {
   typesInModule: Array<DecodedModuleType>,
   functionsInModule: Array<DecodedModuleFunc>,
+  tablesInModule: Array<DecodedModuleTable>,
   memoriesInModule: Array<DecodedModuleMemory>,
 
   elementsInExportSection: Array<DecodedElementInExportSection>,

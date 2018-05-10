@@ -33,6 +33,13 @@ export function signature(object: string, name: string): SignatureMap {
   return sign[0];
 }
 
+export function moduleNameMetadata(value: string): ModuleNameMetadata {
+  return {
+    type: "ModuleNameMetadata",
+    value
+  };
+}
+
 export function functionNameMetadata(
   value: string,
   index: number
@@ -130,9 +137,13 @@ export function module(
 export function sectionMetadata(
   section: SectionName,
   startOffset: number,
-  size: number,
-  vectorOfSize: number = -1
+  size: NumberLiteral,
+  // $FlowIgnore
+  vectorOfSize: NumberLiteral = numberLiteral(-1)
 ): SectionMetadata {
+  assert(size.type === "NumberLiteral");
+  assert(vectorOfSize.type === "NumberLiteral");
+
   return {
     type: "SectionMetadata",
     section,
@@ -162,14 +173,15 @@ export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
 
 export function moduleExport(
   name: string,
-  type: ExportDescr,
+  exportType: ExportDescrType,
   id: Index
 ): ModuleExport {
   return {
     type: "ModuleExport",
     name,
     descr: {
-      type,
+      type: "ModuleExportDescr",
+      exportType,
       id
     }
   };
@@ -478,8 +490,8 @@ export function globalImportDescr(
 
 export function funcParam(valtype: Valtype, id: ?string): FuncParam {
   return {
-    valtype,
-    id
+    id,
+    valtype
   };
 }
 
@@ -519,6 +531,12 @@ export function table(
 }
 
 export function limits(min: number, max?: number): Limit {
+  assert(typeof min === "number");
+
+  if (typeof max !== "undefined") {
+    assert(typeof max === "number");
+  }
+
   return {
     type: "Limit",
     min,
@@ -673,5 +691,14 @@ export function isAnonymous(ident: Identifier): boolean {
 
 export { traverse, traverseWithHooks } from "./traverse";
 export { signatures } from "./signatures";
-export { getSectionMetadata } from "./utils";
+export {
+  isInstruction,
+  getSectionMetadata,
+  sortSectionMetadata,
+  orderedInsertNode,
+  assertHasLoc,
+  getEndOfSection,
+  shiftSection,
+  shiftLoc
+} from "./utils";
 export { cloneNode } from "./clone";

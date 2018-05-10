@@ -43,36 +43,47 @@ const fixtures = [
   },
 
   {
-    name: "a func(): i32 ModuleImport",
+    name: "a (func (result i32)) ModuleImport",
     node: t.moduleImport(
       "a",
       "b",
-      t.funcImportDescr(t.indexLiteral(0), [], ["i32"])
+      t.funcImportDescr(t.numberLiteral(0), [], ["i32"])
     ),
     expected: [0x01, 0x61, 0x01, 0x62, 0x00, 0x00]
   },
 
   {
-    name: "(func (result i32))",
+    name: "(type (func))",
+    node: t.typeInstructionFunc([], []),
+    expected: [0x60, 0x00, 0x00]
+  },
+
+  {
+    name: "(type (func (result i32)))",
     node: t.typeInstructionFunc([], ["i32"]),
     expected: [0x60, 0x00, 0x01, 0x7f]
   },
 
   {
-    name: "(func (param i32))",
+    name: "(type (func (param i32)))",
     node: t.typeInstructionFunc([t.funcParam("i32")], []),
     expected: [0x60, 0x01, 0x7f, 0x00]
   },
 
   {
-    name: "(func (param i32) (result i32))",
+    name: "(type (func (param i32) (result i32)))",
     node: t.typeInstructionFunc([t.funcParam("i32")], ["i32"]),
     expected: [0x60, 0x01, 0x7f, 0x01, 0x7f]
   },
 
   {
+    node: t.sectionMetadata(
+      "import",
+      0,
+      t.numberLiteral(1),
+      t.numberLiteral(0)
+    ),
     name: "an empty ImportSection",
-    node: t.sectionMetadata("import", 0, 1, 0),
     expected: [0x02, 0x01, 0x00]
   },
 

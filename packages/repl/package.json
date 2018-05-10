@@ -1,13 +1,13 @@
 {
   "name": "@webassemblyjs/repl",
-  "version": "1.2.6",
+  "version": "1.4.0",
   "description": "WebAssembly REPL",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Sven Sauleau",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuc/webassemblyjs.git"
@@ -16,10 +16,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@webassemblyjs/ast": "1.2.6",
-    "@webassemblyjs/wasm-parser": "1.2.6",
-    "@webassemblyjs/wast-parser": "1.2.6",
-    "webassemblyjs": "1.2.6"
+    "@webassemblyjs/ast": "1.4.0",
+    "@webassemblyjs/wasm-parser": "1.4.0",
+    "@webassemblyjs/wast-parser": "1.4.0",
+    "webassemblyjs": "1.4.0"
   },
   "bin": {
     "wasm": "./lib/bin.js"

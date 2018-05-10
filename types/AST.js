@@ -63,7 +63,6 @@ type Signature = {
 type SignatureOrTypeRef = Index | Signature;
 
 type Valtype = "i32" | "i64" | "f32" | "f64" | "u32" | "label";
-type ExportDescr = "Func" | "Table" | "Memory" | "Global";
 type Mutability = "const" | "var";
 type InstructionType = "Instr" | ControlInstruction;
 type ControlInstruction =
@@ -92,6 +91,7 @@ type Node =
   | Module
   | SectionMetadata
   | FunctionNameMetadata
+  | ModuleNameMetadata
   | Signature
   | LocalNameMetadata
   | BinaryModule
@@ -223,6 +223,13 @@ type ModuleMetadata = {
   localNames?: Array<LocalNameMetadata>
 };
 
+type ModuleNameMetadata = {
+  ...BaseNode,
+
+  type: "ModuleNameMetadata",
+  value: string
+};
+
 type FunctionNameMetadata = {
   ...BaseNode,
 
@@ -240,18 +247,27 @@ type LocalNameMetadata = {
   functionIndex: number
 };
 
+/**
+ * SectionMetadata
+ *
+ * | id                              | section size             | section vector size          | ... body bytes                |
+ * |---------------------------------|--------------------------|------------------------------|-------------------------------|
+ * | u32                             | LEB128 u32 (1...5 bytes) | LEB128 u32 (1...5 bytes)     | n bytes                       |
+ * |                                 | SectionMetadata size     | SectionMetadata vectorOfSize |                               |
+ * | SectionMetadata Start offset -> |                          |                              |                               |
+ */
 type SectionMetadata = {
   ...BaseNode,
 
   type: "SectionMetadata",
   section: SectionName,
 
-  // after the section id byte
   startOffset: number,
-  size: number,
+
+  size: NumberLiteral,
 
   // Size of the vector in the section (if any)
-  vectorOfSize: number
+  vectorOfSize: NumberLiteral
 };
 
 type BinaryModule = {
@@ -372,15 +388,22 @@ type CallIndirectInstruction = {
   index?: Index
 };
 
+type ExportDescrType = "Func" | "Table" | "Memory" | "Global";
+
+type ExportDescr = {
+  ...BaseNode,
+
+  type: "ModuleExportDescr",
+  exportType: ExportDescrType,
+  id: Index
+};
+
 type ModuleExport = {
   ...BaseNode,
 
   type: "ModuleExport",
   name: string,
-  descr: {
-    type: ExportDescr,
-    id: Index
-  }
+  descr: ExportDescr
 };
 
 type Limit = {

@@ -305,7 +305,7 @@ function instantiateExports(
       moduleInstance.exports.push({
         name: node.name,
         value: {
-          type: node.descr.type,
+          type: node.descr.exportType,
           addr: instantiatedItem.addr
         }
       });
@@ -318,7 +318,7 @@ function instantiateExports(
 
   traverse(n, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
-      switch (node.descr.type) {
+      switch (node.descr.exportType) {
         case "Func": {
           createModuleExport(
             node,

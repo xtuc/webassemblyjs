@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-strip",
-  "version": "1.2.6",
+  "version": "1.4.0",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -14,12 +14,12 @@
     "access": "public"
   },
   "author": "Sven Sauleau",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "bin": {
     "wasm-strip": "./lib/cli.js"
   },
   "dependencies": {
-    "@webassemblyjs/helper-wasm-section": "1.2.6",
-    "@webassemblyjs/wasm-parser": "1.2.6"
+    "@webassemblyjs/helper-wasm-section": "1.4.0",
+    "@webassemblyjs/wasm-parser": "1.4.0"
   }
 }

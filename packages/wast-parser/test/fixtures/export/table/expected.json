@@ -10,7 +10,7 @@
           "elementType": "anyfunc",
           "limits": {
             "type": "Limit",
-            "min": "0"
+            "min": 0
           },
           "name": {
             "type": "Identifier",
@@ -22,7 +22,8 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Table",
+            "type": "ModuleExportDescr",
+            "exportType": "Table",
             "id": {
               "type": "Identifier",
               "value": "table_0",

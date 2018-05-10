@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/ast",
-  "version": "1.2.6",
+  "version": "1.4.0",
   "description": "AST utils for webassemblyjs",
   "keywords": [
     "webassembly",
@@ -9,10 +9,12 @@
   ],
   "main": "lib/index.js",
   "author": "Sven Sauleau",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/wast-parser": "1.2.6",
-    "webassemblyjs": "1.2.6"
+    "@webassemblyjs/helper-wasm-bytecode": "1.4.0",
+    "@webassemblyjs/wast-parser": "1.4.0",
+    "debug": "^3.1.0",
+    "webassemblyjs": "1.4.0"
   },
   "repository": {
     "type": "git",

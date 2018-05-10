@@ -2,15 +2,21 @@
 
 import { encodeNode } from "@webassemblyjs/wasm-gen";
 import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
-import { getSectionMetadata, traverse } from "@webassemblyjs/ast";
+import {
+  assertHasLoc,
+  orderedInsertNode,
+  getSectionMetadata,
+  traverse,
+  getEndOfSection
+} from "@webassemblyjs/ast";
 import {
   resizeSectionByteSize,
   resizeSectionVecSize,
   createEmptySection,
-  removeSection,
-  getSectionForNode
+  removeSection
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
+import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
 
 const debug = require("debug")("wasm");
 
@@ -21,22 +27,12 @@ type State = {
   deltaElements: number
 };
 
-function assertNodeHasLoc(n: Node) {
-  if (n.loc == null || n.loc.start == null || n.loc.end == null) {
-    throw new Error(
-      `Internal failure: can not replace node (${JSON.stringify(
-        n.type
-      )}) without loc information`
-    );
-  }
-}
-
 function shiftLocNodeByDelta(node: Node, delta: number) {
-  assertNodeHasLoc(node);
+  assertHasLoc(node);
 
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   node.loc.start.column += delta;
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   node.loc.end.column += delta;
 }
 
@@ -47,7 +43,7 @@ function applyUpdate(
 ): State {
   const deltaElements = 0;
 
-  assertNodeHasLoc(oldNode);
+  assertHasLoc(oldNode);
 
   const sectionName = getSectionForNode(newNode);
   const replacementByteArray = encodeNode(newNode);
@@ -57,9 +53,9 @@ function applyUpdate(
    */
   uint8Buffer = overrideBytesInBuffer(
     uint8Buffer,
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     oldNode.loc.start.column,
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     oldNode.loc.end.column,
     replacementByteArray
   );
@@ -77,7 +73,7 @@ function applyUpdate(
         // Update func's body size if needed
         if (funcHasThisIntr === true) {
           // These are the old functions locations informations
-          assertNodeHasLoc(node);
+          assertHasLoc(node);
 
           const oldNodeSize = encodeNode(oldNode).length;
           const bodySizeDeltaBytes = replacementByteArray.length - oldNodeSize;
@@ -85,6 +81,8 @@ function applyUpdate(
           if (bodySizeDeltaBytes !== 0) {
             const newValue = node.metadata.bodySize + bodySizeDeltaBytes;
             const newByteArray = encodeU32(newValue);
+
+            debug("resize func body newValue=%d", newValue);
 
             // function body size byte
             // FIXME(sven): only handles one byte u32
@@ -108,7 +106,7 @@ function applyUpdate(
    */
   const deltaBytes =
     replacementByteArray.length -
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     (oldNode.loc.end.column - oldNode.loc.start.column);
 
   // Init location informations
@@ -118,11 +116,11 @@ function applyUpdate(
   };
 
   // Update new node end position
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   newNode.loc.start.column = oldNode.loc.start.column;
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   newNode.loc.end.column =
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     oldNode.loc.start.column + replacementByteArray.length;
 
   return { uint8Buffer, deltaBytes, deltaElements };
@@ -131,7 +129,7 @@ function applyUpdate(
 function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
   const deltaElements = -1; // since we removed an element
 
-  assertNodeHasLoc(node);
+  assertHasLoc(node);
 
   const sectionName = getSectionForNode(node);
 
@@ -144,7 +142,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
      */
     uint8Buffer = removeSection(ast, uint8Buffer, "start");
 
-    const deltaBytes = -sectionMetadata.size;
+    const deltaBytes = -(sectionMetadata.size.value + 1) /* section id */;
 
     return { uint8Buffer, deltaBytes, deltaElements };
   }
@@ -154,9 +152,9 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
 
   uint8Buffer = overrideBytesInBuffer(
     uint8Buffer,
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     node.loc.start.column,
-    // $FlowIgnore: assertNodeHasLoc ensures that
+    // $FlowIgnore: assertHasLoc ensures that
     node.loc.end.column,
     replacement
   );
@@ -165,7 +163,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    * Update section
    */
 
-  // $FlowIgnore: assertNodeHasLoc ensures that
+  // $FlowIgnore: assertHasLoc ensures that
   const deltaBytes = -(node.loc.end.column - node.loc.start.column);
 
   return { uint8Buffer, deltaBytes, deltaElements };
@@ -191,19 +189,45 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    */
   const newByteArray = encodeNode(node);
 
-  // start at the end of the section
-  const start = sectionMetadata.startOffset + sectionMetadata.size + 1;
+  // The size of the section doesn't include the storage of the size itself
+  // we need to manually add it here
+  const start = getEndOfSection(sectionMetadata);
 
   const end = start;
-
-  debug("add node=%s section=%s after=%d", node.type, sectionName, start);
-
-  uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
 
   /**
    * Update section
    */
   const deltaBytes = newByteArray.length;
+
+  debug(
+    "add node=%s section=%s after=%d deltaBytes=%s deltaElements=%s",
+    node.type,
+    sectionName,
+    start,
+    deltaBytes,
+    deltaElements
+  );
+
+  uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
+
+  node.loc = {
+    start: { line: -1, column: start },
+    end: { line: -1, column: start + deltaBytes }
+  };
+
+  // for func add the additional metadata in the AST
+  if (node.type === "Func") {
+    // the size is the first byte
+    // FIXME(sven): handle LEB128 correctly here
+    const bodySize = newByteArray[0];
+
+    node.metadata = { bodySize };
+  }
+
+  if (node.type !== "IndexInFuncSection") {
+    orderedInsertNode(ast.body[0], node);
+  }
 
   return { uint8Buffer, deltaBytes, deltaElements };
 }
@@ -242,6 +266,7 @@ export function applyOperations(
      */
     if (state.deltaBytes !== 0) {
       ops.forEach(op => {
+        // We don't need to handle add ops, they are positioning independent
         switch (op.kind) {
           case "update":
             shiftLocNodeByDelta(op.oldNode, state.deltaBytes);

@@ -62,7 +62,7 @@ function genTemplate(fn, opts) {
 }
 
 function printExport(moduleExport, funcsTable) {
-  if (moduleExport.descr.type === "Func") {
+  if (moduleExport.descr.exportType === "Func") {
     const funcNode = funcsTable[moduleExport.descr.id.value];
 
     const params = funcNode.params

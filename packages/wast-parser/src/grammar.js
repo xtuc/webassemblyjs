@@ -45,7 +45,7 @@ function tokenToString(token: Object): string {
 
 type ParserState = {
   registredExportedElements: Array<{
-    type: ExportDescr,
+    exportType: ExportDescrType,
     name: string,
     id: Index
   }>
@@ -182,7 +182,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
 
         state.registredExportedElements.push({
-          type: "Memory",
+          exportType: "Memory",
           name,
           id
         });
@@ -313,7 +313,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
 
           state.registredExportedElements.push({
-            type: "Table",
+            exportType: "Table",
             name: exportName,
             id: name
           });
@@ -326,11 +326,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           /**
            * Table type
            */
-          const min = token.value;
+          const min = parseInt(token.value);
           eatToken();
 
           if (token.type === tokens.number) {
-            const max = token.value;
+            const max = parseInt(token.value);
             eatToken();
 
             limit = t.limits(min, max);
@@ -378,7 +378,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error("Expected a string, " + token.type + " given.");
       }
 
-      let funcName = token.value;
+      const name = token.value;
+
+      let fnName = t.identifier(`${moduleName}.${name}`);
       eatToken();
 
       eatTokenOfType(tokens.openParen);
@@ -392,7 +394,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const fnResult = [];
 
         if (token.type === tokens.identifier) {
-          funcName = token.value;
+          fnName = t.identifier(token.value);
           eatToken();
         }
 
@@ -416,11 +418,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatTokenOfType(tokens.closeParen);
         }
 
-        if (typeof funcName === "undefined") {
+        if (typeof fnName === "undefined") {
           throw new Error("Imported function must have a name");
         }
 
-        descr = t.funcImportDescr(t.identifier(funcName), fnParams, fnResult);
+        descr = t.funcImportDescr(fnName, fnParams, fnResult);
       } else if (isKeyword(token, keywords.global)) {
         eatToken(); // keyword
 
@@ -455,7 +457,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       eatTokenOfType(tokens.closeParen);
       eatTokenOfType(tokens.closeParen);
 
-      return t.moduleImport(moduleName, funcName, descr);
+      return t.moduleImport(moduleName, name, descr);
     }
 
     /**
@@ -848,6 +850,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
 
           maybeIgnoreComment();
+          maybeIgnoreComment();
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -873,7 +876,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (state.registredExportedElements.length > 0) {
           state.registredExportedElements.forEach(decl => {
-            moduleFields.push(t.moduleExport(decl.name, decl.type, decl.id));
+            moduleFields.push(
+              t.moduleExport(decl.name, decl.exportType, decl.id)
+            );
           });
 
           state.registredExportedElements = [];
@@ -1197,6 +1202,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         fnName = t.withRaw(fnName, ""); // preserve anonymous
       }
 
+      maybeIgnoreComment();
+
       while (token.type === tokens.openParen) {
         eatToken();
 
@@ -1261,7 +1268,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const id = t.identifier(funcId.value);
 
       state.registredExportedElements.push({
-        type: "Func",
+        exportType: "Func",
         name,
         id
       });
@@ -1397,7 +1404,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.string);
 
         state.registredExportedElements.push({
-          type: "Global",
+          exportType: "Global",
           name: exportName,
           id: name
         });

@@ -45,7 +45,8 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "test"
@@ -93,7 +94,8 @@
           "type": "ModuleExport",
           "name": "b",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "global_1",
@@ -142,7 +144,8 @@
           "type": "ModuleExport",
           "name": "c",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "global_2",

@@ -151,8 +151,8 @@ export function encodeSectionMetadata(n: SectionMetadata): Array<Byte> {
   }
 
   out.push(sectionId);
-  out.push(...encodeU32(n.size));
-  out.push(...encodeU32(n.vectorOfSize));
+  out.push(...encodeU32(n.size.value));
+  out.push(...encodeU32(n.vectorOfSize.value));
 
   return out;
 }
@@ -193,10 +193,10 @@ export function encodeModuleExport(n: ModuleExport): Array<Byte> {
 
   assertNotIdentifierNode(n.descr.id);
 
-  const exportTypeByteString = constants.exportTypesByName[n.descr.type];
+  const exportTypeByteString = constants.exportTypesByName[n.descr.exportType];
 
   if (typeof exportTypeByteString === "undefined") {
-    throw new Error("Unknown export of type: " + n.descr.type);
+    throw new Error("Unknown export of type: " + n.descr.exportType);
   }
 
   const exportTypeByte = parseInt(exportTypeByteString, 10);

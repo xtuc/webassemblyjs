@@ -1,6 +1,6 @@
 {
   "name": "webassemblyjs",
-  "version": "1.2.6",
+  "version": "1.4.0",
   "keywords": [
     "webassembly",
     "interpreter",
@@ -16,16 +16,16 @@
     "test": "mocha"
   },
   "author": "Sven Sauleau",
-  "license": "GPL-2.0",
+  "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.2.6",
-    "@webassemblyjs/wasm-parser": "1.2.6",
-    "@webassemblyjs/wast-parser": "1.2.6",
-    "@webassemblyjs/validation": "1.2.6",
+    "@webassemblyjs/ast": "1.4.0",
+    "@webassemblyjs/validation": "1.4.0",
+    "@webassemblyjs/wasm-parser": "1.4.0",
+    "@webassemblyjs/wast-parser": "1.4.0",
     "long": "^3.2.0"
   },
   "devDependencies": {
-    "@webassemblyjs/floating-point-hex-parser": "1.2.6"
+    "@webassemblyjs/floating-point-hex-parser": "1.4.0"
   },
   "repository": {
     "type": "git",

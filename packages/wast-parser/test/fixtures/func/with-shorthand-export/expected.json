@@ -23,7 +23,8 @@
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Func",
+            "type": "ModuleExportDescr",
+            "exportType": "Func",
             "id": {
               "type": "Identifier",
               "value": "func_0"
@@ -50,7 +51,8 @@
           "type": "ModuleExport",
           "name": "b",
           "descr": {
-            "type": "Func",
+            "type": "ModuleExportDescr",
+            "exportType": "Func",
             "id": {
               "type": "Identifier",
               "value": "func_1"
@@ -79,7 +81,8 @@
           "type": "ModuleExport",
           "name": "c",
           "descr": {
-            "type": "Func",
+            "type": "ModuleExportDescr",
+            "exportType": "Func",
             "id": {
               "type": "Identifier",
               "value": "func_2"

@@ -21,6 +21,32 @@ describe("AST traverse", () => {
     assert.isTrue(called, "Module visitor has not been called");
   });
 
+  it("should be called once per node", () => {
+    const node = t.module("test", []);
+    let nb = 0;
+
+    traverse(node, {
+      Module() {
+        nb++;
+      }
+    });
+
+    assert.equal(nb, 1);
+  });
+
+  it("should call the special Node visitor", () => {
+    const node = t.module("test", []);
+    let called = false;
+
+    traverse(node, {
+      Node() {
+        called = true;
+      }
+    });
+
+    assert.isTrue(called, "Module visitor has not been called");
+  });
+
   describe("parent path", () => {
     it("should retain the parent path", () => {
       const root = t.module("test", [t.func(null, [], [], [])]);
