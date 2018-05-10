@@ -1,13 +1,7 @@
 // @flow
 
-const glob = require("glob");
-const { NO_DIFF_MESSAGE } = require("jest-diff/build/constants");
-const diff = require("jest-diff");
-const path = require("path");
 const validations = require("../lib");
-const { readFileSync } = require("fs");
 const { parse } = require("@webassemblyjs/wast-parser");
-const { assert } = require("chai");
 
 const {
   getFixtures,
