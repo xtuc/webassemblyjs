@@ -1,0 +1,20 @@
+init:
+  - git config --global core.autocrlf true
+
+install:
+  - make boostrap
+
+test_script:
+  - node --version
+  - npm --version
+  - make test-ci
+
+environment:
+  matrix:
+    - nodejs_version: 10
+      job_part: unit
+    - nodejs_version: 9
+      job_part: unit
+    - nodejs_version: 8
+      job_part: unit
+
