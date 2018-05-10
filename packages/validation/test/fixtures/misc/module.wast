@@ -38,6 +38,7 @@
   )
   (func (param f32)
     (local i32)
+	(get_local 0)
     (set_local 1)
   )
 )

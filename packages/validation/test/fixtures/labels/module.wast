@@ -12,6 +12,7 @@
     (br 1)
   )
   (func (param i32)
+  	(get_local 0)
     (if
       (then
         (nop)

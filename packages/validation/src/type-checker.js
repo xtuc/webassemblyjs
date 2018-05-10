@@ -89,7 +89,7 @@ export default function validate(ast) {
 
       const resultingStack = path.node.body.reduce(
         applyInstruction.bind(null, moduleContext),
-        path.node.signature.params.map(arg => arg.valtype)
+        []
       );
 
       if (stopFuncCheck) {
@@ -103,7 +103,7 @@ export default function validate(ast) {
         expectedResult.map(type => {
           actual = resultingStack[j];
 
-          if (actual === POLYMORPHIC) {
+          if (actual === POLYMORPHIC || stopFuncCheck) {
             return;
           }
 
@@ -132,6 +132,21 @@ function applyInstruction(moduleContext, stack, instruction) {
     instruction.type !== "IfInstruction"
   ) {
     return stack;
+  }
+
+  // Recursively evaluate all nested instructions
+  if (instruction.args) {
+    stack = instruction.args.reduce(
+      applyInstruction.bind(null, moduleContext),
+      stack
+    );
+  }
+
+  if (instruction.instrArgs) {
+    stack = instruction.instrArgs.reduce(
+      applyInstruction.bind(null, moduleContext),
+      stack
+    );
   }
 
   const type = getType(moduleContext, stack, instruction);
@@ -218,21 +233,6 @@ function applyInstruction(moduleContext, stack, instruction) {
     stack = [...stack, ...stackConsequent];
   }
 
-  // Recursively evaluate all nested instructions
-  if (instruction.args) {
-    stack = instruction.args.reduce(
-      applyInstruction.bind(null, moduleContext),
-      stack
-    );
-  }
-
-  if (instruction.instrArgs) {
-    stack = instruction.instrArgs.reduce(
-      applyInstruction.bind(null, moduleContext),
-      stack
-    );
-  }
-
   if (instruction.id === "return") {
     stack.return = true;
     return stack;
@@ -241,7 +241,7 @@ function applyInstruction(moduleContext, stack, instruction) {
   let actual;
 
   type.args.forEach(argType => {
-    if (stack[stack.length - 1] === POLYMORPHIC) {
+    if (stack[stack.length - 1] === POLYMORPHIC || stopFuncCheck) {
       return;
     }
 
