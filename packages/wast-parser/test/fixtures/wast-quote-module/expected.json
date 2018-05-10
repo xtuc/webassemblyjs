@@ -3,19 +3,17 @@
   "body": [
     {
       "type": "QuoteModule",
+      "id": null,
       "string": [
         "(func (i32.const 4294967296) drop)"
-      ],
-      "id": null,
-      "fields": []
+      ]
     },
     {
       "type": "QuoteModule",
+      "id": null,
       "string": [
         ""
-      ],
-      "id": null,
-      "fields": []
+      ]
     }
   ]
 }

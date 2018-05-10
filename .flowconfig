@@ -5,6 +5,7 @@
 [libs]
 ./types/
 ./packages/wasm-parser/src/types/decoder.js
+./packages/ast/src/types.js
 
 [lints]
 
