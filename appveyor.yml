@@ -12,7 +12,7 @@ test_script:
   - node --version
   - npm --version
   - SET PATH=%PATH%;c:\MinGW\bin
-  - make test-ci
+  - make TEST_TIMEOUT=6000 test-ci
 
 environment:
   NODEJS_VERSION: "10"

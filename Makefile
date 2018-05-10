@@ -1,6 +1,8 @@
 MOCHA_OPTS =
 NODE_OPTS =
 
+TEST_TIMEOUT = 4000
+
 LERNA = ./node_modules/.bin/lerna
 FLOWTYPED = ./node_modules/.bin/flow-typed
 NODE = node
@@ -33,7 +35,7 @@ watch:
 test-ci: test test-whitelisted-spec lint
 
 test: build
-	./scripts/test.sh --timeout 4000
+	./scripts/test.sh --timeout $(TEST_TIMEOUT)
 
 test-whitelisted-spec:
 	$(REPL) $(SPEC_TEST_DIR)/exports.wast
