@@ -1,7 +1,7 @@
 MOCHA_OPTS =
 NODE_OPTS =
 
-LERNA = ./node_modules/.bin/lerna
+LERNA = node ./node_modules/.bin/lerna
 FLOWTYPED = ./node_modules/.bin/flow-typed
 NODE = node
 PRETTIER = ./node_modules/.bin/prettier --ignore-path .prettierignore
