@@ -36,11 +36,11 @@ export function compareStrings(actual: string, expected: string) {
   actual = actual.trim();
   expected = expected.trim();
 
-  const out = diff(actual, expected);
+  // const out = diff(actual, expected);
 
-  if (out !== null && out !== NO_DIFF_MESSAGE) {
-    throw new Error("\n" + out);
-  }
+  // if (out !== null && out !== NO_DIFF_MESSAGE) {
+  //   throw new Error("\n" + out);
+  // }
 
   assert.equal(actual, expected);
 }
