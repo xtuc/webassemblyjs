@@ -3,7 +3,7 @@ init:
 
 install:
   - choco install make
-  - make boostrap
+  - make bootstrap
 
 test_script:
   - node --version
