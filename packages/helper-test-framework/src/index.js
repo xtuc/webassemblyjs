@@ -36,7 +36,7 @@ export function compareStrings(actual: string, expected: string) {
   actual = actual.trim();
   expected = expected.trim();
 
-  const out = diff(actual, expected);
+  const out = diff(expected, actual);
 
   if (out !== null && out !== NO_DIFF_MESSAGE) {
     throw new Error("\n" + out);
