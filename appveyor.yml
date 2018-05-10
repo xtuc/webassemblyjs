@@ -4,7 +4,7 @@ init:
 install:
   # Get the latest stable version of Node.js
   - ps: Install-Product node $env:nodejs_version
-  - choco install make
+  - choco install make mingw
   # - make bootstrap
   -  npm install --global lerna
   - lerna bootstrap
