@@ -2,12 +2,13 @@ init:
   - git config --global core.autocrlf true
 
 install:
-  - C:\msys64\usr\bin\bash -l -c "cd ${APPVEYOR_BUILD_FOLDER} && make boostrap"
+  - choco install make
+  - make boostrap
 
 test_script:
   - node --version
   - npm --version
-  - C:\msys64\usr\bin\bash -l -c "cd ${APPVEYOR_BUILD_FOLDER} && make test-ci"
+  - make test-ci
 
 environment:
   matrix:
