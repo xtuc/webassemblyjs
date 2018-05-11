@@ -28,8 +28,8 @@ function stripMetadata(ast) {
   return ast;
 }
 
-// - Expected is wasm-parser
-// + Received is wast-parser
+// - Expected is wast-parser
+// + Received is wasm-parser
 describe("Binary decoder", () => {
   const testSuites = getFixtures(__dirname, "fixtures", "**/actual.wat");
 
