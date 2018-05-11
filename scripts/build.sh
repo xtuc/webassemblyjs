@@ -7,7 +7,7 @@ cd $ROOT_DIR
 OPTS="$@"
 
 if [ -z "$DISABLE_FUZZER_TEST" ]; then
-  yarn run build-fuzzer --prefix ./packages/floating-point-hex-parser
+  yarn --cwd ./packages/floating-point-hex-parser run build-fuzzer
 fi
 
 for D in ./packages/*; do
