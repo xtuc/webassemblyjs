@@ -21,7 +21,7 @@
     "eslint-plugin-flowtype-errors": "^3.3.6",
     "eslint-plugin-mocha": "^4.11.0",
     "eslint-plugin-prettier": "^2.4.0",
-    "flow-bin": "^0.60.1",
+    "flow-bin": "^0.66.0",
     "flow-typed": "^2.2.3",
     "glob": "^7.1.2",
     "http-server": "^0.10.0",
@@ -32,5 +32,7 @@
     "performance-now": "^2.1.0",
     "prettier": "^1.9.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "mkdirp": "^0.5.1"
+  }
 }

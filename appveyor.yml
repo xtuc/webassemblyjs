@@ -1,0 +1,18 @@
+install:
+  - cmd: git submodule -q update --init
+  # Get the latest stable version of Node.js
+  - ps: Install-Product node $env:NODEJS_VERSION
+  - choco install make
+  - npm install --global lerna
+  - make LERNA=lerna bootstrap
+
+test_script:
+  - node --version
+  - npm --version
+  - make TEST_TIMEOUT=6000 test-ci-windows
+
+environment:
+  NODEJS_VERSION: "10"
+  DISABLE_FUZZER_TEST: 1
+
+build: off

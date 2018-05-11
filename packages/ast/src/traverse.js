@@ -16,6 +16,7 @@ function removeNodeInBody(node: Node, fromNode: Node) {
 
     case "Program":
     case "Func":
+      // $FlowIgnore it says References?
       fromNode.body = fromNode.body.filter(n => n !== node);
       break;
 
