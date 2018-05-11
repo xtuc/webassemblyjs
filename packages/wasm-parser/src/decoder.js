@@ -624,9 +624,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       // Decode instructions until the end
       parseInstructionBlock(code);
 
-      locals.forEach(l => {
-        code.unshift(t.instruction("local", [t.valtype(l)]));
-      });
+      code.unshift(...locals.map(l => t.instruction("local", [t.valtype(l)])));
 
       const endLoc = getPosition();
 
