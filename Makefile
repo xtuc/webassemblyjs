@@ -1,6 +1,8 @@
 MOCHA_OPTS =
 NODE_OPTS =
 
+TEST_TIMEOUT = 4000
+
 LERNA = ./node_modules/.bin/lerna
 FLOWTYPED = ./node_modules/.bin/flow-typed
 NODE = node
@@ -21,7 +23,7 @@ clean-all:
 	rm -rf ./node_modules ./packages/*/node_modules
 
 bootstrap: clean-all
-	npm install
+	yarn install
 	$(LERNA) bootstrap
 
 build:
@@ -31,9 +33,10 @@ watch:
 	./scripts/build.sh --watch
 
 test-ci: test test-whitelisted-spec lint
+test-ci-windows: test test-whitelisted-spec
 
 test: build
-	./scripts/test.sh --timeout 4000
+	./scripts/test.sh --timeout $(TEST_TIMEOUT)
 
 test-whitelisted-spec:
 	$(REPL) $(SPEC_TEST_DIR)/exports.wast

@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/leb128",
-  "version": "1.4.0",
+  "version": "1.4.2",
   "description": "LEB128 decoder and encoder",
   "main": "lib/index.js",
   "scripts": {

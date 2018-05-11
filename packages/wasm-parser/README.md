@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-npm install @webassemblyjs/wasm-parser
+yarn add @webassemblyjs/wasm-parser
 ```
 
 ## Usage
