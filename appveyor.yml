@@ -13,6 +13,8 @@ test_script:
 
 environment:
   NODEJS_VERSION: "10"
+
   DISABLE_FUZZER_TEST: 1
+  DISABLE_LINTING: 1
 
 build: off

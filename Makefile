@@ -9,7 +9,7 @@ NODE = node
 PRETTIER = ./node_modules/.bin/prettier --ignore-path .prettierignore
 MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
 BABEL = ./node_modules/.bin/babel --ignore src/types/npm
-ESLINT = node ./node_modules/.bin/eslint
+ESLINT = ./node_modules/.bin/eslint
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1
 MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 
@@ -32,7 +32,10 @@ build:
 watch:
 	./scripts/build.sh --watch
 
-test-ci: test test-whitelisted-spec lint
+test-ci: test test-whitelisted-spec
+  ifneq ($(DISABLE_LINTING), "1")
+	make lint
+  endif
 
 test: build
 	./scripts/test.sh --timeout $(TEST_TIMEOUT)
