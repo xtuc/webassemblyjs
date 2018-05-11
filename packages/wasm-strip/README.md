@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-npm install -g @webassemblyjs/wasm-strip
+yarn add -g @webassemblyjs/wasm-strip
 ```
 
 ## Usage

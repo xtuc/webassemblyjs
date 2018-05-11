@@ -9,7 +9,7 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 ## Installation
 
 ```sh
-npm install webassemblyjs
+yarn add webassemblyjs
 ```
 
 ## Usage

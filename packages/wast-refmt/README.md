@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-npm install -g @webassemblyjs/wast-refmt
+yarn add -g @webassemblyjs/wast-refmt
 ```
 
 ## Usage

@@ -3,12 +3,12 @@ install:
   # Get the latest stable version of Node.js
   - ps: Install-Product node $env:NODEJS_VERSION
   - choco install make
-  - npm install --global lerna
+  - yarn global add lerna
   - make LERNA=lerna bootstrap
 
 test_script:
   - node --version
-  - npm --version
+  - yarn --version
   - make TEST_TIMEOUT=6000 test-ci-windows
 
 environment:

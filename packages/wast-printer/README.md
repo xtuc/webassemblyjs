@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-npm install @webassemblyjs/wast-printer
+yarn add @webassemblyjs/wast-printer
 ```
 
 ## Usage
