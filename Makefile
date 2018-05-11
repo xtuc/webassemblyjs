@@ -32,10 +32,9 @@ build:
 watch:
 	./scripts/build.sh --watch
 
-test-ci: test test-whitelisted-spec
-  ifneq ($(DISABLE_LINTING), "1")
-	make lint
-  endif
+test-ci: test test-whitelisted-spec lint
+test-ci-windows: test test-whitelisted-spec
+
 
 test: build
 	./scripts/test.sh --timeout $(TEST_TIMEOUT)

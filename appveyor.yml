@@ -9,12 +9,10 @@ install:
 test_script:
   - node --version
   - npm --version
-  - make TEST_TIMEOUT=6000 test-ci
+  - make TEST_TIMEOUT=6000 test-ci-windows
 
 environment:
   NODEJS_VERSION: "10"
-
   DISABLE_FUZZER_TEST: 1
-  DISABLE_LINTING: 1
 
 build: off
