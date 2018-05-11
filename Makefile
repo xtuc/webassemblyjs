@@ -23,7 +23,7 @@ clean-all:
 	rm -rf ./node_modules ./packages/*/node_modules
 
 bootstrap: clean-all
-	npm install
+	yarn install
 	$(LERNA) bootstrap
 
 build:
@@ -34,7 +34,6 @@ watch:
 
 test-ci: test test-whitelisted-spec lint
 test-ci-windows: test test-whitelisted-spec
-
 
 test: build
 	./scripts/test.sh --timeout $(TEST_TIMEOUT)

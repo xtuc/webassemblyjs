@@ -7,7 +7,7 @@ cd $ROOT_DIR
 OPTS="$@"
 
 if [ -z "$DISABLE_FUZZER_TEST" ]; then
-  npm run build-fuzzer --prefix ./packages/floating-point-hex-parser
+  yarn run build-fuzzer --prefix ./packages/floating-point-hex-parser
 fi
 
 for D in ./packages/*; do

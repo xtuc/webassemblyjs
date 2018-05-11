@@ -7,7 +7,7 @@ Replace in-place an AST node in the binary.
 ## Installation
 
 ```sh
-npm install @webassemblyjs/wasm-edit
+yarn add @webassemblyjs/wasm-edit
 ```
 
 ## Usage
