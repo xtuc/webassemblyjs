@@ -3,7 +3,7 @@ install:
   # Get the latest stable version of Node.js
   - ps: Install-Product node $env:NODEJS_VERSION
   - choco install make
-  - yarn add --global lerna --verbose
+  - yarn global add lerna
   - make LERNA=lerna bootstrap
 
 test_script:
