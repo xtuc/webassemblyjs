@@ -9,7 +9,7 @@ NODE = node
 PRETTIER = ./node_modules/.bin/prettier --ignore-path .prettierignore
 MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
 BABEL = ./node_modules/.bin/babel --ignore src/types/npm
-ESLINT = ./node_modules/.bin/eslint
+ESLINT = node ./node_modules/.bin/eslint
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1
 MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
 
