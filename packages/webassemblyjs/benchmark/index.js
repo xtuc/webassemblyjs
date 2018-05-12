@@ -20,7 +20,7 @@ function wastToWasm(content) {
   const module = wabt.parseWat("module.wast", content);
   const { buffer } = module.toBinary({ write_debug_names: true });
 
-  return buffer;
+  return buffer.buffer;
 }
 
 function createRNG(nbr) {
@@ -79,14 +79,14 @@ benchmarks.forEach(file => {
   }
 
   const wast = readFileSync(file, "utf8");
-  const wasmBin = wastToWasm(wast);
+  const wasmbin = wastToWasm(wast);
 
   const bench = require(join(dirname(file), "bench.js"));
 
   const NBINTERATION = Math.pow(10, 7);
 
   const sandbox = {
-    wasmBin,
+    wasmbin,
     output,
     performance: { now },
     NBINTERATION,
@@ -107,8 +107,8 @@ benchmarks.forEach(file => {
     random: createRNG(NBINTERATION * 2)
   });
 
-  Promise.all([bench.test(nativeSandbox), bench.test(interpretedSandbox)]).then(
-    () => {
+  Promise.all([bench.test(nativeSandbox), bench.test(interpretedSandbox)])
+    .then(() => {
       output("");
       output("Interations: " + NBINTERATION);
       output("Date: " + new Date().toLocaleDateString());
@@ -119,6 +119,9 @@ benchmarks.forEach(file => {
       writeResult(dirname(file), outputBuffer);
 
       clearOuputBuffer();
-    }
-  );
+    })
+    .catch(err => {
+      console.log(outputBuffer);
+      console.error(err);
+    });
 });
