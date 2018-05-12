@@ -55,7 +55,7 @@ function addEndInstruction(body) {
 
 function assertStackDepth(depth: number) {
   if (depth >= 300) {
-    throw new RuntimeError("Maximum call stack depth reached");
+    throw new RuntimeError(`Maximum call stack depth reached (${depth})`);
   }
 }
 
