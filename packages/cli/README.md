@@ -5,5 +5,5 @@
 ## Installation
 
 ```sh
-npm install @webassemblyjs/cli
+yarn add @webassemblyjs/cli
 ```

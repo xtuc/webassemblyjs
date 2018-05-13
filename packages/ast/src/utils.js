@@ -3,7 +3,7 @@
 import { traverse } from "./traverse";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 
-const debug = require("debug")("ast:utils");
+const debug = require("debug")("webassemblyjs:ast:utils");
 
 export function getSectionMetadata(
   ast: Node,

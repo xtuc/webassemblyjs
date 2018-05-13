@@ -1,20 +1,26 @@
 const { readFileSync, writeFileSync } = require("fs");
 const glob = require("glob");
-const path = require("path");
+const { join, dirname } = require("path");
 const now = require("performance-now");
+const wabt = require("wabt");
 
 const interpreter = require("../lib");
 const interpreterpkg = require("../package.json");
+
+const basePath = join(__dirname, "..");
 
 if (typeof WebAssembly === "undefined") {
   console.log("WebAssembly not supported, skiping.");
   process.exit(0);
 }
 
-const benchmarks = glob.sync("benchmark/**/module.wasm");
+const benchmarks = glob.sync(join(basePath, "benchmark/**/module.wast"));
 
-function toArrayBuffer(buf) {
-  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+function wastToWasm(content) {
+  const module = wabt.parseWat("module.wast", content);
+  const { buffer } = module.toBinary({ write_debug_names: true });
+
+  return buffer.buffer;
 }
 
 function createRNG(nbr) {
@@ -47,7 +53,7 @@ function formatNumber(i) {
 }
 
 function writeResult(dir, result) {
-  const resultFile = path.join(dir, "results");
+  const resultFile = join(dir, "results");
   writeFileSync(resultFile, result);
 
   console.log("wrote result file", resultFile);
@@ -72,8 +78,10 @@ benchmarks.forEach(file => {
     outputBuffer = "";
   }
 
-  const wasmbin = toArrayBuffer(readFileSync(file, null));
-  const bench = require("../" + path.join(path.dirname(file), "bench.js"));
+  const wast = readFileSync(file, "utf8");
+  const wasmbin = wastToWasm(wast);
+
+  const bench = require(join(dirname(file), "bench.js"));
 
   const NBINTERATION = Math.pow(10, 7);
 
@@ -99,8 +107,8 @@ benchmarks.forEach(file => {
     random: createRNG(NBINTERATION * 2)
   });
 
-  Promise.all([bench.test(nativeSandbox), bench.test(interpretedSandbox)]).then(
-    () => {
+  Promise.all([bench.test(nativeSandbox), bench.test(interpretedSandbox)])
+    .then(() => {
       output("");
       output("Interations: " + NBINTERATION);
       output("Date: " + new Date().toLocaleDateString());
@@ -108,9 +116,12 @@ benchmarks.forEach(file => {
       output("Interpreter version: " + interpreterpkg.version);
 
       // Write results
-      writeResult(path.dirname(file), outputBuffer);
+      writeResult(dirname(file), outputBuffer);
 
       clearOuputBuffer();
-    }
-  );
+    })
+    .catch(err => {
+      console.log(outputBuffer);
+      console.error(err);
+    });
 });

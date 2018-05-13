@@ -7,10 +7,10 @@ id: usage
 
 You can import `https://bundle.run/webassemblyjs` and the `webassemblyjs` object will be accessible.
 
-## npm
+## yarn
 
 ```sh
-npm install @webassemblyjs/cli
+yarn add @webassemblyjs/cli
 ```
 
 ### Command line interface

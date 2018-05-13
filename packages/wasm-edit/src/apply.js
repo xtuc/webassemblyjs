@@ -18,7 +18,7 @@ import {
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
 
-const debug = require("debug")("wasm");
+const debug = require("debug")("webassemblyjs:wasm");
 
 type State = {
   uint8Buffer: Uint8Array,

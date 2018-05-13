@@ -4,7 +4,7 @@ import { traverse, shiftSection } from "@webassemblyjs/ast";
 import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-const debug = require("debug")("wasm:opt");
+const debug = require("debug")("webassemblyjs:wasm:opt");
 
 function shiftFollowingSections(ast, { section }, deltaInSizeEncoding) {
   // Once we hit our section every that is after needs to be shifted by the delta

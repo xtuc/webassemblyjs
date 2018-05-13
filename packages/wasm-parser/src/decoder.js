@@ -612,6 +612,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         eatBytes(1);
 
         const type = valtypes[valtypeByte];
+        locals.push(type);
 
         dump([valtypeByte], type);
 
@@ -622,6 +623,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       // Decode instructions until the end
       parseInstructionBlock(code);
+
+      code.unshift(...locals.map(l => t.instruction("local", [t.valtype(l)])));
 
       const endLoc = getPosition();
 
