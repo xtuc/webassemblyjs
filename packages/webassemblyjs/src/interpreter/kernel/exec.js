@@ -1,15 +1,7 @@
 // @flow
 
-type AssertArgs = {|
-  MSG?: string,
-  COND: boolean
-|};
-declare function assert(AssertArgs): void;
-
-type AssertNItemsOnStackArgs = {|
-  N: number
-|};
-declare function assertNItemsOnStack(AssertNItemsOnStackArgs): void;
+declare function assert(cond: boolean, msg?: string): void;
+declare function assertNItemsOnStack(n: number): void;
 
 import { Memory } from "../runtime/values/memory";
 import { RuntimeError } from "../../errors";
@@ -17,15 +9,17 @@ const t = require("@webassemblyjs/ast");
 
 MACRO(
   assert,
-  `if (!COND) {
-    throw new RuntimeError("Assertion error: " + (MSG || "unknown"));
+  (cond, msg) => `if (!(${cond})) {
+    throw new RuntimeError("Assertion error: " + (${msg} || "unknown"));
   }`
 );
 
 MACRO(
   assertNItemsOnStack,
-  `if (frame.values.length < N) {
-    throw new RuntimeError("Assertion error: expected " + N + " on the stack, found " + frame.values.length);
+  n => `
+  const s = ${n};
+  if (frame.values.length < s) {
+    throw new RuntimeError("Assertion error: expected " + s  + " on the stack, found " + frame.values.length);
   }`
 );
 
@@ -79,10 +73,7 @@ export function executeStackFrame(
 
     const frame = stack[framepointer];
 
-    assert({
-      COND: frame !== undefined,
-      MSG: "no frame at " + framepointer
-    });
+    assert(frame !== undefined, "no frame at " + framepointer);
 
     framepointer++;
 
@@ -99,7 +90,7 @@ export function executeStackFrame(
     }
 
     function setLocalByIndex(index: number, value: StackLocal) {
-      assert({ COND: typeof index === "number" });
+      assert(typeof index === "number");
 
       frame.locals[index] = value;
     }
@@ -113,7 +104,7 @@ export function executeStackFrame(
     }
 
     function popArrayOfValTypes(types: Array<Valtype>): any {
-      assertNItemsOnStack({ N: types.length });
+      assertNItemsOnStack(types.length);
 
       return types.map(type => {
         return pop1OfType(type);
@@ -121,7 +112,7 @@ export function executeStackFrame(
     }
 
     function pop1OfType(type: Valtype): any {
-      assertNItemsOnStack({ N: 1 });
+      assertNItemsOnStack(1);
 
       const v = frame.values.pop();
 
@@ -138,13 +129,13 @@ export function executeStackFrame(
     }
 
     function pop1(): any {
-      assertNItemsOnStack({ N: 1 });
+      assertNItemsOnStack(1);
 
       return frame.values.pop();
     }
 
     function pop2(type1: Valtype, type2: Valtype): [any, any] {
-      assertNItemsOnStack({ N: 2 });
+      assertNItemsOnStack(2);
 
       const c2 = frame.values.pop();
       const c1 = frame.values.pop();
@@ -250,10 +241,7 @@ export function executeStackFrame(
       // FIXME(sven): that's wrong
       const frame = stack[framepointer - 1];
 
-      assert({
-        COND: frame !== undefined,
-        MSG: "no active frame"
-      });
+      assert(frame !== undefined, "no active frame");
 
       const nextStackFrame = stackframe.createChildStackFrame(frame, instrs);
 
@@ -277,10 +265,10 @@ export function executeStackFrame(
     while (true) {
       const instruction = frame.code[frame._pc];
 
-      assert({
-        COND: instruction !== undefined,
-        MSG: `no instruction at pc ${frame._pc} in frame ${framepointer}`
-      });
+      assert(
+        instruction !== undefined,
+        `no instruction at pc ${frame._pc} in frame ${framepointer}`
+      );
 
       if (typeof frame.trace === "function") {
         frame.trace(framepointer, frame._pc, instruction, frame);
@@ -360,11 +348,10 @@ export function executeStackFrame(
           // https://webassembly.github.io/spec/core/exec/instructions.html#exec-loop
           const loop = instruction;
 
-          assert({
-            COND:
-              typeof loop.instr === "object" &&
+          assert(
+            typeof loop.instr === "object" &&
               typeof loop.instr.length !== "undefined"
-          });
+          );
 
           // 2. Enter the block instr∗ with label
           frame.labels.push({
@@ -388,7 +375,7 @@ export function executeStackFrame(
           // https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop
 
           // 1. Assert: due to validation, a value is on the top of the stack.
-          assertNItemsOnStack({ N: 1 });
+          assertNItemsOnStack(1);
 
           // 2. Pop the value valval from the stack.
           pop1();
@@ -414,9 +401,7 @@ export function executeStackFrame(
           if (call.index.type === "NumberLiteral") {
             const index = call.index.value;
 
-            assert({
-              COND: typeof frame.originatingModule !== "undefined"
-            });
+            assert(typeof frame.originatingModule !== "undefined");
 
             // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
             const funcaddr = frame.originatingModule.funcaddrs[index];
@@ -482,11 +467,10 @@ export function executeStackFrame(
             throw newRuntimeError("Block has no id");
           }
 
-          assert({
-            COND:
-              typeof block.instr === "object" &&
+          assert(
+            typeof block.instr === "object" &&
               typeof block.instr.length !== "undefined"
-          });
+          );
 
           if (block.instr.length > 0) {
             const oldStackSize = frame.values.length;
@@ -550,7 +534,7 @@ export function executeStackFrame(
           const l = label.value;
 
           // 1. Assert: due to validation, the stack contains at least l+1 labels.
-          assertNItemsOnStack({ N: l + 1 });
+          assertNItemsOnStack(l + 1);
 
           // 2. Let L be the l-th label appearing on the stack, starting from the top and counting from zero.
           let seenLabels = 0;
@@ -578,7 +562,7 @@ export function executeStackFrame(
           const n = L.arity;
 
           // 4. Assert: due to validation, there are at least nn values on the top of the stack.
-          assertNItemsOnStack({ N: n });
+          assertNItemsOnStack(n);
 
           // 5. Pop the values valn from the stack
           const val = frame.values[n];

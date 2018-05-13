@@ -3,7 +3,7 @@
 import { traverse, getSectionMetadata, shiftSection } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-const debug = require("debug")("wasm:removesection");
+const debug = require("debug")("webassemblyjs:wasm:removesection");
 
 export function removeSection(
   ast: Program,
