@@ -8,6 +8,10 @@ const parserOptions = {
   allowSuperOutsideMethod: true
 };
 
+function hasFlag(name) {
+  return process.env["WITH_" + name.toUpperCase()] === "1";
+}
+
 function macro({types: t}) {
   const macroMap = {};
 
@@ -31,12 +35,17 @@ function macro({types: t}) {
 
   function defineMacro(ident, fn) {
     let content = '';
+    const {name} = ident;
 
     if (t.isArrowFunctionExpression(fn) === false) {
       throw new Error("Unsupported macro");
     }
 
-    macroMap[ident.name] = fn;
+    if (name === "trace" && hasFlag("trace") === false) {
+      return;
+    }
+
+    macroMap[name] = fn;
   }
 
   return {
@@ -47,6 +56,8 @@ function macro({types: t}) {
         if (t.isIdentifier(node.callee, {name: "MACRO"})) {
           defineMacro(node.arguments[0], node.arguments[1]);
           path.remove();
+
+          return;
         }
 
         const macro = macroMap[node.callee.name];
@@ -58,6 +69,10 @@ function macro({types: t}) {
           const ast = parse(string, parserOptions).program.body;
 
           path.replaceWithMultiple(ast);
+        }
+
+        if (node.callee.name === "trace" && hasFlag("trace") === false) {
+          path.remove();
         }
 
       }

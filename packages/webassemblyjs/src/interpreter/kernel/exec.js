@@ -1,5 +1,6 @@
 // @flow
 
+declare function trace(msg?: string): void;
 declare function assert(cond: boolean, msg?: string): void;
 declare function assertNItemsOnStack(n: number): void;
 
@@ -21,6 +22,13 @@ MACRO(
   if (frame.values.length < s) {
     throw new RuntimeError("Assertion error: expected " + s  + " on the stack, found " + frame.values.length);
   }`
+);
+
+MACRO(
+  trace,
+  msg => `
+    console.log("trace " + ${msg});
+  `
 );
 
 const {
@@ -270,6 +278,8 @@ export function executeStackFrame(
         `no instruction at pc ${frame._pc} in frame ${framepointer}`
       );
 
+      trace("exec " + instruction.id);
+
       if (typeof frame.trace === "function") {
         frame.trace(framepointer, frame._pc, instruction, frame);
       }
@@ -461,6 +471,8 @@ export function executeStackFrame(
             id: block.label
           });
 
+          trace("entering block " + block.label.value);
+
           if (block.label.type === "Identifier") {
             pushResult(label.createValue(block.label.value));
           } else {
@@ -515,6 +527,8 @@ export function executeStackFrame(
 
             return x.id.value !== block.label.value;
           });
+
+          trace("exiting block " + block.label.value);
 
           break;
         }
@@ -680,6 +694,8 @@ export function executeStackFrame(
 
           const init = castIntoStackLocalOfType(valtype.name, 0);
           frame.locals.push(init);
+
+          trace("new local " + valtype.name);
 
           break;
         }
