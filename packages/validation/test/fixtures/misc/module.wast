@@ -36,7 +36,7 @@
     (local i32)
     (tee_local 1 (f32.const 0))
   )
-  (func (param f32)
+  (func $last (param f32)
     (local i32)
 	(get_local 0)
     (set_local 1)

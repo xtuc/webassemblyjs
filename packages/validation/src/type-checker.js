@@ -79,18 +79,16 @@ export default function validate(ast) {
 
   // Simulate stack types throughout all function bodies
   traverse(ast, {
-    Func(path) {
+    Func({ node }) {
       stopFuncCheck = false;
-      const expectedResult = path.node.signature.results;
+      const expectedResult = node.signature.results;
 
-      moduleContext.resetStackFrame(expectedResult);
+      moduleContext.newContext(node.name.value, expectedResult);
 
       // Parameters are local variables
-      path.node.signature.params.forEach(p =>
-        moduleContext.addLocal(p.valtype)
-      );
+      node.signature.params.forEach(p => moduleContext.addLocal(p.valtype));
 
-      const resultingStack = path.node.body.reduce(
+      const resultingStack = node.body.reduce(
         applyInstruction.bind(null, moduleContext),
         []
       );

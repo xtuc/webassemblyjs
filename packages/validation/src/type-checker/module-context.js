@@ -1,3 +1,5 @@
+const debug = require("debug")("webassemblyjs:typechecker");
+
 /**
  * Module context for type checking
  */
@@ -10,11 +12,19 @@ export default class ModuleContext {
     // Current stack frame
     this.locals = [];
     this.labels = [];
+
+    this.debugName = "unknown";
   }
 
-  resetStackFrame(expectedResult) {
+  /**
+   * Reset the active stack frame
+   */
+  newContext(debugName, expectedResult) {
+    debug("new context %s", debugName);
+
     this.locals = [];
     this.labels = [expectedResult];
+    this.debugName = debugName;
   }
 
   /**
@@ -61,7 +71,7 @@ export default class ModuleContext {
    * Locals
    */
   hasLocal(index) {
-    return this.locals.length > index && index >= 0;
+    return typeof this.getLocal(index) !== "undefined";
   }
 
   getLocal(index) {
@@ -69,6 +79,8 @@ export default class ModuleContext {
   }
 
   addLocal(type) {
+    debug("add local t=%s index=%d", type, this.locals.length);
+
     this.locals.push(type);
   }
 
