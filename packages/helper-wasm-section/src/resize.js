@@ -4,7 +4,7 @@ import { encodeU32 } from "@webassemblyjs/wasm-gen";
 import { getSectionMetadata, traverse, shiftSection } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-const debug = require("debug")("wasm:resizesection");
+const debug = require("debug")("webassemblyjs:wasm:resizesection");
 
 export function resizeSectionByteSize(
   ast: Program,
