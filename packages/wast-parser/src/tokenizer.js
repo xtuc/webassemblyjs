@@ -10,7 +10,8 @@ declare function unexpectedCharacter(): void;
  */
 MACRO(
   unexpectedCharacter,
-  'throw new Error(getCodeFrame(input, line, column) + `Unexpected character "${char}"`);'
+  () =>
+    `throw new Error(getCodeFrame(input, line, column) + "Unexpected character " + JSON.stringify(char));`
 );
 
 // eslint-disable-next-line
