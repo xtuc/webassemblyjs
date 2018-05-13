@@ -32,19 +32,33 @@ export default class ModuleContext {
    */
   addFunction({ params: args, results: result }) {
     args = args.map(arg => arg.valtype);
+
+    debug("add new function %s -> %s", args.join(" "), result.join(" "));
+
     this.funcs.push({ args, result });
   }
 
   importFunction({ params: args, results: result }) {
     args = args.map(arg => arg.valtype);
+
+    debug(
+      "add new imported function %s -> %s",
+      args.join(" "),
+      result.join(" ")
+    );
+
     this.funcs.unshift({ args, result });
   }
 
   hasFunction(index) {
-    return this.funcs.length > index && index >= 0;
+    return typeof this.getFunction(index) !== "undefined";
   }
 
   getFunction(index) {
+    if (typeof index !== "number") {
+      throw new Error("getFunction only supported for number index");
+    }
+
     return this.funcs[index];
   }
 

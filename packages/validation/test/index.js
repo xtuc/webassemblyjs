@@ -33,7 +33,7 @@ describe("validation", () => {
   describe("wasm", () => {
     const pre = (f, suite) => {
       const module = wabt.parseWat(suite, f);
-      const { buffer } = module.toBinary({ write_debug_names: true });
+      const { buffer } = module.toBinary({ write_debug_names: false });
 
       const errors = validations.stack(decode(buffer));
 

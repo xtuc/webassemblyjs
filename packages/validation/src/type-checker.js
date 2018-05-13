@@ -65,6 +65,17 @@ export default function validate(ast) {
             moduleContext.importFunction(field.descr.signature);
             break;
           }
+
+          case "Table": {
+            // FIXME(sven): not implemented yet
+            break;
+          }
+
+          default:
+            throw new Error(
+              "Unsupported ModuleImport of type " +
+                JSON.stringify(field.descr.type)
+            );
         }
         break;
       }
