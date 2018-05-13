@@ -278,6 +278,7 @@ export function executeStackFrame(
         `no instruction at pc ${frame._pc} in frame ${framepointer}`
       );
 
+      // $FlowIgnore
       trace("exec " + instruction.id);
 
       if (typeof frame.trace === "function") {
