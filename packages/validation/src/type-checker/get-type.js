@@ -391,7 +391,8 @@ export default function getType(moduleContext, stack, instruction) {
      *
      * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-memory-size
      */
-    case "size": {
+    case "size":
+    case "current_memory": {
       if (!moduleContext.hasMemory(0)) {
         error = `Module does not have memory 0`;
         break;
@@ -405,7 +406,8 @@ export default function getType(moduleContext, stack, instruction) {
      *
      * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-memory-grow
      */
-    case "grow": {
+    case "grow":
+    case "grow_memory": {
       if (!moduleContext.hasMemory(0)) {
         error = `Module does not have memory 0`;
         break;

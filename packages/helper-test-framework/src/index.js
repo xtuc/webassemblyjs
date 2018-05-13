@@ -53,11 +53,7 @@ export function compareWithExpected(
   fixtures.forEach(suite => {
     it(suite, () => {
       const input = readFileSync(suite, "utf8");
-      let expectedThrows = getThrowsFile(dirname(suite));
-
-      if (expectedFilename === "throws.txt") {
-        expectedThrows = undefined;
-      }
+      const expectedThrows = getThrowsFile(dirname(suite));
 
       let actual = "";
 

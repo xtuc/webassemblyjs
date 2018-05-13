@@ -17,9 +17,12 @@ function checkTypes(a, b) {
   }
 
   // the type u32 is equal to i32
-  if ((a === "u32" && b === "i32") || (a === "i32" && b === "u32")) {
-    return;
-  }
+  if (a === "u32") a = "i32";
+  if (b === "u32") b = "i32";
+
+  // the type u64 is equal to i64
+  if (a === "u64") a = "i64";
+  if (b === "u64") b = "i64";
 
   if (a !== b) {
     errors.push(`Expected type ${a} but got ${b || "none"}.`);

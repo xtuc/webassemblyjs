@@ -2,6 +2,8 @@
 
 const validations = require("../lib");
 const { parse } = require("@webassemblyjs/wast-parser");
+const { decode } = require("@webassemblyjs/wasm-parser");
+const wabt = require("wabt");
 
 const {
   getFixtures,
@@ -25,6 +27,19 @@ describe("validation", () => {
       return errorsToString(errors);
     };
 
-    compareWithExpected(testSuites, pre, "throws.txt");
+    compareWithExpected(testSuites, pre, "output.txt");
+  });
+
+  describe("wasm", () => {
+    const pre = (f, suite) => {
+      const module = wabt.parseWat(suite, f);
+      const { buffer } = module.toBinary({ write_debug_names: true });
+
+      const errors = validations.stack(decode(buffer));
+
+      return errorsToString(errors);
+    };
+
+    compareWithExpected(testSuites, pre, "output.txt");
   });
 });
