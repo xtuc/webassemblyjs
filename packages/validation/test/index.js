@@ -27,7 +27,7 @@ describe("validation", () => {
       return errorsToString(errors);
     };
 
-    compareWithExpected(testSuites, pre, "throws.txt");
+    compareWithExpected(testSuites, pre, "output.txt");
   });
 
   describe("wasm", () => {
@@ -40,6 +40,6 @@ describe("validation", () => {
       return errorsToString(errors);
     };
 
-    compareWithExpected(testSuites, pre, "throws.txt");
+    compareWithExpected(testSuites, pre, "output.txt");
   });
 });
