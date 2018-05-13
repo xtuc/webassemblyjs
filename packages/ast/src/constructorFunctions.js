@@ -17,9 +17,6 @@ export function module(
 
   assert(typeof fields === "object" && typeof fields.length !== "undefined");
 
-  if (metadata !== null && metadata !== undefined) {
-  }
-
   const node: Module = {
     type: "Module",
     id,
@@ -176,12 +173,6 @@ export function loopInstruction(
   resulttype: ?Valtype,
   instr: Array<Instruction>
 ): LoopInstruction {
-  if (label !== null && label !== undefined) {
-  }
-
-  if (resulttype !== null && resulttype !== undefined) {
-  }
-
   assert(typeof instr === "object" && typeof instr.length !== "undefined");
 
   const node: LoopInstruction = {
@@ -204,9 +195,6 @@ export function instruction(
 
   assert(typeof args === "object" && typeof args.length !== "undefined");
 
-  if (namedArgs !== null && namedArgs !== undefined) {
-  }
-
   const node: GenericInstruction = {
     type: "Instr",
     id,
@@ -222,22 +210,19 @@ export function instruction(
 
 export function objectInstruction(
   id: string,
+  object: Valtype,
   args: Array<Expression> = [],
-  namedArgs?: Object = {},
-  object: Valtype
+  namedArgs?: Object = {}
 ): ObjectInstruction {
   assert(typeof id === "string");
 
   assert(typeof args === "object" && typeof args.length !== "undefined");
 
-  if (namedArgs !== null && namedArgs !== undefined) {
-  }
-
   const node: ObjectInstruction = {
     type: "Instr",
     id,
-    args,
-    object
+    object,
+    args
   };
 
   if (Object.keys(namedArgs).length !== 0) {
@@ -255,9 +240,6 @@ export function ifInstruction(
   alternate: Array<Instruction>
 ): IfInstruction {
   assert(typeof test === "object" && typeof test.length !== "undefined");
-
-  if (result !== null && result !== undefined) {
-  }
 
   assert(
     typeof consequent === "object" && typeof consequent.length !== "undefined"
@@ -396,9 +378,6 @@ export function typeInstruction(
   id: ?Index,
   functype: Signature
 ): TypeInstruction {
-  if (id !== null && id !== undefined) {
-  }
-
   const node: TypeInstruction = {
     type: "TypeInstruction",
     id,
@@ -474,9 +453,6 @@ export function global(
 ): Global {
   assert(typeof init === "object" && typeof init.length !== "undefined");
 
-  if (name !== null && name !== undefined) {
-  }
-
   const node: Global = {
     type: "Global",
     globalType,
@@ -493,9 +469,6 @@ export function table(
   name: ?Identifier,
   elements?: Array<Index>
 ): Table {
-  if (name !== null && name !== undefined) {
-  }
-
   if (elements !== null && elements !== undefined) {
     assert(
       typeof elements === "object" && typeof elements.length !== "undefined"
@@ -517,9 +490,6 @@ export function table(
 }
 
 export function memory(limits: Limit, id: ?Index): Memory {
-  if (id !== null && id !== undefined) {
-  }
-
   const node: Memory = {
     type: "Memory",
     limits,
@@ -660,13 +630,7 @@ export function blockInstruction(
   instr: Array<Instruction>,
   result: ?Valtype
 ): BlockInstruction {
-  if (label !== null && label !== undefined) {
-  }
-
   assert(typeof instr === "object" && typeof instr.length !== "undefined");
-
-  if (result !== null && result !== undefined) {
-  }
 
   const node: BlockInstruction = {
     type: "BlockInstruction",
@@ -704,14 +668,10 @@ export function callInstruction(
 
 export function callIndirectInstruction(
   signature: SignatureOrTypeRef,
-  intrs?: Array<Expression>,
-  index?: Index
+  intrs?: Array<Expression>
 ): CallIndirectInstruction {
   if (intrs !== null && intrs !== undefined) {
     assert(typeof intrs === "object" && typeof intrs.length !== "undefined");
-  }
-
-  if (index !== null && index !== undefined) {
   }
 
   const node: CallIndirectInstruction = {
@@ -721,10 +681,6 @@ export function callIndirectInstruction(
 
   if (typeof intrs !== "undefined" && intrs.length > 0) {
     node.intrs = intrs;
-  }
-
-  if (typeof index !== "undefined") {
-    node.index = index;
   }
 
   return node;
@@ -748,16 +704,10 @@ export function func(
   isExternal?: boolean,
   metadata?: FuncMetadata
 ): Func {
-  if (name !== null && name !== undefined) {
-  }
-
   assert(typeof body === "object" && typeof body.length !== "undefined");
 
   if (isExternal !== null && isExternal !== undefined) {
     assert(typeof isExternal === "boolean");
-  }
-
-  if (metadata !== null && metadata !== undefined) {
   }
 
   const node: Func = {

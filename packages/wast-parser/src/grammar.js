@@ -422,7 +422,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           throw new Error("Imported function must have a name");
         }
 
-        descr = t.funcImportDescr(fnName, fnParams, fnResult);
+        descr = t.funcImportDescr(fnName, t.signature(fnParams, fnResult));
       } else if (isKeyword(token, keywords.global)) {
         eatToken(); // keyword
 
@@ -433,14 +433,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           const valtype = token.value;
           eatToken();
 
-          descr = t.globalImportDescr(valtype, "var");
+          descr = t.globalType(valtype, "var");
 
           eatTokenOfType(tokens.closeParen);
         } else {
           const valtype = token.value;
           eatTokenOfType(tokens.valtype);
 
-          descr = t.globalImportDescr(valtype, "const");
+          descr = t.globalType(valtype, "const");
         }
       } else if (isKeyword(token, keywords.memory) === true) {
         eatToken(); // Keyword
@@ -741,11 +741,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
       }
 
-      if (typeRef !== undefined) {
-        return t.callIndirectInstructionWithTypeRef(typeRef, instrs);
-      } else {
-        return t.callIndirectInstruction(params, results, instrs);
-      }
+      return t.callIndirectInstruction(
+        typeRef !== undefined ? typeRef : t.signature(params, results),
+        instrs
+      );
     }
 
     /**
@@ -808,7 +807,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       eatTokenOfType(tokens.closeParen);
 
-      return t.moduleExport(name, type, index);
+      return t.moduleExport(name, t.moduleExportDescr(type, index));
     }
 
     function parseModule(): Module {
@@ -877,7 +876,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         if (state.registredExportedElements.length > 0) {
           state.registredExportedElements.forEach(decl => {
             moduleFields.push(
-              t.moduleExport(decl.name, decl.exportType, decl.id)
+              t.moduleExport(
+                decl.name,
+                t.moduleExportDescr(decl.exportType, decl.id)
+              )
             );
           });
 
@@ -1082,7 +1084,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
 
-        const signature = t.signature(object || "", name);
+        const signature = t.signatureForOpcode(object || "", name);
 
         const { args, namedArgs } = parseFuncInstrArguments(signature);
 
@@ -1237,11 +1239,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
       }
 
-      if (typeRef !== undefined) {
-        return t.funcWithTypeRef(fnName, typeRef, fnBody);
-      } else {
-        return t.func(fnName, fnParams, fnResult, fnBody);
-      }
+      return t.func(
+        fnName,
+        typeRef !== undefined ? typeRef : t.signature(fnParams, fnResult),
+        fnBody
+      );
     }
 
     /**
@@ -1298,7 +1300,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         if (token.type === tokens.closeParen) {
           eatToken();
           // function with an empty signature, we can abort here
-          return t.typeInstructionFunc([], [], id);
+          return t.typeInstruction(id, t.signature([], []));
         }
 
         if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
@@ -1322,7 +1324,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
       }
 
-      return t.typeInstructionFunc(params, result, id);
+      return t.typeInstruction(id, t.signature(params, result));
     }
 
     /**
@@ -1438,7 +1440,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        * global_sig
        */
       if (token.type === tokens.valtype) {
-        type = t.globalImportDescr(token.value, "const");
+        type = t.globalType(token.value, "const");
         eatToken();
       } else if (token.type === tokens.openParen) {
         eatToken(); // (

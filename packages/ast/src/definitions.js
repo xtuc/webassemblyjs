@@ -183,6 +183,9 @@ defineType("ObjectInstruction", {
     id: {
       type: "string"
     },
+    object: {
+      type: "Valtype"
+    },
     args: {
       array: true,
       type: "Expression",
@@ -194,9 +197,6 @@ defineType("ObjectInstruction", {
       type: "Object",
       // TODO: should this be an optional property?
       default: "{}"
-    },
-    object: {
-      type: "Valtype"
     }
   }
 });
@@ -344,6 +344,7 @@ defineType("Start", {
 });
 
 defineType("GlobalType", {
+  unionType: ["ImportDescr"],
   fields: {
     valtype: {
       type: "Valtype"
@@ -401,6 +402,7 @@ defineType("Global", {
 });
 
 defineType("Table", {
+  unionType: ["ImportDescr"],
   fields: {
     elementType: {
       type: "TableElementType"
@@ -421,6 +423,7 @@ defineType("Table", {
 });
 
 defineType("Memory", {
+  unionType: ["ImportDescr"],
   fields: {
     limits: {
       type: "Limit"
@@ -433,6 +436,7 @@ defineType("Memory", {
 });
 
 defineType("FuncImportDescr", {
+  unionType: ["ImportDescr"],
   fields: {
     id: {
       type: "Identifier"
@@ -578,10 +582,6 @@ defineType("CallIndirectInstruction", {
       array: true,
       optional: true,
       type: "Expression"
-    },
-    index: {
-      optional: true,
-      type: "Index"
     }
   }
 });

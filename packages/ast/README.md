@@ -51,9 +51,8 @@ console.log(signatures);
 - function `ifInstruction(testLabel, result, test, consequent, alternate)`
 - function `withLoc(n, end, start)`
 - function `moduleImport(module, name, descr)`
-- function `globalImportDescr(valtype, mutability)`
+- function `globalType(valtype, mutability)`
 - function `funcParam(valtype, id)`
-- function `funcImportDescr(id, params, results)`
 - function `table(elementType, limits, name, elements)`
 - function `limits(min, max)`
 - function `memory(limits, id)`
@@ -65,7 +64,6 @@ console.log(signatures);
 - function `blockComment(value)`
 - function `indexLiteral(value)`
 - function `memIndexLiteral(value)`
-- function `typeInstructionFunc(params, result, id)`
 - function `callIndirectInstruction(params, results, intrs)`
 - function `start(index)`
 - function `elem(table, offset, funcs)`

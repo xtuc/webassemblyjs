@@ -84,5 +84,3 @@ type FuncMetadata = {
 };
 
 type ExportDescrType = "Func" | "Table" | "Memory" | "Global";
-
-type ImportDescr = FuncImportDescr | GlobalType | Memory | Table;

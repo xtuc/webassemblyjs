@@ -31,6 +31,9 @@ function assertParamType({ array, name, type }) {
 
 function assertParam(meta) {
   const paramAssertion = assertParamType(meta);
+  if (paramAssertion === "") {
+    return "";
+  }
   if (meta.maybe || meta.optional) {
     return `
       if (${meta.name} !== null && ${meta.name} !== undefined) {

@@ -110,15 +110,10 @@ describe("kernel exec - control instruction", () => {
   describe("br_if", () => {
     it("should break if non-zero", () => {
       const code = [
-        t.func(
-          t.identifier("label"),
-          [],
-          [],
-          [
-            t.objectInstruction("const", "i32", [t.numberLiteral(2)]),
-            t.instruction("end")
-          ]
-        ),
+        t.func(t.identifier("label"), t.signature([], []), [
+          t.objectInstruction("const", "i32", [t.numberLiteral(2)]),
+          t.instruction("end")
+        ]),
 
         t.objectInstruction("const", "i32", [t.numberLiteral(1)]),
         t.instruction("br_if", [t.identifier("label")]),
@@ -134,15 +129,10 @@ describe("kernel exec - control instruction", () => {
 
     it("should not break if zero", () => {
       const code = [
-        t.func(
-          t.identifier("label"),
-          [],
-          [],
-          [
-            t.objectInstruction("const", "i32", [t.numberLiteral(20)]),
-            t.instruction("end")
-          ]
-        ),
+        t.func(t.identifier("label"), t.signature([], []), [
+          t.objectInstruction("const", "i32", [t.numberLiteral(20)]),
+          t.instruction("end")
+        ]),
 
         t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
         t.instruction("br_if", [t.identifier("label")]),
@@ -164,8 +154,7 @@ describe("kernel exec - control instruction", () => {
       const code = [
         t.func(
           t.identifier("test"),
-          [t.instruction("end")],
-          [t.instruction("end")],
+          t.signature([t.instruction("end")], [t.instruction("end")]),
           [
             t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
             t.instruction("end")
@@ -191,15 +180,10 @@ describe("kernel exec - control instruction", () => {
 
     it("should NOT execute consequent but alternate when test is zero", () => {
       const code = [
-        t.func(
-          t.identifier("test"),
-          [],
-          [],
-          [
-            t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
-            t.instruction("end")
-          ]
-        ),
+        t.func(t.identifier("test"), t.signature([], []), [
+          t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
+          t.instruction("end")
+        ]),
 
         t.ifInstruction(
           t.identifier("test"),
@@ -220,15 +204,10 @@ describe("kernel exec - control instruction", () => {
 
     it("should execute consequent when test is non-zero", () => {
       const code = [
-        t.func(
-          t.identifier("test"),
-          [],
-          [],
-          [
-            t.objectInstruction("const", "i32", [t.numberLiteral(1)]),
-            t.instruction("end")
-          ]
-        ),
+        t.func(t.identifier("test"), t.signature([], []), [
+          t.objectInstruction("const", "i32", [t.numberLiteral(1)]),
+          t.instruction("end")
+        ]),
 
         t.ifInstruction(
           t.identifier("test"),

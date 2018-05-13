@@ -33,14 +33,19 @@ export {
   blockInstruction,
   identifier,
   byteArray,
+  moduleExport,
+  moduleExportDescr,
+  callIndirectInstruction,
+  signature,
+  funcImportDescr,
+  func,
+  objectInstruction,
   //TODO: fix these inconsistent names
   valtypeLiteral as valtype,
   limit as limits
 } from "./constructorFunctions";
 
 import {
-  signature as functionSignature,
-  moduleExportDescr,
   longNumberLiteral,
   floatLiteral,
   // TODO: this is only being aliased to avoid a naming collision with the current numberLiteral constructor
@@ -59,13 +64,7 @@ const {
   isInfLiteral
 } = require("@webassemblyjs/wast-parser/lib/number-literals");
 
-function assert(cond: boolean) {
-  if (!cond) {
-    throw new Error("assertion error");
-  }
-}
-
-export function signature(object: string, name: string): SignatureMap {
+export function signatureForOpcode(object: string, name: string): SignatureMap {
   let opcodeName = name;
   if (object !== undefined && object !== "") {
     opcodeName = object + "." + name;
@@ -78,76 +77,6 @@ export function signature(object: string, name: string): SignatureMap {
   }
 
   return sign[0];
-}
-
-export function moduleExport(
-  name: string,
-  exportType: ExportDescrType,
-  id: Index
-): ModuleExport {
-  return {
-    type: "ModuleExport",
-    name,
-    descr: moduleExportDescr(exportType, id)
-  };
-}
-
-export function func(
-  name: ?Index,
-  params: Array<FuncParam>,
-  results: Array<Valtype>,
-  body: Array<Instruction>
-): Func {
-  assert(typeof params === "object" && typeof params.length !== "undefined");
-  assert(typeof results === "object" && typeof results.length !== "undefined");
-  assert(typeof body === "object" && typeof body.length !== "undefined");
-  assert(typeof name !== "string");
-
-  return {
-    type: "Func",
-    name,
-    signature: functionSignature(params, results),
-    body
-  };
-}
-
-export function funcWithTypeRef(
-  name: ?Index,
-  typeRef: Index,
-  body: Array<Instruction>
-): Func {
-  assert(typeof body === "object" && typeof body.length !== "undefined");
-  assert(typeof name !== "string");
-
-  return {
-    type: "Func",
-    name,
-    signature: typeRef,
-    body
-  };
-}
-
-export function objectInstruction(
-  id: string,
-  object: Valtype,
-  args: Array<Expression> = [],
-  namedArgs: Object = {}
-): ObjectInstruction {
-  assert(typeof args === "object" && typeof args.length !== "undefined");
-  assert(typeof object === "string");
-
-  const n: ObjectInstruction = {
-    type: "Instr",
-    id,
-    object,
-    args
-  };
-
-  if (Object.keys(namedArgs).length !== 0) {
-    n.namedArgs = namedArgs;
-  }
-
-  return n;
 }
 
 export function numberLiteral(
@@ -233,38 +162,10 @@ export function withRaw(n: Node, raw: string): Node {
  * Import
  */
 
-export function globalImportDescr(
-  valtype: Valtype,
-  mutability: Mutability
-): GlobalType {
-  return {
-    type: "GlobalType",
-
-    valtype,
-    mutability
-  };
-}
-
 export function funcParam(valtype: Valtype, id: ?string): FuncParam {
   return {
     id,
     valtype
-  };
-}
-
-// TODO: remove this
-export function funcImportDescr(
-  id: Identifier,
-  params: Array<FuncParam> = [],
-  results: Array<Valtype> = []
-): FuncImportDescr {
-  assert(typeof params === "object" && typeof params.length !== "undefined");
-  assert(typeof results === "object" && typeof results.length !== "undefined");
-
-  return {
-    type: "FuncImportDescr",
-    id,
-    signature: functionSignature(params, results)
   };
 }
 
@@ -279,41 +180,6 @@ export function memIndexLiteral(value: number): Memidx {
   // $FlowIgnore
   const x: U32Literal = numberLiteral(value, "u32");
   return x;
-}
-
-export function typeInstructionFunc(
-  params: Array<FuncParam> = [],
-  results: Array<Valtype> = [],
-  id: ?Index
-): TypeInstruction {
-  return {
-    type: "TypeInstruction",
-    id,
-    functype: functionSignature(params, results)
-  };
-}
-
-export function callIndirectInstruction(
-  params: Array<FuncParam>,
-  results: Array<Valtype>,
-  intrs: Array<Expression>
-): CallIndirectInstruction {
-  return {
-    type: "CallIndirectInstruction",
-    signature: functionSignature(params, results),
-    intrs
-  };
-}
-
-export function callIndirectInstructionWithTypeRef(
-  typeRef: Index,
-  intrs: Array<Expression>
-): CallIndirectInstruction {
-  return {
-    type: "CallIndirectInstruction",
-    signature: typeRef,
-    intrs
-  };
 }
 
 export function isAnonymous(ident: Identifier): boolean {

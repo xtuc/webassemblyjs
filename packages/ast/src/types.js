@@ -65,6 +65,8 @@ type Expression =
   | Identifier;
 
 type NumericLiteral = NumberLiteral | LongNumberLiteral | FloatLiteral;
+
+type ImportDescr = GlobalType | Table | Memory | FuncImportDescr;
 type Module = {
   ...BaseNode,
   type: "Module",
@@ -146,9 +148,9 @@ type ObjectInstruction = {
   ...BaseNode,
   type: "Instr",
   id: string,
+  object: Valtype,
   args: Array<Expression>,
-  namedArgs?: Object,
-  object: Valtype
+  namedArgs?: Object
 };
 
 type IfInstruction = {
@@ -352,8 +354,7 @@ type CallIndirectInstruction = {
   ...BaseNode,
   type: "CallIndirectInstruction",
   signature: SignatureOrTypeRef,
-  intrs?: Array<Expression>,
-  index?: Index
+  intrs?: Array<Expression>
 };
 
 type ByteArray = {
