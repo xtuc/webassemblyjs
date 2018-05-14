@@ -57,7 +57,7 @@
         ]
       },
       "init": {
-        "type": "Bytes",
+        "type": "ByteArray",
         "values": [
           97,
           98,

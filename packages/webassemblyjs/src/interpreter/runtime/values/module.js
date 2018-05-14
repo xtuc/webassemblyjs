@@ -1,6 +1,7 @@
 // @flow
 
 import { traverse } from "@webassemblyjs/ast";
+import { isIdentifier, isNumberLiteral } from "@webassemblyjs/ast/lib/nodes";
 import * as WebAssemblyMemory from "./memory";
 
 const { RuntimeError, LinkError, CompileError } = require("../../../errors");
@@ -295,8 +296,25 @@ function instantiateExports(
     instantiatedItemArray,
     validate: Object => void
   ) {
-    if (node.descr.id.type === "Identifier") {
+    if (isIdentifier(node.descr.id) === true) {
       const instantiatedItem = instantiatedItemArray[node.descr.id.value];
+
+      validate(instantiatedItem);
+
+      assertNotAlreadyExported(node.name);
+
+      moduleInstance.exports.push({
+        name: node.name,
+        value: {
+          type: node.descr.exportType,
+          addr: instantiatedItem.addr
+        }
+      });
+    } else if (isNumberLiteral(node.descr.id) === true) {
+      const keys = Object.keys(instantiatedItemArray);
+
+      // $FlowIgnore
+      const instantiatedItem = instantiatedItemArray[keys[node.descr.id.value]];
 
       validate(instantiatedItem);
 

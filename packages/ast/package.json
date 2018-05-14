@@ -24,6 +24,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "array.prototype.flatmap": "^1.2.1",
     "dump-exports": "^0.1.0"
   }
 }

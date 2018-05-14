@@ -332,7 +332,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const endLoc = getPosition();
 
         typeInstructionNodes.push(
-          t.withLoc(t.typeInstructionFunc(params, result), endLoc, startLoc)
+          t.withLoc(
+            t.typeInstruction(undefined, t.signature(params, result)),
+            endLoc,
+            startLoc
+          )
         );
 
         state.typesInModule.push({
@@ -406,7 +410,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const id = t.identifier(`${moduleName.value}.${name.value}`);
 
-        importDescr = t.funcImportDescr(id, signature.params, signature.result);
+        importDescr = t.funcImportDescr(
+          id,
+          t.signature(signature.params, signature.result)
+        );
 
         state.functionsInModule.push({
           id: t.identifier(name.value),
@@ -513,8 +520,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = t.cloneNode(func.id);
-        id = t.withRaw(id, String(index));
+        id = t.numberLiteral(index, String(index));
 
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
@@ -709,21 +715,29 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        const consequentInstr = [];
-        parseInstructionBlock(consequentInstr);
+        const testIndex = t.withRaw(t.identifier(getUniqueName("if")), "");
+        const ifBody = [];
+        parseInstructionBlock(ifBody);
 
-        // FIXME(sven): handle the second block via the byte in between
-        const alternate = [];
+        // Defaults to no alternate
+        let elseIndex = 0;
+        for (elseIndex = 0; elseIndex < ifBody.length; ++elseIndex) {
+          const instr = ifBody[elseIndex];
+          if (instr.type === "Instr" && instr.id === "else") {
+            break;
+          }
+        }
 
-        // FIXME(sven): where is that stored?
-        // preserve anonymous
-        const testIndex = t.withRaw(t.identifier(getUniqueName("ifindex")), "");
+        const consequentInstr = ifBody.slice(0, elseIndex);
+        const alternate = ifBody.slice(elseIndex + 1);
+
+        // wast sugar
         const testInstrs = [];
 
         const ifNode = t.ifInstruction(
           testIndex,
-          blocktype,
           testInstrs,
+          blocktype,
           consequentInstr,
           alternate
         );
@@ -781,8 +795,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         }
 
         const callNode = t.callIndirectInstruction(
-          signature.params,
-          signature.result,
+          t.signature(signature.params, signature.result),
           []
         );
 
@@ -1713,7 +1726,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     funcIndex++;
 
-    let funcNode = t.func(func.id, params, result, body);
+    let funcNode = t.func(func.id, t.signature(params, result), body);
 
     if (func.isExternal === true) {
       funcNode.isExternal = func.isExternal;
@@ -1741,8 +1754,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           t.withLoc(
             t.moduleExport(
               moduleExport.name,
-              moduleExport.type,
-              moduleExport.id
+              t.moduleExportDescr(moduleExport.type, moduleExport.id)
             ),
             moduleExport.endLoc,
             moduleExport.startLoc

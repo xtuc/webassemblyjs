@@ -55,7 +55,7 @@ describe("replace a node", () => {
       [0x7f, 0x00]
     );
 
-    const funcType = t.typeInstructionFunc([], ["i32"]);
+    const funcType = t.typeInstruction(undefined, t.signature([], ["i32"]));
     const funcTypeIndex = t.indexLiteral(0); // we have only one type
 
     // Add func type to have a valid wasm
@@ -65,8 +65,7 @@ describe("replace a node", () => {
       ModuleImport({ node }) {
         node.descr = t.funcImportDescr(
           funcTypeIndex,
-          funcType.functype.params,
-          funcType.functype.results
+          t.signature(funcType.functype.params, funcType.functype.results)
         );
       }
     });
@@ -193,7 +192,10 @@ describe("replace a node", () => {
 
         const results = [];
 
-        const newNode = t.typeInstructionFunc(params, results);
+        const newNode = t.typeInstruction(
+          undefined,
+          t.signature(params, results)
+        );
         path.replaceWith(newNode);
       }
     });

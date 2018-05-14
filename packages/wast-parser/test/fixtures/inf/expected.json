@@ -9,8 +9,8 @@
         {
           "type": "FloatLiteral",
           "value": 1,
-          "inf": true,
-          "raw": "inf"
+          "raw": "inf",
+          "inf": true
         }
       ],
       "loc": {
@@ -32,8 +32,8 @@
         {
           "type": "FloatLiteral",
           "value": -1,
-          "inf": true,
-          "raw": "-inf"
+          "raw": "-inf",
+          "inf": true
         }
       ],
       "loc": {
