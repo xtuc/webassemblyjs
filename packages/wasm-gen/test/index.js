@@ -14,25 +14,25 @@ function callIndirectInstructionIndex(index) {
 const fixtures = [
   {
     name: "ModuleImport - should generate a i32 global",
-    node: t.moduleImport("a", "b", t.globalImportDescr("i32", "const")),
+    node: t.moduleImport("a", "b", t.globalType("i32", "const")),
     expected: [0x01, 0x61, 0x01, 0x62, 0x03, 0x7f, 0x00]
   },
 
   {
     name: "ModuleImport - should generate a i64 global",
-    node: t.moduleImport("a", "b", t.globalImportDescr("i64", "const")),
+    node: t.moduleImport("a", "b", t.globalType("i64", "const")),
     expected: [0x01, 0x61, 0x01, 0x62, 0x03, 0x7e, 0x00]
   },
 
   {
     name: "ModuleImport - should generate a mutable i32 global",
-    node: t.moduleImport("a", "b", t.globalImportDescr("i32", "var")),
+    node: t.moduleImport("a", "b", t.globalType("i32", "var")),
     expected: [0x01, 0x61, 0x01, 0x62, 0x03, 0x7f, 0x01]
   },
 
   {
     name: "ModuleImport - should generate a mutable i64 global",
-    node: t.moduleImport("a", "b", t.globalImportDescr("i64", "var")),
+    node: t.moduleImport("a", "b", t.globalType("i64", "var")),
     expected: [0x01, 0x61, 0x01, 0x62, 0x03, 0x7e, 0x01]
   },
 
@@ -47,32 +47,35 @@ const fixtures = [
     node: t.moduleImport(
       "a",
       "b",
-      t.funcImportDescr(t.numberLiteral(0), [], ["i32"])
+      t.funcImportDescr(t.numberLiteral(0), t.signature([], ["i32"]))
     ),
     expected: [0x01, 0x61, 0x01, 0x62, 0x00, 0x00]
   },
 
   {
     name: "(type (func))",
-    node: t.typeInstructionFunc([], []),
+    node: t.typeInstruction(undefined, t.signature([], [])),
     expected: [0x60, 0x00, 0x00]
   },
 
   {
     name: "(type (func (result i32)))",
-    node: t.typeInstructionFunc([], ["i32"]),
+    node: t.typeInstruction(undefined, t.signature([], ["i32"])),
     expected: [0x60, 0x00, 0x01, 0x7f]
   },
 
   {
     name: "(type (func (param i32)))",
-    node: t.typeInstructionFunc([t.funcParam("i32")], []),
+    node: t.typeInstruction(undefined, t.signature([t.funcParam("i32")], [])),
     expected: [0x60, 0x01, 0x7f, 0x00]
   },
 
   {
     name: "(type (func (param i32) (result i32)))",
-    node: t.typeInstructionFunc([t.funcParam("i32")], ["i32"]),
+    node: t.typeInstruction(
+      undefined,
+      t.signature([t.funcParam("i32")], ["i32"])
+    ),
     expected: [0x60, 0x01, 0x7f, 0x01, 0x7f]
   },
 
@@ -101,7 +104,7 @@ const fixtures = [
 
   {
     name: '(export "a" (func 1))',
-    node: t.moduleExport("a", "Func", t.indexLiteral(1)),
+    node: t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(1))),
     expected: [0x01, 0x61, 0x00, 0x01]
   },
 
@@ -153,24 +156,21 @@ const fixtures = [
 
   {
     name: "(func)",
-    node: t.func(null, [], [], []),
+    node: t.func(null, t.signature([], []), []),
     expected: [0x02, 0x00, 0x0b]
   },
 
   {
     name: "(func (i32.const 1))",
-    node: t.func(
-      null,
-      [],
-      [],
-      [t.objectInstruction("const", "i32", [t.numberLiteral(1)])]
-    ),
+    node: t.func(null, t.signature([], []), [
+      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+    ]),
     expected: [0x04, 0x00, 0x41, 0x01, 0x0b]
   },
 
   {
     name: "(func (unreachable))",
-    node: t.func(null, [], [], [t.instruction("unreachable")]),
+    node: t.func(null, t.signature([], []), [t.instruction("unreachable")]),
     expected: [0x03, 0x00, 0x00, 0x0b]
   }
 ];

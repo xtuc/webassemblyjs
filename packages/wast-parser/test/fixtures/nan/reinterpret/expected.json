@@ -27,8 +27,8 @@
                 {
                   "type": "FloatLiteral",
                   "value": 4194304,
-                  "nan": true,
-                  "raw": "nan"
+                  "raw": "nan",
+                  "nan": true
                 }
               ],
               "loc": {

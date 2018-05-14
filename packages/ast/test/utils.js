@@ -34,12 +34,12 @@ describe("AST utils", () => {
   });
 
   describe("ordered insert", () => {
-    const firstType = t.typeInstructionFunc([], []);
+    const firstType = t.typeInstruction(undefined, t.signature([], []));
     firstType.loc = locOnCol(10);
 
     it("should insert the node in an empty module", () => {
       const m = t.module(null, []);
-      const n = t.typeInstructionFunc([], []);
+      const n = t.typeInstruction(undefined, t.signature([], []));
 
       n.loc = locOnCol(1);
 
@@ -79,7 +79,7 @@ describe("AST utils", () => {
     it("should add ModuleImport and ModuleExport and the end", () => {
       const m = t.module(null, [firstType]);
 
-      const exportNode = t.moduleExport("f", "Func", 1);
+      const exportNode = t.moduleExport("f", t.moduleExportDescr("Func", 1));
 
       exportNode.loc = locOnCol(1);
 
@@ -184,7 +184,7 @@ describe("AST utils", () => {
       });
 
       it("should shift section and correspondign nodes", () => {
-        const type = t.typeInstructionFunc([], []);
+        const type = t.typeInstruction(undefined, t.signature([], []));
         type.loc = locOnCol(10);
 
         const program = t.program([t.module(null, [type])]);
