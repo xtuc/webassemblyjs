@@ -64,6 +64,7 @@
               }
             }
           ],
+          "result": null,
           "consequent": [
             {
               "type": "CallInstruction",
@@ -126,6 +127,7 @@
               }
             }
           ],
+          "result": null,
           "consequent": [],
           "alternate": [
             {
