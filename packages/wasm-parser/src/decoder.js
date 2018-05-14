@@ -520,8 +520,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = t.cloneNode(func.id);
-        id = t.withRaw(id, String(index));
+        id = t.numberLiteral(index, String(index));
 
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
