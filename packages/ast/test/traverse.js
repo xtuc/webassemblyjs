@@ -49,7 +49,7 @@ describe("AST traverse", () => {
 
   describe("parent path", () => {
     it("should retain the parent path", () => {
-      const root = t.module("test", [t.func(null, [], [], [])]);
+      const root = t.module("test", [t.func(null, t.signature([], []), [])]);
       let called = false;
 
       traverse(root, {
@@ -81,7 +81,7 @@ describe("AST traverse", () => {
 
   describe("NodePath remove", () => {
     it("should remove func in module", () => {
-      const root = t.module("test", [t.func(null, [], [], [])]);
+      const root = t.module("test", [t.func(null, t.signature([], []), [])]);
 
       traverse(root, {
         Func(path) {
@@ -94,7 +94,7 @@ describe("AST traverse", () => {
 
     it("should remove export in module", () => {
       const root = t.module("test", [
-        t.moduleExport("a", "Func", t.indexLiteral(0))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
       ]);
 
       traverse(root, {
@@ -107,7 +107,7 @@ describe("AST traverse", () => {
     });
 
     it("should remove instruction in func", () => {
-      const func = t.func(null, [], [], [t.instruction("nop")]);
+      const func = t.func(null, t.signature([], []), [t.instruction("nop")]);
 
       traverse(func, {
         Instr(path) {
@@ -121,7 +121,7 @@ describe("AST traverse", () => {
 
   describe("NodePath replace", () => {
     it("should remove func in module", () => {
-      const func = t.func(null, [], [], [t.instruction("nop")]);
+      const func = t.func(null, t.signature([], []), [t.instruction("nop")]);
 
       traverse(func, {
         Instr(path) {

@@ -6,6 +6,8 @@ cd $ROOT_DIR
 
 OPTS="$@"
 
+sh ./scripts/generate-ast-utils.sh
+
 if [ -z "$DISABLE_FUZZER_TEST" ]; then
   yarn --cwd ./packages/floating-point-hex-parser run build-fuzzer
 fi

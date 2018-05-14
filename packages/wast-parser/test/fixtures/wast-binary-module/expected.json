@@ -3,29 +3,26 @@
   "body": [
     {
       "type": "BinaryModule",
+      "id": null,
       "blob": [
         ""
-      ],
-      "id": null,
-      "fields": []
+      ]
     },
     {
       "type": "BinaryModule",
-      "blob": [
-        "\\00asm",
-        "\\01\\00\\00\\00"
-      ],
       "id": "M2",
-      "fields": []
-    },
-    {
-      "type": "BinaryModule",
       "blob": [
         "\\00asm",
         "\\01\\00\\00\\00"
-      ],
+      ]
+    },
+    {
+      "type": "BinaryModule",
       "id": null,
-      "fields": []
+      "blob": [
+        "\\00asm",
+        "\\01\\00\\00\\00"
+      ]
     }
   ]
 }
