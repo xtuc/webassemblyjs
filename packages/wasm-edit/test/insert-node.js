@@ -80,7 +80,7 @@ describe("insert a node", () => {
       );
 
       const newBinary = add(actual, [
-        t.moduleExport("a", "Func", t.indexLiteral(0))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -99,7 +99,7 @@ describe("insert a node", () => {
       );
 
       const newBinary = add(actual, [
-        t.moduleExport("a", "Func", t.indexLiteral(0))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -123,7 +123,7 @@ describe("insert a node", () => {
       );
 
       const newBinary = add(actual, [
-        t.moduleExport("a", "Func", t.indexLiteral(0))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
       ]);
 
       return WebAssembly.instantiate(newBinary).then(m => {
@@ -187,16 +187,13 @@ describe("insert a node", () => {
       [constants.sections.code, 0x06, 0x01, 0x04, 0x00, 0x41, 0x01, 0x0b]
     );
 
-    const func = t.func(
-      null,
-      [],
-      ["i32"],
-      [t.objectInstruction("const", "i32", [t.numberLiteral(1)])]
-    );
+    const func = t.func(null, t.signature([], ["i32"]), [
+      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+    ]);
 
-    const functype = t.typeInstructionFunc(
-      func.signature.params,
-      func.signature.results
+    const functype = t.typeInstruction(
+      undefined,
+      t.signature(func.signature.params, func.signature.results)
     );
     const funcindex = t.indexInFuncSection(t.indexLiteral(0));
 
@@ -254,12 +251,15 @@ describe("insert a node", () => {
       t.objectInstruction("const", "i32", [t.numberLiteral(1)])
     ]);
 
-    const functype = t.typeInstructionFunc([], []);
+    const functype = t.typeInstruction(undefined, t.signature([], []));
 
     const funcindex = t.indexInFuncSection(index);
-    const moduleExport = t.moduleExport("foo", "Func", index);
+    const moduleExport = t.moduleExport(
+      "foo",
+      t.moduleExportDescr("Func", index)
+    );
 
-    const func = t.func(t.identifier("foo"), [], [], []);
+    const func = t.func(t.identifier("foo"), t.signature([], []), []);
 
     // (module)
     bin = makeBuffer(encodeHeader(), encodeVersion(1));
@@ -299,7 +299,7 @@ describe("insert a node", () => {
   });
 
   it("should insert type instructions with LEB128 padded type section size", () => {
-    const functype = t.typeInstructionFunc([], []);
+    const functype = t.typeInstruction(undefined, t.signature([], []));
 
     let bin;
 

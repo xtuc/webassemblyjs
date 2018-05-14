@@ -65,9 +65,9 @@ function makeFuncNodes(i, params = [], results = [], body = []) {
   body.push(t.instruction("nop"));
 
   const id = t.identifier(getUniqueName("func"));
-  const func = t.func(id, params, results, body);
+  const func = t.func(id, t.signature(params, results), body);
 
-  const functype = t.typeInstructionFunc(params, results);
+  const functype = t.typeInstruction(undefined, t.signature(params, results));
 
   const funcindex = t.indexInFuncSection(i);
 
@@ -77,7 +77,7 @@ function makeFuncNodes(i, params = [], results = [], body = []) {
 function makeFuncExportNode(i) {
   const name = getUniqueName();
 
-  return t.moduleExport(name, "Func", t.numberLiteral(i));
+  return t.moduleExport(name, t.moduleExportDescr("Func", t.numberLiteral(i)));
 }
 
 function makeFuncImportNode() {
@@ -89,7 +89,7 @@ function makeFuncImportNode() {
   return t.moduleImport(
     module,
     name,
-    t.funcImportDescr(t.numberLiteral(typeidx), [], [])
+    t.funcImportDescr(t.numberLiteral(typeidx), t.signature([], []))
   );
 }
 

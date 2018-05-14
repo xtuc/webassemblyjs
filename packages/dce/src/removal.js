@@ -1,6 +1,6 @@
 const t = require("@webassemblyjs/ast");
 
-const emptyFunc = t.func(null, [], [], []);
+const emptyFunc = t.func(null, t.signature([], []), []);
 
 module.exports = function removeFunc(moduleExport, ast) {
   const exportName = moduleExport.name;
