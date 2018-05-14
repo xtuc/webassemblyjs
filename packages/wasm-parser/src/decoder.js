@@ -731,14 +731,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const consequentInstr = ifBody.slice(0, elseIndex);
         const alternate = ifBody.slice(elseIndex + 1);
 
-        // FIXME(sven): where is that stored?
-        // preserve anonymous
+        // wast sugar
         const testInstrs = [];
 
         const ifNode = t.ifInstruction(
           testIndex,
-          blocktype,
           testInstrs,
+          blocktype,
           consequentInstr,
           alternate
         );

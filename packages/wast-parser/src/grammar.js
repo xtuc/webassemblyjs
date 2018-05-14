@@ -513,7 +513,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseIf(): IfInstruction {
-      let blockResult;
+      let blockResult = null;
       let label = t.identifier(getUniqueName("if"));
 
       const testInstrs = [];
