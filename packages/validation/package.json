@@ -16,9 +16,13 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.4.3"
+    "@webassemblyjs/ast": "1.4.3",
+    "debug": "3.0.1"
   },
   "devDependencies": {
-    "@webassemblyjs/wast-parser": "1.2.3"
+    "wabt": "^1.0.0",
+    "@webassemblyjs/wast-parser": "1.4.3",
+    "@webassemblyjs/wasm-parser": "1.4.3",
+    "@webassemblyjs/helper-test-framework": "1.4.3"
   }
 }

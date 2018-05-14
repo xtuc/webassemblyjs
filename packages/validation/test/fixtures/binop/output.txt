@@ -1,0 +1,4 @@
+Expected type i32 but got f32.
+Expected type i32 but got i64.
+Expected type i32 but got i64.
+Expected type i32 but got f64.
