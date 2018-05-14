@@ -709,6 +709,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
+        const testIndex = t.withRaw(t.identifier(getUniqueName("if")), "");
         const ifBody = [];
         parseInstructionBlock(ifBody);
 
@@ -726,7 +727,6 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         // FIXME(sven): where is that stored?
         // preserve anonymous
-        const testIndex = t.withRaw(t.identifier(getUniqueName("if")), "");
         const testInstrs = [];
 
         const ifNode = t.ifInstruction(
