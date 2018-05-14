@@ -46,13 +46,12 @@ function restoreFunctionNames(ast) {
     ModuleExport({ node }: NodePath<ModuleExport>) {
       if (node.descr.exportType === "Func") {
         // $FlowIgnore
-        const nodeName: Identifier = node.descr.id;
-        const indexBasedFunctionName = nodeName.value;
-        const index = Number(indexBasedFunctionName.replace("func_", ""));
+        const nodeName: NumberLiteral = node.descr.id;
+        const index = nodeName.value;
         const functionName = functionNames.find(f => f.index === index);
 
         if (functionName) {
-          nodeName.value = functionName.name;
+          node.descr.id = t.identifier(functionName.name);
         }
       }
     },

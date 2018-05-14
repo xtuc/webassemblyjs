@@ -1,4 +1,4 @@
 (module
-  (func)
-  (export "test" (func 0))
+  (func $f)
+  (export "test" (func $f))
 )
