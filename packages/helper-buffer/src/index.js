@@ -1,6 +1,6 @@
 // @flow
 
-const debug = require("debug")("wasm");
+const debug = require("debug")("webassemblyjs:wasm");
 
 function concatUint8Arrays(...arrays: Array<Uint8Array>) {
   const totalLength = arrays.reduce((a, b) => a + b.length, 0);

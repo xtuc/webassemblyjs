@@ -2,7 +2,7 @@
 
 type Cb = (type: string, path: NodePath<Node>) => void;
 
-const debug = require("debug")("ast:traverse");
+const debug = require("debug")("webassemblyjs:ast:traverse");
 
 function removeNodeInBody(node: Node, fromNode: Node) {
   switch (fromNode.type) {
@@ -16,6 +16,7 @@ function removeNodeInBody(node: Node, fromNode: Node) {
 
     case "Program":
     case "Func":
+      // $FlowIgnore it says References?
       fromNode.body = fromNode.body.filter(n => n !== node);
       break;
 

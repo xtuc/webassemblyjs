@@ -5,7 +5,7 @@ import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 const t = require("@webassemblyjs/ast");
-const debug = require("debug")("wasm:createsection");
+const debug = require("debug")("webassemblyjs:wasm:createsection");
 
 type Res = { uint8Buffer: Uint8Array, sectionMetadata: SectionMetadata };
 

@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-npm install @webassemblyjs/ast
+yarn add @webassemblyjs/ast
 ```
 
 ## Usage
