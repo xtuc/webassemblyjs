@@ -709,15 +709,24 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        const consequentInstr = [];
-        parseInstructionBlock(consequentInstr);
+        const ifBody = [];
+        parseInstructionBlock(ifBody);
 
-        // FIXME(sven): handle the second block via the byte in between
-        const alternate = [];
+        // Defaults to no alternate
+        let elseIndex = 0;
+        for (elseIndex = 0; elseIndex < ifBody.length; ++elseIndex) {
+          const instr = ifBody[elseIndex];
+          if (instr.type === "Instr" && instr.id === "else") {
+            break;
+          }
+        }
+
+        const consequentInstr = ifBody.slice(0, elseIndex);
+        const alternate = ifBody.slice(elseIndex + 1);
 
         // FIXME(sven): where is that stored?
         // preserve anonymous
-        const testIndex = t.withRaw(t.identifier(getUniqueName("ifindex")), "");
+        const testIndex = t.withRaw(t.identifier(getUniqueName("if")), "");
         const testInstrs = [];
 
         const ifNode = t.ifInstruction(
