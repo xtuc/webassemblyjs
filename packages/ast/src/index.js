@@ -43,7 +43,7 @@ export {
   //TODO: fix these inconsistent names
   valtypeLiteral as valtype,
   limit as limits
-} from "./constructorFunctions";
+} from "./nodes";
 
 import {
   longNumberLiteral,
@@ -52,7 +52,7 @@ import {
   // function. Ideally, the numberLiteral function would be renamed to indicate that it is a utility function
   // with additional business logic
   numberLiteral as numberLiteralConstructor
-} from "./constructorFunctions";
+} from "./nodes";
 
 const {
   parse32F,

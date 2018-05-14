@@ -67,6 +67,7 @@ type Expression =
 type NumericLiteral = NumberLiteral | LongNumberLiteral | FloatLiteral;
 
 type ImportDescr = GlobalType | Table | Memory | FuncImportDescr;
+
 type Module = {
   ...BaseNode,
   type: "Module",

@@ -1,8 +1,8 @@
-const fs = require("fs");
-const prettier = require("prettier");
 const definitions = require("../src/definitions");
 const flatMap = require("array.prototype.flatmap");
 const { typeSignature, mapProps, iterateProps } = require("./util");
+
+const stdout = process.stdout;
 
 const unique = items => Array.from(new Set(items));
 
@@ -13,42 +13,38 @@ function params(fields) {
 }
 
 function generate() {
-  const filename = "./src/types.js";
-
-  let code = `
+  stdout.write(`
     // @flow
     /* eslint no-unused-vars: off */
     
-  `;
+  `);
 
   // generate the union Node type
-  code += `type Node = ${Object.keys(definitions).join("|")} \n`;
+  stdout.write(`type Node = ${Object.keys(definitions).join("|")}\n\n`);
 
   // generate other union types
   const unionTypes = unique(
     flatMap(mapProps(definitions).filter(d => d.unionType), d => d.unionType)
   );
-  unionTypes.map(unionType => {
-    code +=
-      `\n\ntype ${unionType} = ` +
-      mapProps(definitions)
-        .filter(d => d.unionType && d.unionType.includes(unionType))
-        .map(d => d.name)
-        .join("|");
+  unionTypes.forEach(unionType => {
+    stdout.write(
+      `type ${unionType} = ` +
+        mapProps(definitions)
+          .filter(d => d.unionType && d.unionType.includes(unionType))
+          .map(d => d.name)
+          .join("|") +
+        ";\n\n"
+    );
   });
 
   // generate the type definitions
   iterateProps(definitions, typeDef => {
-    code += `
-      type ${typeDef.flowTypeName || typeDef.name} = {
+    stdout.write(`type ${typeDef.flowTypeName || typeDef.name} = {
         ...${typeDef.extends || "BaseNode"},
         type: "${typeDef.astTypeName || typeDef.name}",
         ${params(typeDef.fields)}
-      };
-    `;
+      };\n\n`);
   });
-
-  fs.writeFileSync(filename, prettier.format(code));
 }
 
 generate();

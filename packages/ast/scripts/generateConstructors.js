@@ -1,5 +1,3 @@
-const fs = require("fs");
-const prettier = require("prettier");
 const definitions = require("../src/definitions");
 const {
   typeSignature,
@@ -7,6 +5,8 @@ const {
   mapProps,
   filterProps
 } = require("./util");
+
+const stdout = process.stdout;
 
 const jsTypes = ["string", "number", "boolean"];
 
@@ -111,9 +111,7 @@ function lowerCamelCase(name) {
 }
 
 function generate() {
-  const filename = "./src/constructorFunctions.js";
-
-  let code = `
+  stdout.write(`
     // @flow
 
     function assert(cond: boolean) {
@@ -121,23 +119,21 @@ function generate() {
         throw new Error("assertion error");
       }
     }
-  `;
+  `);
 
   iterateProps(definitions, typeDefinition => {
-    code += `
-    export function ${lowerCamelCase(typeDefinition.name)} (
-      ${params(filterProps(typeDefinition.fields, f => !f.constant))}
-    ): ${typeDefinition.flowTypeName || typeDefinition.name} {
+    stdout.write(`
+      export function ${lowerCamelCase(typeDefinition.name)} (
+        ${params(filterProps(typeDefinition.fields, f => !f.constant))}
+      ): ${typeDefinition.flowTypeName || typeDefinition.name} {
 
-      ${assertParams(filterProps(typeDefinition.fields, f => !f.constant))}
-      ${buildObject(typeDefinition)} 
+        ${assertParams(filterProps(typeDefinition.fields, f => !f.constant))}
+        ${buildObject(typeDefinition)} 
 
-      return node;
-    }
-    `;
+        return node;
+      }
+    `);
   });
-
-  fs.writeFileSync(filename, prettier.format(code));
 }
 
 generate();
