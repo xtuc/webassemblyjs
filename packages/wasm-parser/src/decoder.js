@@ -408,7 +408,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           throw new CompileError(`function signature not found (${typeindex})`);
         }
 
-        const id = t.identifier(`${moduleName.value}.${name.value}`);
+        const id = t.numberLiteral(i);
 
         importDescr = t.funcImportDescr(
           id,
