@@ -105,7 +105,7 @@ export default function validate(ast) {
       );
 
       if (stopFuncCheck) {
-        return;
+        return errors;
       }
 
       // Compare the two
