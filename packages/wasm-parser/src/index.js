@@ -56,6 +56,20 @@ function restoreFunctionNames(ast) {
       }
     },
 
+    ModuleImport({ node }: NodePath<ModuleImport>) {
+      if (node.descr.type === "FuncImportDescr") {
+        // $FlowIgnore
+        const nodeName: NumberLiteral = node.descr.id;
+        const index = nodeName.value;
+        const functionName = functionNames.find(f => f.index === index);
+
+        if (functionName) {
+          // $FlowIgnore
+          node.descr.id = t.identifier(functionName.name);
+        }
+      }
+    },
+
     CallInstruction(nodePath: NodePath<CallInstruction>) {
       const node = nodePath.node;
       const index = node.index.value;
