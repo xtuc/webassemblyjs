@@ -12,6 +12,8 @@ const {
 } = require("webassemblyjs/lib/interpreter/kernel/memory");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const t = require("@webassemblyjs/ast");
+const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references")
+  .transform;
 const typeCheck = require("@webassemblyjs/validation").stack;
 
 function addEndInstruction(body) {
@@ -101,6 +103,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     try {
       // TODO: Move this into `createModuleInstanceFromAst` and run type checker in any case
       if (expected.value === "type mismatch") {
+        denormalizeTypeReferences(module);
+
         // Need to wrap module in a program node for type checker
         const typeErrors = typeCheck(t.program([module]));
 

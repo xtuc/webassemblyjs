@@ -32,7 +32,7 @@ export default class ModuleContext {
   /**
    * Functions
    */
-  addFunction({ params: args, results: result }) {
+  addFunction({ params: args = [], results: result = [] }) {
     args = args.map(arg => arg.valtype);
 
     debug("add new function %s -> %s", args.join(" "), result.join(" "));

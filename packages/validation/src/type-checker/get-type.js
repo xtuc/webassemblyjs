@@ -225,8 +225,8 @@ export default function getType(moduleContext, stack, instruction) {
     case "shl":
     case "shr_u":
     case "shr_s":
-    case "rot_l":
-    case "rot_r": {
+    case "rotl":
+    case "rotr": {
       args = [instruction.object, instruction.object];
       result = [instruction.object];
       break;
@@ -424,6 +424,9 @@ export default function getType(moduleContext, stack, instruction) {
       result = ["i32"];
       break;
     }
+    /**
+     * br_table
+     */
     case "br_table": {
       // TODO: Read all labels not just one
       const index = instruction.args[0].value;
@@ -433,6 +436,15 @@ export default function getType(moduleContext, stack, instruction) {
       }
 
       args = [...moduleContext.getLabel(index), "i32"];
+      break;
+    }
+    /**
+     * call_indirect
+     */
+    case "call_indirect": {
+      // TODO: There are more things to be checked here
+      args = [...instruction.signature.params.map(p => p.valtype), "i32"];
+      result = instruction.signature.results.map(p => p.valtype);
       break;
     }
     /**

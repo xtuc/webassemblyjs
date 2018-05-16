@@ -89,6 +89,7 @@ export default function validate(ast) {
   errors = [];
 
   // Simulate stack types throughout all function bodies
+
   traverse(ast, {
     Func({ node }) {
       stopFuncCheck = false;
@@ -152,7 +153,8 @@ function applyInstruction(moduleContext, stack, instruction) {
     instruction.type !== "LoopInstruction" &&
     instruction.type !== "CallInstruction" &&
     instruction.type !== "BlockInstruction" &&
-    instruction.type !== "IfInstruction"
+    instruction.type !== "IfInstruction" &&
+    instruction.type !== "CallIndirectInstruction"
   ) {
     return stack;
   }
@@ -167,6 +169,13 @@ function applyInstruction(moduleContext, stack, instruction) {
 
   if (instruction.instrArgs) {
     stack = instruction.instrArgs.reduce(
+      applyInstruction.bind(null, moduleContext),
+      stack
+    );
+  }
+
+  if (instruction.intrs) {
+    stack = instruction.intrs.reduce(
       applyInstruction.bind(null, moduleContext),
       stack
     );

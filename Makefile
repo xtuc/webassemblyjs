@@ -43,7 +43,7 @@ test-whitelisted-spec:
 	$(REPL) $(SPEC_TEST_DIR)/globals.wast
 	$(REPL) $(SPEC_TEST_DIR)/i32.wast
 	$(REPL) $(SPEC_TEST_DIR)/binary.wast
-	$(REPL) $(SPEC_TEST_DIR)/typecheck.wast --debug
+	$(REPL) $(SPEC_TEST_DIR)/typecheck.wast
 
 lint:
 	$(ESLINT) packages
