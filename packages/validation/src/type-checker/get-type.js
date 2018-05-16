@@ -424,7 +424,17 @@ export default function getType(moduleContext, stack, instruction) {
       result = ["i32"];
       break;
     }
+    case "br_table": {
+      // TODO: Read all labels not just one
+      const index = instruction.args[0].value;
+      if (!moduleContext.hasLabel(index)) {
+        error = `Module does not have memory ${index}`;
+        break;
+      }
 
+      args = [...moduleContext.getLabel(index), "i32"];
+      break;
+    }
     /**
      * Skip type checking
      */
