@@ -117,6 +117,11 @@ export default function validate(ast) {
   return errors;
 }
 
+function isEmptyStack(stack) {
+  // Polymorphic types are allowed in empty stack
+  return stack.filter(t => t !== POLYMORPHIC).length === 0;
+}
+
 function checkStacks(expectedStack, actualStack) {
   if (actualStack !== false) {
     let j = actualStack.length - 1;
@@ -133,7 +138,7 @@ function checkStacks(expectedStack, actualStack) {
     }
 
     // There are still types left on the resulting stack
-    if (actualStack.slice(0, j + 1).filter(t => t !== POLYMORPHIC).length > 0) {
+    if (!isEmptyStack(actualStack.slice(0, j + 1))) {
       errors.push(
         `Stack contains additional type ${actualStack.slice(0, j + 1)}.`
       );
