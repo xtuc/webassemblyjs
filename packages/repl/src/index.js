@@ -101,7 +101,9 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     const [module, expected] = node.args;
 
     try {
-      const enableTypeChecking = expected.value === "type mismatch";
+      const enableTypeChecking =
+        expected.value === "type mismatch" ||
+        expected.value === "global is immutable";
 
       createModuleInstanceFromAst(module, enableTypeChecking);
       assert(false, `module is valid, expected invalid (${expected.value})`);
@@ -289,6 +291,14 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       const typeErrors = typeCheck(t.program([moduleNode]));
 
       if (typeErrors.length > 0) {
+        const containsImmutableGlobalViolation = typeErrors.some(
+          x => x === "global is immutable"
+        );
+
+        if (containsImmutableGlobalViolation) {
+          throw new Error("global is immutable");
+        }
+
         throw new Error("type mismatch");
       }
     }
