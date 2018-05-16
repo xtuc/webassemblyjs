@@ -408,7 +408,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           throw new CompileError(`function signature not found (${typeindex})`);
         }
 
-        const id = t.identifier(`${moduleName.value}.${name.value}`);
+        const id = t.numberLiteral(i);
 
         importDescr = t.funcImportDescr(
           id,
@@ -1605,27 +1605,30 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           sectionSizeInBytesNode
         );
 
+        const startPosition = getPosition();
+
+        const numberOfElementsu32 = readU32();
+        const numberOfElements = numberOfElementsu32.value;
+        eatBytes(numberOfElementsu32.nextIndex);
+
+        const endPosition = getPosition();
+
+        metadata.vectorOfSize = t.withLoc(
+          t.numberLiteral(numberOfElements),
+          endPosition,
+          startPosition
+        );
+
         if (opts.ignoreDataSection === true) {
-          eatBytes(sectionSizeInBytes); // eat the entire section
+          const remainingBytes =
+            // $FlowIgnore
+            sectionSizeInBytes - numberOfElements.nextIndex;
+          eatBytes(remainingBytes); // eat the entire section
 
           dumpSep("ignore data (" + sectionSizeInBytes + " bytes)");
 
           return { nodes: [], metadata };
         } else {
-          const startPosition = getPosition();
-
-          const numberOfElementsu32 = readU32();
-          const numberOfElements = numberOfElementsu32.value;
-          eatBytes(numberOfElementsu32.nextIndex);
-
-          const endPosition = getPosition();
-
-          metadata.vectorOfSize = t.withLoc(
-            t.numberLiteral(numberOfElements),
-            endPosition,
-            startPosition
-          );
-
           const nodes = parseDataSection(numberOfElements);
           return { nodes, metadata };
         }
