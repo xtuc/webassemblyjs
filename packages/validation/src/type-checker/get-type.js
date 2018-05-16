@@ -58,7 +58,7 @@ export default function getType(moduleContext, stack, instruction) {
         break;
       }
       if (!moduleContext.isMutableGlobal(index)) {
-        error = `Global ${index} is immutable`;
+        error = "global is immutable";
         break;
       }
       args = [moduleContext.getGlobal(index)];
