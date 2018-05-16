@@ -12,6 +12,7 @@ export default class ModuleContext {
     // Current stack frame
     this.locals = [];
     this.labels = [];
+    this.return = [];
 
     this.debugName = "unknown";
   }
@@ -24,6 +25,7 @@ export default class ModuleContext {
 
     this.locals = [];
     this.labels = [expectedResult];
+    this.return = expectedResult;
     this.debugName = debugName;
   }
 
