@@ -1,4 +1,4 @@
-import { traverse } from "@webassemblyjs/ast";
+import { traverse, isInstruction } from "@webassemblyjs/ast";
 
 import ModuleContext from "./type-checker/module-context.js";
 import getType from "./type-checker/get-type.js";
@@ -148,14 +148,7 @@ function applyInstruction(moduleContext, stack, instruction) {
   }
 
   // Workaround for node.args which sometimes does not contain instructions (i32.const, call)
-  if (
-    instruction.type !== "Instr" &&
-    instruction.type !== "LoopInstruction" &&
-    instruction.type !== "CallInstruction" &&
-    instruction.type !== "BlockInstruction" &&
-    instruction.type !== "IfInstruction" &&
-    instruction.type !== "CallIndirectInstruction"
-  ) {
+  if (isInstruction(instruction) === false) {
     return stack;
   }
 
