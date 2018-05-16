@@ -27,11 +27,6 @@
   (func $arity-0
     (select (nop) (nop) (i32.const 1))
   )
-  (global (mut i32) (i32.const 17))
-  (func
-    (f32.const 0)
-    (set_global 0)
-  )
   (func $type-mixed-arg-num-vs-num (param f32)
     (local i32)
     (tee_local 1 (f32.const 0))

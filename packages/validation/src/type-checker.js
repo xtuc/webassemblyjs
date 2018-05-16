@@ -1,4 +1,4 @@
-import { traverse } from "@webassemblyjs/ast";
+import { traverse, isInstruction } from "@webassemblyjs/ast";
 
 import ModuleContext from "./type-checker/module-context.js";
 import getType from "./type-checker/get-type.js";
@@ -89,6 +89,7 @@ export default function validate(ast) {
   errors = [];
 
   // Simulate stack types throughout all function bodies
+
   traverse(ast, {
     Func({ node }) {
       stopFuncCheck = false;
@@ -105,7 +106,7 @@ export default function validate(ast) {
       );
 
       if (stopFuncCheck) {
-        return;
+        return errors;
       }
 
       // Compare the two
@@ -114,6 +115,11 @@ export default function validate(ast) {
   });
 
   return errors;
+}
+
+function isEmptyStack(stack) {
+  // Polymorphic types are allowed in empty stack
+  return stack.filter(t => t !== POLYMORPHIC).length === 0;
 }
 
 function checkStacks(expectedStack, actualStack) {
@@ -132,7 +138,7 @@ function checkStacks(expectedStack, actualStack) {
     }
 
     // There are still types left on the resulting stack
-    if (j >= 0) {
+    if (!isEmptyStack(actualStack.slice(0, j + 1))) {
       errors.push(
         `Stack contains additional type ${actualStack.slice(0, j + 1)}.`
       );
@@ -141,19 +147,13 @@ function checkStacks(expectedStack, actualStack) {
 }
 
 function applyInstruction(moduleContext, stack, instruction) {
-  // Return was called, skip everything
+  // Return was called or a type error has occured, skip everything
   if (stack === false || stack.return) {
     return stack;
   }
 
   // Workaround for node.args which sometimes does not contain instructions (i32.const, call)
-  if (
-    instruction.type !== "Instr" &&
-    instruction.type !== "LoopInstruction" &&
-    instruction.type !== "CallInstruction" &&
-    instruction.type !== "BlockInstruction" &&
-    instruction.type !== "IfInstruction"
-  ) {
+  if (isInstruction(instruction) === false) {
     return stack;
   }
 
@@ -167,6 +167,13 @@ function applyInstruction(moduleContext, stack, instruction) {
 
   if (instruction.instrArgs) {
     stack = instruction.instrArgs.reduce(
+      applyInstruction.bind(null, moduleContext),
+      stack
+    );
+  }
+
+  if (instruction.intrs) {
+    stack = instruction.intrs.reduce(
       applyInstruction.bind(null, moduleContext),
       stack
     );
@@ -275,9 +282,6 @@ function applyInstruction(moduleContext, stack, instruction) {
 
     // Add to existing stack
     stack = [...stack, ...stackConsequent];
-  } else if (instruction.id === "return") {
-    stack.return = true;
-    return stack;
   } else {
     let actual;
     for (let i = 0; i < type.args.length; ++i) {

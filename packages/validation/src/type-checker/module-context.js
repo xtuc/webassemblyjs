@@ -12,6 +12,7 @@ export default class ModuleContext {
     // Current stack frame
     this.locals = [];
     this.labels = [];
+    this.return = [];
 
     this.debugName = "unknown";
   }
@@ -24,13 +25,14 @@ export default class ModuleContext {
 
     this.locals = [];
     this.labels = [expectedResult];
+    this.return = expectedResult;
     this.debugName = debugName;
   }
 
   /**
    * Functions
    */
-  addFunction({ params: args, results: result }) {
+  addFunction({ params: args = [], results: result = [] }) {
     args = args.map(arg => arg.valtype);
 
     debug("add new function %s -> %s", args.join(" "), result.join(" "));

@@ -19,6 +19,7 @@
     "@webassemblyjs/ast": "1.5.1",
     "@webassemblyjs/wasm-parser": "1.5.1",
     "@webassemblyjs/wast-parser": "1.5.1",
+    "@webassemblyjs/validation": "1.5.1",
     "webassemblyjs": "1.5.1"
   },
   "bin": {
