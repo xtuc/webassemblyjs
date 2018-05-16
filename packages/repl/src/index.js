@@ -13,7 +13,8 @@ const {
 const { decode } = require("@webassemblyjs/wasm-parser");
 const t = require("@webassemblyjs/ast");
 const typeCheck = require("@webassemblyjs/validation").stack;
-const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references").transform;
+const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references")
+  .transform;
 
 function addEndInstruction(body) {
   body.push(t.instruction("end"));
