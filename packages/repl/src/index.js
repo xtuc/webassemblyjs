@@ -12,6 +12,7 @@ const {
 } = require("webassemblyjs/lib/interpreter/kernel/memory");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const t = require("@webassemblyjs/ast");
+const typeCheck = require("@webassemblyjs/validation").stack;
 
 function addEndInstruction(body) {
   body.push(t.instruction("end"));
@@ -98,8 +99,17 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     const [module, expected] = node.args;
 
     try {
-      createModuleInstanceFromAst(module);
+      // TODO: Move this into `createModuleInstanceFromAst` and run type checker in any case
+      if (expected.value === "type mismatch") {
+        // Need to wrap module in a program node for type checker
+        const typeErrors = typeCheck(t.program([module]));
 
+        if (typeErrors.length > 0) {
+          throw new Error("type mismatch");
+        }
+      }
+
+      createModuleInstanceFromAst(module);
       assert(false, `module is valid, expected invalid (${expected.value})`);
     } catch (err) {
       assert(
@@ -278,6 +288,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     const importObject = {
       _internalInstanceOptions: internalInstanceOptions
     };
+
     const module = createCompiledModule(moduleNode);
 
     return new Instance(module, importObject);

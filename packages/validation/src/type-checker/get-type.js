@@ -376,12 +376,20 @@ export default function getType(moduleContext, stack, instruction) {
       break;
     }
     /**
-     * Unreachable code
+     * return
+     */
+    case "return": {
+      args = moduleContext.return;
+      result = [POLYMORPHIC];
+      stack.return = true;
+      break;
+    }
+    /**
+     * unreachable, trap
      */
     case "unreachable":
-    case "trap":
-    case "return": {
-      // Theres probably a nicer way to do this, but return is currently handled in `applyInstruction` directly
+    case "trap": {
+      // TODO: These should be polymorphic
       args = [];
       result = [];
       break;

@@ -105,7 +105,7 @@ export default function validate(ast) {
       );
 
       if (stopFuncCheck) {
-        return;
+        return errors;
       }
 
       // Compare the two
@@ -132,7 +132,7 @@ function checkStacks(expectedStack, actualStack) {
     }
 
     // There are still types left on the resulting stack
-    if (j >= 0) {
+    if (actualStack.slice(0, j + 1).filter(t => t !== POLYMORPHIC).length > 0) {
       errors.push(
         `Stack contains additional type ${actualStack.slice(0, j + 1)}.`
       );
@@ -141,7 +141,7 @@ function checkStacks(expectedStack, actualStack) {
 }
 
 function applyInstruction(moduleContext, stack, instruction) {
-  // Return was called, skip everything
+  // Return was called or a type error has occured, skip everything
   if (stack === false || stack.return) {
     return stack;
   }
@@ -275,9 +275,6 @@ function applyInstruction(moduleContext, stack, instruction) {
 
     // Add to existing stack
     stack = [...stack, ...stackConsequent];
-  } else if (instruction.id === "return") {
-    stack.return = true;
-    return stack;
   } else {
     let actual;
     for (let i = 0; i < type.args.length; ++i) {
