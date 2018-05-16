@@ -12,9 +12,8 @@ const {
 } = require("webassemblyjs/lib/interpreter/kernel/memory");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const t = require("@webassemblyjs/ast");
-const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references")
-  .transform;
 const typeCheck = require("@webassemblyjs/validation").stack;
+const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references").transform;
 
 function addEndInstruction(body) {
   body.push(t.instruction("end"));
@@ -101,19 +100,9 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     const [module, expected] = node.args;
 
     try {
-      // TODO: Move this into `createModuleInstanceFromAst` and run type checker in any case
-      if (expected.value === "type mismatch") {
-        denormalizeTypeReferences(module);
+      const enableTypeChecking = expected.value === "type mismatch";
 
-        // Need to wrap module in a program node for type checker
-        const typeErrors = typeCheck(t.program([module]));
-
-        if (typeErrors.length > 0) {
-          throw new Error("type mismatch");
-        }
-      }
-
-      createModuleInstanceFromAst(module);
+      createModuleInstanceFromAst(module, enableTypeChecking);
       assert(false, `module is valid, expected invalid (${expected.value})`);
     } catch (err) {
       assert(
@@ -283,7 +272,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     }
   }
 
-  function createModuleInstanceFromAst(moduleNode) {
+  function createModuleInstanceFromAst(moduleNode, enableTypeChecking = false) {
     const internalInstanceOptions = {
       checkForI64InSignature: false,
       returnStackLocal: true
@@ -293,9 +282,19 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       _internalInstanceOptions: internalInstanceOptions
     };
 
-    const module = createCompiledModule(moduleNode);
+    if (enableTypeChecking === true) {
+      denormalizeTypeReferences(moduleNode);
 
-    return new Instance(module, importObject);
+      const typeErrors = typeCheck(t.program([moduleNode]));
+
+      if (typeErrors.length > 0) {
+        throw new Error("type mismatch");
+      }
+    }
+
+    const compiledModule = createCompiledModule(moduleNode);
+
+    return new Instance(compiledModule, importObject);
   }
 
   function replEval(input) {
@@ -345,13 +344,11 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       }
     } else if (node.type === "Module") {
       const instance = createModuleInstanceFromAst(node);
-      // prettyPrintInstance(instance);
 
       instantiatedModules.unshift(instance);
     } else {
       // else wrap the instruction it into a module and interpret it
       createModuleInstanceFromAst(wrapInModule(node));
-      // prettyPrintInstance(instance);
     }
   }
 
@@ -371,24 +368,6 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       buffer = "";
     }
   }
-
-  // function prettyPrintInstance(instance) {
-  //   if (filename !== undefined) {
-  //     return;
-  //   }
-
-  //   const exports = Object.keys(instance.exports).map(
-  //     name => `  export func "${name}"`
-  //   );
-
-  //   onLog("module:");
-
-  //   if (exports.length > 0) {
-  //     onLog(exports.join("\n"));
-  //   } else {
-  //     onLog("empty");
-  //   }
-  // }
 
   return {
     read
