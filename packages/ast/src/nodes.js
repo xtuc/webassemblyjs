@@ -687,6 +687,7 @@ export function callIndirectInstruction(
 
   const node: CallIndirectInstruction = {
     type: "CallIndirectInstruction",
+    id: "call_indirect",
     signature
   };
 

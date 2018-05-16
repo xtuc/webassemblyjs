@@ -575,6 +575,11 @@ defineType("CallInstruction", {
 defineType("CallIndirectInstruction", {
   unionType: ["Instruction"],
   fields: {
+    id: {
+      constant: true,
+      type: "string",
+      value: "call_indirect"
+    },
     signature: {
       type: "SignatureOrTypeRef"
     },

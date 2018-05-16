@@ -356,6 +356,7 @@ type CallInstruction = {
 type CallIndirectInstruction = {
   ...BaseNode,
   type: "CallIndirectInstruction",
+  id: string,
   signature: SignatureOrTypeRef,
   intrs?: Array<Expression>
 };
