@@ -25,11 +25,11 @@
     "webassemblyjs": "1.5.1"
   },
   "bin": {
-    "wasmdump": "./lib/bin/wasmdump.js",
-    "wasmast": "./lib/bin/wasmast.js",
-    "wasmrun": "./lib/bin/wasmrun.js",
-    "wasm2wast": "./lib/bin/wasm2wast.js",
-    "wastast": "./lib/bin/wastast.js"
+    "wasmdump": "lib/wasmdump.js",
+    "wasmast": "lib/wasmast.js",
+    "wasmrun": "lib/wasmrun.js",
+    "wasm2wast": "lib/wasm2wast.js",
+    "wastast": "lib/wastast.js"
   },
   "repository": {
     "type": "git",
