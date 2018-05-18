@@ -4,12 +4,10 @@
     {
       "type": "Instr",
       "id": "load",
-      "object": "i64",
       "args": [
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -17,6 +15,7 @@
               "raw": "0"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 1,
@@ -29,6 +28,7 @@
           }
         }
       ],
+      "object": "i64",
       "namedArgs": {
         "offset": {
           "type": "NumberLiteral",

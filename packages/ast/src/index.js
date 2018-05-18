@@ -10,7 +10,7 @@ export {
   binaryModule,
   sectionMetadata,
   loopInstruction,
-  instruction,
+  instr,
   ifInstruction,
   longNumberLiteral,
   stringLiteral,
@@ -39,7 +39,6 @@ export {
   signature,
   funcImportDescr,
   func,
-  objectInstruction,
   limit,
   valtypeLiteral
 } from "./nodes";
@@ -50,7 +49,9 @@ export {
   withRaw,
   funcParam,
   indexLiteral,
-  memIndexLiteral
+  memIndexLiteral,
+  instruction,
+  objectInstruction
 } from "./node-helpers.js";
 
 export { traverse, traverseWithHooks } from "./traverse";

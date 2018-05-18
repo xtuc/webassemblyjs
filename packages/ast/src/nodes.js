@@ -197,44 +197,25 @@ export function loopInstruction(
   return node;
 }
 
-export function instruction(
+export function instr(
   id: string,
-  args: Array<Expression> = [],
-  namedArgs?: Object = {}
-): GenericInstruction {
+  object?: Valtype,
+  args: Array<Expression>,
+  namedArgs?: Object
+): Instr {
   assert(typeof id === "string");
 
   assert(typeof args === "object" && typeof args.length !== "undefined");
 
-  const node: GenericInstruction = {
+  const node: Instr = {
     type: "Instr",
     id,
     args
   };
 
-  if (Object.keys(namedArgs).length !== 0) {
-    node.namedArgs = namedArgs;
+  if (typeof object !== "undefined") {
+    node.object = object;
   }
-
-  return node;
-}
-
-export function objectInstruction(
-  id: string,
-  object: Valtype,
-  args: Array<Expression> = [],
-  namedArgs?: Object = {}
-): ObjectInstruction {
-  assert(typeof id === "string");
-
-  assert(typeof args === "object" && typeof args.length !== "undefined");
-
-  const node: ObjectInstruction = {
-    type: "Instr",
-    id,
-    object,
-    args
-  };
 
   if (Object.keys(namedArgs).length !== 0) {
     node.namedArgs = namedArgs;
@@ -758,9 +739,7 @@ export const isSectionMetadata = isTypeOf("SectionMetadata");
 
 export const isLoopInstruction = isTypeOf("LoopInstruction");
 
-export const isInstruction = isTypeOf("GenericInstruction");
-
-export const isObjectInstruction = isTypeOf("ObjectInstruction");
+export const isInstr = isTypeOf("Instr");
 
 export const isIfInstruction = isTypeOf("IfInstruction");
 
@@ -840,9 +819,7 @@ export const assertSectionMetadata = assertTypeOf("SectionMetadata");
 
 export const assertLoopInstruction = assertTypeOf("LoopInstruction");
 
-export const assertInstruction = assertTypeOf("GenericInstruction");
-
-export const assertObjectInstruction = assertTypeOf("ObjectInstruction");
+export const assertInstr = assertTypeOf("Instr");
 
 export const assertIfInstruction = assertTypeOf("IfInstruction");
 

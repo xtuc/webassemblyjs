@@ -12,7 +12,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "f64",
           "args": [
             {
               "type": "FloatLiteral",
@@ -20,6 +19,7 @@
               "raw": "-4"
             }
           ],
+          "object": "f64",
           "loc": {
             "start": {
               "line": 1,

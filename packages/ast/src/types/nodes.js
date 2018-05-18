@@ -13,8 +13,7 @@ type Node =
   | QuoteModule
   | SectionMetadata
   | LoopInstruction
-  | Instruction
-  | ObjectInstruction
+  | Instr
   | IfInstruction
   | StringLiteral
   | NumberLiteral
@@ -48,8 +47,7 @@ type Node =
 
 type Instruction =
   | LoopInstruction
-  | Instruction
-  | ObjectInstruction
+  | Instr
   | IfInstruction
   | TypeInstruction
   | BlockInstruction
@@ -57,8 +55,7 @@ type Instruction =
   | CallIndirectInstruction;
 
 type Expression =
-  | Instruction
-  | ObjectInstruction
+  | Instr
   | StringLiteral
   | NumberLiteral
   | LongNumberLiteral
@@ -139,19 +136,11 @@ type LoopInstruction = {
   instr: Array<Instruction>
 };
 
-type GenericInstruction = {
+type Instr = {
   ...BaseNode,
   type: "Instr",
   id: string,
-  args: Array<Expression>,
-  namedArgs?: Object
-};
-
-type ObjectInstruction = {
-  ...BaseNode,
-  type: "Instr",
-  id: string,
-  object: Valtype,
+  object?: Valtype,
   args: Array<Expression>,
   namedArgs?: Object
 };

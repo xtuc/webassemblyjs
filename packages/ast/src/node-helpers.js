@@ -10,7 +10,7 @@ const {
   isInfLiteral
 } = require("@webassemblyjs/wast-parser/lib/number-literals");
 
-import { longNumberLiteral, floatLiteral, numberLiteral } from "./nodes";
+import { longNumberLiteral, floatLiteral, numberLiteral, instr } from "./nodes";
 
 export function numberLiteralFromRaw(
   rawValue: number | string,
@@ -57,6 +57,23 @@ export function numberLiteralFromRaw(
   }
 }
 
+export function instruction(
+  id: string,
+  args: Array<Expression> = [],
+  namedArgs?: Object = {}
+): Instr {
+  return instr(id, undefined, args, namedArgs);
+}
+
+export function objectInstruction(
+  id: string,
+  object: Valtype,
+  args: Array<Expression> = [],
+  namedArgs?: Object = {}
+): Instr {
+  return instr(id, object, args, namedArgs);
+}
+
 /**
  * Decorators
  */
@@ -78,10 +95,6 @@ export function withRaw(n: Node, raw: string): Node {
 
   return n;
 }
-
-/**
- * Import
- */
 
 export function funcParam(valtype: Valtype, id: ?string): FuncParam {
   return {

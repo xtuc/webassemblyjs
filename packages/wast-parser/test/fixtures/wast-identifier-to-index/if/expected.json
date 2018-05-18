@@ -213,7 +213,6 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -221,6 +220,7 @@
                   "raw": "8"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 7,
@@ -255,7 +255,6 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -263,6 +262,7 @@
                   "raw": "9"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 8,

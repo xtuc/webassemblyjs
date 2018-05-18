@@ -17,7 +17,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i64",
           "args": [
             {
               "type": "LongNumberLiteral",
@@ -28,6 +27,7 @@
               "raw": "-90909"
             }
           ],
+          "object": "i64",
           "loc": {
             "start": {
               "line": 2,

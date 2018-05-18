@@ -72,7 +72,7 @@ function transformFuncPath(
   const params = signature.params;
 
   traverse(funcNode, {
-    Instr(instrPath: NodePath<GenericInstruction>) {
+    Instr(instrPath: NodePath<Instr>) {
       const instrNode = instrPath.node;
 
       if (

@@ -17,7 +17,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "f32",
           "args": [
             {
               "type": "FloatLiteral",
@@ -25,6 +24,7 @@
               "raw": "1e-1"
             }
           ],
+          "object": "f32",
           "loc": {
             "start": {
               "line": 2,

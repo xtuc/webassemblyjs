@@ -4,7 +4,6 @@
     {
       "type": "Instr",
       "id": "const",
-      "object": "f32",
       "args": [
         {
           "type": "FloatLiteral",
@@ -13,6 +12,7 @@
           "inf": true
         }
       ],
+      "object": "f32",
       "loc": {
         "start": {
           "line": 1,
@@ -27,7 +27,6 @@
     {
       "type": "Instr",
       "id": "const",
-      "object": "f32",
       "args": [
         {
           "type": "FloatLiteral",
@@ -36,6 +35,7 @@
           "inf": true
         }
       ],
+      "object": "f32",
       "loc": {
         "start": {
           "line": 2,
