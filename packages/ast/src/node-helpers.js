@@ -89,10 +89,8 @@ export function withLoc(n: Node, end: Position, start: Position): Node {
   return n;
 }
 
-export function withRaw(n: Node, raw: string): Node {
-  // $FlowIgnore
+export function withRaw(n: NumericLiteral, raw: string): Node {
   n.raw = raw;
-
   return n;
 }
 
