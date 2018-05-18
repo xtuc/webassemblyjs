@@ -217,7 +217,7 @@ export function instr(
     node.object = object;
   }
 
-  if (Object.keys(namedArgs).length !== 0) {
+  if (typeof namedArgs !== "undefined" && Object.keys(namedArgs).length !== 0) {
     node.namedArgs = namedArgs;
   }
 

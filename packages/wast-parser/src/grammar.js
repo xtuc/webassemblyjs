@@ -942,6 +942,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             lookaheadAndCheck(tokens.valtype) === true ||
             token.type === "keyword" // is any keyword
           ) {
+            // $FlowIgnore
             args.push(parseFuncInstr());
           } else {
             throw createUnexpectedToken(

@@ -66,7 +66,9 @@ function buildObject(typeDef) {
     } else if (meta.type === "Object") {
       // omit optional object properties if they have no keys
       return `
-        if (Object.keys(${meta.name}).length !== 0) {
+        if (typeof ${meta.name} !== "undefined" && Object.keys(${
+        meta.name
+      }).length !== 0) {
           node.${meta.name} = ${meta.name};
         }
       `;
