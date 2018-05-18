@@ -408,7 +408,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           throw new CompileError(`function signature not found (${typeindex})`);
         }
 
-        const id = t.numberLiteral(i);
+        const id = t.numberLiteralFromRaw(i);
 
         importDescr = t.funcImportDescr(
           id,
@@ -520,7 +520,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = t.numberLiteral(index, String(index));
+        id = t.numberLiteralFromRaw(index, String(index));
 
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
@@ -823,7 +823,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([index], "index");
 
-          args.push(t.numberLiteral(indexu32.value.toString(), "f64"));
+          args.push(t.numberLiteralFromRaw(indexu32.value.toString(), "f64"));
         }
       } else if (instructionByte >= 0x28 && instructionByte <= 0x40) {
         /**
@@ -867,7 +867,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "value");
 
-          args.push(t.numberLiteral(value));
+          args.push(t.numberLiteralFromRaw(value));
         }
 
         if (instruction.object === "u32") {
@@ -877,7 +877,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "value");
 
-          args.push(t.numberLiteral(value));
+          args.push(t.numberLiteralFromRaw(value));
         }
 
         if (instruction.object === "i64") {
@@ -902,7 +902,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "value");
 
-          args.push(t.numberLiteral(value));
+          args.push(t.numberLiteralFromRaw(value));
         }
 
         if (instruction.object === "f32") {
@@ -912,7 +912,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "value");
 
-          args.push(t.numberLiteral(value));
+          args.push(t.numberLiteralFromRaw(value));
         }
 
         if (instruction.object === "f64") {
@@ -922,7 +922,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "value");
 
-          args.push(t.numberLiteral(value));
+          args.push(t.numberLiteralFromRaw(value));
         }
       } else {
         for (let i = 0; i < instruction.numberOfArgs; i++) {
@@ -931,7 +931,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([u32.value], "argument " + i);
 
-          args.push(t.numberLiteral(u32.value));
+          args.push(t.numberLiteralFromRaw(u32.value));
         }
       }
 
@@ -1311,7 +1311,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const sectionSizeInBytesEndLoc = getPosition();
 
     const sectionSizeInBytesNode = t.withLoc(
-      t.numberLiteral(sectionSizeInBytes),
+      t.numberLiteralFromRaw(sectionSizeInBytes),
       sectionSizeInBytesEndLoc,
       startPosition
     );
@@ -1334,7 +1334,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           "type",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(t.numberLiteral(numberOfTypes), endPosition, startPosition)
+          t.withLoc(
+            t.numberLiteralFromRaw(numberOfTypes),
+            endPosition,
+            startPosition
+          )
         );
 
         const nodes = parseTypeSection(numberOfTypes);
@@ -1361,7 +1365,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           "table",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(t.numberLiteral(numberOfTable), endPosition, startPosition)
+          t.withLoc(
+            t.numberLiteralFromRaw(numberOfTable),
+            endPosition,
+            startPosition
+          )
         );
 
         const nodes = parseTableSection(numberOfTable);
@@ -1389,7 +1397,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteral(numberOfImports),
+            t.numberLiteralFromRaw(numberOfImports),
             endPosition,
             startPosition
           )
@@ -1418,7 +1426,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteral(numberOfFunctions),
+            t.numberLiteralFromRaw(numberOfFunctions),
             endPosition,
             startPosition
           )
@@ -1448,7 +1456,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           "export",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(t.numberLiteral(numberOfExport), endPosition, startPosition)
+          t.withLoc(
+            t.numberLiteralFromRaw(numberOfExport),
+            endPosition,
+            startPosition
+          )
         );
 
         parseExportSection(numberOfExport);
@@ -1475,7 +1487,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           "code",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(t.numberLiteral(numberOfFuncs), endPosition, startPosition)
+          t.withLoc(
+            t.numberLiteralFromRaw(numberOfFuncs),
+            endPosition,
+            startPosition
+          )
         );
 
         if (opts.ignoreCodeSection === true) {
@@ -1525,7 +1541,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteral(numberOfElements),
+            t.numberLiteralFromRaw(numberOfElements),
             endPosition,
             startPosition
           )
@@ -1554,7 +1570,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteral(numberOfGlobals),
+            t.numberLiteralFromRaw(numberOfGlobals),
             endPosition,
             startPosition
           )
@@ -1583,7 +1599,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteral(numberOfElements),
+            t.numberLiteralFromRaw(numberOfElements),
             endPosition,
             startPosition
           )
@@ -1614,7 +1630,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const endPosition = getPosition();
 
         metadata.vectorOfSize = t.withLoc(
-          t.numberLiteral(numberOfElements),
+          t.numberLiteralFromRaw(numberOfElements),
           endPosition,
           startPosition
         );

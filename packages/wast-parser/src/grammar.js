@@ -229,7 +229,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
         eatTokenOfType(tokens.name); // const
 
-        const numberLiteral = t.numberLiteral(token.value, "i32");
+        const numberLiteral = t.numberLiteralFromRaw(token.value, "i32");
         offset = t.objectInstruction("const", "i32", [numberLiteral]);
         eatToken();
 
@@ -237,7 +237,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       } else {
         eatTokenOfType(tokens.name); // get_global
 
-        const numberLiteral = t.numberLiteral(token.value, "i32");
+        const numberLiteral = t.numberLiteralFromRaw(token.value, "i32");
         offset = t.instruction("get_global", [numberLiteral]);
         eatToken();
 
@@ -894,7 +894,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         let value: any;
 
         if (token.type === tokens.number) {
-          value = t.numberLiteral(token.value);
+          value = t.numberLiteralFromRaw(token.value);
         } else {
           throw new Error("Unexpected type for argument: " + token.type);
         }
@@ -922,8 +922,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           args.push(
             // TODO(sven): refactor the type signature handling
             // https://github.com/xtuc/webassemblyjs/pull/129 is a good start
-            // $FlowIgnore
-            t.numberLiteral(token.value, signature[signaturePtr++] || "f64")
+            t.numberLiteralFromRaw(
+              token.value,
+              // $FlowIgnore
+              signature[signaturePtr++] || "f64"
+            )
           );
 
           eatToken();
@@ -1336,7 +1339,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         ref = t.identifier(token.value);
         eatToken();
       } else if (token.type === tokens.number) {
-        ref = t.numberLiteral(token.value);
+        ref = t.numberLiteralFromRaw(token.value);
         eatToken();
       }
       return ref;

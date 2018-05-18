@@ -45,7 +45,7 @@ console.log(signatures);
 - function `objectInstruction(id, object, args, namedArgs)`
 - function `ifInstruction(testLabel, test, result, consequent, alternate)`
 - function `stringLiteral(value)`
-- function `numberLiteral(value, raw)`
+- function `numberLiteralFromRaw(value, raw)`
 - function `longNumberLiteral(value, raw)`
 - function `floatLiteral(value, nan, inf, raw)`
 - function `elem(table, offset, funcs)`

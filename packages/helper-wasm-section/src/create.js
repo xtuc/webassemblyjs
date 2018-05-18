@@ -80,13 +80,13 @@ export function createEmptySection(
   const sizeEndLoc = { line: -1, column: start + 1 };
 
   // 1 byte for the empty vector
-  const size = t.withLoc(t.numberLiteral(1), sizeEndLoc, sizeStartLoc);
+  const size = t.withLoc(t.numberLiteralFromRaw(1), sizeEndLoc, sizeStartLoc);
 
   const vectorOfSizeStartLoc = { line: -1, column: sizeEndLoc.column };
   const vectorOfSizeEndLoc = { line: -1, column: sizeEndLoc.column + 1 };
 
   const vectorOfSize = t.withLoc(
-    t.numberLiteral(0),
+    t.numberLiteralFromRaw(0),
     vectorOfSizeEndLoc,
     vectorOfSizeStartLoc
   );

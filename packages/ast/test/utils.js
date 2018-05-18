@@ -116,10 +116,10 @@ describe("AST utils", () => {
   describe("get end of section", () => {
     it("should get the end of the section", () => {
       const startOffset = 0;
-      const size = t.numberLiteral(10);
+      const size = t.numberLiteralFromRaw(10);
       size.loc = locOnCol(10);
 
-      const vectorOfSize = t.numberLiteral(1);
+      const vectorOfSize = t.numberLiteralFromRaw(1);
       vectorOfSize.loc = locOnCol(10);
 
       const section = t.sectionMetadata(
@@ -139,7 +139,7 @@ describe("AST utils", () => {
   describe("shift", () => {
     describe("node", () => {
       it("should shift by position delta", () => {
-        const n = t.numberLiteral(10);
+        const n = t.numberLiteralFromRaw(10);
         n.loc = locOnCol(10);
 
         t.shiftLoc(n, +10);
@@ -149,7 +149,7 @@ describe("AST utils", () => {
       });
 
       it("should shift by negative delta", () => {
-        const n = t.numberLiteral(10);
+        const n = t.numberLiteralFromRaw(10);
         n.loc = locOnCol(10);
 
         t.shiftLoc(n, -10);
@@ -165,10 +165,10 @@ describe("AST utils", () => {
 
         const startOffset = 0;
 
-        const size = t.numberLiteral(10);
+        const size = t.numberLiteralFromRaw(10);
         size.loc = locOnCol(10);
 
-        const vectorOfSize = t.numberLiteral(1);
+        const vectorOfSize = t.numberLiteralFromRaw(1);
         vectorOfSize.loc = locOnCol(10);
 
         const section = t.sectionMetadata(
@@ -191,10 +191,10 @@ describe("AST utils", () => {
 
         const startOffset = 0;
 
-        const size = t.numberLiteral(10);
+        const size = t.numberLiteralFromRaw(10);
         size.loc = locOnCol(10);
 
-        const vectorOfSize = t.numberLiteral(1);
+        const vectorOfSize = t.numberLiteralFromRaw(1);
         vectorOfSize.loc = locOnCol(10);
 
         const section = t.sectionMetadata(
