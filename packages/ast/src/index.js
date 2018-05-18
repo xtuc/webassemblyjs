@@ -1,47 +1,6 @@
 // @flow
 
-export {
-  module,
-  moduleMetadata,
-  functionNameMetadata,
-  moduleNameMetadata,
-  localNameMetadata,
-  quoteModule,
-  binaryModule,
-  sectionMetadata,
-  loopInstruction,
-  instr,
-  ifInstruction,
-  longNumberLiteral,
-  stringLiteral,
-  floatLiteral,
-  numberLiteral,
-  indexInFuncSection,
-  elem,
-  start,
-  typeInstruction,
-  leadingComment,
-  blockComment,
-  globalType,
-  global,
-  data,
-  memory,
-  table,
-  moduleImport,
-  program,
-  callInstruction,
-  blockInstruction,
-  identifier,
-  byteArray,
-  moduleExport,
-  moduleExportDescr,
-  callIndirectInstruction,
-  signature,
-  funcImportDescr,
-  func,
-  limit,
-  valtypeLiteral
-} from "./nodes";
+export * from "./nodes";
 
 export {
   numberLiteralFromRaw,
@@ -59,7 +18,6 @@ export { traverse, traverseWithHooks } from "./traverse";
 export { signatures } from "./signatures";
 
 export {
-  isInstruction,
   getSectionMetadata,
   sortSectionMetadata,
   orderedInsertNode,

@@ -45,17 +45,6 @@ export function sortSectionMetadata(m: Module) {
   });
 }
 
-export function isInstruction(n: Node) {
-  return (
-    n.type === "Instr" ||
-    n.type === "CallInstruction" ||
-    n.type === "CallIndirectInstruction" ||
-    n.type === "BlockInstruction" ||
-    n.type === "LoopInstruction" ||
-    n.type === "IfInstruction"
-  );
-}
-
 export function orderedInsertNode(m: Module, n: Node) {
   assertHasLoc(n);
 

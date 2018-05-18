@@ -1,10 +1,8 @@
 const definitions = require("../src/definitions");
 const flatMap = require("array.prototype.flatmap");
-const { typeSignature, mapProps, iterateProps } = require("./util");
+const { typeSignature, mapProps, iterateProps, unique } = require("./util");
 
 const stdout = process.stdout;
-
-const unique = items => Array.from(new Set(items));
 
 function params(fields) {
   return mapProps(fields)

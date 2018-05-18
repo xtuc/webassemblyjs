@@ -1,9 +1,11 @@
 const definitions = require("../src/definitions");
+const flatMap = require("array.prototype.flatmap");
 const {
   typeSignature,
   iterateProps,
   mapProps,
-  filterProps
+  filterProps,
+  unique
 } = require("./util");
 
 const stdout = process.stdout;
@@ -153,6 +155,22 @@ function generate() {
       export const is${typeDefinition.name} =
         isTypeOf("${typeDefinition.name}");
     `);
+  });
+
+  // Node union type testers
+  const unionTypes = unique(
+    flatMap(mapProps(definitions).filter(d => d.unionType), d => d.unionType)
+  );
+  unionTypes.forEach(unionType => {
+    stdout.write(
+      `
+      export const is${unionType} = (node: Node) => ` +
+        mapProps(definitions)
+          .filter(d => d.unionType && d.unionType.includes(unionType))
+          .map(d => `is${d.name}(node) `)
+          .join("||") +
+        ";\n\n"
+    );
   });
 
   // Node assertion

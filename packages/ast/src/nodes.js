@@ -801,6 +801,33 @@ export const isByteArray = isTypeOf("ByteArray");
 
 export const isFunc = isTypeOf("Func");
 
+export const isInstruction = (node: Node) =>
+  isLoopInstruction(node) ||
+  isInstr(node) ||
+  isIfInstruction(node) ||
+  isTypeInstruction(node) ||
+  isBlockInstruction(node) ||
+  isCallInstruction(node) ||
+  isCallIndirectInstruction(node);
+
+export const isExpression = (node: Node) =>
+  isInstr(node) ||
+  isStringLiteral(node) ||
+  isNumberLiteral(node) ||
+  isLongNumberLiteral(node) ||
+  isFloatLiteral(node) ||
+  isValtypeLiteral(node) ||
+  isIdentifier(node);
+
+export const isNumericLiteral = (node: Node) =>
+  isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node);
+
+export const isImportDescr = (node: Node) =>
+  isGlobalType(node) ||
+  isTable(node) ||
+  isMemory(node) ||
+  isFuncImportDescr(node);
+
 export const assertModule = assertTypeOf("Module");
 
 export const assertModuleMetadata = assertTypeOf("ModuleMetadata");
