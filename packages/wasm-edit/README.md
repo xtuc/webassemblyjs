@@ -70,7 +70,7 @@ import { add } from "@webassemblyjs/wasm-edit";
 const binary = [/*...*/];
 
 const newBinary = add(actualBinary, [
-  t.moduleImport("env", "mem", t.memory(t.limits(1)))
+  t.moduleImport("env", "mem", t.memory(t.limit(1)))
 ]);
 ```
 

@@ -40,9 +40,8 @@ export {
   funcImportDescr,
   func,
   objectInstruction,
-  //TODO: fix these inconsistent names
-  valtypeLiteral as valtype,
-  limit as limits
+  limit,
+  valtypeLiteral
 } from "./nodes";
 
 export {

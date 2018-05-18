@@ -135,7 +135,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseMemory(): Memory {
       let id = t.identifier(getUniqueName("memory"));
-      let limits = t.limits(0);
+      let limits = t.limit(0);
 
       if (token.type === tokens.string || token.type === tokens.identifier) {
         id = t.identifier(token.value);
@@ -157,7 +157,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.string);
 
         // Update limits accordingly
-        limits = t.limits(stringInitializer.length);
+        limits = t.limit(stringInitializer.length);
 
         eatTokenOfType(tokens.closeParen);
       }
@@ -189,7 +189,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        * Memory signature
        */
       if (token.type === tokens.number) {
-        limits = t.limits(parse32I(token.value));
+        limits = t.limit(parse32I(token.value));
         eatToken();
 
         if (token.type === tokens.number) {
@@ -269,7 +269,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseTable(): Table {
       let name = t.identifier(getUniqueName("table"));
 
-      let limit = t.limits(0);
+      let limit = t.limit(0);
       const elemIndices = [];
       const elemType = "anyfunc";
 
@@ -326,9 +326,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             const max = parseInt(token.value);
             eatToken();
 
-            limit = t.limits(min, max);
+            limit = t.limit(min, max);
           } else {
-            limit = t.limits(min);
+            limit = t.limit(min);
           }
 
           eatToken();
@@ -911,7 +911,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
         } else if (token.type === tokens.valtype) {
           // Handle locals
-          args.push(t.valtype(token.value));
+          args.push(t.valtypeLiteral(token.value));
 
           eatToken();
         } else if (token.type === tokens.string) {

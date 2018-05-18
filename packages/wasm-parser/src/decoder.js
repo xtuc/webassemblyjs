@@ -630,7 +630,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       // Decode instructions until the end
       parseInstructionBlock(code);
 
-      code.unshift(...locals.map(l => t.instruction("local", [t.valtype(l)])));
+      code.unshift(
+        ...locals.map(l => t.instruction("local", [t.valtypeLiteral(l)]))
+      );
 
       const endLoc = getPosition();
 
@@ -997,7 +999,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       dump([min], "min");
     }
 
-    return t.table(elementType, t.limits(min, max), name);
+    return t.table(elementType, t.limit(min, max), name);
   }
 
   // https://webassembly.github.io/spec/binary/types.html#global-types
@@ -1209,7 +1211,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       dump([min], "min");
     }
 
-    return t.memory(t.limits(min, max), t.indexLiteral(i));
+    return t.memory(t.limit(min, max), t.indexLiteral(i));
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#table-section

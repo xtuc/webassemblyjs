@@ -30,7 +30,7 @@ describe("insert a node", () => {
       const actualBinary = makeBuffer(encodeHeader(), encodeVersion(1));
 
       const newBinary = add(actualBinary, [
-        t.moduleImport("a", "b", t.memory(t.limits(1)))
+        t.moduleImport("a", "b", t.memory(t.limit(1)))
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -45,7 +45,7 @@ describe("insert a node", () => {
       ]);
 
       const newBinary = add(actualBinary, [
-        t.moduleImport("a", "b", t.memory(t.limits(1)))
+        t.moduleImport("a", "b", t.memory(t.limit(1)))
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);

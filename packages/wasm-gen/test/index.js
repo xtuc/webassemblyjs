@@ -38,7 +38,7 @@ const fixtures = [
 
   {
     name: "a memory ModuleImport",
-    node: t.moduleImport("a", "b", t.memory(t.limits(2))),
+    node: t.moduleImport("a", "b", t.memory(t.limit(2))),
     expected: [0x01, 0x61, 0x01, 0x62, 0x02, 0x00, 0x02]
   },
 
@@ -110,13 +110,13 @@ const fixtures = [
 
   {
     name: "a ModuleImport of Table with min 2",
-    node: t.moduleImport("a", "b", t.table("anyfunc", t.limits(2))),
+    node: t.moduleImport("a", "b", t.table("anyfunc", t.limit(2))),
     expected: [0x01, 0x61, 0x01, 0x62, 0x01, 0x70, 0x00, 0x02]
   },
 
   {
     name: "a ModuleImport of Table with min 2 and max 10",
-    node: t.moduleImport("a", "b", t.table("anyfunc", t.limits(2, 10))),
+    node: t.moduleImport("a", "b", t.table("anyfunc", t.limit(2, 10))),
     expected: [0x01, 0x61, 0x01, 0x62, 0x01, 0x70, 0x01, 0x02, 0x0a]
   },
 
