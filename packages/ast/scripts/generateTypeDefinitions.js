@@ -41,9 +41,9 @@ function generate() {
 
   // generate the type definitions
   iterateProps(definitions, typeDef => {
-    stdout.write(`type ${typeDef.flowTypeName || typeDef.name} = {
+    stdout.write(`type ${typeDef.name} = {
         ...${typeDef.extends || "BaseNode"},
-        type: "${typeDef.astTypeName || typeDef.name}",
+        type: "${typeDef.name}",
         ${params(typeDef.fields)}
       };\n\n`);
   });

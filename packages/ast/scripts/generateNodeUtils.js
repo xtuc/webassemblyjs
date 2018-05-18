@@ -95,7 +95,7 @@ function buildObject(typeDef) {
 
   return `
     const node: ${typeDef.flowTypeName || typeDef.name} = {
-      type: "${typeDef.astTypeName || typeDef.name}",
+      type: "${typeDef.name}",
       ${constants.concat(fields).join(",")}
     }
 
@@ -137,7 +137,7 @@ function generate() {
     stdout.write(`
       export function ${lowerCamelCase(typeDefinition.name)} (
         ${params(filterProps(typeDefinition.fields, f => !f.constant))}
-      ): ${typeDefinition.flowTypeName || typeDefinition.name} {
+      ): ${typeDefinition.name} {
 
         ${assertParams(filterProps(typeDefinition.fields, f => !f.constant))}
         ${buildObject(typeDefinition)} 
@@ -151,7 +151,7 @@ function generate() {
   iterateProps(definitions, typeDefinition => {
     stdout.write(`
       export const is${typeDefinition.name} =
-        isTypeOf("${typeDefinition.flowTypeName || typeDefinition.name}");
+        isTypeOf("${typeDefinition.name}");
     `);
   });
 
@@ -159,7 +159,7 @@ function generate() {
   iterateProps(definitions, typeDefinition => {
     stdout.write(`
       export const assert${typeDefinition.name} =
-        assertTypeOf("${typeDefinition.flowTypeName || typeDefinition.name}");
+        assertTypeOf("${typeDefinition.name}");
     `);
   });
 }
