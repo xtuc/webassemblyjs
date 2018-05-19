@@ -32,11 +32,21 @@
             },
             "end": {
               "line": 2,
-              "column": 24
+              "column": 23
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 3,
+          "column": -1
+        }
+      }
     }
   ]
 }

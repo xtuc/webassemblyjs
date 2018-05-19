@@ -28,7 +28,17 @@
               "id": "call",
               "index": {
                 "type": "Identifier",
-                "value": "dummy"
+                "value": "dummy",
+                "loc": {
+                  "start": {
+                    "line": 3,
+                    "column": 9
+                  },
+                  "end": {
+                    "line": 3,
+                    "column": 15
+                  }
+                }
               }
             },
             {
@@ -49,7 +59,7 @@
                 },
                 "end": {
                   "line": 4,
-                  "column": 17
+                  "column": 16
                 }
               }
             },
@@ -80,7 +90,7 @@
                     },
                     "end": {
                       "line": 6,
-                      "column": 19
+                      "column": 18
                     }
                   }
                 }
@@ -90,7 +100,17 @@
           ],
           "result": null
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 9,
+          "column": -1
+        }
+      }
     }
   ]
 }

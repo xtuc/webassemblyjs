@@ -25,7 +25,17 @@
             "raw": "0"
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 5,
+          "column": -1
+        }
+      }
     },
     {
       "type": "Func",
@@ -39,7 +49,17 @@
         "params": [],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 1
+        },
+        "end": {
+          "line": 5,
+          "column": 18
+        }
+      }
     }
   ]
 }

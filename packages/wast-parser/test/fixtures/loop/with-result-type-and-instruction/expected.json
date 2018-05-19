@@ -35,13 +35,23 @@
                 },
                 "end": {
                   "line": 3,
-                  "column": 8
+                  "column": 7
                 }
               }
             }
           ]
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 5,
+          "column": -1
+        }
+      }
     }
   ]
 }

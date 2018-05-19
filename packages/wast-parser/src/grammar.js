@@ -40,6 +40,11 @@ function tokenToString(token: Object): string {
   return token.type;
 }
 
+function identifierFromToken(token: Object): Identifier {
+  const { end, start } = token.loc;
+  return t.withLoc(t.identifier(token.value), end, start);
+}
+
 type ParserState = {
   registredExportedElements: Array<{
     exportType: ExportDescrType,
@@ -65,6 +70,21 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       token = tokensList[++current];
     }
 
+    function getEndLoc(): Position {
+      let currentToken = token;
+
+      if (typeof currentToken === "undefined") {
+        const lastToken = tokensList[tokensList.length - 1];
+        currentToken = lastToken;
+      }
+
+      return currentToken.loc.end;
+    }
+
+    function getStartLoc(): Position {
+      return token.loc.start;
+    }
+
     function eatTokenOfType(type: string) {
       if (token.type !== type) {
         throw new Error(
@@ -83,7 +103,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseExportIdentifier(token: Object, prefix: string) {
       let index;
       if (token.type === tokens.identifier) {
-        index = t.identifier(token.value);
+        index = identifierFromToken(token);
         eatToken();
       } else if (token.type === tokens.number) {
         index = t.identifier(prefix + "_" + token.value);
@@ -274,7 +294,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const elemType = "anyfunc";
 
       if (token.type === tokens.string || token.type === tokens.identifier) {
-        name = t.identifier(token.value);
+        name = identifierFromToken(token);
         eatToken();
       } else {
         name = t.withRaw(name, ""); // preserve anonymous
@@ -385,7 +405,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const fnResult = [];
 
         if (token.type === tokens.identifier) {
-          fnName = t.identifier(token.value);
+          fnName = identifierFromToken(token);
           eatToken();
         }
 
@@ -465,7 +485,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const instr = [];
 
       if (token.type === tokens.identifier) {
-        label = t.identifier(token.value);
+        label = identifierFromToken(token);
         eatToken();
       } else {
         label = t.withRaw(label, ""); // preserve anonymous
@@ -521,7 +541,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const alternate = [];
 
       if (token.type === tokens.identifier) {
-        label = t.identifier(token.value);
+        label = identifierFromToken(token);
         eatToken();
       } else {
         label = t.withRaw(label, ""); // preserve anonymous
@@ -651,7 +671,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const instr = [];
 
       if (token.type === tokens.identifier) {
-        label = t.identifier(token.value);
+        label = identifierFromToken(token);
         eatToken();
       } else {
         label = t.withRaw(label, ""); // preserve anonymous
@@ -1028,7 +1048,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      * func_type:   ( type <var> )? <param>* <result>*
      */
     function parseFuncInstr(): Instruction {
-      const startLoc = token.loc.start;
+      const startLoc = getStartLoc();
 
       /**
        * A simple instruction
@@ -1106,7 +1126,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         let index;
 
         if (token.type === tokens.identifier) {
-          index = t.identifier(token.value);
+          index = identifierFromToken(token);
           eatToken();
         } else if (token.type === tokens.number) {
           index = t.indexLiteral(token.value);
@@ -1179,7 +1199,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       // name
       if (token.type === tokens.identifier) {
-        fnName = t.identifier(token.value);
+        fnName = identifierFromToken(token);
         eatToken();
       } else {
         fnName = t.withRaw(fnName, ""); // preserve anonymous
@@ -1266,7 +1286,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       let result = [];
 
       if (token.type === tokens.identifier) {
-        id = t.identifier(token.value);
+        id = identifierFromToken(token);
         eatToken();
       }
 
@@ -1333,7 +1353,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseTypeReference() {
       let ref;
       if (token.type === tokens.identifier) {
-        ref = t.identifier(token.value);
+        ref = identifierFromToken(token);
         eatToken();
       } else if (token.type === tokens.number) {
         ref = t.numberLiteral(token.value);
@@ -1364,7 +1384,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       maybeIgnoreComment();
 
       if (token.type === tokens.identifier) {
-        name = t.identifier(token.value);
+        name = identifierFromToken(token);
         eatToken();
       } else {
         name = t.withRaw(name, ""); // preserve anonymous
@@ -1526,7 +1546,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const funcs = [];
 
       if (token.type === tokens.identifier) {
-        tableIndex = t.identifier(token.value);
+        tableIndex = identifierFromToken(token);
         eatToken();
       }
 
@@ -1582,7 +1602,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseStart(): Start {
       if (token.type === tokens.identifier) {
-        const index = t.identifier(token.value);
+        const index = identifierFromToken(token);
         eatToken();
 
         return t.start(index);
@@ -1601,9 +1621,15 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     if (token.type === tokens.openParen) {
       eatToken();
 
+      const startLoc = getStartLoc();
+
       if (isKeyword(token, keywords.export)) {
         eatToken();
-        return parseExport();
+
+        const node = parseExport();
+        const endLoc = getEndLoc();
+
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.loop)) {
@@ -1616,17 +1642,27 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const node = parseFunc();
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        const endLoc = getEndLoc();
+
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.module)) {
         eatToken();
-        return parseModule();
+        const node = parseModule();
+
+        const endLoc = getEndLoc();
+
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.import)) {
         eatToken();
-        return parseImport();
+        const node = parseImport();
+
+        const endLoc = getEndLoc();
+
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.block)) {
@@ -1703,6 +1739,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     }
 
     if (token.type === tokens.comment) {
+      const startLoc = getStartLoc();
+
       const builder =
         token.opts.type === "leading" ? t.leadingComment : t.blockComment;
 
@@ -1710,7 +1748,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       eatToken();
 
-      return node;
+      const endLoc = getEndLoc();
+
+      return t.withLoc(node, endLoc, startLoc);
     }
 
     throw createUnexpectedToken("Unknown token");

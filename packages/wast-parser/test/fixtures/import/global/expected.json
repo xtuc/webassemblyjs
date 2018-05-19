@@ -9,6 +9,16 @@
         "type": "GlobalType",
         "valtype": "i32",
         "mutability": "var"
+      },
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 2,
+          "column": -1
+        }
       }
     },
     {
@@ -19,6 +29,16 @@
         "type": "GlobalType",
         "valtype": "i32",
         "mutability": "const"
+      },
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 27
+        }
       }
     }
   ]

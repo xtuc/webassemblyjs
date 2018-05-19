@@ -26,7 +26,17 @@
           ],
           "name": {
             "type": "Identifier",
-            "value": "test"
+            "value": "test",
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 10
+              },
+              "end": {
+                "line": 2,
+                "column": 15
+              }
+            }
           }
         },
         {
@@ -104,7 +114,17 @@
             "raw": ""
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 7,
+          "column": -1
+        }
+      }
     }
   ]
 }

@@ -6,14 +6,34 @@
       "id": null,
       "string": [
         "(func (i32.const 4294967296) drop)"
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 2,
+          "column": -1
+        }
+      }
     },
     {
       "type": "QuoteModule",
       "id": null,
       "string": [
         ""
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 15
+        }
+      }
     }
   ]
 }

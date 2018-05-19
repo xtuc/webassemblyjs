@@ -38,7 +38,7 @@
                 },
                 "end": {
                   "line": 1,
-                  "column": 42
+                  "column": 41
                 }
               }
             }
@@ -50,11 +50,21 @@
             },
             "end": {
               "line": 1,
-              "column": 43
+              "column": 42
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 43
+        }
+      }
     }
   ]
 }

@@ -196,7 +196,7 @@ function tokenize(input: string) {
    */
   function pushToken(type: string) {
     return function(v: string | number, opts: Object = {}) {
-      const startColumn = opts.startColumn || column;
+      const startColumn = opts.startColumn || column - String(v).length;
       delete opts.startColumn;
 
       const endColumn = opts.endColumn || startColumn + String(v).length - 1;
@@ -337,6 +337,8 @@ function tokenize(input: string) {
     }
 
     if (char === "$") {
+      const startColumn = column;
+
       eatCharacter();
 
       let value = "";
@@ -346,7 +348,9 @@ function tokenize(input: string) {
         eatCharacter();
       }
 
-      pushIdentifierToken(value);
+      const endColumn = column;
+
+      pushIdentifierToken(value, { startColumn, endColumn });
 
       continue;
     }

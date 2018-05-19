@@ -27,7 +27,17 @@
         "value": 0,
         "raw": "0"
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 13
+        }
+      }
     }
   ]
 }

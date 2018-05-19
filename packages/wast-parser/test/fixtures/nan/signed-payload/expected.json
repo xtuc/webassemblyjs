@@ -33,11 +33,21 @@
             },
             "end": {
               "line": 1,
-              "column": 31
+              "column": 30
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 31
+        }
+      }
     }
   ]
 }

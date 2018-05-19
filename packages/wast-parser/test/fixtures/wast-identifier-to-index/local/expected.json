@@ -5,14 +5,34 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "funca"
+        "value": "funca",
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 7
+          },
+          "end": {
+            "line": 1,
+            "column": 13
+          }
+        }
       },
       "signature": {
         "type": "Signature",
         "params": [],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 3,
+          "column": -1
+        }
+      }
     },
     {
       "type": "Func",
@@ -57,7 +77,7 @@
             },
             "end": {
               "line": 4,
-              "column": 15
+              "column": 14
             }
           }
         },
@@ -78,7 +98,7 @@
             },
             "end": {
               "line": 5,
-              "column": 15
+              "column": 14
             }
           }
         },
@@ -99,7 +119,7 @@
             },
             "end": {
               "line": 6,
-              "column": 15
+              "column": 14
             }
           }
         },
@@ -120,7 +140,7 @@
             },
             "end": {
               "line": 7,
-              "column": 15
+              "column": 14
             }
           }
         },
@@ -151,7 +171,7 @@
                 },
                 "end": {
                   "line": 9,
-                  "column": 28
+                  "column": 27
                 }
               }
             }
@@ -163,7 +183,7 @@
             },
             "end": {
               "line": 9,
-              "column": 29
+              "column": 28
             }
           }
         },
@@ -194,7 +214,7 @@
                 },
                 "end": {
                   "line": 10,
-                  "column": 28
+                  "column": 27
                 }
               }
             }
@@ -206,7 +226,7 @@
             },
             "end": {
               "line": 10,
-              "column": 29
+              "column": 28
             }
           }
         },
@@ -250,7 +270,7 @@
                 },
                 "end": {
                   "line": 15,
-                  "column": 24
+                  "column": 23
                 }
               }
             },
@@ -272,7 +292,7 @@
                 },
                 "end": {
                   "line": 15,
-                  "column": 41
+                  "column": 40
                 }
               }
             }
@@ -284,24 +304,54 @@
             },
             "end": {
               "line": 15,
-              "column": 42
+              "column": 41
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 18,
+          "column": -1
+        }
+      }
     },
     {
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "funcb"
+        "value": "funcb",
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 6
+          },
+          "end": {
+            "line": 18,
+            "column": 12
+          }
+        }
       },
       "signature": {
         "type": "Signature",
         "params": [],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 18,
+          "column": 1
+        },
+        "end": {
+          "line": 18,
+          "column": 11
+        }
+      }
     }
   ]
 }

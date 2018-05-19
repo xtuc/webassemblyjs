@@ -28,9 +28,29 @@
               "value": "memory_0",
               "raw": "0"
             }
+          },
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 21
+            },
+            "end": {
+              "line": 1,
+              "column": 42
+            }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 42
+        }
+      }
     }
   ]
 }
