@@ -39,8 +39,8 @@ describe("kernel exec - store / load instructions", () => {
 
   it("should correctly store i32 values", () => {
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(12)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(0x70000000)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(12)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x70000000)]),
       t.objectInstruction("store", "i32"),
       t.instruction("end")
     ];
@@ -61,8 +61,8 @@ describe("kernel exec - store / load instructions", () => {
 
   it("should correctly store f32 values", () => {
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(12)]),
-      t.objectInstruction("const", "f32", [t.numberLiteral(123.456)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(12)]),
+      t.objectInstruction("const", "f32", [t.numberLiteralFromRaw(123.456)]),
       t.objectInstruction("store", "f32"),
       t.instruction("end")
     ];
@@ -83,8 +83,8 @@ describe("kernel exec - store / load instructions", () => {
 
   it("should correctly store f64 values", () => {
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(16)]),
-      t.objectInstruction("const", "f64", [t.numberLiteral(123.456)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(16)]),
+      t.objectInstruction("const", "f64", [t.numberLiteralFromRaw(123.456)]),
       t.objectInstruction("store", "f64"),
       t.instruction("end")
     ];
@@ -105,8 +105,8 @@ describe("kernel exec - store / load instructions", () => {
 
   it("should support wrapping store operations", () => {
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(12)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(0x12345678)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(12)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x12345678)]),
       t.objectInstruction("store8", "i32"),
       t.instruction("end")
     ];
@@ -128,10 +128,10 @@ describe("kernel exec - store / load instructions", () => {
   it("should support i32.load operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(0x01020304)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x01020304)]),
       t.objectInstruction("store", "i32"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load", "i32"),
       t.instruction("end")
     ];
@@ -153,10 +153,12 @@ describe("kernel exec - store / load instructions", () => {
   it("should support i32.load16_s operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(-0x01020304)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
+      t.objectInstruction("const", "i32", [
+        t.numberLiteralFromRaw(-0x01020304)
+      ]),
       t.objectInstruction("store", "i32"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load16_s", "i32"),
       t.instruction("end")
     ];
@@ -178,10 +180,12 @@ describe("kernel exec - store / load instructions", () => {
   it("should support i32.load16_u operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(-0x01020304)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
+      t.objectInstruction("const", "i32", [
+        t.numberLiteralFromRaw(-0x01020304)
+      ]),
       t.objectInstruction("store", "i32"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load16_u", "i32"),
       t.instruction("end")
     ];
@@ -203,12 +207,12 @@ describe("kernel exec - store / load instructions", () => {
   it("should support i64.load16_s operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteral("-0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("-0x0102030405060708", "i64")
       ]),
       t.objectInstruction("store", "i64"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load16_s", "i64"),
       t.instruction("end")
     ];
@@ -230,12 +234,12 @@ describe("kernel exec - store / load instructions", () => {
   it("should support i64.load8_s operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteral("-0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("-0x0102030405060708", "i64")
       ]),
       t.objectInstruction("store", "i64"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load8_s", "i64"),
       t.instruction("end")
     ];
@@ -257,12 +261,12 @@ describe("kernel exec - store / load instructions", () => {
   it("should support i64.load32_s operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteral("-0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("-0x0102030405060708", "i64")
       ]),
       t.objectInstruction("store", "i64"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load32_s", "i64"),
       t.instruction("end")
     ];
@@ -284,10 +288,12 @@ describe("kernel exec - store / load instructions", () => {
   it("should support i32.load8_u operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(-0x01020304)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
+      t.objectInstruction("const", "i32", [
+        t.numberLiteralFromRaw(-0x01020304)
+      ]),
       t.objectInstruction("store", "i32"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load8_u", "i32"),
       t.instruction("end")
     ];
@@ -309,10 +315,12 @@ describe("kernel exec - store / load instructions", () => {
   it("should support i32.load8_s operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(-0x01020304)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
+      t.objectInstruction("const", "i32", [
+        t.numberLiteralFromRaw(-0x01020304)
+      ]),
       t.objectInstruction("store", "i32"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load8_s", "i32"),
       t.instruction("end")
     ];
@@ -334,12 +342,12 @@ describe("kernel exec - store / load instructions", () => {
   it("should support i64.load operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteral("0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("0x0102030405060708", "i64")
       ]),
       t.objectInstruction("store", "i64"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load", "i64"),
       t.instruction("end")
     ];
@@ -363,10 +371,10 @@ describe("kernel exec - store / load instructions", () => {
   it("should support f32.load operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
-      t.objectInstruction("const", "f32", [t.numberLiteral(123.456)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
+      t.objectInstruction("const", "f32", [t.numberLiteralFromRaw(123.456)]),
       t.objectInstruction("store", "f32"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load", "f32"),
       t.instruction("end")
     ];
@@ -388,10 +396,12 @@ describe("kernel exec - store / load instructions", () => {
   it("should support f64.load operations", () => {
     // to test, we store a value, then load it
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
-      t.objectInstruction("const", "f64", [t.numberLiteral(123.456, "f64")]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
+      t.objectInstruction("const", "f64", [
+        t.numberLiteralFromRaw(123.456, "f64")
+      ]),
       t.objectInstruction("store", "f64"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load", "f64"),
       t.instruction("end")
     ];
@@ -412,14 +422,14 @@ describe("kernel exec - store / load instructions", () => {
 
   it("should not over-write neighbouring bytes when wrapping", () => {
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(12)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(0x01020304)]), // writes 0x04
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(12)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x01020304)]), // writes 0x04
       t.objectInstruction("store8", "i32"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(13)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(0x01020203)]), // writes 0x0302 (little-endian)
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(13)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x01020203)]), // writes 0x0302 (little-endian)
       t.objectInstruction("store16", "i32"),
-      t.objectInstruction("const", "i32", [t.numberLiteral(15)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(0x01020101)]), // writes 0x01
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(15)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x01020101)]), // writes 0x01
       t.objectInstruction("store8", "i32"),
       t.instruction("end")
     ];
@@ -440,9 +450,9 @@ describe("kernel exec - store / load instructions", () => {
 
   it("should correctly store i64 values", () => {
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(8)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(8)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteral("0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("0x0102030405060708", "i64")
       ]),
       t.objectInstruction("store", "i64"),
       t.instruction("end")
@@ -472,8 +482,8 @@ describe("kernel exec - store / load instructions", () => {
 
   it("should throw if no linear memory is defined", () => {
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(12)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(0x70000000)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(12)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x70000000)]),
       t.objectInstruction("store", "i32"),
       t.instruction("end")
     ];
@@ -495,9 +505,9 @@ describe("kernel exec - store / load instructions", () => {
   it("should throw if memory accessed out of bounds", () => {
     const code = [
       t.objectInstruction("const", "i32", [
-        t.numberLiteral(PAGE_SIZE * PAGES - I32_SIZE + 1)
+        t.numberLiteralFromRaw(PAGE_SIZE * PAGES - I32_SIZE + 1)
       ]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
       t.objectInstruction("store", "i32"),
       t.instruction("end")
     ];
@@ -520,9 +530,9 @@ describe("kernel exec - store / load instructions", () => {
   it("should not throw if memory accessed within bounds - upper boundary value", () => {
     const code = [
       t.objectInstruction("const", "i32", [
-        t.numberLiteral(PAGE_SIZE - I32_SIZE) // upper boundary value
+        t.numberLiteralFromRaw(PAGE_SIZE - I32_SIZE) // upper boundary value
       ]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
       t.objectInstruction("store", "i32"),
       t.instruction("end")
     ];
@@ -541,10 +551,10 @@ describe("kernel exec - store / load instructions", () => {
 
   it("should allow an offset to be specified", () => {
     const code = [
-      t.objectInstruction("const", "i32", [t.numberLiteral(4)]),
-      t.objectInstruction("const", "i32", [t.numberLiteral(25)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(25)]),
       t.objectInstruction("store", "i32", [], {
-        offset: t.numberLiteral(0x4)
+        offset: t.numberLiteralFromRaw(0x4)
       }),
       t.instruction("end")
     ];
@@ -567,10 +577,10 @@ describe("kernel exec - store / load instructions", () => {
   it("should ensure the offset is within the required bounds", () => {
     const execueteStoreWithOffset = offset => {
       const code = [
-        t.objectInstruction("const", "i32", [t.numberLiteral(0)]),
-        t.objectInstruction("const", "i32", [t.numberLiteral(25)]),
+        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
+        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(25)]),
         t.objectInstruction("store", "i32", [], {
-          offset: t.numberLiteral(offset)
+          offset: t.numberLiteralFromRaw(offset)
         }),
         t.instruction("end")
       ];

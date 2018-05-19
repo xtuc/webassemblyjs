@@ -782,7 +782,7 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
   return out;
 }
 
-function printGenericInstruction(n: GenericInstruction): string {
+function printGenericInstruction(n: Instr): string {
   let out = "";
 
   out += "(";

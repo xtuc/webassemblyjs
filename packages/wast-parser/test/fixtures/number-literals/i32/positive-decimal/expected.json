@@ -17,7 +17,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -25,6 +24,7 @@
               "raw": "1234"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 2,

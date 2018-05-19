@@ -1,10 +1,8 @@
 const definitions = require("../src/definitions");
 const flatMap = require("array.prototype.flatmap");
-const { typeSignature, mapProps, iterateProps } = require("./util");
+const { typeSignature, mapProps, iterateProps, unique } = require("./util");
 
 const stdout = process.stdout;
-
-const unique = items => Array.from(new Set(items));
 
 function params(fields) {
   return mapProps(fields)
@@ -41,9 +39,9 @@ function generate() {
 
   // generate the type definitions
   iterateProps(definitions, typeDef => {
-    stdout.write(`type ${typeDef.flowTypeName || typeDef.name} = {
+    stdout.write(`type ${typeDef.name} = {
         ...${typeDef.extends || "BaseNode"},
-        type: "${typeDef.astTypeName || typeDef.name}",
+        type: "${typeDef.name}",
         ${params(typeDef.fields)}
       };\n\n`);
   });

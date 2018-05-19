@@ -69,8 +69,8 @@
         {
           "type": "Instr",
           "id": "add",
-          "object": "i32",
           "args": [],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 4,

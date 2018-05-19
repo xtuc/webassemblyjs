@@ -1,9 +1,11 @@
 const definitions = require("../src/definitions");
+const flatMap = require("array.prototype.flatmap");
 const {
   typeSignature,
   iterateProps,
   mapProps,
-  filterProps
+  filterProps,
+  unique
 } = require("./util");
 
 const stdout = process.stdout;
@@ -64,7 +66,9 @@ function buildObject(typeDef) {
     } else if (meta.type === "Object") {
       // omit optional object properties if they have no keys
       return `
-        if (Object.keys(${meta.name}).length !== 0) {
+        if (typeof ${meta.name} !== "undefined" && Object.keys(${
+        meta.name
+      }).length !== 0) {
           node.${meta.name} = ${meta.name};
         }
       `;
@@ -95,7 +99,7 @@ function buildObject(typeDef) {
 
   return `
     const node: ${typeDef.flowTypeName || typeDef.name} = {
-      type: "${typeDef.astTypeName || typeDef.name}",
+      type: "${typeDef.name}",
       ${constants.concat(fields).join(",")}
     }
 
@@ -137,7 +141,7 @@ function generate() {
     stdout.write(`
       export function ${lowerCamelCase(typeDefinition.name)} (
         ${params(filterProps(typeDefinition.fields, f => !f.constant))}
-      ): ${typeDefinition.flowTypeName || typeDefinition.name} {
+      ): ${typeDefinition.name} {
 
         ${assertParams(filterProps(typeDefinition.fields, f => !f.constant))}
         ${buildObject(typeDefinition)} 
@@ -151,15 +155,31 @@ function generate() {
   iterateProps(definitions, typeDefinition => {
     stdout.write(`
       export const is${typeDefinition.name} =
-        isTypeOf("${typeDefinition.flowTypeName || typeDefinition.name}");
+        isTypeOf("${typeDefinition.name}");
     `);
+  });
+
+  // Node union type testers
+  const unionTypes = unique(
+    flatMap(mapProps(definitions).filter(d => d.unionType), d => d.unionType)
+  );
+  unionTypes.forEach(unionType => {
+    stdout.write(
+      `
+      export const is${unionType} = (node: Node) => ` +
+        mapProps(definitions)
+          .filter(d => d.unionType && d.unionType.includes(unionType))
+          .map(d => `is${d.name}(node) `)
+          .join("||") +
+        ";\n\n"
+    );
   });
 
   // Node assertion
   iterateProps(definitions, typeDefinition => {
     stdout.write(`
       export const assert${typeDefinition.name} =
-        assertTypeOf("${typeDefinition.flowTypeName || typeDefinition.name}");
+        assertTypeOf("${typeDefinition.name}");
     `);
   });
 }

@@ -1,9 +1,13 @@
 // @flow
-
+import { signatures } from "./signatures";
 import { traverse } from "./traverse";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 const debug = require("debug")("webassemblyjs:ast:utils");
+
+export function isAnonymous(ident: Identifier): boolean {
+  return ident.raw === "";
+}
 
 export function getSectionMetadata(
   ast: Node,
@@ -39,17 +43,6 @@ export function sortSectionMetadata(m: Module) {
 
     return aId > bId;
   });
-}
-
-export function isInstruction(n: Node) {
-  return (
-    n.type === "Instr" ||
-    n.type === "CallInstruction" ||
-    n.type === "CallIndirectInstruction" ||
-    n.type === "BlockInstruction" ||
-    n.type === "LoopInstruction" ||
-    n.type === "IfInstruction"
-  );
 }
 
 export function orderedInsertNode(m: Module, n: Node) {
@@ -148,4 +141,31 @@ export function shiftSection(
       }
     }
   });
+}
+
+export function signatureForOpcode(object: string, name: string): SignatureMap {
+  let opcodeName = name;
+  if (object !== undefined && object !== "") {
+    opcodeName = object + "." + name;
+  }
+  const sign = signatures[opcodeName];
+  if (sign == undefined) {
+    // TODO: Uncomment this when br_table and others has been done
+    //throw new Error("Invalid opcode: "+opcodeName);
+    return [object, object];
+  }
+
+  return sign[0];
+}
+
+export function getUniqueNameGenerator(): string => string {
+  const inc = {};
+  return function(prefix: string = "temp"): string {
+    if (!(prefix in inc)) {
+      inc[prefix] = 0;
+    } else {
+      inc[prefix] = inc[prefix] + 1;
+    }
+    return prefix + "_" + inc[prefix];
+  };
 }

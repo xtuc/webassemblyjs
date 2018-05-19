@@ -17,8 +17,8 @@
         {
           "type": "Instr",
           "id": "min",
-          "object": "f32",
           "args": [],
+          "object": "f32",
           "loc": {
             "start": {
               "line": 2,

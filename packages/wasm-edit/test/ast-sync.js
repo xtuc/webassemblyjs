@@ -26,11 +26,11 @@ function ASTToString(ast) {
 
     // wast will restore the name where wasm uses an index.
     ModuleExport({ node }) {
-      node.descr.id = t.numberLiteral(0);
+      node.descr.id = t.numberLiteralFromRaw(0);
     },
 
     ModuleImport({ node }) {
-      node.descr.id = t.numberLiteral(0);
+      node.descr.id = t.numberLiteralFromRaw(0);
     },
 
     // wasm doesn't add locations for Global nodes
@@ -49,7 +49,7 @@ function ASTToString(ast) {
 
 function makeGlobalNode(n) {
   return t.global(t.globalType("i32", "const"), [
-    t.objectInstruction("const", "i32", [t.numberLiteral(n)])
+    t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(n)])
   ]);
 }
 
@@ -77,7 +77,10 @@ function makeFuncNodes(i, params = [], results = [], body = []) {
 function makeFuncExportNode(i) {
   const name = getUniqueName();
 
-  return t.moduleExport(name, t.moduleExportDescr("Func", t.numberLiteral(i)));
+  return t.moduleExport(
+    name,
+    t.moduleExportDescr("Func", t.numberLiteralFromRaw(i))
+  );
 }
 
 function makeFuncImportNode() {
@@ -89,7 +92,7 @@ function makeFuncImportNode() {
   return t.moduleImport(
     module,
     name,
-    t.funcImportDescr(t.numberLiteral(typeidx), t.signature([], []))
+    t.funcImportDescr(t.numberLiteralFromRaw(typeidx), t.signature([], []))
   );
 }
 

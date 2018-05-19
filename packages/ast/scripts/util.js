@@ -27,9 +27,12 @@ function typeSignature(meta) {
   }
 }
 
+const unique = items => Array.from(new Set(items));
+
 module.exports = {
   iterateProps,
   mapProps,
   filterProps,
-  typeSignature
+  typeSignature,
+  unique
 };

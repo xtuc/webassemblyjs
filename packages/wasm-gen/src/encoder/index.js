@@ -222,9 +222,7 @@ export function encodeTypeInstruction(n: TypeInstruction): Array<Byte> {
   return out;
 }
 
-export function encodeInstr(
-  n: GenericInstruction | ObjectInstruction
-): Array<Byte> {
+export function encodeInstr(n: Instr): Array<Byte> {
   const out = [];
 
   let instructionName = n.id;

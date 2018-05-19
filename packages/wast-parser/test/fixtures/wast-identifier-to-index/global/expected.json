@@ -12,7 +12,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -20,6 +19,7 @@
               "raw": "1"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 1,
@@ -48,7 +48,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -56,6 +55,7 @@
               "raw": "1"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 2,
@@ -134,7 +134,6 @@
             {
               "type": "Instr",
               "id": "i32",
-              "object": "const",
               "args": [
                 {
                   "type": "FloatLiteral",
@@ -142,6 +141,7 @@
                   "raw": "1"
                 }
               ],
+              "object": "const",
               "loc": {
                 "start": {
                   "line": 5,

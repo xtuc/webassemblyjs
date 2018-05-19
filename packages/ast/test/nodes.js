@@ -2,9 +2,9 @@
 
 const { assert } = require("chai");
 
-const {
-  numberLiteral,
+const { numberLiteralFromRaw } = require("../lib/node-helpers.js");
 
+const {
   isNumberLiteral,
   isStringLiteral,
 
@@ -13,7 +13,7 @@ const {
 } = require("../lib/nodes.js");
 
 describe("Node utils", () => {
-  const n = numberLiteral(1, "1");
+  const n = numberLiteralFromRaw(1, "1");
 
   describe("builder", () => {
     it("should have the correct properties", () => {

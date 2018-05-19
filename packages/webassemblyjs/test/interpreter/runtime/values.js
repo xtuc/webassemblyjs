@@ -223,7 +223,7 @@ describe("module create interface", () => {
   describe("global", () => {
     it("should have a value", () => {
       const initNode = [
-        t.objectInstruction("const", "i32", [t.numberLiteral(10)]),
+        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
         t.instruction("end")
       ];
 

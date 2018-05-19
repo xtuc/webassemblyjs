@@ -11,14 +11,14 @@
       "offset": {
         "type": "Instr",
         "id": "const",
-        "object": "i32",
         "args": [
           {
             "type": "NumberLiteral",
             "value": 25,
             "raw": "25"
           }
-        ]
+        ],
+        "object": "i32"
       },
       "init": {
         "type": "ByteArray",

@@ -13,7 +13,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -21,6 +20,7 @@
               "raw": "0"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 1,
@@ -45,7 +45,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -53,6 +52,7 @@
               "raw": "0"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 2,
@@ -78,7 +78,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -86,6 +85,7 @@
               "raw": "0"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 4,
@@ -115,7 +115,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i64",
           "args": [
             {
               "type": "LongNumberLiteral",
@@ -126,6 +125,7 @@
               "raw": "0"
             }
           ],
+          "object": "i64",
           "loc": {
             "start": {
               "line": 5,
@@ -140,7 +140,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -148,6 +147,7 @@
               "raw": "0"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 5,
@@ -186,7 +186,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i64",
           "args": [
             {
               "type": "LongNumberLiteral",
@@ -197,6 +196,7 @@
               "raw": "0"
             }
           ],
+          "object": "i64",
           "loc": {
             "start": {
               "line": 7,
@@ -211,7 +211,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "f64",
           "args": [
             {
               "type": "FloatLiteral",
@@ -219,6 +218,7 @@
               "raw": "0"
             }
           ],
+          "object": "f64",
           "loc": {
             "start": {
               "line": 7,
@@ -233,7 +233,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -241,6 +240,7 @@
               "raw": "0"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 7,
@@ -255,7 +255,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i64",
           "args": [
             {
               "type": "LongNumberLiteral",
@@ -266,6 +265,7 @@
               "raw": "0"
             }
           ],
+          "object": "i64",
           "loc": {
             "start": {
               "line": 7,
@@ -280,7 +280,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -288,6 +287,7 @@
               "raw": "0"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 7,
@@ -313,7 +313,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -321,6 +320,7 @@
               "raw": "0"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 9,
@@ -341,7 +341,6 @@
         {
           "type": "Instr",
           "id": "eqz",
-          "object": "i32",
           "args": [
             {
               "type": "CallIndirectInstruction",
@@ -357,7 +356,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i32",
                   "args": [
                     {
                       "type": "NumberLiteral",
@@ -365,6 +363,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i32",
                   "loc": {
                     "start": {
                       "line": 11,
@@ -379,6 +378,7 @@
               ]
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 11,
@@ -409,7 +409,6 @@
         {
           "type": "Instr",
           "id": "eqz",
-          "object": "i32",
           "args": [
             {
               "type": "CallIndirectInstruction",
@@ -425,7 +424,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i32",
                   "args": [
                     {
                       "type": "NumberLiteral",
@@ -433,6 +431,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i32",
                   "loc": {
                     "start": {
                       "line": 12,
@@ -447,6 +446,7 @@
               ]
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 12,
@@ -477,7 +477,6 @@
         {
           "type": "Instr",
           "id": "eqz",
-          "object": "i32",
           "args": [
             {
               "type": "CallIndirectInstruction",
@@ -497,7 +496,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i64",
                   "args": [
                     {
                       "type": "LongNumberLiteral",
@@ -508,6 +506,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i64",
                   "loc": {
                     "start": {
                       "line": 15,
@@ -522,7 +521,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i32",
                   "args": [
                     {
                       "type": "NumberLiteral",
@@ -530,6 +528,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i32",
                   "loc": {
                     "start": {
                       "line": 15,
@@ -544,6 +543,7 @@
               ]
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 14,
@@ -574,7 +574,6 @@
         {
           "type": "Instr",
           "id": "eqz",
-          "object": "i32",
           "args": [
             {
               "type": "CallIndirectInstruction",
@@ -603,7 +602,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i64",
                   "args": [
                     {
                       "type": "LongNumberLiteral",
@@ -614,6 +612,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i64",
                   "loc": {
                     "start": {
                       "line": 22,
@@ -628,7 +627,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "f64",
                   "args": [
                     {
                       "type": "FloatLiteral",
@@ -636,6 +634,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "f64",
                   "loc": {
                     "start": {
                       "line": 22,
@@ -650,7 +649,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i32",
                   "args": [
                     {
                       "type": "NumberLiteral",
@@ -658,6 +656,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i32",
                   "loc": {
                     "start": {
                       "line": 22,
@@ -672,7 +671,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i64",
                   "args": [
                     {
                       "type": "LongNumberLiteral",
@@ -683,6 +681,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i64",
                   "loc": {
                     "start": {
                       "line": 22,
@@ -697,7 +696,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i32",
                   "args": [
                     {
                       "type": "NumberLiteral",
@@ -705,6 +703,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i32",
                   "loc": {
                     "start": {
                       "line": 22,
@@ -719,6 +718,7 @@
               ]
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 18,
@@ -749,7 +749,6 @@
         {
           "type": "Instr",
           "id": "eqz",
-          "object": "i64",
           "args": [
             {
               "type": "CallIndirectInstruction",
@@ -762,7 +761,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i64",
                   "args": [
                     {
                       "type": "LongNumberLiteral",
@@ -773,6 +771,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i64",
                   "loc": {
                     "start": {
                       "line": 28,
@@ -787,7 +786,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i32",
                   "args": [
                     {
                       "type": "NumberLiteral",
@@ -795,6 +793,7 @@
                       "raw": "0"
                     }
                   ],
+                  "object": "i32",
                   "loc": {
                     "start": {
                       "line": 28,
@@ -809,6 +808,7 @@
               ]
             }
           ],
+          "object": "i64",
           "loc": {
             "start": {
               "line": 26,

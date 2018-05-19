@@ -38,7 +38,7 @@ const fixtures = [
 
   {
     name: "a memory ModuleImport",
-    node: t.moduleImport("a", "b", t.memory(t.limits(2))),
+    node: t.moduleImport("a", "b", t.memory(t.limit(2))),
     expected: [0x01, 0x61, 0x01, 0x62, 0x02, 0x00, 0x02]
   },
 
@@ -47,7 +47,7 @@ const fixtures = [
     node: t.moduleImport(
       "a",
       "b",
-      t.funcImportDescr(t.numberLiteral(0), t.signature([], ["i32"]))
+      t.funcImportDescr(t.numberLiteralFromRaw(0), t.signature([], ["i32"]))
     ),
     expected: [0x01, 0x61, 0x01, 0x62, 0x00, 0x00]
   },
@@ -83,8 +83,8 @@ const fixtures = [
     node: t.sectionMetadata(
       "import",
       0,
-      t.numberLiteral(1),
-      t.numberLiteral(0)
+      t.numberLiteralFromRaw(1),
+      t.numberLiteralFromRaw(0)
     ),
     name: "an empty ImportSection",
     expected: [0x02, 0x01, 0x00]
@@ -110,13 +110,13 @@ const fixtures = [
 
   {
     name: "a ModuleImport of Table with min 2",
-    node: t.moduleImport("a", "b", t.table("anyfunc", t.limits(2))),
+    node: t.moduleImport("a", "b", t.table("anyfunc", t.limit(2))),
     expected: [0x01, 0x61, 0x01, 0x62, 0x01, 0x70, 0x00, 0x02]
   },
 
   {
     name: "a ModuleImport of Table with min 2 and max 10",
-    node: t.moduleImport("a", "b", t.table("anyfunc", t.limits(2, 10))),
+    node: t.moduleImport("a", "b", t.table("anyfunc", t.limit(2, 10))),
     expected: [0x01, 0x61, 0x01, 0x62, 0x01, 0x70, 0x01, 0x02, 0x0a]
   },
 
@@ -141,7 +141,7 @@ const fixtures = [
   {
     name: "(global (mut i32) (i32.const 0))",
     node: t.global(t.globalType("i32", "var"), [
-      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
     ]),
     expected: [0x7f, 0x01, 0x41, 0x01, 0x0b]
   },
@@ -149,7 +149,7 @@ const fixtures = [
   {
     name: "(global i32 (i32.const 0))",
     node: t.global(t.globalType("i32", "const"), [
-      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
     ]),
     expected: [0x7f, 0x00, 0x41, 0x01, 0x0b]
   },
@@ -163,7 +163,7 @@ const fixtures = [
   {
     name: "(func (i32.const 1))",
     node: t.func(null, t.signature([], []), [
-      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
     ]),
     expected: [0x04, 0x00, 0x41, 0x01, 0x0b]
   },

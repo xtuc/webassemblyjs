@@ -21,7 +21,6 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -29,6 +28,7 @@
                   "raw": "4"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 2,
@@ -76,7 +76,6 @@
                     {
                       "type": "Instr",
                       "id": "const",
-                      "object": "i32",
                       "args": [
                         {
                           "type": "NumberLiteral",
@@ -84,6 +83,7 @@
                           "raw": "8"
                         }
                       ],
+                      "object": "i32",
                       "loc": {
                         "start": {
                           "line": 3,
@@ -110,7 +110,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i32",
                   "args": [
                     {
                       "type": "NumberLiteral",
@@ -118,6 +117,7 @@
                       "raw": "1"
                     }
                   ],
+                  "object": "i32",
                   "loc": {
                     "start": {
                       "line": 3,
@@ -164,7 +164,6 @@
                     {
                       "type": "Instr",
                       "id": "const",
-                      "object": "i32",
                       "args": [
                         {
                           "type": "NumberLiteral",
@@ -172,6 +171,7 @@
                           "raw": "4"
                         }
                       ],
+                      "object": "i32",
                       "loc": {
                         "start": {
                           "line": 7,
@@ -219,7 +219,6 @@
                             {
                               "type": "Instr",
                               "id": "const",
-                              "object": "i32",
                               "args": [
                                 {
                                   "type": "NumberLiteral",
@@ -227,6 +226,7 @@
                                   "raw": "8"
                                 }
                               ],
+                              "object": "i32",
                               "loc": {
                                 "start": {
                                   "line": 8,
@@ -253,7 +253,6 @@
                         {
                           "type": "Instr",
                           "id": "const",
-                          "object": "i32",
                           "args": [
                             {
                               "type": "NumberLiteral",
@@ -261,6 +260,7 @@
                               "raw": "1"
                             }
                           ],
+                          "object": "i32",
                           "loc": {
                             "start": {
                               "line": 8,
@@ -290,7 +290,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i32",
                   "args": [
                     {
                       "type": "NumberLiteral",
@@ -298,6 +297,7 @@
                       "raw": "32"
                     }
                   ],
+                  "object": "i32",
                   "loc": {
                     "start": {
                       "line": 9,
@@ -336,7 +336,6 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -344,6 +343,7 @@
                   "raw": "10"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 13,
@@ -422,7 +422,6 @@
                         {
                           "type": "Instr",
                           "id": "const",
-                          "object": "i32",
                           "args": [
                             {
                               "type": "NumberLiteral",
@@ -430,6 +429,7 @@
                               "raw": "8"
                             }
                           ],
+                          "object": "i32",
                           "loc": {
                             "start": {
                               "line": 17,
@@ -489,7 +489,6 @@
                 {
                   "type": "Instr",
                   "id": "const",
-                  "object": "i32",
                   "args": [
                     {
                       "type": "NumberLiteral",
@@ -497,6 +496,7 @@
                       "raw": "4"
                     }
                   ],
+                  "object": "i32",
                   "loc": {
                     "start": {
                       "line": 17,
@@ -514,7 +514,6 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -522,6 +521,7 @@
                   "raw": "1"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 19,
