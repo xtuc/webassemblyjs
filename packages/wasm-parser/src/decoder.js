@@ -532,12 +532,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        if (table.name != null) {
-          id = t.identifier(table.name.value + "");
-        } else {
-          id = t.identifier(getUniqueName("table"));
-          id = t.withRaw(id, ""); // preserve anonymous
-        }
+        id = t.numberLiteralFromRaw(index, String(index));
 
         signature = null;
       } else if (exportTypes[typeIndex] === "Mem") {
@@ -549,12 +544,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        if (memNode.id != null) {
-          id = t.identifier(memNode.id.value + "");
-        } else {
-          id = t.identifier(getUniqueName("memory"));
-          id = t.withRaw(id, ""); // preserve anonymous
-        }
+        id = t.numberLiteralFromRaw(index, String(index));
 
         signature = null;
       } else {
