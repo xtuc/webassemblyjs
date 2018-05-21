@@ -127,6 +127,7 @@ export class ModuleContext {
     this.funcs.unshift({ args, result });
 
     if (typeof funcimport.id !== "undefined") {
+      // imports are first, we can assume their index in the array
       this.funcsOffsetByIdentifier[funcimport.id.value] = this.funcs.length - 1;
     }
   }
