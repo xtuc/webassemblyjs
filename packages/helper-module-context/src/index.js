@@ -1,4 +1,6 @@
-const debug = require("debug")("webassemblyjs:typechecker");
+// TODO(sven): add flow in here
+
+const debug = require("debug")("webassemblyjs:modulecontext");
 
 export function moduleContextFromModuleAST(m) {
   const moduleContext = new ModuleContext();
@@ -57,7 +59,7 @@ export function moduleContextFromModuleAST(m) {
 /**
  * Module context for type checking
  */
-export default class ModuleContext {
+export class ModuleContext {
   constructor() {
     this.funcs = [];
     this.globals = [];
