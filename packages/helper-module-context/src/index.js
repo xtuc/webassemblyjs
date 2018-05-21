@@ -2,17 +2,23 @@
 
 const debug = require("debug")("webassemblyjs:modulecontext");
 
+function assert(cond) {
+  if (!cond) throw new Error("Assertion error");
+}
+
 export function moduleContextFromModuleAST(m) {
   const moduleContext = new ModuleContext();
+
+  assert(m.type === "Module");
 
   m.fields.forEach(field => {
     switch (field.type) {
       case "Func": {
-        moduleContext.addFunction(field.signature);
+        moduleContext.addFunction(field);
         break;
       }
       case "Global": {
-        moduleContext.defineGlobal(field.globalType.valtype, field.mutability);
+        moduleContext.defineGlobal(field);
         break;
       }
       case "ModuleImport": {
@@ -29,7 +35,7 @@ export function moduleContextFromModuleAST(m) {
             break;
           }
           case "FuncImportDescr": {
-            moduleContext.importFunction(field.descr.signature);
+            moduleContext.importFunction(field.descr);
             break;
           }
 
@@ -62,7 +68,11 @@ export function moduleContextFromModuleAST(m) {
 export class ModuleContext {
   constructor() {
     this.funcs = [];
+    this.funcsOffsetByIdentifier = [];
+
     this.globals = [];
+    this.globalsOffsetByIdentifier = [];
+
     this.mems = [];
 
     // Current stack frame
@@ -88,15 +98,24 @@ export class ModuleContext {
   /**
    * Functions
    */
-  addFunction({ params: args = [], results: result = [] }) {
+  addFunction(func /*: Func*/) {
+    // eslint-disable-next-line prefer-const
+    let { params: args = [], results: result = [] } = func.signature;
+
     args = args.map(arg => arg.valtype);
 
     debug("add new function %s -> %s", args.join(" "), result.join(" "));
 
     this.funcs.push({ args, result });
+
+    if (typeof func.name !== "undefined") {
+      this.funcsOffsetByIdentifier[func.name.value] = this.funcs.length - 1;
+    }
   }
 
-  importFunction({ params: args, results: result }) {
+  importFunction(funcimport) {
+    // eslint-disable-next-line prefer-const
+    let { params: args, results: result } = funcimport.signature;
     args = args.map(arg => arg.valtype);
 
     debug(
@@ -106,6 +125,10 @@ export class ModuleContext {
     );
 
     this.funcs.unshift({ args, result });
+
+    if (typeof funcimport.id !== "undefined") {
+      this.funcsOffsetByIdentifier[funcimport.id.value] = this.funcs.length - 1;
+    }
   }
 
   hasFunction(index) {
@@ -118,6 +141,12 @@ export class ModuleContext {
     }
 
     return this.funcs[index];
+  }
+
+  getFunctionOffsetByIdentifier(name) {
+    assert(typeof name === "string");
+
+    return this.funcsOffsetByIdentifier[name];
   }
 
   /**
@@ -169,8 +198,22 @@ export class ModuleContext {
     return this.globals[index].type;
   }
 
-  defineGlobal(type, mutability) {
+  getGlobalOffsetByIdentifier(name) {
+    assert(typeof name === "string");
+
+    return this.globalsOffsetByIdentifier[name];
+  }
+
+  defineGlobal(global /*: Global*/) {
+    const type = global.globalType.valtype;
+    const mutability = global.mutability;
+
     this.globals.push({ type, mutability });
+
+    if (typeof global.name !== "undefined") {
+      this.globalsOffsetByIdentifier[global.name.value] =
+        this.globals.length - 1;
+    }
   }
 
   importGlobal(type, mutability) {
