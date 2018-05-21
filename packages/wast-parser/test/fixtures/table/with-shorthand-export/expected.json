@@ -16,6 +16,16 @@
             "type": "Identifier",
             "value": "table_0",
             "raw": ""
+          },
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 10
+            },
+            "end": {
+              "line": 1,
+              "column": 37
+            }
           }
         },
         {
@@ -31,7 +41,17 @@
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 38
+        }
+      }
     }
   ]
 }

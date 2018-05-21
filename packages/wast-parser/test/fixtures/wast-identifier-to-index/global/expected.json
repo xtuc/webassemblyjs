@@ -27,14 +27,34 @@
             },
             "end": {
               "line": 1,
-              "column": 28
+              "column": 27
             }
           }
         }
       ],
       "name": {
         "type": "Identifier",
-        "value": "a"
+        "value": "a",
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 9
+          },
+          "end": {
+            "line": 1,
+            "column": 11
+          }
+        }
+      },
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 28
+        }
       }
     },
     {
@@ -63,14 +83,34 @@
             },
             "end": {
               "line": 2,
-              "column": 27
+              "column": 26
             }
           }
         }
       ],
       "name": {
         "type": "Identifier",
-        "value": "b"
+        "value": "b",
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 8
+          },
+          "end": {
+            "line": 2,
+            "column": 10
+          }
+        }
+      },
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 27
+        }
       }
     },
     {
@@ -103,11 +143,21 @@
             },
             "end": {
               "line": 4,
-              "column": 20
+              "column": 19
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 20
+        }
+      }
     },
     {
       "type": "Func",
@@ -145,11 +195,11 @@
               "loc": {
                 "start": {
                   "line": 5,
-                  "column": 27
+                  "column": 22
                 },
                 "end": {
                   "line": 5,
-                  "column": 33
+                  "column": 32
                 }
               }
             }
@@ -161,11 +211,21 @@
             },
             "end": {
               "line": 5,
-              "column": 34
+              "column": 33
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 1
+        },
+        "end": {
+          "line": 5,
+          "column": 34
+        }
+      }
     }
   ]
 }

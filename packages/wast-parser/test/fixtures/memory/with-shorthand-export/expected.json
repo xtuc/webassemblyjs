@@ -15,6 +15,16 @@
             "type": "Identifier",
             "value": "memory_0",
             "raw": ""
+          },
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 10
+            },
+            "end": {
+              "line": 1,
+              "column": 30
+            }
           }
         },
         {
@@ -30,7 +40,17 @@
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 31
+        }
+      }
     }
   ]
 }

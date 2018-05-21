@@ -31,12 +31,22 @@
                 },
                 "end": {
                   "line": 2,
-                  "column": 20
+                  "column": 19
                 }
               }
             }
           ],
-          "funcs": []
+          "funcs": [],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 20
+            }
+          }
         },
         {
           "type": "Elem",
@@ -64,7 +74,7 @@
                 },
                 "end": {
                   "line": 3,
-                  "column": 20
+                  "column": 19
                 }
               }
             }
@@ -74,7 +84,17 @@
               "type": "Identifier",
               "value": "f"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 23
+            }
+          }
         },
         {
           "type": "Elem",
@@ -102,12 +122,22 @@
                 },
                 "end": {
                   "line": 5,
-                  "column": 28
+                  "column": 27
                 }
               }
             }
           ],
-          "funcs": []
+          "funcs": [],
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 3
+            },
+            "end": {
+              "line": 5,
+              "column": 29
+            }
+          }
         },
         {
           "type": "Elem",
@@ -128,7 +158,7 @@
                 },
                 "end": {
                   "line": 6,
-                  "column": 20
+                  "column": 19
                 }
               }
             },
@@ -150,12 +180,22 @@
                 },
                 "end": {
                   "line": 6,
-                  "column": 34
+                  "column": 33
                 }
               }
             }
           ],
-          "funcs": []
+          "funcs": [],
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 3
+            },
+            "end": {
+              "line": 6,
+              "column": 35
+            }
+          }
         },
         {
           "type": "Elem",
@@ -183,7 +223,7 @@
                 },
                 "end": {
                   "line": 8,
-                  "column": 22
+                  "column": 21
                 }
               }
             }
@@ -197,7 +237,17 @@
               "type": "Identifier",
               "value": "g"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 3
+            },
+            "end": {
+              "line": 8,
+              "column": 28
+            }
+          }
         },
         {
           "type": "Elem",
@@ -225,7 +275,7 @@
                 },
                 "end": {
                   "line": 9,
-                  "column": 22
+                  "column": 21
                 }
               }
             }
@@ -241,9 +291,29 @@
               "value": 0,
               "raw": "0"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 3
+            },
+            "end": {
+              "line": 9,
+              "column": 26
+            }
+          }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 10,
+          "column": -1
+        }
+      }
     }
   ]
 }

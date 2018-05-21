@@ -27,14 +27,24 @@
             },
             "end": {
               "line": 1,
-              "column": 17
+              "column": 16
             }
           }
         }
       ],
       "result": null,
       "consequent": [],
-      "alternate": []
+      "alternate": [],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 24
+        }
+      }
     },
     {
       "type": "IfInstruction",
@@ -62,21 +72,41 @@
             },
             "end": {
               "line": 2,
-              "column": 16
+              "column": 15
             }
           }
         }
       ],
       "result": null,
       "consequent": [],
-      "alternate": []
+      "alternate": [],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 30
+        }
+      }
     },
     {
       "type": "IfInstruction",
       "id": "if",
       "testLabel": {
         "type": "Identifier",
-        "value": "l"
+        "value": "l",
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 4
+          },
+          "end": {
+            "line": 3,
+            "column": 6
+          }
+        }
       },
       "test": [
         {
@@ -96,21 +126,41 @@
             },
             "end": {
               "line": 3,
-              "column": 19
+              "column": 18
             }
           }
         }
       ],
       "result": null,
       "consequent": [],
-      "alternate": []
+      "alternate": [],
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 3,
+          "column": 26
+        }
+      }
     },
     {
       "type": "IfInstruction",
       "id": "if",
       "testLabel": {
         "type": "Identifier",
-        "value": "l"
+        "value": "l",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 4
+          },
+          "end": {
+            "line": 4,
+            "column": 6
+          }
+        }
       },
       "test": [
         {
@@ -130,14 +180,24 @@
             },
             "end": {
               "line": 4,
-              "column": 19
+              "column": 18
             }
           }
         }
       ],
       "result": null,
       "consequent": [],
-      "alternate": []
+      "alternate": [],
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 33
+        }
+      }
     }
   ]
 }

@@ -28,18 +28,38 @@
             },
             "end": {
               "line": 1,
-              "column": 37
+              "column": 36
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 37
+        }
+      }
     },
     {
       "type": "CallIndirectInstruction",
       "id": "call_indirect",
       "signature": {
         "type": "Identifier",
-        "value": "foo"
+        "value": "foo",
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 21
+          },
+          "end": {
+            "line": 2,
+            "column": 25
+          }
+        }
       },
       "intrs": [
         {
@@ -60,11 +80,21 @@
             },
             "end": {
               "line": 2,
-              "column": 39
+              "column": 38
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 39
+        }
+      }
     },
     {
       "type": "CallIndirectInstruction",
@@ -93,11 +123,21 @@
             },
             "end": {
               "line": 4,
-              "column": 27
+              "column": 26
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 27
+        }
+      }
     },
     {
       "type": "CallIndirectInstruction",
@@ -133,7 +173,7 @@
             },
             "end": {
               "line": 5,
-              "column": 39
+              "column": 38
             }
           }
         },
@@ -155,11 +195,21 @@
             },
             "end": {
               "line": 5,
-              "column": 53
+              "column": 52
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 1
+        },
+        "end": {
+          "line": 5,
+          "column": 53
+        }
+      }
     },
     {
       "type": "CallIndirectInstruction",
@@ -204,7 +254,7 @@
             },
             "end": {
               "line": 7,
-              "column": 14
+              "column": 13
             }
           }
         },
@@ -226,7 +276,7 @@
             },
             "end": {
               "line": 7,
-              "column": 28
+              "column": 27
             }
           }
         },
@@ -248,7 +298,7 @@
             },
             "end": {
               "line": 7,
-              "column": 42
+              "column": 41
             }
           }
         },
@@ -273,7 +323,7 @@
             },
             "end": {
               "line": 7,
-              "column": 56
+              "column": 55
             }
           }
         },
@@ -295,11 +345,21 @@
             },
             "end": {
               "line": 7,
-              "column": 70
+              "column": 69
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 1
+        },
+        "end": {
+          "line": 8,
+          "column": -1
+        }
+      }
     },
     {
       "type": "CallIndirectInstruction",
@@ -328,11 +388,21 @@
             },
             "end": {
               "line": 9,
-              "column": 36
+              "column": 35
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 9,
+          "column": 1
+        },
+        "end": {
+          "line": 9,
+          "column": 36
+        }
+      }
     },
     {
       "type": "Instr",
@@ -371,7 +441,7 @@
                     },
                     "end": {
                       "line": 11,
-                      "column": 55
+                      "column": 54
                     }
                   }
                 }
@@ -386,7 +456,7 @@
             },
             "end": {
               "line": 11,
-              "column": 57
+              "column": 56
             }
           }
         }
@@ -398,7 +468,7 @@
         },
         "end": {
           "line": 11,
-          "column": 58
+          "column": 57
         }
       }
     },
@@ -439,7 +509,7 @@
                     },
                     "end": {
                       "line": 12,
-                      "column": 64
+                      "column": 63
                     }
                   }
                 }
@@ -454,7 +524,7 @@
             },
             "end": {
               "line": 12,
-              "column": 66
+              "column": 65
             }
           }
         }
@@ -466,7 +536,7 @@
         },
         "end": {
           "line": 12,
-          "column": 67
+          "column": 66
         }
       }
     },
@@ -514,7 +584,7 @@
                     },
                     "end": {
                       "line": 15,
-                      "column": 54
+                      "column": 53
                     }
                   }
                 },
@@ -536,7 +606,7 @@
                     },
                     "end": {
                       "line": 15,
-                      "column": 68
+                      "column": 67
                     }
                   }
                 }
@@ -551,7 +621,7 @@
             },
             "end": {
               "line": 16,
-              "column": 0
+              "column": -1
             }
           }
         }
@@ -563,7 +633,7 @@
         },
         "end": {
           "line": 16,
-          "column": 1
+          "column": 0
         }
       }
     },
@@ -620,7 +690,7 @@
                     },
                     "end": {
                       "line": 22,
-                      "column": 16
+                      "column": 15
                     }
                   }
                 },
@@ -642,7 +712,7 @@
                     },
                     "end": {
                       "line": 22,
-                      "column": 30
+                      "column": 29
                     }
                   }
                 },
@@ -664,7 +734,7 @@
                     },
                     "end": {
                       "line": 22,
-                      "column": 44
+                      "column": 43
                     }
                   }
                 },
@@ -689,7 +759,7 @@
                     },
                     "end": {
                       "line": 22,
-                      "column": 58
+                      "column": 57
                     }
                   }
                 },
@@ -711,7 +781,7 @@
                     },
                     "end": {
                       "line": 22,
-                      "column": 72
+                      "column": 71
                     }
                   }
                 }
@@ -726,7 +796,7 @@
             },
             "end": {
               "line": 24,
-              "column": 0
+              "column": -1
             }
           }
         }
@@ -738,7 +808,7 @@
         },
         "end": {
           "line": 24,
-          "column": 1
+          "column": 0
         }
       }
     },
@@ -755,7 +825,17 @@
               "id": "call_indirect",
               "signature": {
                 "type": "Identifier",
-                "value": "over-i64"
+                "value": "over-i64",
+                "loc": {
+                  "start": {
+                    "line": 27,
+                    "column": 23
+                  },
+                  "end": {
+                    "line": 27,
+                    "column": 32
+                  }
+                }
               },
               "intrs": [
                 {
@@ -779,7 +859,7 @@
                     },
                     "end": {
                       "line": 28,
-                      "column": 16
+                      "column": 15
                     }
                   }
                 },
@@ -801,7 +881,7 @@
                     },
                     "end": {
                       "line": 28,
-                      "column": 30
+                      "column": 29
                     }
                   }
                 }
@@ -816,7 +896,7 @@
             },
             "end": {
               "line": 30,
-              "column": 0
+              "column": -1
             }
           }
         }
@@ -828,7 +908,7 @@
         },
         "end": {
           "line": 30,
-          "column": 1
+          "column": 0
         }
       }
     }
