@@ -123,7 +123,11 @@ export function shiftSection(
     shiftLoc(node.size, delta);
   }
 
-  if (typeof node.vectorOfSize.loc === "object") {
+  // Custom sections doesn't have vectorOfSize
+  if (
+    typeof node.vectorOfSize === "object" &&
+    typeof node.vectorOfSize.loc === "object"
+  ) {
     shiftLoc(node.vectorOfSize, delta);
   }
 

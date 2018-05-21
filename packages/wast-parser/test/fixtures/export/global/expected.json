@@ -59,8 +59,8 @@
             "type": "ModuleExportDescr",
             "exportType": "Global",
             "id": {
-              "type": "Identifier",
-              "value": "global_0",
+              "type": "NumberLiteral",
+              "value": 0,
               "raw": "0"
             },
             "loc": {

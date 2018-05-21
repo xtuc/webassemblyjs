@@ -100,18 +100,21 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       eatToken();
     }
 
-    function parseExportIdentifier(token: Object, prefix: string) {
-      let index;
+    function parseExportIndex(token: Object): Index {
       if (token.type === tokens.identifier) {
-        index = identifierFromToken(token);
+        const index = identifierFromToken(token);
         eatToken();
+
+        return index;
       } else if (token.type === tokens.number) {
-        index = t.identifier(prefix + "_" + token.value);
-        index = t.withRaw(index, String(token.value));
+        const index = t.numberLiteralFromRaw(token.value);
 
         eatToken();
+
+        return index;
+      } else {
+        throw createUnexpectedToken("unknown export index");
       }
-      return index;
     }
 
     function lookaheadAndCheck(...tokenTypes: Array<string>): boolean {
@@ -787,19 +790,19 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         if (isKeyword(token, keywords.func)) {
           type = "Func";
           eatToken();
-          index = parseExportIdentifier(token, "func");
+          index = parseExportIndex(token);
         } else if (isKeyword(token, keywords.table)) {
           type = "Table";
           eatToken();
-          index = parseExportIdentifier(token, "table");
+          index = parseExportIndex(token);
         } else if (isKeyword(token, keywords.global)) {
           type = "Global";
           eatToken();
-          index = parseExportIdentifier(token, "global");
+          index = parseExportIndex(token);
         } else if (isKeyword(token, keywords.memory)) {
           type = "Memory";
           eatToken();
-          index = parseExportIdentifier(token, "memory");
+          index = parseExportIndex(token);
         }
 
         eatToken();

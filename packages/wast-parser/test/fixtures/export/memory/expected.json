@@ -34,8 +34,8 @@
             "type": "ModuleExportDescr",
             "exportType": "Memory",
             "id": {
-              "type": "Identifier",
-              "value": "memory_0",
+              "type": "NumberLiteral",
+              "value": 0,
               "raw": "0"
             },
             "loc": {
