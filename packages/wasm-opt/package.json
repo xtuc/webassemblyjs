@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-opt",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -16,10 +16,10 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.5.3",
-    "@webassemblyjs/helper-buffer": "1.5.3",
-    "@webassemblyjs/wasm-gen": "1.5.3",
-    "@webassemblyjs/wasm-parser": "1.5.3",
+    "@webassemblyjs/ast": "1.5.4",
+    "@webassemblyjs/helper-buffer": "1.5.4",
+    "@webassemblyjs/wasm-gen": "1.5.4",
+    "@webassemblyjs/wasm-parser": "1.5.4",
     "debug": "^3.1.0"
   }
 }
