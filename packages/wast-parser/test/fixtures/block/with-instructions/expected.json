@@ -41,7 +41,17 @@
           }
         }
       ],
-      "result": null
+      "result": null,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 4,
+          "column": -1
+        }
+      }
     }
   ]
 }

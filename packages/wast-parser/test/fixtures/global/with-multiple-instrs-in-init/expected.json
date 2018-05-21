@@ -55,6 +55,16 @@
             "type": "Identifier",
             "value": "global_0",
             "raw": ""
+          },
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 5,
+              "column": 1
+            }
           }
         }
       ],

@@ -21,6 +21,16 @@
             "column": 11
           }
         }
+      },
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 21
+        }
       }
     },
     {
@@ -44,6 +54,16 @@
             "column": 10
           }
         }
+      },
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 22
+        }
       }
     },
     {
@@ -57,6 +77,16 @@
         "type": "Identifier",
         "value": "table_2",
         "raw": ""
+      },
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 3,
+          "column": 16
+        }
       }
     },
     {
@@ -71,6 +101,16 @@
         "type": "Identifier",
         "value": "table_3",
         "raw": ""
+      },
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 18
+        }
       }
     },
     {
@@ -92,6 +132,16 @@
             "line": 5,
             "column": 9
           }
+        }
+      },
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 1
+        },
+        "end": {
+          "line": 5,
+          "column": 19
         }
       }
     }

@@ -254,6 +254,8 @@ function tokenize(input: string) {
   while (current < input.length) {
     // ;;
     if (char === ";" && lookahead() === ";") {
+      const startColumn = column;
+
       eatCharacter(2);
 
       let text = "";
@@ -267,13 +269,17 @@ function tokenize(input: string) {
         }
       }
 
-      pushCommentToken(text, { type: "leading" });
+      const endColumn = column;
+
+      pushCommentToken(text, { type: "leading", startColumn, endColumn });
 
       continue;
     }
 
     // (;
     if (char === "(" && lookahead() === ";") {
+      const startColumn = column;
+
       eatCharacter(2);
 
       let text = "";
@@ -298,7 +304,9 @@ function tokenize(input: string) {
         }
       }
 
-      pushCommentToken(text, { type: "block" });
+      const endColumn = column;
+
+      pushCommentToken(text, { type: "block", startColumn, endColumn });
 
       continue;
     }

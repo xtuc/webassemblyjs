@@ -49,6 +49,16 @@
                 "column": 15
               }
             }
+          },
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 45
+            }
           }
         },
         {
@@ -108,6 +118,16 @@
             "type": "Identifier",
             "value": "global_1",
             "raw": ""
+          },
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 39
+            }
           }
         },
         {
@@ -158,6 +178,16 @@
             "type": "Identifier",
             "value": "global_2",
             "raw": ""
+          },
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 3
+            },
+            "end": {
+              "line": 4,
+              "column": 45
+            }
           }
         },
         {

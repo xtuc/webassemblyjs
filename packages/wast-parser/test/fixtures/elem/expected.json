@@ -36,7 +36,17 @@
               }
             }
           ],
-          "funcs": []
+          "funcs": [],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 20
+            }
+          }
         },
         {
           "type": "Elem",
@@ -74,7 +84,17 @@
               "type": "Identifier",
               "value": "f"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 23
+            }
+          }
         },
         {
           "type": "Elem",
@@ -107,7 +127,17 @@
               }
             }
           ],
-          "funcs": []
+          "funcs": [],
+          "loc": {
+            "start": {
+              "line": 5,
+              "column": 3
+            },
+            "end": {
+              "line": 5,
+              "column": 29
+            }
+          }
         },
         {
           "type": "Elem",
@@ -155,7 +185,17 @@
               }
             }
           ],
-          "funcs": []
+          "funcs": [],
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 3
+            },
+            "end": {
+              "line": 6,
+              "column": 35
+            }
+          }
         },
         {
           "type": "Elem",
@@ -197,7 +237,17 @@
               "type": "Identifier",
               "value": "g"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 8,
+              "column": 3
+            },
+            "end": {
+              "line": 8,
+              "column": 28
+            }
+          }
         },
         {
           "type": "Elem",
@@ -241,7 +291,17 @@
               "value": 0,
               "raw": "0"
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 3
+            },
+            "end": {
+              "line": 9,
+              "column": 26
+            }
+          }
         }
       ],
       "loc": {

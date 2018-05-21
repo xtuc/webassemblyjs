@@ -136,7 +136,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     // TODO(sven): there is probably a better way to do this
     // can refactor it if it get out of hands
     function maybeIgnoreComment() {
-      if (token.type === tokens.comment) {
+      while (token.type === tokens.comment) {
         eatToken();
       }
     }
@@ -464,7 +464,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       eatTokenOfType(tokens.closeParen);
-      eatTokenOfType(tokens.closeParen);
 
       return t.moduleImport(moduleName, name, descr);
     }
@@ -771,33 +770,39 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const name = token.value;
       eatToken();
 
+      const moduleExportDescr = parseModuleExportDescr();
+
+      return t.moduleExport(name, moduleExportDescr);
+    }
+
+    function parseModuleExportDescr(): ModuleExportDescr {
+      const startLoc = getStartLoc();
+
       let type = "";
       let index;
 
-      if (token.type === tokens.openParen) {
-        eatToken();
+      eatTokenOfType(tokens.openParen);
 
-        while (token.type !== tokens.closeParen) {
-          if (isKeyword(token, keywords.func)) {
-            type = "Func";
-            eatToken();
-            index = parseExportIdentifier(token, "func");
-          } else if (isKeyword(token, keywords.table)) {
-            type = "Table";
-            eatToken();
-            index = parseExportIdentifier(token, "table");
-          } else if (isKeyword(token, keywords.global)) {
-            type = "Global";
-            eatToken();
-            index = parseExportIdentifier(token, "global");
-          } else if (isKeyword(token, keywords.memory)) {
-            type = "Memory";
-            eatToken();
-            index = parseExportIdentifier(token, "memory");
-          }
-
+      while (token.type !== tokens.closeParen) {
+        if (isKeyword(token, keywords.func)) {
+          type = "Func";
           eatToken();
+          index = parseExportIdentifier(token, "func");
+        } else if (isKeyword(token, keywords.table)) {
+          type = "Table";
+          eatToken();
+          index = parseExportIdentifier(token, "table");
+        } else if (isKeyword(token, keywords.global)) {
+          type = "Global";
+          eatToken();
+          index = parseExportIdentifier(token, "global");
+        } else if (isKeyword(token, keywords.memory)) {
+          type = "Memory";
+          eatToken();
+          index = parseExportIdentifier(token, "memory");
         }
+
+        eatToken();
       }
 
       if (type === "") {
@@ -808,9 +813,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error("Exported function must have a name");
       }
 
+      const node = t.moduleExportDescr(type, index);
+      const endLoc = getEndLoc();
+
       eatTokenOfType(tokens.closeParen);
 
-      return t.moduleExport(name, t.moduleExportDescr(type, index));
+      return t.withLoc(node, endLoc, startLoc);
     }
 
     function parseModule(): Module {
@@ -851,7 +859,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           blob.push(token.value);
           eatToken();
 
-          maybeIgnoreComment();
           maybeIgnoreComment();
         }
 
@@ -1634,23 +1641,28 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       if (isKeyword(token, keywords.loop)) {
         eatToken();
-        return parseLoop();
+
+        const node = parseLoop();
+        const endLoc = getEndLoc();
+
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.func)) {
         eatToken();
-        const node = parseFunc();
-        eatTokenOfType(tokens.closeParen);
 
+        const node = parseFunc();
         const endLoc = getEndLoc();
+
+        eatTokenOfType(tokens.closeParen);
 
         return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.module)) {
         eatToken();
-        const node = parseModule();
 
+        const node = parseModule();
         const endLoc = getEndLoc();
 
         return t.withLoc(node, endLoc, startLoc);
@@ -1658,83 +1670,110 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       if (isKeyword(token, keywords.import)) {
         eatToken();
-        const node = parseImport();
 
+        const node = parseImport();
         const endLoc = getEndLoc();
+
+        eatTokenOfType(tokens.closeParen);
 
         return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.block)) {
         eatToken();
+
         const node = parseBlock();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.memory)) {
         eatToken();
+
         const node = parseMemory();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.data)) {
         eatToken();
+
         const node = parseData();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.table)) {
         eatToken();
+
         const node = parseTable();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.global)) {
         eatToken();
+
         const node = parseGlobal();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.type)) {
         eatToken();
+
         const node = parseType();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.start)) {
         eatToken();
+
         const node = parseStart();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.elem)) {
         eatToken();
+
         const node = parseElem();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       const instruction = parseFuncInstr();
+      const endLoc = getEndLoc();
 
       if (typeof instruction === "object") {
         eatTokenOfType(tokens.closeParen);
 
-        return instruction;
+        return t.withLoc(instruction, endLoc, startLoc);
       }
     }
 
@@ -1746,7 +1785,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       const node = builder(token.value);
 
-      eatToken();
+      eatToken(); // comment
 
       const endLoc = getEndLoc();
 

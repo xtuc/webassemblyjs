@@ -34,7 +34,17 @@
       ],
       "result": null,
       "consequent": [],
-      "alternate": []
+      "alternate": [],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 24
+        }
+      }
     },
     {
       "type": "IfInstruction",
@@ -69,7 +79,17 @@
       ],
       "result": null,
       "consequent": [],
-      "alternate": []
+      "alternate": [],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 30
+        }
+      }
     },
     {
       "type": "IfInstruction",
@@ -113,7 +133,17 @@
       ],
       "result": null,
       "consequent": [],
-      "alternate": []
+      "alternate": [],
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 3,
+          "column": 26
+        }
+      }
     },
     {
       "type": "IfInstruction",
@@ -157,7 +187,17 @@
       ],
       "result": null,
       "consequent": [],
-      "alternate": []
+      "alternate": [],
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 33
+        }
+      }
     }
   ]
 }
