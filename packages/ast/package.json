@@ -24,6 +24,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "@webassemblyjs/helper-test-framework": "1.5.4",
     "array.prototype.flatmap": "^1.2.1",
     "dump-exports": "^0.1.0"
   }
