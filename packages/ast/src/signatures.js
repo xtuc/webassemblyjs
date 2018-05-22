@@ -12,6 +12,12 @@ const i64 = "i64";
 const f32 = "f32";
 const f64 = "f64";
 
+const vector = t => {
+  const vecType = [t];
+  vecType.vector = true;
+  return vecType;
+};
+
 const controlInstructions = {
   unreachable: sign([], []),
   nop: sign([], []),
@@ -21,7 +27,7 @@ const controlInstructions = {
   // if else ?
   br: sign([u32], []),
   br_if: sign([u32], []),
-  // br_table: [], (vector representation ?)
+  br_table: sign(vector(u32), []),
   return: sign([], []),
   call: sign([u32], []),
   call_indirect: sign([u32], [])

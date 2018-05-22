@@ -19,17 +19,17 @@
           "id": "br_table",
           "args": [
             {
-              "type": "FloatLiteral",
+              "type": "NumberLiteral",
               "value": 0,
               "raw": "0"
             },
             {
-              "type": "FloatLiteral",
+              "type": "NumberLiteral",
               "value": 1,
               "raw": "1"
             },
             {
-              "type": "FloatLiteral",
+              "type": "NumberLiteral",
               "value": 3,
               "raw": "3"
             }
