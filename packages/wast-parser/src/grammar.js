@@ -139,8 +139,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     // TODO(sven): there is probably a better way to do this
     // can refactor it if it get out of hands
     function maybeIgnoreComment() {
+      if (typeof token === "undefined") {
+        // Ignore
+        return;
+      }
+
       while (token.type === tokens.comment) {
         eatToken();
+
+        if (typeof token === "undefined") {
+          // Hit the end
+          break;
+        }
       }
     }
 
@@ -511,6 +521,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         } else {
           throw createUnexpectedToken("Unexpected token in block body of type");
         }
+
+        maybeIgnoreComment();
 
         eatTokenOfType(tokens.closeParen);
       }
@@ -1064,6 +1076,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseFuncInstr(): Instruction {
       const startLoc = getStartLoc();
 
+      maybeIgnoreComment();
+
       /**
        * A simple instruction
        */
@@ -1325,7 +1339,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
           eatToken(); // (
-          eatToken(); // param
+          eatToken(); // result
 
           result = parseFuncResult();
 
@@ -1347,6 +1361,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseFuncResult(): Array<Valtype> {
       const results = [];
+
+      // type is optional
+      if (token.type === tokens.closeParen) {
+        return results;
+      }
 
       if (token.type !== tokens.valtype) {
         throw createUnexpectedToken("Unexpected token in func result");
@@ -1537,7 +1556,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
       } else {
-        throw new Error("Function param has no valtype");
+        // ignore
       }
 
       return params;
@@ -1661,6 +1680,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const node = parseFunc();
         const endLoc = getEndLoc();
 
+        maybeIgnoreComment();
+
         eatTokenOfType(tokens.closeParen);
 
         return t.withLoc(node, endLoc, startLoc);
@@ -1777,8 +1798,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const instruction = parseFuncInstr();
       const endLoc = getEndLoc();
 
+      maybeIgnoreComment();
+
       if (typeof instruction === "object") {
-        eatTokenOfType(tokens.closeParen);
+        if (typeof token !== "undefined") {
+          eatTokenOfType(tokens.closeParen);
+        }
 
         return t.withLoc(instruction, endLoc, startLoc);
       }

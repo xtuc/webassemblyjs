@@ -44,6 +44,9 @@ test-whitelisted-spec:
 	$(REPL) $(SPEC_TEST_DIR)/i32.wast
 	$(REPL) $(SPEC_TEST_DIR)/binary.wast
 	$(REPL) $(SPEC_TEST_DIR)/typecheck.wast
+	$(REPL) $(SPEC_TEST_DIR)/comments.wast
+	$(REPL) $(SPEC_TEST_DIR)/inline-module.wast
+	$(REPL) $(SPEC_TEST_DIR)/store_retval.wast
 
 lint:
 	$(ESLINT) packages
