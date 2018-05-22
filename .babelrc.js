@@ -1,5 +1,6 @@
 const {parse} = require("babylon");
 const generate = require("@babel/generator").default;
+const traverse = require("@babel/traverse").default;
 
 const parserOptions = {
   allowReturnOutsideFunction: true,
@@ -12,29 +13,61 @@ function hasFlag(name) {
   return process.env["WITH_" + name.toUpperCase()] === "1";
 }
 
+function joinAndRenderTemplate(template) {
+  return template.quasis.reduce((acc, el) => {
+    acc += el.value.raw;
+
+    const expr = template.expressions.shift();
+
+    if (typeof expr !== "undefined") {
+      acc += generate(expr).code;
+    }
+
+    return acc;
+  }, '');
+}
+
+function replaceTempateExpressionWith(template, search, remplacement) {
+  template.expressions = template.expressions.reduce((acc, expr) => {
+
+    if (expr.name === search) {
+      acc.push(remplacement);
+    } else {
+      acc.push(expr);
+    }
+
+    return acc;
+  }, []);
+}
+
 function macro({types: t}) {
   const macroMap = {};
 
-  function renderTemplate(template, args) {
-    args.reverse();
+  function renderMacro(originalMacro, args) {
+    // args.reverse();
+    const macro = t.cloneDeep(originalMacro);
 
-    return template.quasis.reduce((acc, el, index) => {
-      acc += el.value.raw;
+    const templateParams = macro.params;
+    const template = macro.body;
 
-      const arg = args[index];
+    // replace in template
+    templateParams.forEach((templateArg, index) => {
+      const calledWithArg = args[index];
 
-      if (typeof arg !== "undefined") {
-        acc += generate(arg).code;
-      } else {
-        acc += "undefined";
+      let remplacement = calledWithArg;
+
+      if (typeof calledWithArg === "undefined") {
+        remplacement = t.identifier("undefined");
       }
 
-      return acc;
-    }, '');
+      replaceTempateExpressionWith(template, templateArg.name, remplacement);
+    });
+
+    // render
+    return joinAndRenderTemplate(template);
   }
 
   function defineMacro(ident, fn) {
-    let content = '';
     const {name} = ident;
 
     if (t.isArrowFunctionExpression(fn) === false) {
@@ -50,9 +83,12 @@ function macro({types: t}) {
 
   return {
     visitor: {
-      CallExpression(path) {
+      CallExpression(path, state) {
         const {node} = path;
 
+        /**
+         * Register macro
+         */
         if (t.isIdentifier(node.callee, {name: "MACRO"})) {
           defineMacro(node.arguments[0], node.arguments[1]);
           path.remove();
@@ -60,12 +96,15 @@ function macro({types: t}) {
           return;
         }
 
+        /**
+         * Process macro
+         */
         const macro = macroMap[node.callee.name];
 
         if (typeof macro !== "undefined") {
           const callExpressionArgs = node.arguments;
 
-          const string = renderTemplate(macro.body, callExpressionArgs);
+          const string = renderMacro(macro, callExpressionArgs);
           const ast = parse(string, parserOptions).program.body;
 
           path.replaceWithMultiple(ast);

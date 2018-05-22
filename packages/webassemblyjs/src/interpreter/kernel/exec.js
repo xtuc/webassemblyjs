@@ -11,16 +11,18 @@ const t = require("@webassemblyjs/ast");
 MACRO(
   assert,
   (cond, msg) => `if (!(${cond})) {
-    throw new RuntimeError("Assertion error: " + (${msg} || "unknown"));
+    throw new RuntimeError('${cond}' + " error: " + (${msg} || "unknown"));
   }`
 );
 
 MACRO(
   assertNItemsOnStack,
   n => `
-  const s = ${n};
-  if (frame.values.length < s) {
-    throw new RuntimeError("Assertion error: expected " + s  + " on the stack, found " + frame.values.length);
+  if (frame.values.length < ${n}) {
+    throw new RuntimeError(
+      "Assertion error: expected " + JSON.stringify(${n})
+        + " on the stack, found " + frame.values.length
+    );
   }`
 );
 
