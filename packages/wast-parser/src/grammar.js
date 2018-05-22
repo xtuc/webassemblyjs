@@ -1337,7 +1337,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
           eatToken(); // (
-          eatToken(); // param
+          eatToken(); // result
 
           result = parseFuncResult();
 
@@ -1359,6 +1359,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseFuncResult(): Array<Valtype> {
       const results = [];
+
+      // type is optional
+      if (token.type === tokens.closeParen) {
+        return results;
+      }
 
       if (token.type !== tokens.valtype) {
         throw createUnexpectedToken("Unexpected token in func result");
@@ -1549,7 +1554,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
       } else {
-        throw new Error("Function param has no valtype");
+        // ignore
       }
 
       return params;
