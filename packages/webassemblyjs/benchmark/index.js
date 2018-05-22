@@ -18,6 +18,9 @@ const benchmarks = glob.sync(join(basePath, "benchmark/**/module.wast"));
 
 function wastToWasm(content) {
   const module = wabt.parseWat("module.wast", content);
+  module.resolveNames();
+  module.validate();
+
   const { buffer } = module.toBinary({ write_debug_names: true });
 
   return buffer.buffer;

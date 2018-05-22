@@ -85,6 +85,14 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
         invoke(action);
         assert(false, `invoke is valid, expected trapped (${expected.value})`);
       } catch (err) {
+        // It's the same thing
+        if (
+          expected.value === "unreachable" &&
+          err.message === "Execution has been trapped"
+        ) {
+          return;
+        }
+
         assert(
           err.message.toLowerCase() === expected.value.toLowerCase(),
           `Expected failure of ${expected.value}, ${err.message} given`

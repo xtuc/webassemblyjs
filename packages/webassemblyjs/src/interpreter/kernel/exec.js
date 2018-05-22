@@ -27,7 +27,13 @@ MACRO(
 MACRO(
   trace,
   msg => `
-    console.log("trace " + ${msg});
+    function indent(nb) {
+      return Array(nb)
+        .fill("   ")
+        .join("");
+    }
+
+    console.log(indent(framepointer) + "trace " + ${msg});
   `
 );
 
@@ -66,10 +72,7 @@ type createChildStackFrameOptions = {
   passCurrentContext?: boolean
 };
 
-export function executeStackFrame(
-  firstFrame: StackFrame,
-  depth: number = 0
-): ?StackLocal {
+export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
   let stack: Array<StackFrame> = [firstFrame];
   let framepointer = 0;
 
@@ -176,7 +179,7 @@ export function executeStackFrame(
         const label: NumberLiteral = index;
 
         // WASM
-        code = frame.labels.find(l => l.value.value === label.value);
+        code = frame.labels[label.value];
       } else if (index.type === "Identifier") {
         const label: Identifier = index;
 
@@ -199,17 +202,14 @@ export function executeStackFrame(
       const code = getLabel(label);
 
       if (typeof code === "undefined") {
-        throw newRuntimeError(`Label ${label.value} doesn't exist`);
+        throw newRuntimeError(
+          `Label ${JSON.stringify(label.value)} doesn't exist`
+        );
       }
 
-      // FIXME(sven): find a more generic way to handle label and its code
-      // Currently func body and block instr*.
-      const childStackFrame = stackframe.createChildStackFrame(
-        frame,
-        code.body || code.instr
-      );
-
-      return executeStackFrame(childStackFrame, depth + 1);
+      return createAndExecuteChildStackFrame(code.body || code.instr, {
+        passCurrentContext: true
+      });
     }
 
     function getMemoryOffset(instruction) {
@@ -472,7 +472,10 @@ export function executeStackFrame(
             id: block.label
           });
 
-          trace("entering block " + block.label.value);
+          trace(
+            `entering block ${block.label.value}` +
+              ` ${frame.labels.length} labels`
+          );
 
           if (block.label.type === "Identifier") {
             pushResult(label.createValue(block.label.value));

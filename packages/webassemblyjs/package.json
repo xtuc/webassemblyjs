@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@webassemblyjs/floating-point-hex-parser": "1.5.4",
-    "wabt": "^1.0.0"
+    "wabt": "v1.0.0-nightly.20180408"
   },
   "repository": {
     "type": "git",
