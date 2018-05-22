@@ -20,7 +20,7 @@ describe("compiler", () => {
     describe("parsing", () => {
       const testSuites = getFixtures(__dirname, "fixtures", "**/actual.wast");
 
-      const pre = (f, suite) => {
+      const pre = f => {
         const ast = parse(f);
 
         return JSON.stringify(ast, null, 2);
