@@ -240,6 +240,10 @@ function applyInstruction(moduleContext, stack, instruction) {
     // Add to existing stack
     stack = [...stack, ...stackConsequent];
   } else {
+    if (stack === false) {
+      return false;
+    }
+
     let actual;
     for (let i = 0; i < type.args.length; ++i) {
       const argType = type.args[i];
