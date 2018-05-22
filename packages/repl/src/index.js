@@ -21,6 +21,11 @@ function addEndInstruction(body) {
 }
 
 export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
+  function parseQuoteModule(node /*: QuoteModule */) {
+    const raw = node.string.join("");
+    parse(raw);
+  }
+
   function decodeBinaryModule(node /*: BinaryModule */) {
     const raw = node.blob.join("");
     const chars = raw.split("");
@@ -57,9 +62,22 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
   function assert_malformed(node) {
     const [module, expected] = node.args;
 
-    if (module.type === "BinaryModule") {
+    if (t.isBinaryModule(module) === true) {
       try {
         decodeBinaryModule(module);
+        assert(
+          false,
+          `module is valid, expected malformed (${expected.value})`
+        );
+      } catch (err) {
+        assert(
+          new RegExp(expected.value, "ig").test(err.message),
+          `Expected failure of "${expected.value}", "${err.message}" given`
+        );
+      }
+    } else if (t.isQuoteModule(module) === true) {
+      try {
+        parseQuoteModule(module);
         assert(
           false,
           `module is valid, expected malformed (${expected.value})`
@@ -231,6 +249,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     if (actual === undefined && expected === undefined) {
       return;
     }
+
+    assert(typeof actual !== "undefined", "Actual value is undefined");
 
     const actualType = actual.type;
     const expectedType = expected.type;

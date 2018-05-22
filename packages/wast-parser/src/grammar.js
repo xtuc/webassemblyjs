@@ -139,8 +139,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     // TODO(sven): there is probably a better way to do this
     // can refactor it if it get out of hands
     function maybeIgnoreComment() {
+      if (typeof token === "undefined") {
+        // Ignore
+        return;
+      }
+
       while (token.type === tokens.comment) {
         eatToken();
+
+        if (typeof token === "undefined") {
+          // Hit the end
+          break;
+        }
       }
     }
 
@@ -1064,6 +1074,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseFuncInstr(): Instruction {
       const startLoc = getStartLoc();
 
+      maybeIgnoreComment();
+
       /**
        * A simple instruction
        */
@@ -1777,8 +1789,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const instruction = parseFuncInstr();
       const endLoc = getEndLoc();
 
+      maybeIgnoreComment();
+
       if (typeof instruction === "object") {
-        eatTokenOfType(tokens.closeParen);
+        if (typeof token !== "undefined") {
+          eatTokenOfType(tokens.closeParen);
+        }
 
         return t.withLoc(instruction, endLoc, startLoc);
       }
