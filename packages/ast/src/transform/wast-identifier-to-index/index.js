@@ -1,6 +1,12 @@
 // @flow
 
-import { numberLiteralFromRaw, traverse, isIdentifier } from "../../index";
+import {
+  isBlock,
+  isFunc,
+  isIdentifier,
+  numberLiteralFromRaw,
+  traverse
+} from "../../index";
 import {
   moduleContextFromModuleAST,
   type ModuleContext
@@ -61,12 +67,19 @@ function transformFuncPath(
       "Function signatures must be denormalised before execution"
     );
   }
-  const params = signature.params;
+
+  const { params } = signature;
+
+  // Add func locals in the context
+  params.forEach(p => moduleContext.addLocal(p.valtype));
 
   traverse(funcNode, {
     Instr(instrPath: NodePath<Instr>) {
       const instrNode = instrPath.node;
 
+      /**
+       * Local access
+       */
       if (
         instrNode.id === "get_local" ||
         instrNode.id === "set_local" ||
@@ -92,6 +105,9 @@ function transformFuncPath(
         }
       }
 
+      /**
+       * Global access
+       */
       if (instrNode.id === "get_global" || instrNode.id === "set_global") {
         const [firstArg] = instrNode.args;
 
@@ -110,8 +126,48 @@ function transformFuncPath(
           instrNode.args[0] = numberLiteralFromRaw(globalOffset);
         }
       }
+
+      /**
+       * Labels lookup
+       */
+      if (instrNode.id === "br") {
+        const [firstArg] = instrNode.args;
+
+        if (isIdentifier(firstArg) === true) {
+          // if the labels is not found it is going to be replaced with -1
+          // which is invalid.
+          let relativeBlockCount = -1;
+
+          // $FlowIgnore: reference?
+          instrPath.findParent(({ node }) => {
+            if (isBlock(node)) {
+              relativeBlockCount++;
+
+              const name = node.label || node.name;
+
+              if (typeof name === "object") {
+                // $FlowIgnore: isIdentifier ensures that
+                if (name.value === firstArg.value) {
+                  // Found it
+                  return false;
+                }
+              }
+            }
+
+            if (isFunc(node)) {
+              return false;
+            }
+          });
+
+          // Replace the Identifer node by our new NumberLiteral node
+          instrNode.args[0] = numberLiteralFromRaw(relativeBlockCount);
+        }
+      }
     },
 
+    /**
+     * Func lookup
+     */
     CallInstruction({ node }: NodePath<CallInstruction>) {
       const index = node.index;
 
