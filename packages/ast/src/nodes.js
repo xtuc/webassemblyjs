@@ -801,6 +801,9 @@ export const isByteArray = isTypeOf("ByteArray");
 
 export const isFunc = isTypeOf("Func");
 
+export const isBlock = (node: Node) =>
+  isLoopInstruction(node) || isBlockInstruction(node) || isFunc(node);
+
 export const isInstruction = (node: Node) =>
   isLoopInstruction(node) ||
   isInstr(node) ||

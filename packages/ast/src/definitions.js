@@ -129,7 +129,7 @@ Instructions
 */
 
 defineType("LoopInstruction", {
-  unionType: ["Instruction"],
+  unionType: ["Block", "Instruction"],
   fields: {
     id: {
       constant: true,
@@ -502,7 +502,7 @@ defineType("Identifier", {
 });
 
 defineType("BlockInstruction", {
-  unionType: ["Instruction"],
+  unionType: ["Block", "Instruction"],
   fields: {
     id: {
       constant: true,
@@ -572,6 +572,7 @@ defineType("ByteArray", {
 });
 
 defineType("Func", {
+  unionType: ["Block"],
   fields: {
     name: {
       maybe: true,
