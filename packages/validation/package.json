@@ -17,6 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "@webassemblyjs/ast": "1.5.4",
+    "@webassemblyjs/helper-module-context": "1.5.4",
     "debug": "3.0.1"
   },
   "devDependencies": {

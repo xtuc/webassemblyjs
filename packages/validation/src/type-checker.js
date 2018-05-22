@@ -1,6 +1,6 @@
 import { traverse, isInstruction } from "@webassemblyjs/ast";
 
-import ModuleContext from "./type-checker/module-context.js";
+import { moduleContextFromModuleAST } from "@webassemblyjs/helper-module-context";
 import getType from "./type-checker/get-type.js";
 import { ANY, POLYMORPHIC } from "./type-checker/types.js";
 
@@ -31,60 +31,12 @@ function checkTypes(a, b) {
 }
 
 export default function validate(ast) {
-  // Module context
-  const moduleContext = new ModuleContext();
-
   if (!ast.body || !ast.body[0] || !ast.body[0].fields) {
     return [];
   }
 
-  ast.body[0].fields.forEach(field => {
-    switch (field.type) {
-      case "Func": {
-        moduleContext.addFunction(field.signature);
-        break;
-      }
-      case "Global": {
-        moduleContext.defineGlobal(field.globalType.valtype, field.mutability);
-        break;
-      }
-      case "ModuleImport": {
-        switch (field.descr.type) {
-          case "GlobalType": {
-            moduleContext.importGlobal(field.descr.valtype);
-            break;
-          }
-          case "Memory": {
-            moduleContext.addMemory(
-              field.descr.limits.min,
-              field.descr.limits.max
-            );
-            break;
-          }
-          case "FuncImportDescr": {
-            moduleContext.importFunction(field.descr.signature);
-            break;
-          }
-
-          case "Table": {
-            // FIXME(sven): not implemented yet
-            break;
-          }
-
-          default:
-            throw new Error(
-              "Unsupported ModuleImport of type " +
-                JSON.stringify(field.descr.type)
-            );
-        }
-        break;
-      }
-      case "Memory": {
-        moduleContext.addMemory(field.limits.min, field.limits.max);
-        break;
-      }
-    }
-  });
+  // Module context
+  const moduleContext = moduleContextFromModuleAST(ast.body[0]);
 
   errors = [];
 

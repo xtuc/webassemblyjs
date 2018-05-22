@@ -1,0 +1,160 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "a",
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 7
+              },
+              "end": {
+                "line": 1,
+                "column": 9
+              }
+            }
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 2
+            },
+            "end": {
+              "line": 1,
+              "column": 8
+            }
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "b",
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 6
+              },
+              "end": {
+                "line": 2,
+                "column": 8
+              }
+            }
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 1
+            },
+            "end": {
+              "line": 2,
+              "column": 7
+            }
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_2",
+            "raw": ""
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [
+            {
+              "type": "BlockInstruction",
+              "id": "block",
+              "label": {
+                "type": "Identifier",
+                "value": "block_0",
+                "raw": ""
+              },
+              "instr": [
+                {
+                  "type": "CallInstruction",
+                  "id": "call",
+                  "index": {
+                    "type": "Identifier",
+                    "value": "a",
+                    "loc": {
+                      "start": {
+                        "line": 6,
+                        "column": 10
+                      },
+                      "end": {
+                        "line": 6,
+                        "column": 12
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "CallInstruction",
+                  "id": "call",
+                  "index": {
+                    "type": "Identifier",
+                    "value": "b",
+                    "loc": {
+                      "start": {
+                        "line": 7,
+                        "column": 10
+                      },
+                      "end": {
+                        "line": 7,
+                        "column": 12
+                      }
+                    }
+                  }
+                }
+              ],
+              "result": null
+            }
+          ],
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 1
+            },
+            "end": {
+              "line": 9,
+              "column": -1
+            }
+          }
+        }
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 6,
+          "column": -1
+        }
+      }
+    }
+  ]
+}
