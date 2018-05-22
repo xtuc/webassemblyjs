@@ -1,0 +1,21 @@
+(module
+  (func $type-arg-void-vs-num (result i32)
+    (block (br_table 0 (i32.const 1)) (i32.const 1))
+  )
+  (func $type-arg-void-vs-num (result i32)
+    (block (result i32) (br_table 0 (nop) (i32.const 1)) (i32.const 1))
+  )
+  (func $type-arg-num-vs-num (result i32)
+    (block (result i32)
+      (br_table 0 0 0 (i64.const 1) (i32.const 1)) (i32.const 1)
+    )
+  )
+  (func $type-arg-num-vs-arg-num
+    (block
+      (block (result f32)
+        (br_table 0 1 (f32.const 0) (i32.const 0))
+      )
+      (drop)
+    )
+  )
+)

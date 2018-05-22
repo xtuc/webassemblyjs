@@ -1,0 +1,4 @@
+Stack contains additional type POLYMORPHIC,i32.
+Expected type i32 but got none.
+Expected type i32 but got i64.
+br_table index 1 at position 1 has mismatching result type.

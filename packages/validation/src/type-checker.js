@@ -155,7 +155,12 @@ function applyInstruction(moduleContext, stack, instruction) {
     if (!stopFuncCheck) {
       checkStacks(type.result, newStack);
     }
-    stack = [...stack, ...newStack];
+
+    if (newStack === false) {
+      stack = false;
+    } else {
+      stack = [...stack, ...newStack];
+    }
 
     moduleContext.popLabel();
   } else if (instruction.type === "IfInstruction") {
