@@ -45,6 +45,7 @@ type Mutability = "const" | "var";
 type NodePath<T> = {
   node: T,
   parentPath: ?NodePath<Node>,
+  findParent: (NodePath<Node>) => ?boolean,
   replaceWith: Node => void,
   remove: () => void
 };
