@@ -522,6 +522,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           throw createUnexpectedToken("Unexpected token in block body of type");
         }
 
+        maybeIgnoreComment();
+
         eatTokenOfType(tokens.closeParen);
       }
 
@@ -1677,6 +1679,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         const node = parseFunc();
         const endLoc = getEndLoc();
+
+        maybeIgnoreComment();
 
         eatTokenOfType(tokens.closeParen);
 
