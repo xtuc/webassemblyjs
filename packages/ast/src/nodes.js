@@ -6,6 +6,7 @@
 import { assert } from "mamacro";
 
 // FIXME(sven): compat with assert
+// eslint-disable-next-line no-unused-vars
 class RuntimeError extends Error {}
 
 function isTypeOf(t: string) {
