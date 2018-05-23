@@ -11,10 +11,11 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/helper-wasm-bytecode": "1.5.4",
     "@webassemblyjs/helper-module-context": "1.5.4",
+    "@webassemblyjs/helper-wasm-bytecode": "1.5.4",
     "@webassemblyjs/wast-parser": "1.5.4",
     "debug": "^3.1.0",
+    "mamacro": "^0.0.3",
     "webassemblyjs": "1.5.4"
   },
   "repository": {

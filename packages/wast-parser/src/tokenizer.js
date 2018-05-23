@@ -1,5 +1,6 @@
 // @flow
 
+import { define } from "mamacro";
 import { FSM, makeTransition } from "@webassemblyjs/helper-fsm";
 import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 
@@ -8,7 +9,7 @@ declare function unexpectedCharacter(): void;
 /**
  * Throw an error in case the current character is invalid
  */
-MACRO(
+define(
   unexpectedCharacter,
   () =>
     `throw new Error(getCodeFrame(input, line, column) + "Unexpected character " + JSON.stringify(char));`
