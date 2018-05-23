@@ -22,7 +22,7 @@
     "@webassemblyjs/helper-code-frame": "1.5.4",
     "@webassemblyjs/helper-fsm": "1.5.4",
     "long": "^3.2.0",
-    "mamacro": "0.0.2",
+    "mamacro": "^0.0.3",
     "webassemblyjs": "1.5.4"
   },
   "devDependencies": {

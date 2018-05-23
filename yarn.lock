@@ -752,9 +752,9 @@ babel-eslint@8.0.3:
     "@babel/types" "7.0.0-beta.31"
     babylon "7.0.0-beta.31"
 
-babel-plugin-mamacro@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/babel-plugin-mamacro/-/babel-plugin-mamacro-0.0.2.tgz#c82f532547ad6d950037048ba8cbf8a08a633084"
+babel-plugin-mamacro@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/babel-plugin-mamacro/-/babel-plugin-mamacro-0.0.3.tgz#7bc74140c03d888ee4045a39fad3844d1dd34791"
   dependencies:
     "@babel/generator" "^7.0.0-beta.47"
     babylon "^6.18.0"
