@@ -33,12 +33,6 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@babel/code-frame@7.0.0-beta.47":
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.0.0-beta.47.tgz#d18c2f4c4ba8d093a2bcfab5616593bfe2441a27"
-  dependencies:
-    "@babel/highlight" "7.0.0-beta.47"
-
 "@babel/core@7.0.0-beta.34":
   version "7.0.0-beta.34"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.0.0-beta.34.tgz#576863223bcb4d003e9450b2a4c5076a626be966"
@@ -65,16 +59,6 @@
     "@babel/types" "7.0.0-beta.34"
     jsesc "^2.5.1"
     lodash "^4.2.0"
-    source-map "^0.5.0"
-    trim-right "^1.0.1"
-
-"@babel/generator@7.0.0-beta.47":
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.0.0-beta.47.tgz#1835709f377cc4d2a4affee6d9258a10bbf3b9d1"
-  dependencies:
-    "@babel/types" "7.0.0-beta.47"
-    jsesc "^2.5.1"
-    lodash "^4.17.5"
     source-map "^0.5.0"
     trim-right "^1.0.1"
 
@@ -141,14 +125,6 @@
     "@babel/template" "7.0.0-beta.34"
     "@babel/types" "7.0.0-beta.34"
 
-"@babel/helper-function-name@7.0.0-beta.47":
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/helper-function-name/-/helper-function-name-7.0.0-beta.47.tgz#8057d63e951e85c57c02cdfe55ad7608d73ffb7d"
-  dependencies:
-    "@babel/helper-get-function-arity" "7.0.0-beta.47"
-    "@babel/template" "7.0.0-beta.47"
-    "@babel/types" "7.0.0-beta.47"
-
 "@babel/helper-get-function-arity@7.0.0-beta.31":
   version "7.0.0-beta.31"
   resolved "https://registry.yarnpkg.com/@babel/helper-get-function-arity/-/helper-get-function-arity-7.0.0-beta.31.tgz#1176d79252741218e0aec872ada07efb2b37a493"
@@ -160,12 +136,6 @@
   resolved "https://registry.yarnpkg.com/@babel/helper-get-function-arity/-/helper-get-function-arity-7.0.0-beta.34.tgz#e3dd0a72086a739c587424abd26fd3012a8b1eec"
   dependencies:
     "@babel/types" "7.0.0-beta.34"
-
-"@babel/helper-get-function-arity@7.0.0-beta.47":
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/helper-get-function-arity/-/helper-get-function-arity-7.0.0-beta.47.tgz#2de04f97c14b094b55899d3fa83144a16d207510"
-  dependencies:
-    "@babel/types" "7.0.0-beta.47"
 
 "@babel/helper-hoist-variables@7.0.0-beta.34":
   version "7.0.0-beta.34"
@@ -229,12 +199,6 @@
     "@babel/types" "7.0.0-beta.34"
     lodash "^4.2.0"
 
-"@babel/helper-split-export-declaration@7.0.0-beta.47":
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/helper-split-export-declaration/-/helper-split-export-declaration-7.0.0-beta.47.tgz#e11277855472d8d83baf22f2d0186c4a2059b09a"
-  dependencies:
-    "@babel/types" "7.0.0-beta.47"
-
 "@babel/helper-wrap-function@7.0.0-beta.34":
   version "7.0.0-beta.34"
   resolved "https://registry.yarnpkg.com/@babel/helper-wrap-function/-/helper-wrap-function-7.0.0-beta.34.tgz#dd17517c73c3ded126d295d848af93aa3ca8f316"
@@ -251,14 +215,6 @@
     "@babel/template" "7.0.0-beta.34"
     "@babel/traverse" "7.0.0-beta.34"
     "@babel/types" "7.0.0-beta.34"
-
-"@babel/highlight@7.0.0-beta.47":
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/highlight/-/highlight-7.0.0-beta.47.tgz#8fbc83fb2a21f0bd2b95cdbeb238cf9689cad494"
-  dependencies:
-    chalk "^2.0.0"
-    esutils "^2.0.2"
-    js-tokens "^3.0.0"
 
 "@babel/plugin-check-constants@7.0.0-beta.34":
   version "7.0.0-beta.34"
@@ -530,15 +486,6 @@
     babylon "7.0.0-beta.34"
     lodash "^4.2.0"
 
-"@babel/template@7.0.0-beta.47":
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.0.0-beta.47.tgz#0473970a7c0bee7a1a18c1ca999d3ba5e5bad83d"
-  dependencies:
-    "@babel/code-frame" "7.0.0-beta.47"
-    "@babel/types" "7.0.0-beta.47"
-    babylon "7.0.0-beta.47"
-    lodash "^4.17.5"
-
 "@babel/traverse@7.0.0-beta.31":
   version "7.0.0-beta.31"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.0.0-beta.31.tgz#db399499ad74aefda014f0c10321ab255134b1df"
@@ -565,21 +512,6 @@
     invariant "^2.2.0"
     lodash "^4.2.0"
 
-"@babel/traverse@^7.0.0-beta.47":
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.0.0-beta.47.tgz#0e57fdbb9ff3a909188b6ebf1e529c641e6c82a4"
-  dependencies:
-    "@babel/code-frame" "7.0.0-beta.47"
-    "@babel/generator" "7.0.0-beta.47"
-    "@babel/helper-function-name" "7.0.0-beta.47"
-    "@babel/helper-split-export-declaration" "7.0.0-beta.47"
-    "@babel/types" "7.0.0-beta.47"
-    babylon "7.0.0-beta.47"
-    debug "^3.1.0"
-    globals "^11.1.0"
-    invariant "^2.2.0"
-    lodash "^4.17.5"
-
 "@babel/types@7.0.0-beta.31":
   version "7.0.0-beta.31"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.0.0-beta.31.tgz#42c9c86784f674c173fb21882ca9643334029de4"
@@ -602,14 +534,6 @@
   dependencies:
     esutils "^2.0.2"
     lodash "^4.2.0"
-    to-fast-properties "^2.0.0"
-
-"@babel/types@7.0.0-beta.47":
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.0.0-beta.47.tgz#e6fcc1a691459002c2671d558a586706dddaeef8"
-  dependencies:
-    esutils "^2.0.2"
-    lodash "^4.17.5"
     to-fast-properties "^2.0.0"
 
 "@yarnpkg/lockfile@^1.0.0":
@@ -832,10 +756,6 @@ babylon@7.0.0-beta.31:
 babylon@7.0.0-beta.34:
   version "7.0.0-beta.34"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-7.0.0-beta.34.tgz#2ccdf97bb4fbc1617619a030a6c0390b2c8f16d6"
-
-babylon@7.0.0-beta.47:
-  version "7.0.0-beta.47"
-  resolved "https://registry.yarnpkg.com/babylon/-/babylon-7.0.0-beta.47.tgz#6d1fa44f0abec41ab7c780481e62fd9aafbdea80"
 
 balanced-match@^1.0.0:
   version "1.0.0"
@@ -1988,7 +1908,7 @@ globals@^10.0.0:
   version "10.4.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-10.4.0.tgz#5c477388b128a9e4c5c5d01c7a2aca68c68b2da7"
 
-globals@^11.0.1, globals@^11.1.0:
+globals@^11.0.1:
   version "11.5.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-11.5.0.tgz#6bc840de6771173b191f13d3a9c94d441ee92642"
 
@@ -2634,7 +2554,7 @@ lodash.templatesettings@^4.0.0:
   dependencies:
     lodash._reinterpolate "~3.0.0"
 
-lodash@^4.15.0, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
+lodash@^4.15.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 

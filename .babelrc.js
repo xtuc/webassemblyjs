@@ -1,6 +1,5 @@
 const {parse} = require("babylon");
 const generate = require("@babel/generator").default;
-const traverse = require("@babel/traverse").default;
 
 const parserOptions = {
   allowReturnOutsideFunction: true,
