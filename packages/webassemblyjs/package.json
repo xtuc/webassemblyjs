@@ -22,7 +22,8 @@
     "@webassemblyjs/validation": "1.5.4",
     "@webassemblyjs/wasm-parser": "1.5.4",
     "@webassemblyjs/wast-parser": "1.5.4",
-    "long": "^3.2.0"
+    "long": "^3.2.0",
+    "mamacro": "0.0.2"
   },
   "devDependencies": {
     "@webassemblyjs/floating-point-hex-parser": "1.5.4",

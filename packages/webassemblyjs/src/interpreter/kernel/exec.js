@@ -1,21 +1,16 @@
 // @flow
 
-declare function trace(msg?: string): void;
-declare function assert(cond: boolean, msg?: string): void;
-declare function assertNItemsOnStack(n: number): void;
+import { assert, define } from "mamacro";
 
 import { Memory } from "../runtime/values/memory";
 import { RuntimeError } from "../../errors";
+
 const t = require("@webassemblyjs/ast");
 
-MACRO(
-  assert,
-  (cond, msg) => `if (!(${cond})) {
-    throw new RuntimeError('${cond}' + " error: " + (${msg} || "unknown"));
-  }`
-);
+declare function trace(msg?: string): void;
+declare function assertNItemsOnStack(n: number): void;
 
-MACRO(
+define(
   assertNItemsOnStack,
   n => `
   if (frame.values.length < ${n}) {
@@ -26,7 +21,7 @@ MACRO(
   }`
 );
 
-MACRO(
+define(
   trace,
   msg => `
     console.log("trace " + ${msg});

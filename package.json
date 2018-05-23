@@ -34,6 +34,7 @@
     "prettier": "1.9.2"
   },
   "dependencies": {
+    "babel-plugin-mamacro": "0.0.2",
     "mkdirp": "0.5.1",
     "synp": "1.2.1"
   }
