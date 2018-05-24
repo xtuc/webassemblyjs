@@ -19,11 +19,11 @@
   "dependencies": {
     "@webassemblyjs/ast": "1.5.5",
     "@webassemblyjs/floating-point-hex-parser": "1.5.5",
+    "@webassemblyjs/helper-api-error": "1.5.5",
     "@webassemblyjs/helper-code-frame": "1.5.5",
     "@webassemblyjs/helper-fsm": "1.5.5",
     "long": "^3.2.0",
-    "mamacro": "^0.0.3",
-    "webassemblyjs": "1.5.5"
+    "mamacro": "^0.0.3"
   },
   "devDependencies": {
     "@webassemblyjs/helper-test-framework": "1.5.5"
