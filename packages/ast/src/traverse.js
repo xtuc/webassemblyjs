@@ -112,32 +112,13 @@ function walk(node: Node, callback: Cb, parentPath: ?NodePath<Node>) {
   });
 }
 
-export function traverse(n: Node, visitors: Object) {
-  const parentPath = null;
+const noop = () => {};
 
-  walk(
-    n,
-    (type: string, path: NodePath<Node>) => {
-      if (typeof visitors[type] === "function") {
-        visitors[type](path);
-      }
-
-      const unionTypes = unionTypesMap[type];
-      unionTypes.forEach(unionType => {
-        if (typeof visitors[unionType] === "function") {
-          visitors[unionType](path);
-        }
-      });
-    },
-    parentPath
-  );
-}
-
-export function traverseWithHooks(
+export function traverse(
   n: Node,
   visitors: Object,
-  before: Cb,
-  after: Cb
+  before: Cb = noop,
+  after: Cb = noop
 ) {
   const parentPath = null;
 
@@ -149,6 +130,15 @@ export function traverseWithHooks(
         visitors[type](path);
         after(type, path);
       }
+
+      const unionTypes = unionTypesMap[type];
+      unionTypes.forEach(unionType => {
+        if (typeof visitors[unionType] === "function") {
+          before(unionType, path);
+          visitors[unionType](path);
+          after(unionType, path);
+        }
+      });
     },
     parentPath
   );
