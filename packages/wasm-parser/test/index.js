@@ -1,10 +1,17 @@
 // @flow
 
+const { assert } = require("chai");
 const {
   getFixtures,
   compare
 } = require("@webassemblyjs/helper-test-framework");
 
+const { makeBuffer } = require("@webassemblyjs/helper-buffer");
+const {
+  encodeVersion,
+  encodeHeader
+} = require("@webassemblyjs/wasm-gen/lib/encoder");
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
 const wabt = require("wabt");
 const { parse } = require("@webassemblyjs/wast-parser");
 const { decode } = require("../lib");
@@ -54,4 +61,19 @@ describe("Binary decoder", () => {
   };
 
   compare(testSuites, getActual, getExpected);
+
+  describe("section ordering", () => {
+    it("should throw when the section are in the wrong order", () => {
+      const buffer = makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.code, 0x01, 0x00],
+        [constants.sections.func, 0x01, 0x00]
+      );
+
+      const fn = () => decode(buffer);
+
+      assert.throws(fn, "Unexpected section: 0x3");
+    });
+  });
 });
