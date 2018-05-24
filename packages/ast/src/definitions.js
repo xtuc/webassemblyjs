@@ -12,6 +12,7 @@ defineType("Module", {
   },
   doc:
     "A module consists of a sequence of sections (termed fields in the text format).",
+  unionType: ["Node"],
   fields: {
     id: {
       maybe: true,
@@ -29,6 +30,7 @@ defineType("Module", {
 });
 
 defineType("ModuleMetadata", {
+  unionType: ["Node"],
   fields: {
     sections: {
       array: true,
@@ -48,6 +50,7 @@ defineType("ModuleMetadata", {
 });
 
 defineType("ModuleNameMetadata", {
+  unionType: ["Node"],
   fields: {
     value: {
       type: "string"
@@ -56,6 +59,7 @@ defineType("ModuleNameMetadata", {
 });
 
 defineType("FunctionNameMetadata", {
+  unionType: ["Node"],
   fields: {
     value: {
       type: "string"
@@ -67,6 +71,7 @@ defineType("FunctionNameMetadata", {
 });
 
 defineType("LocalNameMetadata", {
+  unionType: ["Node"],
   fields: {
     value: {
       type: "string"
@@ -81,6 +86,7 @@ defineType("LocalNameMetadata", {
 });
 
 defineType("BinaryModule", {
+  unionType: ["Node"],
   fields: {
     id: {
       maybe: true,
@@ -94,6 +100,7 @@ defineType("BinaryModule", {
 });
 
 defineType("QuoteModule", {
+  unionType: ["Node"],
   fields: {
     id: {
       maybe: true,
@@ -107,6 +114,7 @@ defineType("QuoteModule", {
 });
 
 defineType("SectionMetadata", {
+  unionType: ["Node"],
   fields: {
     section: {
       type: "SectionName"
@@ -129,7 +137,7 @@ Instructions
 */
 
 defineType("LoopInstruction", {
-  unionType: ["Block", "Instruction"],
+  unionType: ["Node", "Block", "Instruction"],
   fields: {
     id: {
       constant: true,
@@ -152,7 +160,7 @@ defineType("LoopInstruction", {
 });
 
 defineType("Instr", {
-  unionType: ["Expression", "Instruction"],
+  unionType: ["Node", "Expression", "Instruction"],
   fields: {
     id: {
       type: "string"
@@ -173,7 +181,7 @@ defineType("Instr", {
 });
 
 defineType("IfInstruction", {
-  unionType: ["Instruction"],
+  unionType: ["Node", "Instruction"],
   fields: {
     id: {
       constant: true,
@@ -208,7 +216,7 @@ Concrete value types
 */
 
 defineType("StringLiteral", {
-  unionType: ["Expression"],
+  unionType: ["Node", "Expression"],
   fields: {
     value: {
       type: "string"
@@ -217,7 +225,7 @@ defineType("StringLiteral", {
 });
 
 defineType("NumberLiteral", {
-  unionType: ["NumericLiteral", "Expression"],
+  unionType: ["Node", "NumericLiteral", "Expression"],
   fields: {
     value: {
       type: "number"
@@ -229,7 +237,7 @@ defineType("NumberLiteral", {
 });
 
 defineType("LongNumberLiteral", {
-  unionType: ["NumericLiteral", "Expression"],
+  unionType: ["Node", "NumericLiteral", "Expression"],
   fields: {
     value: {
       type: "LongNumber"
@@ -241,7 +249,7 @@ defineType("LongNumberLiteral", {
 });
 
 defineType("FloatLiteral", {
-  unionType: ["NumericLiteral", "Expression"],
+  unionType: ["Node", "NumericLiteral", "Expression"],
   fields: {
     value: {
       type: "number"
@@ -261,6 +269,7 @@ defineType("FloatLiteral", {
 });
 
 defineType("Elem", {
+  unionType: ["Node"],
   fields: {
     table: {
       type: "Index"
@@ -277,6 +286,7 @@ defineType("Elem", {
 });
 
 defineType("IndexInFuncSection", {
+  unionType: ["Node"],
   fields: {
     index: {
       type: "Index"
@@ -285,7 +295,7 @@ defineType("IndexInFuncSection", {
 });
 
 defineType("ValtypeLiteral", {
-  unionType: ["Expression"],
+  unionType: ["Node", "Expression"],
   fields: {
     name: {
       type: "Valtype"
@@ -294,7 +304,7 @@ defineType("ValtypeLiteral", {
 });
 
 defineType("TypeInstruction", {
-  unionType: ["Instruction"],
+  unionType: ["Node", "Instruction"],
   fields: {
     id: {
       maybe: true,
@@ -307,6 +317,7 @@ defineType("TypeInstruction", {
 });
 
 defineType("Start", {
+  unionType: ["Node"],
   fields: {
     index: {
       type: "Index"
@@ -315,7 +326,7 @@ defineType("Start", {
 });
 
 defineType("GlobalType", {
-  unionType: ["ImportDescr"],
+  unionType: ["Node", "ImportDescr"],
   fields: {
     valtype: {
       type: "Valtype"
@@ -327,6 +338,7 @@ defineType("GlobalType", {
 });
 
 defineType("LeadingComment", {
+  unionType: ["Node"],
   fields: {
     value: {
       type: "string"
@@ -335,6 +347,7 @@ defineType("LeadingComment", {
 });
 
 defineType("BlockComment", {
+  unionType: ["Node"],
   fields: {
     value: {
       type: "string"
@@ -343,6 +356,7 @@ defineType("BlockComment", {
 });
 
 defineType("Data", {
+  unionType: ["Node"],
   fields: {
     memoryIndex: {
       type: "Memidx"
@@ -357,6 +371,7 @@ defineType("Data", {
 });
 
 defineType("Global", {
+  unionType: ["Node"],
   fields: {
     globalType: {
       type: "GlobalType"
@@ -373,7 +388,7 @@ defineType("Global", {
 });
 
 defineType("Table", {
-  unionType: ["ImportDescr"],
+  unionType: ["Node", "ImportDescr"],
   fields: {
     elementType: {
       type: "TableElementType"
@@ -394,7 +409,7 @@ defineType("Table", {
 });
 
 defineType("Memory", {
-  unionType: ["ImportDescr"],
+  unionType: ["Node", "ImportDescr"],
   fields: {
     limits: {
       type: "Limit"
@@ -407,7 +422,7 @@ defineType("Memory", {
 });
 
 defineType("FuncImportDescr", {
-  unionType: ["ImportDescr"],
+  unionType: ["Node", "ImportDescr"],
   fields: {
     id: {
       type: "Identifier"
@@ -419,6 +434,7 @@ defineType("FuncImportDescr", {
 });
 
 defineType("ModuleImport", {
+  unionType: ["Node"],
   fields: {
     module: {
       type: "string"
@@ -433,6 +449,7 @@ defineType("ModuleImport", {
 });
 
 defineType("ModuleExportDescr", {
+  unionType: ["Node"],
   fields: {
     exportType: {
       type: "ExportDescrType"
@@ -444,6 +461,7 @@ defineType("ModuleExportDescr", {
 });
 
 defineType("ModuleExport", {
+  unionType: ["Node"],
   fields: {
     name: {
       type: "string"
@@ -455,6 +473,7 @@ defineType("ModuleExport", {
 });
 
 defineType("Limit", {
+  unionType: ["Node"],
   fields: {
     min: {
       type: "number"
@@ -467,6 +486,7 @@ defineType("Limit", {
 });
 
 defineType("Signature", {
+  unionType: ["Node"],
   fields: {
     params: {
       array: true,
@@ -480,6 +500,7 @@ defineType("Signature", {
 });
 
 defineType("Program", {
+  unionType: ["Node"],
   fields: {
     body: {
       array: true,
@@ -489,7 +510,7 @@ defineType("Program", {
 });
 
 defineType("Identifier", {
-  unionType: ["Expression"],
+  unionType: ["Node", "Expression"],
   fields: {
     value: {
       type: "string"
@@ -502,7 +523,7 @@ defineType("Identifier", {
 });
 
 defineType("BlockInstruction", {
-  unionType: ["Block", "Instruction"],
+  unionType: ["Node", "Block", "Instruction"],
   fields: {
     id: {
       constant: true,
@@ -525,7 +546,7 @@ defineType("BlockInstruction", {
 });
 
 defineType("CallInstruction", {
-  unionType: ["Instruction"],
+  unionType: ["Node", "Instruction"],
   fields: {
     id: {
       constant: true,
@@ -544,7 +565,7 @@ defineType("CallInstruction", {
 });
 
 defineType("CallIndirectInstruction", {
-  unionType: ["Instruction"],
+  unionType: ["Node", "Instruction"],
   fields: {
     id: {
       constant: true,
@@ -563,6 +584,7 @@ defineType("CallIndirectInstruction", {
 });
 
 defineType("ByteArray", {
+  unionType: ["Node"],
   fields: {
     values: {
       array: true,
@@ -572,7 +594,7 @@ defineType("ByteArray", {
 });
 
 defineType("Func", {
-  unionType: ["Block"],
+  unionType: ["Node", "Block"],
   fields: {
     name: {
       maybe: true,

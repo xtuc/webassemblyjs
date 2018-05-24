@@ -2,7 +2,10 @@
 
 type Cb = (type: string, path: NodePath<Node>) => void;
 
-const debug = require("debug")("webassemblyjs:ast:traverse");
+import debugModule from "debug";
+import { unionTypesMap } from "./nodes";
+
+const debug = debugModule("webassemblyjs:ast:traverse");
 
 function removeNodeInBody(node: Node, fromNode: Node) {
   switch (fromNode.type) {
@@ -115,13 +118,16 @@ export function traverse(n: Node, visitors: Object) {
   walk(
     n,
     (type: string, path: NodePath<Node>) => {
-      if (typeof visitors["Node"] === "function") {
-        visitors["Node"](path);
-      }
-
       if (typeof visitors[type] === "function") {
         visitors[type](path);
       }
+
+      const unionTypes = unionTypesMap[type];
+      unionTypes.forEach(unionType => {
+        if (typeof visitors[unionType] === "function") {
+          visitors[unionType](path);
+        }
+      });
     },
     parentPath
   );

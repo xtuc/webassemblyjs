@@ -797,6 +797,48 @@ export const isByteArray = isTypeOf("ByteArray");
 
 export const isFunc = isTypeOf("Func");
 
+export const isNode = (node: Node) =>
+  isModule(node) ||
+  isModuleMetadata(node) ||
+  isModuleNameMetadata(node) ||
+  isFunctionNameMetadata(node) ||
+  isLocalNameMetadata(node) ||
+  isBinaryModule(node) ||
+  isQuoteModule(node) ||
+  isSectionMetadata(node) ||
+  isLoopInstruction(node) ||
+  isInstr(node) ||
+  isIfInstruction(node) ||
+  isStringLiteral(node) ||
+  isNumberLiteral(node) ||
+  isLongNumberLiteral(node) ||
+  isFloatLiteral(node) ||
+  isElem(node) ||
+  isIndexInFuncSection(node) ||
+  isValtypeLiteral(node) ||
+  isTypeInstruction(node) ||
+  isStart(node) ||
+  isGlobalType(node) ||
+  isLeadingComment(node) ||
+  isBlockComment(node) ||
+  isData(node) ||
+  isGlobal(node) ||
+  isTable(node) ||
+  isMemory(node) ||
+  isFuncImportDescr(node) ||
+  isModuleImport(node) ||
+  isModuleExportDescr(node) ||
+  isModuleExport(node) ||
+  isLimit(node) ||
+  isSignature(node) ||
+  isProgram(node) ||
+  isIdentifier(node) ||
+  isBlockInstruction(node) ||
+  isCallInstruction(node) ||
+  isCallIndirectInstruction(node) ||
+  isByteArray(node) ||
+  isFunc(node);
+
 export const isBlock = (node: Node) =>
   isLoopInstruction(node) || isBlockInstruction(node) || isFunc(node);
 
@@ -908,3 +950,46 @@ export const assertCallIndirectInstruction = assertTypeOf(
 export const assertByteArray = assertTypeOf("ByteArray");
 
 export const assertFunc = assertTypeOf("Func");
+
+export const unionTypesMap = {
+  Module: ["Node"],
+  ModuleMetadata: ["Node"],
+  ModuleNameMetadata: ["Node"],
+  FunctionNameMetadata: ["Node"],
+  LocalNameMetadata: ["Node"],
+  BinaryModule: ["Node"],
+  QuoteModule: ["Node"],
+  SectionMetadata: ["Node"],
+  LoopInstruction: ["Node", "Block", "Instruction"],
+  Instr: ["Node", "Expression", "Instruction"],
+  IfInstruction: ["Node", "Instruction"],
+  StringLiteral: ["Node", "Expression"],
+  NumberLiteral: ["Node", "NumericLiteral", "Expression"],
+  LongNumberLiteral: ["Node", "NumericLiteral", "Expression"],
+  FloatLiteral: ["Node", "NumericLiteral", "Expression"],
+  Elem: ["Node"],
+  IndexInFuncSection: ["Node"],
+  ValtypeLiteral: ["Node", "Expression"],
+  TypeInstruction: ["Node", "Instruction"],
+  Start: ["Node"],
+  GlobalType: ["Node", "ImportDescr"],
+  LeadingComment: ["Node"],
+  BlockComment: ["Node"],
+  Data: ["Node"],
+  Global: ["Node"],
+  Table: ["Node", "ImportDescr"],
+  Memory: ["Node", "ImportDescr"],
+  FuncImportDescr: ["Node", "ImportDescr"],
+  ModuleImport: ["Node"],
+  ModuleExportDescr: ["Node"],
+  ModuleExport: ["Node"],
+  Limit: ["Node"],
+  Signature: ["Node"],
+  Program: ["Node"],
+  Identifier: ["Node", "Expression"],
+  BlockInstruction: ["Node", "Block", "Instruction"],
+  CallInstruction: ["Node", "Instruction"],
+  CallIndirectInstruction: ["Node", "Instruction"],
+  ByteArray: ["Node"],
+  Func: ["Node", "Block"]
+};

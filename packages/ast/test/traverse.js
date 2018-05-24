@@ -47,6 +47,19 @@ describe("AST traverse", () => {
     assert.isTrue(called, "Module visitor has not been called");
   });
 
+  it("should call the union type visitors", () => {
+    const node = t.stringLiteral("fish");
+    let called = false;
+
+    traverse(node, {
+      Expression() {
+        called = true;
+      }
+    });
+
+    assert.isTrue(called, "Module visitor has not been called");
+  });
+
   describe("parent path", () => {
     it("should retain the parent path", () => {
       const root = t.module("test", [t.func(null, t.signature([], []), [])]);

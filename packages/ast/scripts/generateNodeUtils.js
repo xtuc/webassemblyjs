@@ -178,6 +178,17 @@ function generate() {
         assertTypeOf("${typeDefinition.name}");
     `);
   });
+
+  stdout.write(
+    `
+    export const unionTypesMap = {` +
+      mapProps(definitions)
+        .filter(d => d.unionType)
+        .map(
+          t => `"${t.name}": [${t.unionType.map(s => `"${s}"`).join(",")}]\n`
+        ) +
+      `};`
+  );
 }
 
 generate();
