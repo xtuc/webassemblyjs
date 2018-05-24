@@ -27,6 +27,28 @@ function removeNodeInBody(node: Node, fromNode: Node) {
   }
 }
 
+function findParent(
+  parentPath: NodePath<Node>,
+  cb: (NodePath<Node>) => ?boolean
+) {
+  if (parentPath == null) {
+    throw new Error("node is root");
+  }
+
+  let currentPath = parentPath;
+
+  while (cb(currentPath) !== false) {
+    // Hit the root node, stop
+    // $FlowIgnore
+    if (currentPath.parentPath == null) {
+      break;
+    }
+
+    // $FlowIgnore
+    currentPath = currentPath.parentPath;
+  }
+}
+
 function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
   function remove() {
     if (parentPath == null) {
@@ -55,6 +77,8 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
     node,
     parentPath,
 
+    // $FlowIgnore: References?
+    findParent: cb => findParent(parentPath, cb),
     replaceWith,
     remove
   };

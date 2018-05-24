@@ -1,0 +1,114 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "a",
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 8
+              },
+              "end": {
+                "line": 2,
+                "column": 10
+              }
+            }
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 9
+            }
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "fn",
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 8
+              },
+              "end": {
+                "line": 3,
+                "column": 11
+              }
+            }
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 10
+            }
+          }
+        },
+        {
+          "type": "Start",
+          "index": {
+            "type": "Identifier",
+            "value": "fn",
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 9
+              },
+              "end": {
+                "line": 4,
+                "column": 12
+              }
+            }
+          },
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 3
+            },
+            "end": {
+              "line": 4,
+              "column": 11
+            }
+          }
+        }
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 5,
+          "column": -1
+        }
+      }
+    }
+  ]
+}

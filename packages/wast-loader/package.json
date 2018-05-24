@@ -1,0 +1,28 @@
+{
+  "name": "wast-loader",
+  "version": "1.5.5",
+  "description": "Webpack loader for WebAssembly text format",
+  "keywords": [
+    "webassembly",
+    "javascript",
+    "WebAssembly",
+    "wat",
+    "wast"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sven Sauleau",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "wabt": "^1.0.0"
+  }
+}

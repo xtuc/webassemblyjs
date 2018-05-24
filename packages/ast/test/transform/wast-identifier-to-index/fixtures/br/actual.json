@@ -1,0 +1,207 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "f",
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 10
+              },
+              "end": {
+                "line": 2,
+                "column": 12
+              }
+            }
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [
+            {
+              "type": "Instr",
+              "id": "br",
+              "args": [
+                {
+                  "type": "Identifier",
+                  "value": "f"
+                }
+              ],
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 9
+                },
+                "end": {
+                  "line": 3,
+                  "column": 13
+                }
+              }
+            }
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 5
+            },
+            "end": {
+              "line": 4,
+              "column": 3
+            }
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_1",
+            "raw": ""
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [
+            {
+              "type": "BlockInstruction",
+              "id": "block",
+              "label": {
+                "type": "Identifier",
+                "value": "b",
+                "loc": {
+                  "start": {
+                    "line": 7,
+                    "column": 15
+                  },
+                  "end": {
+                    "line": 7,
+                    "column": 17
+                  }
+                }
+              },
+              "instr": [
+                {
+                  "type": "Instr",
+                  "id": "br",
+                  "args": [
+                    {
+                      "type": "Identifier",
+                      "value": "b"
+                    }
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 8,
+                      "column": 13
+                    },
+                    "end": {
+                      "line": 8,
+                      "column": 17
+                    }
+                  }
+                }
+              ],
+              "result": null
+            }
+          ],
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 5
+            },
+            "end": {
+              "line": 10,
+              "column": 3
+            }
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_2",
+            "raw": ""
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [
+            {
+              "type": "BlockInstruction",
+              "id": "block",
+              "label": {
+                "type": "Identifier",
+                "value": "c",
+                "loc": {
+                  "start": {
+                    "line": 7,
+                    "column": 15
+                  },
+                  "end": {
+                    "line": 7,
+                    "column": 17
+                  }
+                }
+              },
+              "instr": [
+                {
+                  "type": "Instr",
+                  "id": "br",
+                  "args": [
+                    {
+                      "type": "Identifier",
+                      "value": "func_2"
+                    }
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 8,
+                      "column": 13
+                    },
+                    "end": {
+                      "line": 8,
+                      "column": 17
+                    }
+                  }
+                }
+              ],
+              "result": null
+            }
+          ],
+          "loc": {
+            "start": {
+              "line": 6,
+              "column": 5
+            },
+            "end": {
+              "line": 10,
+              "column": 3
+            }
+          }
+        }
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 11,
+          "column": -1
+        }
+      }
+    }
+  ]
+}

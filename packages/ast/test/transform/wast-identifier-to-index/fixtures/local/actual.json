@@ -1,0 +1,384 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "funca",
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 7
+              },
+              "end": {
+                "line": 1,
+                "column": 13
+              }
+            }
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 2
+            },
+            "end": {
+              "line": 1,
+              "column": 12
+            }
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_1",
+            "raw": ""
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [
+              {
+                "id": "c",
+                "valtype": "f64"
+              },
+              {
+                "id": "a",
+                "valtype": "i32"
+              },
+              {
+                "id": "b",
+                "valtype": "i64"
+              }
+            ],
+            "results": []
+          },
+          "body": [
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "Identifier",
+                  "value": "a"
+                }
+              ],
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 3
+                },
+                "end": {
+                  "line": 4,
+                  "column": 14
+                }
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "Identifier",
+                  "value": "b"
+                }
+              ],
+              "loc": {
+                "start": {
+                  "line": 5,
+                  "column": 3
+                },
+                "end": {
+                  "line": 5,
+                  "column": 14
+                }
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "Identifier",
+                  "value": "c"
+                }
+              ],
+              "loc": {
+                "start": {
+                  "line": 6,
+                  "column": 3
+                },
+                "end": {
+                  "line": 6,
+                  "column": 14
+                }
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "get_local",
+              "args": [
+                {
+                  "type": "Identifier",
+                  "value": "a"
+                }
+              ],
+              "loc": {
+                "start": {
+                  "line": 7,
+                  "column": 3
+                },
+                "end": {
+                  "line": 7,
+                  "column": 14
+                }
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "set_local",
+              "args": [
+                {
+                  "type": "Identifier",
+                  "value": "a"
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 1,
+                      "raw": "1"
+                    }
+                  ],
+                  "object": "i32",
+                  "loc": {
+                    "start": {
+                      "line": 9,
+                      "column": 17
+                    },
+                    "end": {
+                      "line": 9,
+                      "column": 27
+                    }
+                  }
+                }
+              ],
+              "loc": {
+                "start": {
+                  "line": 9,
+                  "column": 3
+                },
+                "end": {
+                  "line": 9,
+                  "column": 28
+                }
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "tee_local",
+              "args": [
+                {
+                  "type": "Identifier",
+                  "value": "a"
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 1,
+                      "raw": "1"
+                    }
+                  ],
+                  "object": "i32",
+                  "loc": {
+                    "start": {
+                      "line": 10,
+                      "column": 17
+                    },
+                    "end": {
+                      "line": 10,
+                      "column": 27
+                    }
+                  }
+                }
+              ],
+              "loc": {
+                "start": {
+                  "line": 10,
+                  "column": 3
+                },
+                "end": {
+                  "line": 10,
+                  "column": 28
+                }
+              }
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "Identifier",
+                "value": "funca",
+                "loc": {
+                  "start": {
+                    "line": 12,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 12,
+                    "column": 14
+                  }
+                }
+              }
+            },
+            {
+              "type": "CallInstruction",
+              "id": "call",
+              "index": {
+                "type": "Identifier",
+                "value": "funcb",
+                "loc": {
+                  "start": {
+                    "line": 13,
+                    "column": 8
+                  },
+                  "end": {
+                    "line": 13,
+                    "column": 14
+                  }
+                }
+              }
+            },
+            {
+              "type": "Instr",
+              "id": "add",
+              "args": [
+                {
+                  "type": "Instr",
+                  "id": "get_local",
+                  "args": [
+                    {
+                      "type": "Identifier",
+                      "value": "a"
+                    }
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 15,
+                      "column": 12
+                    },
+                    "end": {
+                      "line": 15,
+                      "column": 23
+                    }
+                  }
+                },
+                {
+                  "type": "Instr",
+                  "id": "const",
+                  "args": [
+                    {
+                      "type": "NumberLiteral",
+                      "value": 1000,
+                      "raw": "1000"
+                    }
+                  ],
+                  "object": "i32",
+                  "loc": {
+                    "start": {
+                      "line": 15,
+                      "column": 27
+                    },
+                    "end": {
+                      "line": 15,
+                      "column": 40
+                    }
+                  }
+                }
+              ],
+              "object": "i32",
+              "loc": {
+                "start": {
+                  "line": 15,
+                  "column": 3
+                },
+                "end": {
+                  "line": 15,
+                  "column": 41
+                }
+              }
+            }
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 1
+            },
+            "end": {
+              "line": 16,
+              "column": -1
+            }
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "funcb",
+            "loc": {
+              "start": {
+                "line": 18,
+                "column": 6
+              },
+              "end": {
+                "line": 18,
+                "column": 12
+              }
+            }
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [],
+            "results": []
+          },
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 1
+            },
+            "end": {
+              "line": 18,
+              "column": 11
+            }
+          }
+        }
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 6,
+          "column": -1
+        }
+      }
+    }
+  ]
+}

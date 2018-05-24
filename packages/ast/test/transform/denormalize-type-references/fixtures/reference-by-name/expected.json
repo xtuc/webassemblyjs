@@ -1,0 +1,55 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "Module",
+      "id": null,
+      "fields": [
+        {
+          "type": "TypeInstruction",
+          "id": {
+            "type": "Identifier",
+            "value": "t"
+          },
+          "functype": {
+            "type": "Signature",
+            "params": [
+              {
+                "valtype": "i32"
+              }
+            ],
+            "results": []
+          }
+        },
+        {
+          "type": "Func",
+          "name": {
+            "type": "Identifier",
+            "value": "func_0",
+            "raw": ""
+          },
+          "signature": {
+            "type": "Signature",
+            "params": [
+              {
+                "valtype": "i32"
+              }
+            ],
+            "results": []
+          },
+          "body": []
+        }
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 6,
+          "column": -1
+        }
+      }
+    }
+  ]
+}

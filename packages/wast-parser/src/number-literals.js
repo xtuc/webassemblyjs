@@ -1,7 +1,7 @@
 // @flow
-const Long = require("long");
-const parseHexFloat = require("@webassemblyjs/floating-point-hex-parser");
-const { CompileError } = require("webassemblyjs/lib/errors");
+import Long from "long";
+import parseHexFloat from "@webassemblyjs/floating-point-hex-parser";
+import { CompileError } from "@webassemblyjs/helper-api-error";
 
 export function parse32F(sourceString: string): number {
   if (isHexLiteral(sourceString)) {

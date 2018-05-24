@@ -45,6 +45,8 @@ type Node =
   | ByteArray
   | Func;
 
+type Block = LoopInstruction | BlockInstruction | Func;
+
 type Instruction =
   | LoopInstruction
   | Instr

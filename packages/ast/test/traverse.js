@@ -133,4 +133,57 @@ describe("AST traverse", () => {
       assert.equal(func.body[0].type, "CallInstruction");
     });
   });
+
+  describe("find parent", () => {
+    it("should throw if no parent", () => {
+      const root = t.instruction("nop");
+
+      traverse(root, {
+        Node(path) {
+          const fn = () => path.findParent(() => {});
+          assert.throws(fn);
+        }
+      });
+    });
+
+    it("should find parent until the root", () => {
+      const m = t.module("test", [
+        t.func(null, t.signature([], []), [t.instruction("nop")])
+      ]);
+
+      const typesFound = [];
+
+      traverse(m, {
+        Instr(path) {
+          path.findParent(({ node }) => {
+            typesFound.push(node.type);
+          });
+        }
+      });
+
+      assert.deepEqual(typesFound, ["Func", "Module"]);
+    });
+
+    it("should find parent until false", () => {
+      const m = t.module("test", [
+        t.func(null, t.signature([], []), [t.instruction("nop")])
+      ]);
+
+      const typesFound = [];
+
+      traverse(m, {
+        Instr(path) {
+          path.findParent(({ node }) => {
+            typesFound.push(node.type);
+
+            if (node.type === "Func") {
+              return false;
+            }
+          });
+        }
+      });
+
+      assert.deepEqual(typesFound, ["Func"]);
+    });
+  });
 });
