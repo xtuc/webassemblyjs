@@ -132,6 +132,9 @@ export function traverse(
       }
 
       const unionTypes = unionTypesMap[type];
+      if (!unionTypes) {
+        throw new Error(`Unexpected node type ${type}`);
+      }
       unionTypes.forEach(unionType => {
         if (typeof visitors[unionType] === "function") {
           before(unionType, path);

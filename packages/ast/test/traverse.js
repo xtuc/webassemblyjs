@@ -47,17 +47,11 @@ describe("AST traverse", () => {
     assert.isTrue(called, "Module visitor has not been called");
   });
 
-  it("should call the union type visitors", () => {
+  it("should throw if an unknown node type is encountered", () => {
     const node = t.stringLiteral("fish");
-    let called = false;
+    node.type = "foo";
 
-    traverse(node, {
-      Expression() {
-        called = true;
-      }
-    });
-
-    assert.isTrue(called, "Module visitor has not been called");
+    assert.throws(() => traverse(node, {}), "Unexpected node type foo");
   });
 
   describe("parent path", () => {
