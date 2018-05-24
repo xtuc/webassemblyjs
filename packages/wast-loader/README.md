@@ -1,11 +1,11 @@
-# @webassemblyjs/wast-loader
+# wast-loader
 
 > Webpack loader for WebAssembly text format
 
 ## Install
 
 ```sh
-yarn add @webassemblyjs/wast-loader
+yarn add wast-loader
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ module: {
   rules: [
     {
       test: /\.wast$/,
-      loader: "@webassemblyjs/wast-loader",
+      loader: "wast-loader",
       type: "webassembly/experimental"
     }
   ]
