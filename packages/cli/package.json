@@ -21,7 +21,8 @@
     "@webassemblyjs/ast": "1.5.5",
     "@webassemblyjs/wasm-parser": "1.5.5",
     "@webassemblyjs/wast-parser": "1.5.5",
-    "@webassemblyjs/wast-printer": "1.5.5"
+    "@webassemblyjs/wast-printer": "1.5.5",
+    "webassemblyjs": "1.5.5"
   },
   "bin": {
     "wasmdump": "lib/wasmdump.js",
