@@ -17,10 +17,10 @@
   "license": "MIT",
   "dependencies": {
     "@webassemblyjs/ast": "1.5.5",
+    "@webassemblyjs/helper-api-error": "1.5.5",
     "@webassemblyjs/helper-wasm-bytecode": "1.5.5",
     "@webassemblyjs/leb128": "1.5.5",
-    "@webassemblyjs/wasm-parser": "1.5.5",
-    "webassemblyjs": "1.5.5"
+    "@webassemblyjs/wasm-parser": "1.5.5"
   },
   "repository": {
     "type": "git",

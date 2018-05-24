@@ -1,6 +1,6 @@
 // @flow
 
-import { CompileError } from "webassemblyjs/lib/errors";
+import { CompileError } from "@webassemblyjs/helper-api-error";
 
 import {
   decodeInt32,

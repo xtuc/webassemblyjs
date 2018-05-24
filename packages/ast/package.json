@@ -15,8 +15,7 @@
     "@webassemblyjs/helper-wasm-bytecode": "1.5.5",
     "@webassemblyjs/wast-parser": "1.5.5",
     "debug": "^3.1.0",
-    "mamacro": "^0.0.3",
-    "webassemblyjs": "1.5.5"
+    "mamacro": "^0.0.3"
   },
   "repository": {
     "type": "git",
