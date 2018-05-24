@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-webassembly",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "ESLint plugin for WebAssembly",
   "keywords": [
     "eslint",
@@ -13,8 +13,8 @@
   "author": "Sven Sauleau",
   "main": "lib/index.js",
   "dependencies": {
-    "@webassemblyjs/ast": "1.5.5",
-    "@webassemblyjs/wasm-parser": "1.5.5",
+    "@webassemblyjs/ast": "1.5.6",
+    "@webassemblyjs/wasm-parser": "1.5.6",
     "eslint-rule-composer": "^0.1.1",
     "estraverse": "^4.2.0",
     "requireindex": "~1.1.0"

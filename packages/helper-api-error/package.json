@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-api-error",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "Common API errors",
   "main": "lib/index.js",
   "author": "Sven Sauleau",
