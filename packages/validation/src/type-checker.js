@@ -155,7 +155,12 @@ function applyInstruction(moduleContext, stack, instruction) {
     if (!stopFuncCheck) {
       checkStacks(type.result, newStack);
     }
-    stack = [...stack, ...newStack];
+
+    if (newStack === false) {
+      stack = false;
+    } else {
+      stack = [...stack, ...newStack];
+    }
 
     moduleContext.popLabel();
   } else if (instruction.type === "IfInstruction") {
@@ -235,6 +240,10 @@ function applyInstruction(moduleContext, stack, instruction) {
     // Add to existing stack
     stack = [...stack, ...stackConsequent];
   } else {
+    if (stack === false) {
+      return false;
+    }
+
     let actual;
     for (let i = 0; i < type.args.length; ++i) {
       const argType = type.args[i];

@@ -1,5 +1,13 @@
 import { ANY, POLYMORPHIC } from "./types";
 
+function equalResultTypes(t1, t2) {
+  if (t1.length !== t2.length) {
+    return false;
+  }
+
+  return t1.every((t, i) => t === t2[i]);
+}
+
 export default function getType(moduleContext, stack, instruction) {
   let args = [];
   let result = [];
@@ -435,7 +443,38 @@ export default function getType(moduleContext, stack, instruction) {
         break;
       }
 
-      args = [...moduleContext.getLabel(index), "i32"];
+      const t = moduleContext.getLabel(index);
+
+      let validLabels = true;
+
+      for (let i = 1; i < instruction.args.length; ++i) {
+        const arg = instruction.args[i];
+        if (arg.type === "Instr") {
+          // No more indices, only nested instructions
+          break;
+        }
+
+        const index = arg.value;
+
+        if (!moduleContext.hasLabel(index)) {
+          error = `Module does not have memory ${index}`;
+          validLabels = false;
+          break;
+        }
+
+        if (!equalResultTypes(moduleContext.getLabel(index), t)) {
+          error = `br_table index ${index} at position ${i} has mismatching result type.`;
+          validLabels = false;
+          break;
+        }
+      }
+
+      if (!validLabels) {
+        break;
+      }
+
+      args = [...t, "i32"];
+      result = [POLYMORPHIC];
       break;
     }
     /**
