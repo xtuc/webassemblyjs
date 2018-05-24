@@ -1,5 +1,5 @@
 {
-  "name": "@webassemblyjs/wast-loader",
+  "name": "wast-loader",
   "version": "1.5.4",
   "description": "Webpack loader for WebAssembly text format",
   "keywords": [
