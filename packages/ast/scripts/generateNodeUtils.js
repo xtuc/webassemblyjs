@@ -12,6 +12,8 @@ const stdout = process.stdout;
 
 const jsTypes = ["string", "number", "boolean"];
 
+const quote = value => `"${value}"`;
+
 function params(fields) {
   const optionalDefault = field => (field.default ? ` = ${field.default}` : "");
   return mapProps(fields)
@@ -179,15 +181,26 @@ function generate() {
     `);
   });
 
+  // a map from node type to its set of union types
   stdout.write(
     `
     export const unionTypesMap = {` +
       mapProps(definitions)
         .filter(d => d.unionType)
-        .map(
-          t => `"${t.name}": [${t.unionType.map(s => `"${s}"`).join(",")}]\n`
-        ) +
-      `};`
+        .map(t => `"${t.name}": [${t.unionType.map(quote).join(",")}]\n`) +
+      `};
+      `
+  );
+
+  // an array of all node and union types
+  stdout.write(
+    `
+    export const nodeAndUnionTypes = [` +
+      mapProps(definitions)
+        .map(t => `"${t.name}"`)
+        .concat(unionTypes.map(quote))
+        .join(",") +
+      `];`
   );
 }
 

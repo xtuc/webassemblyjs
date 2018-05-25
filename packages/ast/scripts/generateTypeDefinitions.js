@@ -37,7 +37,7 @@ function generate() {
   // generate the type definitions
   iterateProps(definitions, typeDef => {
     stdout.write(`type ${typeDef.name} = {
-        ...${typeDef.extends || "BaseNode"},
+        ...BaseNode,
         type: "${typeDef.name}",
         ${params(typeDef.fields)}
       };\n\n`);

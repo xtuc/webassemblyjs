@@ -54,6 +54,17 @@ describe("AST traverse", () => {
     assert.throws(() => traverse(node, {}), "Unexpected node type foo");
   });
 
+  it("should throw if the visitor is not a known node or union type", () => {
+    const node = t.stringLiteral("fish");
+    assert.throws(
+      () =>
+        traverse(node, {
+          NotANode() {}
+        }),
+      "Unexpected visitor NotANode"
+    );
+  });
+
   describe("parent path", () => {
     it("should retain the parent path", () => {
       const root = t.module("test", [t.func(null, t.signature([], []), [])]);

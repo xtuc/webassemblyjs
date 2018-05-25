@@ -3,7 +3,7 @@
 type Cb = (type: string, path: NodePath<Node>) => void;
 
 import debugModule from "debug";
-import { unionTypesMap } from "./nodes";
+import { unionTypesMap, nodeAndUnionTypes } from "./nodes";
 
 const debug = debugModule("webassemblyjs:ast:traverse");
 
@@ -121,6 +121,12 @@ export function traverse(
   after: Cb = noop
 ) {
   const parentPath = null;
+
+  Object.keys(visitors).forEach(visitor => {
+    if (!nodeAndUnionTypes.includes(visitor)) {
+      throw new Error(`Unexpected visitor ${visitor}`);
+    }
+  });
 
   walk(
     n,
