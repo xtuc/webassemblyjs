@@ -2,7 +2,10 @@
 
 type Cb = (type: string, path: NodePath<Node>) => void;
 
-const debug = require("debug")("webassemblyjs:ast:traverse");
+import debugModule from "debug";
+import { unionTypesMap, nodeAndUnionTypes } from "./nodes";
+
+const debug = debugModule("webassemblyjs:ast:traverse");
 
 function removeNodeInBody(node: Node, fromNode: Node) {
   switch (fromNode.type) {
@@ -109,31 +112,21 @@ function walk(node: Node, callback: Cb, parentPath: ?NodePath<Node>) {
   });
 }
 
-export function traverse(n: Node, visitors: Object) {
-  const parentPath = null;
+const noop = () => {};
 
-  walk(
-    n,
-    (type: string, path: NodePath<Node>) => {
-      if (typeof visitors["Node"] === "function") {
-        visitors["Node"](path);
-      }
-
-      if (typeof visitors[type] === "function") {
-        visitors[type](path);
-      }
-    },
-    parentPath
-  );
-}
-
-export function traverseWithHooks(
+export function traverse(
   n: Node,
   visitors: Object,
-  before: Cb,
-  after: Cb
+  before: Cb = noop,
+  after: Cb = noop
 ) {
   const parentPath = null;
+
+  Object.keys(visitors).forEach(visitor => {
+    if (!nodeAndUnionTypes.includes(visitor)) {
+      throw new Error(`Unexpected visitor ${visitor}`);
+    }
+  });
 
   walk(
     n,
@@ -143,6 +136,18 @@ export function traverseWithHooks(
         visitors[type](path);
         after(type, path);
       }
+
+      const unionTypes = unionTypesMap[type];
+      if (!unionTypes) {
+        throw new Error(`Unexpected node type ${type}`);
+      }
+      unionTypes.forEach(unionType => {
+        if (typeof visitors[unionType] === "function") {
+          before(unionType, path);
+          visitors[unionType](path);
+          after(unionType, path);
+        }
+      });
     },
     parentPath
   );

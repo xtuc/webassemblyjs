@@ -1,7 +1,7 @@
 // @flow
 
 import { decode } from "@webassemblyjs/wasm-parser";
-import { traverseWithHooks } from "@webassemblyjs/ast";
+import { traverse } from "@webassemblyjs/ast";
 import { cloneNode } from "@webassemblyjs/ast/lib/clone";
 import { shrinkPaddedLEB128 } from "@webassemblyjs/wasm-opt";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
@@ -72,7 +72,7 @@ export function editWithAST(
     }
   }
 
-  traverseWithHooks(ast, visitors, before, after);
+  traverse(ast, visitors, before, after);
 
   uint8Buffer = applyOperations(ast, uint8Buffer, operations);
 

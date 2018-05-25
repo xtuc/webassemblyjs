@@ -13,7 +13,7 @@ export {
   objectInstruction
 } from "./node-helpers.js";
 
-export { traverse, traverseWithHooks } from "./traverse";
+export { traverse } from "./traverse";
 
 export { signatures } from "./signatures";
 

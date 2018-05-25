@@ -19,10 +19,7 @@ function generate() {
     // see scripts/generateTypeDefinitions.js
   `);
 
-  // generate the union Node type
-  stdout.write(`type Node = ${Object.keys(definitions).join("|")}\n\n`);
-
-  // generate other union types
+  // generate union types
   const unionTypes = unique(
     flatMap(mapProps(definitions).filter(d => d.unionType), d => d.unionType)
   );
@@ -40,7 +37,7 @@ function generate() {
   // generate the type definitions
   iterateProps(definitions, typeDef => {
     stdout.write(`type ${typeDef.name} = {
-        ...${typeDef.extends || "BaseNode"},
+        ...BaseNode,
         type: "${typeDef.name}",
         ${params(typeDef.fields)}
       };\n\n`);
