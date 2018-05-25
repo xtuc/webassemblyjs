@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-wasm-bytecode",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "description": "WASM's Bytecode constants",
   "main": "lib/index.js",
   "scripts": {
