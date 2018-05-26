@@ -1364,20 +1364,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseFuncResult(): Array<Valtype> {
       const results = [];
 
-      // type is optional
-      if (token.type === tokens.closeParen) {
-        return results;
+      while (token.type !== tokens.closeParen) {
+        if (token.type !== tokens.valtype) {
+          throw createUnexpectedToken("Unexpected token in func result");
+        }
+
+        const valtype = token.value;
+        eatToken();
+
+        results.push(valtype);
       }
-
-      if (token.type !== tokens.valtype) {
-        throw createUnexpectedToken("Unexpected token in func result");
-      }
-
-      const valtype = token.value;
-      eatToken();
-
-      results.push(valtype);
-
       return results;
     }
 
