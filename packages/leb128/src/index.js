@@ -29,3 +29,11 @@ export function decodeUInt32(encodedBuffer: Buffer, index: number): any {
 export function encodeU32(v: number): Buffer {
   return leb.encodeUInt32(v);
 }
+
+export function encodeI32(v: number): Buffer {
+  return leb.encodeInt32(v);
+}
+
+export function encodeI64(v: number): Buffer {
+  return leb.encodeInt64(v);
+}

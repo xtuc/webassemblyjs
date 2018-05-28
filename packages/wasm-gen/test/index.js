@@ -172,6 +172,37 @@ const fixtures = [
     name: "(func (unreachable))",
     node: t.func(null, t.signature([], []), [t.instruction("unreachable")]),
     expected: [0x03, 0x00, 0x00, 0x0b]
+  },
+
+  /**
+   * t . const 1
+   */
+  {
+    name: "(i32.const 1)",
+    node: t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+    expected: [0x41, 0x01]
+  },
+
+  {
+    name: "(i64.const 1)",
+    node: t.objectInstruction("const", "i64", [t.numberLiteralFromRaw(1)]),
+    expected: [0x42, 0x01]
+  },
+
+  {
+    name: "(f32.const 0.1)",
+    node: t.objectInstruction("const", "f32", [
+      t.floatLiteral(0.1, false, false, "0.1")
+    ]),
+    expected: [0x43, 0xcd, 0xcc, 0xcc, 0x3d]
+  },
+
+  {
+    name: "(f64.const 0.1)",
+    node: t.objectInstruction("const", "f64", [
+      t.floatLiteral(0.1, false, false, "0.1")
+    ]),
+    expected: [0x44, 0x9a, 0x99, 0x99, 0x99, 0x99, 0x99, 0xb9, 0x3f]
   }
 ];
 

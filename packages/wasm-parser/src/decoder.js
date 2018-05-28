@@ -150,10 +150,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return arr;
   }
 
+  // FIXME(sven): use ieee754 package
+
   function readF64(): DecodedF64 {
     const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F64);
     const buffer = Buffer.from(bytes);
 
+    // FIXME(sven): should be DOUBLE_PRECISION_MANTISSA?
     const value = ieee754.decode(
       buffer,
       0,
