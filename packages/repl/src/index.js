@@ -74,6 +74,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
           new RegExp(expected.value, "ig").test(err.message),
           `Expected failure of "${expected.value}", "${err.message}" given`
         );
+
+        throw err;
       }
     } else if (t.isQuoteModule(module) === true) {
       try {
@@ -87,6 +89,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
           new RegExp(expected.value, "ig").test(err.message),
           `Expected failure of "${expected.value}", "${err.message}" given`
         );
+
+        throw err;
       }
     } else {
       throw new Error("Unsupported module type: " + module.type);
@@ -107,6 +111,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
           err.message.toLowerCase() === expected.value.toLowerCase(),
           `Expected failure of ${expected.value}, ${err.message} given`
         );
+
+        throw err;
       }
     } else {
       throw new Error("Unsupported action: " + action.id);
@@ -130,6 +136,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
         new RegExp(expected.value, "ig").test(err.message),
         `Expected failure of "${expected.value}", "${err.message}" given`
       );
+
+        throw err;
     }
   }
 
