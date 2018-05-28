@@ -963,15 +963,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           eatToken();
         } else if (token.type === tokens.number) {
-          args.push(
-            // TODO(sven): refactor the type signature handling
-            // https://github.com/xtuc/webassemblyjs/pull/129 is a good start
-            t.numberLiteralFromRaw(
-              token.value,
-              // $FlowIgnore
-              signature[signaturePtr++] || "f64"
-            )
-          );
+          // $FlowIgnore
+          const valtype = signature[signaturePtr++] || "f64";
+
+          args.push(t.numberLiteralFromRaw(token.value, valtype));
 
           eatToken();
         } else if (token.type === tokens.openParen) {

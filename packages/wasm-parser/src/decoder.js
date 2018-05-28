@@ -863,7 +863,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = value32.value;
           eatBytes(value32.nextIndex);
 
-          dump([value], "value");
+          dump([value], "i32 value");
 
           args.push(t.numberLiteralFromRaw(value));
         }
@@ -873,7 +873,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valueu32.value;
           eatBytes(valueu32.nextIndex);
 
-          dump([value], "value");
+          dump([value], "u32 value");
 
           args.push(t.numberLiteralFromRaw(value));
         }
@@ -883,7 +883,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = value64.value;
           eatBytes(value64.nextIndex);
 
-          dump([value], "value");
+          dump([value], "i64 value");
 
           const node = {
             type: "LongNumberLiteral",
@@ -898,7 +898,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valueu64.value;
           eatBytes(valueu64.nextIndex);
 
-          dump([value], "value");
+          dump([value], "u64 value");
 
           args.push(t.numberLiteralFromRaw(value));
         }
@@ -908,9 +908,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valuef32.value;
           eatBytes(valuef32.nextIndex);
 
-          dump([value], "value");
+          dump([value], "f32 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          args.push(t.floatLiteral(value, null, null, String(value)));
         }
 
         if (instruction.object === "f64") {
@@ -918,9 +918,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valuef64.value;
           eatBytes(valuef64.nextIndex);
 
-          dump([value], "value");
+          dump([value], "f64 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          args.push(t.floatLiteral(value, null, null, String(value)));
         }
       } else {
         for (let i = 0; i < instruction.numberOfArgs; i++) {
