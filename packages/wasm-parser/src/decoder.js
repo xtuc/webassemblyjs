@@ -428,6 +428,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         });
       } else if (descrType === "global") {
         importDescr = parseGlobalType();
+
+        const globalNode = t.global(importDescr, []);
+
+        state.globalsInModule.push(globalNode);
       } else if (descrType === "table") {
         importDescr = parseTableType(i);
       } else if (descrType === "mem") {
