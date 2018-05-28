@@ -20,6 +20,7 @@
     "@webassemblyjs/helper-api-error": "1.5.8",
     "@webassemblyjs/helper-wasm-bytecode": "1.5.8",
     "@webassemblyjs/leb128": "1.5.8",
+    "@webassemblyjs/ieee754": "1.5.8",
     "@webassemblyjs/wasm-parser": "1.5.8"
   },
   "repository": {
