@@ -888,15 +888,28 @@ function printModuleExport(n: ModuleExport): string {
     out += printIndex(n.descr.id);
 
     out += ")";
-  }
-
-  if (n.descr.type === "Mem") {
+  } else if (n.descr.exportType === "Global") {
     out += space;
+
+    out += "(";
+    out += "global";
+    out += space;
+
+    out += printIndex(n.descr.id);
+
+    out += ")";
+  } else if (n.descr.exportType === "Mem") {
+    out += space;
+
     out += "(";
     out += "memory";
     out += space;
+
     out += printIndex(n.descr.id);
+
     out += ")";
+  } else {
+    throw new Error("printModuleExport: unknown type: " + n.descr.type);
   }
 
   out += ")";
