@@ -123,7 +123,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
      * Decoded tables from:
      * - Table section
      */
-    tablesInModule: []
+    tablesInModule: [],
+
+    /**
+     * Decoded globals from:
+     * - Global section
+     */
+    globalsInModule: []
   };
 
   function isEOF(): boolean {
@@ -541,6 +547,18 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         if (typeof memNode === "undefined") {
           throw new CompileError(
             `entry not found at index ${index} in memory section`
+          );
+        }
+
+        id = t.numberLiteralFromRaw(index, String(index));
+
+        signature = null;
+      } else if (exportTypes[typeIndex] === "Global") {
+        const global = state.globalsInModule[index];
+
+        if (typeof global === "undefined") {
+          throw new CompileError(
+            `entry not found at index ${index} in global section`
           );
         }
 
@@ -1123,7 +1141,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       parseInstructionBlock(init);
 
-      globals.push(t.global(globalType, init));
+      const node = t.global(globalType, init);
+
+      globals.push(node);
+      state.globalsInModule.push(node);
     }
 
     return globals;
