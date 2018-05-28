@@ -43,5 +43,5 @@ export function decodeF32(bytes: Array<Byte>): number {
 export function decodeF64(bytes: Array<Byte>): number {
   const buffer = Buffer.from(bytes);
 
-  return read(buffer, 0, true, SINGLE_PRECISION_MANTISSA, NUMBER_OF_BYTE_F64);
+  return read(buffer, 0, true, DOUBLE_PRECISION_MANTISSA, NUMBER_OF_BYTE_F64);
 }
