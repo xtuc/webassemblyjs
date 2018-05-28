@@ -1,0 +1,15 @@
+{
+  "name": "@webassemblyjs/ieee754",
+  "version": "1.5.7",
+  "description": "IEEE754 decoder and encoder",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "ieee754": "^1.1.11"
+  }
+}

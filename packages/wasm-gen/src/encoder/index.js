@@ -2,6 +2,7 @@
 
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 import * as leb from "@webassemblyjs/leb128";
+import * as ieee754 from "@webassemblyjs/ieee754";
 import { encodeNode } from "../index";
 
 function assertNotIdentifierNode(n: Node) {
@@ -23,6 +24,18 @@ export function encodeHeader(): Array<Byte> {
 
 export function encodeU32(v: number): Array<Byte> {
   const uint8view = new Uint8Array(leb.encodeU32(v));
+  const array = [...uint8view];
+  return array;
+}
+
+export function encodeI32(v: number): Array<Byte> {
+  const uint8view = new Uint8Array(leb.encodeI32(v));
+  const array = [...uint8view];
+  return array;
+}
+
+export function encodeI64(v: number): Array<Byte> {
+  const uint8view = new Uint8Array(leb.encodeI64(v));
   const array = [...uint8view];
   return array;
 }
@@ -245,8 +258,27 @@ export function encodeInstr(n: Instr): Array<Byte> {
 
   if (n.args) {
     n.args.forEach(arg => {
-      if (arg.type === "NumberLiteral") {
-        out.push(...encodeU32(arg.value));
+      let encoder = encodeU32;
+
+      // find correct encoder
+      if (n.object === "i32") {
+        encoder = encodeI32;
+      }
+
+      if (n.object === "i64") {
+        encoder = encodeI64;
+      }
+
+      if (n.object === "f32") {
+        encoder = ieee754.encodeF32;
+      }
+
+      if (n.object === "f64") {
+        encoder = ieee754.encodeF64;
+      }
+
+      if (arg.type === "NumberLiteral" || arg.type === "FloatLiteral") {
+        out.push(...encoder(arg.value));
       } else {
         throw new Error(
           "Unsupported instruction argument encoding " +

@@ -18,6 +18,7 @@
   "dependencies": {
     "@webassemblyjs/ast": "1.5.7",
     "@webassemblyjs/helper-wasm-bytecode": "1.5.7",
-    "@webassemblyjs/leb128": "1.5.7"
+    "@webassemblyjs/leb128": "1.5.7",
+    "@webassemblyjs/ieee754": "1.5.7"
   }
 }
