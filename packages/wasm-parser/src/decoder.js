@@ -1139,6 +1139,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     dump([numberOfGlobals], "num globals");
 
     for (let i = 0; i < numberOfGlobals; i++) {
+      const startLoc = getPosition();
+
       const globalType = parseGlobalType();
 
       /**
@@ -1148,7 +1150,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       parseInstructionBlock(init);
 
-      const node = t.global(globalType, init);
+      const endLoc = getPosition();
+
+      const node = t.withLoc(t.global(globalType, init), endLoc, startLoc);
 
       globals.push(node);
       state.globalsInModule.push(node);
