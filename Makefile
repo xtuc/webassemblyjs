@@ -47,6 +47,7 @@ test-whitelisted-spec:
 	$(REPL) $(SPEC_TEST_DIR)/comments.wast
 	$(REPL) $(SPEC_TEST_DIR)/inline-module.wast
 	$(REPL) $(SPEC_TEST_DIR)/store_retval.wast
+	$(REPL) $(SPEC_TEST_DIR)/custom_section.wast
 
 lint:
 	$(ESLINT) packages
