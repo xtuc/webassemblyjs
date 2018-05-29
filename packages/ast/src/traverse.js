@@ -7,29 +7,6 @@ import { unionTypesMap, nodeAndUnionTypes } from "./nodes";
 
 const debug = debugModule("webassemblyjs:ast:traverse");
 
-function removeNodeInBody(node: Node, fromNode: Node) {
-  switch (fromNode.type) {
-    case "ModuleMetadata":
-      fromNode.sections = fromNode.sections.filter(n => n !== node);
-      break;
-
-    case "Module":
-      fromNode.fields = fromNode.fields.filter(n => n !== node);
-      break;
-
-    case "Program":
-    case "Func":
-      // $FlowIgnore it says References?
-      fromNode.body = fromNode.body.filter(n => n !== node);
-      break;
-
-    default:
-      throw new Error(
-        "Unsupported operation: removing node of type: " + String(fromNode.type)
-      );
-  }
-}
-
 function findParent(
   parentPath: NodePath<Node>,
   cb: (NodePath<Node>) => ?boolean
@@ -52,14 +29,26 @@ function findParent(
   }
 }
 
-function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
+function createPath(
+  node: Node,
+  parentKey: ?string,
+  parentPath: ?NodePath<Node>
+): NodePath<Node> {
   function remove() {
     if (parentPath == null) {
       throw new Error("Can not remove root node");
     }
 
     const parentNode = parentPath.node;
-    removeNodeInBody(node, parentNode);
+    // $FlowIgnore: References?
+    const parentProperty = parentNode[parentKey];
+    if (Array.isArray(parentProperty)) {
+      // $FlowIgnore: References?
+      parentNode[parentKey] = parentProperty.filter(n => n !== node);
+    } else {
+      // $FlowIgnore: References?
+      delete parentNode[parentKey];
+    }
 
     node._deleted = true;
 
@@ -79,6 +68,7 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
   return {
     node,
     parentPath,
+    parentKey,
 
     // $FlowIgnore: References?
     findParent: cb => findParent(parentPath, cb),
@@ -89,12 +79,17 @@ function createPath(node: Node, parentPath: ?NodePath<Node>): NodePath<Node> {
 
 // recursively walks the AST starting at the given node. The callback is invoked for
 // and object that has a 'type' property.
-function walk(node: Node, callback: Cb, parentPath: ?NodePath<Node>) {
+function walk(
+  node: Node,
+  callback: Cb,
+  parentKey: ?string,
+  parentPath: ?NodePath<Node>
+) {
   if (node._deleted === true) {
     return;
   }
 
-  const path = createPath(node, parentPath);
+  const path = createPath(node, parentKey, parentPath);
   // $FlowIgnore
   callback(node.type, path);
 
@@ -106,7 +101,7 @@ function walk(node: Node, callback: Cb, parentPath: ?NodePath<Node>) {
     const valueAsArray = Array.isArray(value) ? value : [value];
     valueAsArray.forEach(v => {
       if (typeof v.type === "string") {
-        walk(v, callback, path);
+        walk(v, callback, prop, path);
       }
     });
   });
@@ -120,8 +115,6 @@ export function traverse(
   before: Cb = noop,
   after: Cb = noop
 ) {
-  const parentPath = null;
-
   Object.keys(visitors).forEach(visitor => {
     if (!nodeAndUnionTypes.includes(visitor)) {
       throw new Error(`Unexpected visitor ${visitor}`);
@@ -149,6 +142,7 @@ export function traverse(
         }
       });
     },
-    parentPath
+    null,
+    null
   );
 }

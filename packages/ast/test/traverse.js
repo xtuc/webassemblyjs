@@ -96,10 +96,10 @@ describe("AST traverse", () => {
     });
   });
 
-  describe("NodePath parentKey", () => {
+  it("should set the NodePath parentKey", () => {
     const root = t.module("test", [t.func(null, t.signature([], []), [])]);
     let called = false;
-    
+
     traverse(root, {
       Func(path) {
         assert.isObject(path.parentPath);
