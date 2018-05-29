@@ -33,7 +33,7 @@ export function parse64F(sourceString: string): number {
       (sourceString[0] === "-" ? -1 : 1) *
       (sourceString.includes(":")
         ? parseInt(sourceString.substring(sourceString.indexOf(":") + 1), 16)
-        : 0x400000)
+        : 0x8000000000000)
     );
   }
   if (isHexLiteral(sourceString)) {

@@ -24,7 +24,7 @@
               "args": [
                 {
                   "type": "FloatLiteral",
-                  "value": 4194304,
+                  "value": 2251799813685248,
                   "raw": "nan",
                   "nan": true
                 }
@@ -116,7 +116,7 @@
               "args": [
                 {
                   "type": "FloatLiteral",
-                  "value": -4194304,
+                  "value": -2251799813685248,
                   "raw": "-nan",
                   "nan": true
                 }
@@ -162,7 +162,7 @@
               "args": [
                 {
                   "type": "FloatLiteral",
-                  "value": 4194304,
+                  "value": 2251799813685248,
                   "raw": "+nan",
                   "nan": true
                 }
