@@ -1702,7 +1702,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       }
     }
 
-    throw new CompileError("Unexpected section: " + toHex(sectionId));
+    throw new CompileError("invalid section id (" + toHex(sectionId) + ")");
   }
 
   parseModuleHeader();
