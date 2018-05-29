@@ -162,7 +162,27 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   function readF32(): DecodedF32 {
     const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F32);
-    const value = ieee754.decodeF32(bytes);
+    let value = ieee754.decodeF32(bytes);
+
+    if (Math.sign(value) * value === Infinity) {
+      return {
+        value: Math.sign(value),
+        inf: true,
+        nextIndex: ieee754.NUMBER_OF_BYTE_F32
+      };
+    }
+
+    if (isNaN(value)) {
+      // NOTE: Hardcoded number of bytes in f32 here
+      const sign = bytes[3] >> 7 ? -1 : 1;
+      const mantissa = bytes[0] + bytes[1] * 256 + (bytes[2] % 128) * 65536;
+
+      return {
+        value: sign * mantissa,
+        nan: true,
+        nextIndex: ieee754.NUMBER_OF_BYTE_F32
+      };
+    }
 
     return {
       value,
@@ -910,7 +930,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "f32 value");
 
-          args.push(t.floatLiteral(value, null, null, String(value)));
+          args.push(
+            t.floatLiteral(value, valuef32.nan, valuef32.inf, String(value))
+          );
         }
 
         if (instruction.object === "f64") {
