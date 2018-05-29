@@ -154,6 +154,14 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F64);
     const value = ieee754.decodeF64(bytes);
 
+    if (Math.sign(value) * value === Infinity) {
+      return {
+        value: Math.sign(value),
+        inf: true,
+        nextIndex: ieee754.NUMBER_OF_BYTE_F64
+      };
+    }
+
     if (isNaN(value)) {
       const sign = bytes[bytes.length - 1] >> 7 ? -1 : 1;
       let mantissa = 0;
@@ -960,7 +968,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "f64 value");
 
-          args.push(t.floatLiteral(value, valuef64.nan, valuef64.inf, String(value)));
+          args.push(
+            t.floatLiteral(value, valuef64.nan, valuef64.inf, String(value))
+          );
         }
       } else {
         for (let i = 0; i < instruction.numberOfArgs; i++) {
