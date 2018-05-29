@@ -31,4 +31,6 @@ done
 
 wait
 
+./scripts/generate-polyfills.js
+
 cp -v packages/dce/src/libwabt.js packages/dce/lib/libwabt.js
