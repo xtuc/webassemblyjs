@@ -957,6 +957,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           dump([value], "f32 value");
 
           args.push(
+            // $FlowIgnore
             t.floatLiteral(value, valuef32.nan, valuef32.inf, String(value))
           );
         }
@@ -969,6 +970,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           dump([value], "f64 value");
 
           args.push(
+            // $FlowIgnore
             t.floatLiteral(value, valuef64.nan, valuef64.inf, String(value))
           );
         }
