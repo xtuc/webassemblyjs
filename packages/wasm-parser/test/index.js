@@ -29,6 +29,10 @@ function stripMetadata(ast) {
       delete node.raw;
       delete node.metadata;
       delete node.loc;
+    },
+
+    BlockComment(path) {
+      path.remove();
     }
   });
 

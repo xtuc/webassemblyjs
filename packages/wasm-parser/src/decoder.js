@@ -1,6 +1,7 @@
 // @flow
 
 import { CompileError } from "@webassemblyjs/helper-api-error";
+import * as ieee754 from "@webassemblyjs/ieee754";
 
 import {
   decodeInt32,
@@ -27,7 +28,6 @@ const {
   sections
 } = require("@webassemblyjs/helper-wasm-bytecode");
 
-const ieee754 = require("./ieee754");
 const { utf8ArrayToStr } = require("./utf8");
 
 /**
@@ -150,20 +150,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return arr;
   }
 
-  // FIXME(sven): use ieee754 package
-
   function readF64(): DecodedF64 {
     const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F64);
-    const buffer = Buffer.from(bytes);
-
-    // FIXME(sven): should be DOUBLE_PRECISION_MANTISSA?
-    const value = ieee754.decode(
-      buffer,
-      0,
-      true,
-      ieee754.SINGLE_PRECISION_MANTISSA,
-      ieee754.NUMBER_OF_BYTE_F64
-    );
+    const value = ieee754.decodeF64(bytes);
 
     return {
       value,
@@ -173,15 +162,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   function readF32(): DecodedF32 {
     const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F32);
-    const buffer = Buffer.from(bytes);
-
-    const value = ieee754.decode(
-      buffer,
-      0,
-      true,
-      ieee754.SINGLE_PRECISION_MANTISSA,
-      ieee754.NUMBER_OF_BYTE_F32
-    );
+    const value = ieee754.decodeF32(bytes);
 
     return {
       value,
@@ -882,7 +863,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = value32.value;
           eatBytes(value32.nextIndex);
 
-          dump([value], "value");
+          dump([value], "i32 value");
 
           args.push(t.numberLiteralFromRaw(value));
         }
@@ -892,7 +873,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valueu32.value;
           eatBytes(valueu32.nextIndex);
 
-          dump([value], "value");
+          dump([value], "u32 value");
 
           args.push(t.numberLiteralFromRaw(value));
         }
@@ -902,7 +883,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = value64.value;
           eatBytes(value64.nextIndex);
 
-          dump([value], "value");
+          dump([value], "i64 value");
 
           const node = {
             type: "LongNumberLiteral",
@@ -917,7 +898,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valueu64.value;
           eatBytes(valueu64.nextIndex);
 
-          dump([value], "value");
+          dump([value], "u64 value");
 
           args.push(t.numberLiteralFromRaw(value));
         }
@@ -927,9 +908,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valuef32.value;
           eatBytes(valuef32.nextIndex);
 
-          dump([value], "value");
+          dump([value], "f32 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          args.push(t.floatLiteral(value, null, null, String(value)));
         }
 
         if (instruction.object === "f64") {
@@ -937,9 +918,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valuef64.value;
           eatBytes(valuef64.nextIndex);
 
-          dump([value], "value");
+          dump([value], "f64 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          args.push(t.floatLiteral(value, null, null, String(value)));
         }
       } else {
         for (let i = 0; i < instruction.numberOfArgs; i++) {

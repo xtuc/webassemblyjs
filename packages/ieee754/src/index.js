@@ -1,6 +1,6 @@
 // @flow
 
-import { write } from "ieee754";
+import { write, read } from "ieee754";
 
 /**
  * According to https://webassembly.github.io/spec/binary/values.html#binary-float
@@ -32,4 +32,16 @@ export function encodeF64(v: number): Array<number> {
   write(buffer, v, 0, true, DOUBLE_PRECISION_MANTISSA, NUMBER_OF_BYTE_F64);
 
   return buffer;
+}
+
+export function decodeF32(bytes: Array<Byte>): number {
+  const buffer = Buffer.from(bytes);
+
+  return read(buffer, 0, true, SINGLE_PRECISION_MANTISSA, NUMBER_OF_BYTE_F32);
+}
+
+export function decodeF64(bytes: Array<Byte>): number {
+  const buffer = Buffer.from(bytes);
+
+  return read(buffer, 0, true, DOUBLE_PRECISION_MANTISSA, NUMBER_OF_BYTE_F64);
 }
