@@ -34,7 +34,7 @@ describe("AST traverse", () => {
     assert.equal(nb, 1);
   });
 
-  it("should call the special Node visitor", () => {
+  it("should support traversing union types", () => {
     const node = t.module("test", []);
     let called = false;
 
@@ -74,7 +74,6 @@ describe("AST traverse", () => {
         Func(path) {
           assert.isObject(path.parentPath);
           assert.equal(path.parentPath.node.type, "Module");
-
           called = true;
         }
       });
@@ -95,6 +94,21 @@ describe("AST traverse", () => {
 
       assert.isTrue(called, "visitor has not been called");
     });
+  });
+
+  describe("NodePath parentKey", () => {
+    const root = t.module("test", [t.func(null, t.signature([], []), [])]);
+    let called = false;
+    
+    traverse(root, {
+      Func(path) {
+        assert.isObject(path.parentPath);
+        assert.equal(path.parentKey, "fields");
+        called = true;
+      }
+    });
+
+    assert.isTrue(called, "visitor has not been called");
   });
 
   describe("NodePath remove", () => {
