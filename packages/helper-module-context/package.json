@@ -10,6 +10,9 @@
     "type": "git",
     "url": "https://github.com/xtuc/webassemblyjs.git"
   },
+  "dependencies": {
+    "mamacro": "^0.0.3"
+  },
   "publishConfig": {
     "access": "public"
   },
