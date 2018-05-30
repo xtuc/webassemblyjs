@@ -83,7 +83,7 @@ function replaceWith(
   // $FlowIgnore
   const parentProperty = parentNode[parentKey];
   if (Array.isArray(parentProperty)) {
-    const indexInList = parentProperty.findIndex(n => n !== node);
+    const indexInList = parentProperty.findIndex(n => n === node);
     parentProperty.splice(indexInList, 1, newNode);
   } else {
     // $FlowIgnore: References?
