@@ -74,21 +74,20 @@ function stop(context: NodePathContext<Node>) {
   context.shouldStop = true;
 }
 
-function replaceWith(
-  { node, parentKey, parentPath }: NodePathContext<Node>,
-  newNode: Node
-) {
+function replaceWith(context: NodePathContext<Node>, newNode: Node) {
   // $FlowIgnore
-  const parentNode = parentPath.node;
+  const parentNode = context.parentPath.node;
   // $FlowIgnore
-  const parentProperty = parentNode[parentKey];
+  const parentProperty = parentNode[context.parentKey];
   if (Array.isArray(parentProperty)) {
-    const indexInList = parentProperty.findIndex(n => n === node);
+    const indexInList = parentProperty.findIndex(n => n === context.node);
     parentProperty.splice(indexInList, 1, newNode);
   } else {
     // $FlowIgnore: References?
-    parentNode[parentKey] = newNode;
+    parentNode[context.parentKey] = newNode;
   }
+  context.node._deleted = true;
+  context.node = newNode;
 }
 
 // bind the context to the first argument of node operations
