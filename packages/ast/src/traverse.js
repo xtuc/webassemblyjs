@@ -1,14 +1,11 @@
 // @flow
-
-type Cb = (type: string, path: NodePath<Node>) => void;
-
 import debugModule from "debug";
 import { unionTypesMap, nodeAndUnionTypes } from "./nodes";
 
 const debug = debugModule("webassemblyjs:ast:traverse");
 
 function findParent(
-  parentPath: NodePath<Node>,
+  { parentPath }: NodePathContext<Node>,
   cb: (NodePath<Node>) => ?boolean
 ) {
   if (parentPath == null) {
@@ -29,51 +26,50 @@ function findParent(
   }
 }
 
-function createPath(
-  node: Node,
-  parentKey: ?string,
-  parentPath: ?NodePath<Node>
-): NodePath<Node> {
-  function remove() {
-    if (parentPath == null) {
-      throw new Error("Can not remove root node");
-    }
+function remove({ node, parentKey, parentPath }: NodePathContext<Node>) {
+  if (parentPath == null) {
+    throw new Error("Can not remove root node");
+  }
 
-    const parentNode = parentPath.node;
+  const parentNode = parentPath.node;
+  // $FlowIgnore: References?
+  const parentProperty = parentNode[parentKey];
+  if (Array.isArray(parentProperty)) {
     // $FlowIgnore: References?
-    const parentProperty = parentNode[parentKey];
-    if (Array.isArray(parentProperty)) {
-      // $FlowIgnore: References?
-      parentNode[parentKey] = parentProperty.filter(n => n !== node);
-    } else {
-      // $FlowIgnore: References?
-      delete parentNode[parentKey];
-    }
-
-    node._deleted = true;
-
-    debug("delete path %s", node.type);
+    parentNode[parentKey] = parentProperty.filter(n => n !== node);
+  } else {
+    // $FlowIgnore: References?
+    delete parentNode[parentKey];
   }
 
-  // TODO(sven): do it the good way, changing the node from the parent
-  function replaceWith(newNode: Node) {
-    // Remove all the keys first
-    // $FlowIgnore
-    Object.keys(node).forEach(k => delete node[k]);
+  node._deleted = true;
 
-    // $FlowIgnore
-    Object.assign(node, newNode);
-  }
+  debug("delete path %s", node.type);
+}
 
+// TODO(sven): do it the good way, changing the node from the parent
+function replaceWith({ node }: NodePathContext<Node>, newNode: Node) {
+  // Remove all the keys first
+  // $FlowIgnore
+  Object.keys(node).forEach(k => delete node[k]);
+
+  // $FlowIgnore
+  Object.assign(node, newNode);
+}
+
+function createPathOperations(context: NodePathContext<Node>) {
   return {
-    node,
-    parentPath,
-    parentKey,
-
     // $FlowIgnore: References?
-    findParent: cb => findParent(parentPath, cb),
-    replaceWith,
-    remove
+    findParent: (cb: NodePath<Node>) => findParent(context, cb),
+    replaceWith: (newNode: Node) => replaceWith(context, newNode),
+    remove: () => remove(context)
+  };
+}
+
+function createPath(context: NodePathContext<Node>): NodePath<Node> {
+  return {
+    ...context,
+    ...createPathOperations(context)
   };
 }
 
@@ -81,7 +77,7 @@ function createPath(
 // and object that has a 'type' property.
 function walk(
   node: Node,
-  callback: Cb,
+  callback: TraverseCallback,
   parentKey: ?string,
   parentPath: ?NodePath<Node>
 ) {
@@ -89,7 +85,7 @@ function walk(
     return;
   }
 
-  const path = createPath(node, parentKey, parentPath);
+  const path = createPath({ node, parentKey, parentPath });
   // $FlowIgnore
   callback(node.type, path);
 
@@ -112,8 +108,8 @@ const noop = () => {};
 export function traverse(
   n: Node,
   visitors: Object,
-  before: Cb = noop,
-  after: Cb = noop
+  before: TraverseCallback = noop,
+  after: TraverseCallback = noop
 ) {
   Object.keys(visitors).forEach(visitor => {
     if (!nodeAndUnionTypes.includes(visitor)) {
