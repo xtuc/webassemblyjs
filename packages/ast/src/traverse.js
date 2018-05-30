@@ -6,8 +6,8 @@ const debug = debugModule("webassemblyjs:ast:traverse");
 
 function findParent(
   { parentPath }: NodePathContext<Node>,
-  cb: (NodePath<Node>) => ?boolean
-) {
+  cb: NodePathMatcher
+): ?Node {
   if (parentPath == null) {
     throw new Error("node is root");
   }
@@ -18,12 +18,13 @@ function findParent(
     // Hit the root node, stop
     // $FlowIgnore
     if (currentPath.parentPath == null) {
-      break;
+      return null;
     }
 
     // $FlowIgnore
     currentPath = currentPath.parentPath;
   }
+  return currentPath.node;
 }
 
 function remove({ node, parentKey, parentPath }: NodePathContext<Node>) {
@@ -57,36 +58,35 @@ function replaceWith({ node }: NodePathContext<Node>, newNode: Node) {
   Object.assign(node, newNode);
 }
 
-function createPathOperations(context: NodePathContext<Node>) {
-  return {
-    // $FlowIgnore: References?
-    findParent: (cb: NodePath<Node>) => findParent(context, cb),
+function createPathOperations(
+  context: NodePathContext<Node>
+): NodePathOperations {
+  const val: NodePathOperations = {
+    findParent: (cb: NodePathMatcher) => findParent(context, cb),
     replaceWith: (newNode: Node) => replaceWith(context, newNode),
     remove: () => remove(context)
   };
+  return val;
 }
 
 function createPath(context: NodePathContext<Node>): NodePath<Node> {
-  return {
+  const val: NodePath<Node> = {
     ...context,
     ...createPathOperations(context)
   };
+  return val;
 }
 
 // recursively walks the AST starting at the given node. The callback is invoked for
 // and object that has a 'type' property.
-function walk(
-  node: Node,
-  callback: TraverseCallback,
-  parentKey: ?string,
-  parentPath: ?NodePath<Node>
-) {
+function walk(context: NodePathContext<Node>, callback: TraverseCallback) {
+  const node = context.node;
+
   if (node._deleted === true) {
     return;
   }
 
-  const path = createPath({ node, parentKey, parentPath });
-  // $FlowIgnore
+  const path = createPath(context);
   callback(node.type, path);
 
   Object.keys(node).forEach((prop: string) => {
@@ -95,9 +95,14 @@ function walk(
       return;
     }
     const valueAsArray = Array.isArray(value) ? value : [value];
-    valueAsArray.forEach(v => {
-      if (typeof v.type === "string") {
-        walk(v, callback, prop, path);
+    valueAsArray.forEach(childNode => {
+      if (typeof childNode.type === "string") {
+        const childContext = {
+          node: childNode,
+          parentKey: prop,
+          parentPath: path
+        };
+        walk(childContext, callback);
       }
     });
   });
@@ -106,7 +111,7 @@ function walk(
 const noop = () => {};
 
 export function traverse(
-  n: Node,
+  node: Node,
   visitors: Object,
   before: TraverseCallback = noop,
   after: TraverseCallback = noop
@@ -117,28 +122,29 @@ export function traverse(
     }
   });
 
-  walk(
-    n,
-    (type: string, path: NodePath<Node>) => {
-      if (typeof visitors[type] === "function") {
-        before(type, path);
-        visitors[type](path);
-        after(type, path);
-      }
+  const context: NodePathContext<Node> = {
+    node,
+    parentPath: null,
+    parentKey: null
+  };
 
-      const unionTypes = unionTypesMap[type];
-      if (!unionTypes) {
-        throw new Error(`Unexpected node type ${type}`);
+  walk(context, (type: string, path: NodePath<Node>) => {
+    if (typeof visitors[type] === "function") {
+      before(type, path);
+      visitors[type](path);
+      after(type, path);
+    }
+
+    const unionTypes = unionTypesMap[type];
+    if (!unionTypes) {
+      throw new Error(`Unexpected node type ${type}`);
+    }
+    unionTypes.forEach(unionType => {
+      if (typeof visitors[unionType] === "function") {
+        before(unionType, path);
+        visitors[unionType](path);
+        after(unionType, path);
       }
-      unionTypes.forEach(unionType => {
-        if (typeof visitors[unionType] === "function") {
-          before(unionType, path);
-          visitors[unionType](path);
-          after(unionType, path);
-        }
-      });
-    },
-    null,
-    null
-  );
+    });
+  });
 }

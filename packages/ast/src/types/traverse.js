@@ -9,8 +9,11 @@ type NodePathContext<T> = {
   parentKey: ?string
 };
 
+type NodePathMatcher = (NodePath<Node>) => ?boolean;
+type NodeLocator = NodePathMatcher => ?Node;
+
 type NodePathOperations = {
-  findParent: (NodePath<Node>) => ?boolean,
+  findParent: NodeLocator,
   replaceWith: Node => void,
   remove: () => void
 };

@@ -143,6 +143,7 @@ function transformFuncPath(
             if (isBlock(node)) {
               relativeBlockCount++;
 
+              // $FlowIgnore: reference?
               const name = node.label || node.name;
 
               if (typeof name === "object") {
