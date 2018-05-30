@@ -5,6 +5,7 @@ type TraverseCallback = (type: string, path: NodePath<Node>) => void;
 
 type NodePathContext<T> = {
   node: T,
+  inList: boolean,
   parentPath: ?NodePath<Node>,
   parentKey: ?string
 };
@@ -15,7 +16,9 @@ type NodeLocator = NodePathMatcher => ?Node;
 type NodePathOperations = {
   findParent: NodeLocator,
   replaceWith: Node => void,
-  remove: () => void
+  remove: () => void,
+  insertBefore: Node => void,
+  insertAfter: Node => void
 };
 
 type NodePath<T> = NodePathContext<T> & NodePathOperations;
