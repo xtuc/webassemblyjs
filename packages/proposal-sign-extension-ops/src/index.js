@@ -1,13 +1,15 @@
 import { edit } from "@webassemblyjs/wasm-edit";
 import { traverse, callInstruction, numberLiteral } from "@webassemblyjs/ast";
 import i32_extend8_s from "./polyfills/i32_extend8_s.json";
+import i32_extend16_s from "./polyfills/i32_extend16_s.json";
 
 class Polyfills {
   constructor(startIndex) {
     this.startIndex = startIndex;
 
     this.asts = {
-      i32_extend8_s
+      i32_extend8_s,
+      i32_extend16_s
     };
 
     this.instructions = Object.keys(this.asts);
