@@ -2,34 +2,77 @@ import { edit } from "@webassemblyjs/wasm-edit";
 import { traverse, callInstruction, numberLiteral } from "@webassemblyjs/ast";
 import i32_extend8_s from "./polyfills/i32_extend8_s.json";
 
+class Polyfills {
+  constructor(startIndex) {
+    this.startIndex = startIndex;
+
+    this.asts = {
+      i32_extend8_s
+    };
+
+    this.instructions = Object.keys(this.asts);
+
+    this.index = {};
+
+    this.instructions.forEach(instrName => {
+      this.index[instrName] = -1;
+    });
+  }
+
+  replaceWith(path, instrName) {
+    if (this.index[instrName] === -1) {
+      this.index[instrName] = this.startIndex++;
+    }
+
+    const index = this.index[instrName];
+    path.replaceWith(callInstruction(numberLiteral(index, String(index))));
+  }
+
+  matchesInstruction(instrName) {
+    return this.instructions.includes(instrName);
+  }
+
+  insertInto(ast) {
+    const funcsToPush = Object.keys(this.index)
+      .filter(instrName => this.index[instrName] >= 0)
+      .sort((x, y) => (this.index[x] > this.index[y] ? 1 : -1))
+      .map(instrName => this.asts[instrName]);
+
+    ast.body[0].fields.push(...funcsToPush);
+  }
+}
+
 export function transformAst(ast) {
-  let polyfillIndex = 0;
-  let needsPolyfill = false;
+  const polyfillState = {};
+
+  const needsPolyfill = instr => polyfillState[instr] > 0;
+  const requirePolyfill = instr => {
+    polyfillState[instr];
+  };
+
+  let numberOfFuncs = 0;
 
   const countFuncVisitor = {
     Func(path) {
-      ++polyfillIndex;
+      ++numberOfFuncs;
     }
   };
 
-  const signExtendVisitor = polyfillIndex => ({
-    Instr(path) {
-      if (path.node.id === "i32_extend8_s") {
-        needsPolyfill = true;
-        path.replaceWith(
-          callInstruction(numberLiteral(polyfillIndex, String(polyfillIndex)))
-        );
-      }
-    }
-  });
-
   traverse(ast, countFuncVisitor);
 
-  traverse(ast, signExtendVisitor(polyfillIndex));
+  const polyfills = new Polyfills(numberOfFuncs);
 
-  if (needsPolyfill) {
-    ast.body[0].fields.push(i32_extend8_s);
-  }
+  const signExtendVisitor = {
+    Instr(path) {
+      if (polyfills.matchesInstruction(path.node.id)) {
+        polyfills.replaceWith(path, path.node.id);
+      }
+    }
+  };
+
+  traverse(ast, signExtendVisitor);
+
+  polyfills.insertInto(ast);
 
   return ast;
 }
