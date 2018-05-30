@@ -74,14 +74,21 @@ function stop(context: NodePathContext<Node>) {
   context.shouldStop = true;
 }
 
-// TODO(sven): do it the good way, changing the node from the parent
-function replaceWith({ node }: NodePathContext<Node>, newNode: Node) {
-  // Remove all the keys first
+function replaceWith(
+  { node, parentKey, parentPath }: NodePathContext<Node>,
+  newNode: Node
+) {
   // $FlowIgnore
-  Object.keys(node).forEach(k => delete node[k]);
-
+  const parentNode = parentPath.node;
   // $FlowIgnore
-  Object.assign(node, newNode);
+  const parentProperty = parentNode[parentKey];
+  if (Array.isArray(parentProperty)) {
+    const indexInList = parentProperty.findIndex(n => n !== node);
+    parentProperty.splice(indexInList, 1, newNode);
+  } else {
+    // $FlowIgnore: References?
+    parentNode[parentKey] = newNode;
+  }
 }
 
 // bind the context to the first argument of node operations

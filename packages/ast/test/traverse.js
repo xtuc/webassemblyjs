@@ -248,6 +248,36 @@ describe("AST traverse", () => {
     });
 
     describe("remove", () => {
+      it("should remove nodes when they have siblings", () => {
+        const root = t.module("test", [
+          t.func(t.identifier("foo"), t.signature([], []), []),
+          t.func(t.identifier("bar"), t.signature([], []), [])
+        ]);
+
+        traverse(root, {
+          Func(path) {
+            if (path.node.name.value === "bar") {
+              path.remove();
+            }
+          }
+        });
+
+        assert.lengthOf(root.fields, 1);
+        assert.equal(root.fields[0].name.value, "foo");
+      });
+
+      it("should remove nodes when they are not children of list properties", () => {
+        const root = t.module("test", [t.func(null, t.signature([], []), [])]);
+
+        traverse(root, {
+          Signature(path) {
+            path.remove();
+          }
+        });
+
+        assert.equal(root.fields[0].signature, null);
+      });
+
       it("should remove func in module", () => {
         const root = t.module("test", [t.func(null, t.signature([], []), [])]);
 
