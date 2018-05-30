@@ -318,7 +318,7 @@ describe("AST traverse", () => {
     });
 
     describe("replace", () => {
-      it("should remove func in module", () => {
+      it("should replace within list properties that have single items", () => {
         const func = t.func(null, t.signature([], []), [t.instruction("nop")]);
 
         traverse(func, {
@@ -329,6 +329,38 @@ describe("AST traverse", () => {
         });
 
         assert.equal(func.body[0].type, "CallInstruction");
+      });
+
+      it("should replace within list properties that have multiple items", () => {
+        const root = t.module("test", [
+          t.func(t.identifier("foo"), t.signature([], []), []),
+          t.func(t.identifier("bar"), t.signature([], []), []),
+          t.func(t.identifier("baz"), t.signature([], []), [])
+        ]);
+
+        traverse(root, {
+          Func(path) {
+            if (path.node.name.value === "bar") {
+              const newNode = t.callInstruction(t.indexLiteral(0));
+              path.replaceWith(newNode);
+            }
+          }
+        });
+
+        assert.equal(root.fields[1].type, "CallInstruction");
+      });
+
+      it("should replace non list properties", () => {
+        const root = t.module("test", [t.func(null, t.signature([], []), [])]);
+
+        traverse(root, {
+          Signature(path) {
+            const newNode = t.callInstruction(t.indexLiteral(0));
+            path.replaceWith(newNode);
+          }
+        });
+
+        assert.equal(root.fields[0].signature.type, "CallInstruction");
       });
     });
 
