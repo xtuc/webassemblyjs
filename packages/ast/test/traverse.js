@@ -129,6 +129,24 @@ describe("AST traverse", () => {
   });
 
   describe("node path operations", () => {
+    describe("stop", () => {
+      it("should halt traversal", () => {
+        const root = t.module("test", [t.func(null, t.signature([], []), [])]);
+
+        traverse(root, {
+          Func(path) {
+            path.stop();
+          },
+          Signature() {
+            assert.isTrue(
+              false,
+              "traversal should have halted before this node"
+            );
+          }
+        });
+      });
+    });
+
     describe("insert before", () => {
       it("should insert at the start of a list of nodes", () => {
         const root = t.module("test", [t.func(null, t.signature([], []), [])]);

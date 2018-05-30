@@ -26,15 +26,21 @@ function findParent(
   return currentPath.node;
 }
 
+function insertBefore(context: NodePathContext<Node>, newNode) {
+  return insert(context, newNode);
+}
+
+function insertAfter(context: NodePathContext<Node>, newNode) {
+  return insert(context, newNode, 1);
+}
+
 function insert(
   { node, inList, parentPath, parentKey }: NodePathContext<Node>,
   newNode: Node,
   indexOffset: number = 0
 ) {
   if (!inList) {
-    throw new Error(
-      "insert can only be used for nodes that are within lists"
-    );
+    throw new Error("insert can only be used for nodes that are within lists");
   }
 
   // $FlowIgnore: References?
@@ -64,6 +70,10 @@ function remove({ node, parentKey, parentPath }: NodePathContext<Node>) {
   debug("delete path %s", node.type);
 }
 
+function stop(context: NodePathContext<Node>) {
+  context.shouldStop = true;
+}
+
 // TODO(sven): do it the good way, changing the node from the parent
 function replaceWith({ node }: NodePathContext<Node>, newNode: Node) {
   // Remove all the keys first
@@ -74,21 +84,40 @@ function replaceWith({ node }: NodePathContext<Node>, newNode: Node) {
   Object.assign(node, newNode);
 }
 
+// bind the context to the first argument of node operations
+function bindNodeOperations(
+  operations: Object,
+  context: NodePathContext<Node>
+) {
+  const keys = Object.keys(operations);
+  const boundOperations = {};
+  keys.forEach(key => {
+    boundOperations[key] = operations[key].bind(null, context);
+  });
+  return boundOperations;
+}
+
 function createPathOperations(
   context: NodePathContext<Node>
 ): NodePathOperations {
-  return {
-    findParent: (cb: NodePathMatcher) => findParent(context, cb),
-    replaceWith: (newNode: Node) => replaceWith(context, newNode),
-    remove: () => remove(context),
-    insertBefore: (newNode: Node) => insert(context, newNode),
-    insertAfter: (newNode: Node) => insert(context, newNode, 1)
-  };
+  // $FlowIgnore
+  return bindNodeOperations(
+    {
+      findParent,
+      replaceWith,
+      remove,
+      insertBefore,
+      insertAfter,
+      stop
+    },
+    context
+  );
 }
 
 export function createPath(context: NodePathContext<Node>): NodePath<Node> {
-  return {
-    ...context,
-    ...createPathOperations(context)
+  const path = {
+    ...context
   };
+  Object.assign(path, createPathOperations(path));
+  return path;
 }

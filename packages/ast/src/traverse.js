@@ -2,38 +2,55 @@
 import { createPath } from "./node-path";
 import { unionTypesMap, nodeAndUnionTypes } from "./nodes";
 
-
-
 // recursively walks the AST starting at the given node. The callback is invoked for
 // and object that has a 'type' property.
+
 function walk(context: NodePathContext<Node>, callback: TraverseCallback) {
-  const node = context.node;
+  let stop = false;
 
-  if (node._deleted === true) {
-    return;
-  }
-
-  const path = createPath(context);
-  callback(node.type, path);
-
-  Object.keys(node).forEach((prop: string) => {
-    const value = node[prop];
-    if (value === null || value === undefined) {
+  function innerWalk(
+    context: NodePathContext<Node>,
+    callback: TraverseCallback
+  ) {
+    if (stop) {
       return;
     }
-    const valueAsArray = Array.isArray(value) ? value : [value];
-    valueAsArray.forEach(childNode => {
-      if (typeof childNode.type === "string") {
-        const childContext = {
-          node: childNode,
-          parentKey: prop,
-          parentPath: path,
-          inList: Array.isArray(value)
-        };
-        walk(childContext, callback);
+
+    const node = context.node;
+
+    if (node._deleted === true) {
+      return;
+    }
+
+    const path = createPath(context);
+    callback(node.type, path);
+    if (path.shouldStop) {
+      stop = true;
+      return;
+    }
+
+    Object.keys(node).forEach((prop: string) => {
+      const value = node[prop];
+      if (value === null || value === undefined) {
+        return;
       }
+      const valueAsArray = Array.isArray(value) ? value : [value];
+      valueAsArray.forEach(childNode => {
+        if (typeof childNode.type === "string") {
+          const childContext = {
+            node: childNode,
+            parentKey: prop,
+            parentPath: path,
+            shouldStop: false,
+            inList: Array.isArray(value)
+          };
+          innerWalk(childContext, callback);
+        }
+      });
     });
-  });
+  }
+
+  innerWalk(context, callback);
 }
 
 const noop = () => {};
@@ -53,6 +70,7 @@ export function traverse(
   const context: NodePathContext<Node> = {
     node,
     inList: false,
+    shouldStop: false,
     parentPath: null,
     parentKey: null
   };
