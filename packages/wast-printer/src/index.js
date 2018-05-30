@@ -908,8 +908,18 @@ function printModuleExport(n: ModuleExport): string {
     out += printIndex(n.descr.id);
 
     out += ")";
+  } else if (n.descr.exportType === "Table") {
+    out += space;
+
+    out += "(";
+    out += "table";
+    out += space;
+
+    out += printIndex(n.descr.id);
+
+    out += ")";
   } else {
-    throw new Error("printModuleExport: unknown type: " + n.descr.type);
+    throw new Error("printModuleExport: unknown type: " + n.descr.exportType);
   }
 
   out += ")";
