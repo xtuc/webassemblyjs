@@ -225,10 +225,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     const bytes = readBytes(strlen);
 
-    const value = utf8
-      .decode(bytes)
-      .map(x => String.fromCharCode(x))
-      .join("");
+    const value = utf8.decode(bytes);
 
     return {
       value,

@@ -1,15 +1,5 @@
-// @flow
-
 function con(n) {
-  return 0x80 | n & 0x3f;
-}
-
-function code(min, n) {
-  if (n < min || (0xd800 <= n && n < 0xe000) || n >= 0x110000) {
-    throw new Error("invalid UTF-8 encoding");
-  } else {
-    return n
-  }
+  return 0x80 | (n & 0x3f);
 }
 
 export function encode(str) {
@@ -41,7 +31,13 @@ function _encode(arr) {
   }
 
   if (n < 0x110000) {
-    return [0xf0 | (n >>> 18), con(n >>> 12), con(n >>> 6), con(n), ..._encode(ns)];
+    return [
+      0xf0 | (n >>> 18),
+      con(n >>> 12),
+      con(n >>> 6),
+      con(n),
+      ..._encode(ns)
+    ];
   }
 
   throw new Error("utf8");
