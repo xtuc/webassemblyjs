@@ -1,6 +1,9 @@
 import { traverse, callInstruction, numberLiteral } from "@webassemblyjs/ast";
 import i32_extend8_s from "./polyfills/i32_extend8_s.json";
 import i32_extend16_s from "./polyfills/i32_extend16_s.json";
+import i64_extend8_s from "./polyfills/i64_extend8_s.json";
+import i64_extend16_s from "./polyfills/i64_extend16_s.json";
+import i64_extend32_s from "./polyfills/i64_extend32_s.json";
 
 class Polyfills {
   constructor(startIndex) {
@@ -8,7 +11,10 @@ class Polyfills {
 
     this.asts = {
       i32_extend8_s,
-      i32_extend16_s
+      i32_extend16_s,
+      i64_extend8_s,
+      i64_extend16_s,
+      i64_extend32_s
     };
 
     this.instructions = Object.keys(this.asts);
