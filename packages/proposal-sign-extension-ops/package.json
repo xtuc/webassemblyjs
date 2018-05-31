@@ -29,7 +29,6 @@
     "@webassemblyjs/helper-test-framework": "1.5.6",
     "@webassemblyjs/wast-parser": "1.5.6",
     "@webassemblyjs/wasm-parser": "1.5.6",
-    "@webassemblyjs/wast-printer": "1.5.6",
-	"assemblyscript": "github:AssemblyScript/assemblyscript"
+    "@webassemblyjs/wast-printer": "1.5.6"
   }
 }

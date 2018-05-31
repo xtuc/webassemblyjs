@@ -1,0 +1,165 @@
+{
+  "type": "Func",
+  "name": {
+    "type": "Identifier",
+    "value": "packages/proposal-sign-extension-ops/src/polyfills/i32_extend16_s/i32_extend16_s"
+  },
+  "signature": {
+    "type": "Signature",
+    "params": [
+      {
+        "valtype": "i32"
+      }
+    ],
+    "results": [
+      "i32"
+    ]
+  },
+  "body": [
+    {
+      "type": "Instr",
+      "id": "get_local",
+      "args": [
+        {
+          "type": "NumberLiteral",
+          "value": 0,
+          "raw": "0"
+        }
+      ],
+      "loc": {
+        "start": {
+          "line": -1,
+          "column": 59
+        },
+        "end": {
+          "line": -1,
+          "column": 61
+        }
+      }
+    },
+    {
+      "type": "Instr",
+      "id": "const",
+      "args": [
+        {
+          "type": "NumberLiteral",
+          "value": -32768,
+          "raw": "-32768"
+        }
+      ],
+      "object": "i32"
+    },
+    {
+      "type": "Instr",
+      "id": "or",
+      "args": [],
+      "object": "i32"
+    },
+    {
+      "type": "Instr",
+      "id": "get_local",
+      "args": [
+        {
+          "type": "NumberLiteral",
+          "value": 0,
+          "raw": "0"
+        }
+      ],
+      "loc": {
+        "start": {
+          "line": -1,
+          "column": 66
+        },
+        "end": {
+          "line": -1,
+          "column": 68
+        }
+      }
+    },
+    {
+      "type": "Instr",
+      "id": "const",
+      "args": [
+        {
+          "type": "NumberLiteral",
+          "value": 32767,
+          "raw": "32767"
+        }
+      ],
+      "object": "i32"
+    },
+    {
+      "type": "Instr",
+      "id": "and",
+      "args": [],
+      "object": "i32"
+    },
+    {
+      "type": "Instr",
+      "id": "get_local",
+      "args": [
+        {
+          "type": "NumberLiteral",
+          "value": 0,
+          "raw": "0"
+        }
+      ],
+      "loc": {
+        "start": {
+          "line": -1,
+          "column": 73
+        },
+        "end": {
+          "line": -1,
+          "column": 75
+        }
+      }
+    },
+    {
+      "type": "Instr",
+      "id": "const",
+      "args": [
+        {
+          "type": "NumberLiteral",
+          "value": 32768,
+          "raw": "32768"
+        }
+      ],
+      "object": "i32"
+    },
+    {
+      "type": "Instr",
+      "id": "and",
+      "args": [],
+      "object": "i32"
+    },
+    {
+      "type": "Instr",
+      "id": "select",
+      "args": [],
+      "loc": {
+        "start": {
+          "line": -1,
+          "column": 80
+        },
+        "end": {
+          "line": -1,
+          "column": 81
+        }
+      }
+    }
+  ],
+  "loc": {
+    "start": {
+      "line": -1,
+      "column": 57
+    },
+    "end": {
+      "line": -1,
+      "column": 82
+    }
+  },
+  "metadata": {
+    "bodySize": 24
+  }
+}

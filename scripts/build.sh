@@ -7,6 +7,7 @@ cd $ROOT_DIR
 OPTS="$@"
 
 sh ./scripts/generate-ast-utils.sh
+./scripts/generate-polyfills.js
 
 if [ -z "$DISABLE_FUZZER_TEST" ]; then
   yarn --cwd ./packages/floating-point-hex-parser run build-fuzzer
@@ -29,8 +30,8 @@ for D in ./packages/*; do
     $OPTS &
 done
 
+
 wait
 
-./scripts/generate-polyfills.js
-
+cp -r packages/proposal-sign-extension-ops/src/polyfills packages/proposal-sign-extension-ops/lib/
 cp -v packages/dce/src/libwabt.js packages/dce/lib/libwabt.js
