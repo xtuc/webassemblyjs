@@ -4,7 +4,7 @@ import constants from "@webassemblyjs/helper-wasm-bytecode";
 import * as leb from "@webassemblyjs/leb128";
 import * as ieee754 from "@webassemblyjs/ieee754";
 import { encodeNode } from "../index";
-import utf8 from "@xtuc/utf8";
+import * as utf8 from "@webassemblyjs/utf8";
 
 function assertNotIdentifierNode(n: Node) {
   if (n.type === "Identifier") {

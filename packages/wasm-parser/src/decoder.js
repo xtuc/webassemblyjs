@@ -2,6 +2,7 @@
 
 import { CompileError } from "@webassemblyjs/helper-api-error";
 import * as ieee754 from "@webassemblyjs/ieee754";
+import * as utf8 from "@webassemblyjs/utf8";
 
 import {
   decodeInt32,
@@ -27,8 +28,6 @@ const {
   moduleVersion,
   sections
 } = require("@webassemblyjs/helper-wasm-bytecode");
-
-const { utf8ArrayToStr } = require("./utf8");
 
 /**
  * FIXME(sven): we can't do that because number > 2**53 will fail here
@@ -218,18 +217,22 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   function readUTF8String(): DecodedUTF8String {
     const lenu32 = readU32();
-    const len = lenu32.value;
-
-    dump([len], "string length");
-
     eatBytes(lenu32.nextIndex);
 
-    const bytes = readBytes(len);
-    const value = utf8ArrayToStr(bytes);
+    const strlen = lenu32.value;
+
+    dump([strlen], "string length");
+
+    const bytes = readBytes(strlen);
+
+    const value = utf8
+      .decode(bytes)
+      .map(x => String.fromCharCode(x))
+      .join("");
 
     return {
       value,
-      nextIndex: len
+      nextIndex: strlen
     };
   }
 
