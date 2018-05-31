@@ -58,21 +58,18 @@ export function editWithAST(
 
   function after(type: string, path: NodePath<*>) {
     if (path.node._deleted === true) {
-      console.log(type, "deleted");
       operations.push({
         kind: "delete",
         node: path.node
       });
       // $FlowIgnore
     } else if (hashNode(nodeBefore) !== hashNode(path.node)) {
-      console.log(type, "different hash");
       operations.push({
         kind: "update",
         oldNode: nodeBefore,
         node: path.node
       });
     }
-    console.log(type, "no change");
   }
 
   traverse(ast, visitors, before, after);
