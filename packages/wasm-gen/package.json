@@ -16,6 +16,7 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
+    "@xtuc/utf8": "3.0.0",
     "@webassemblyjs/ast": "1.5.9",
     "@webassemblyjs/helper-wasm-bytecode": "1.5.9",
     "@webassemblyjs/ieee754": "1.5.9",

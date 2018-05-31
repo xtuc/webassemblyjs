@@ -4,6 +4,7 @@ import constants from "@webassemblyjs/helper-wasm-bytecode";
 import * as leb from "@webassemblyjs/leb128";
 import * as ieee754 from "@webassemblyjs/ieee754";
 import { encodeNode } from "../index";
+import utf8 from "@xtuc/utf8";
 
 function assertNotIdentifierNode(n: Node) {
   if (n.type === "Identifier") {
@@ -66,9 +67,7 @@ export function encodeMutability(v: Mutability): Byte {
 }
 
 export function encodeUTF8Vec(str: string): Array<Byte> {
-  const charCodes = str.split("").map(x => x.charCodeAt(0));
-
-  return encodeVec(charCodes);
+  return encodeVec(utf8.encode(str));
 }
 
 export function encodeLimits(n: Limit): Array<Byte> {
@@ -304,6 +303,10 @@ function encodeExpr(instrs: Array<Instruction>): Array<Byte> {
   out.push(0x0b); // end
 
   return out;
+}
+
+export function encodeStringLiteral(n: StringLiteral): Array<Byte> {
+  return encodeUTF8Vec(n.value);
 }
 
 export function encodeGlobal(n: Global): Array<Byte> {

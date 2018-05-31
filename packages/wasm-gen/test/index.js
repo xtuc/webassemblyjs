@@ -203,6 +203,33 @@ const fixtures = [
       t.floatLiteral(0.1, false, false, "0.1")
     ]),
     expected: [0x44, 0x9a, 0x99, 0x99, 0x99, 0x99, 0x99, 0xb9, 0x3f]
+  },
+
+  /**
+   * String encoding
+   */
+  {
+    name: "a",
+    node: t.stringLiteral("a"),
+    expected: [1, 0x61]
+  },
+
+  {
+    name: "foo",
+    node: t.stringLiteral("foo"),
+    expected: [3, 0x66, 0x6f, 0x6f]
+  },
+
+  {
+    name: "./-Ɂ?_¶",
+    node: t.stringLiteral("./-Ɂ?_¶"),
+    expected: [9, 0x2e, 0x2f, 0x2d, 0xc9, 0x81, 0x3f, 0x5f, 0xc2, 0xb6]
+  },
+
+  {
+    name: "🤣见見",
+    node: t.stringLiteral("🤣见見"),
+    expected: [10, 0xf0, 0x9f, 0xa4, 0xa3, 0xe8, 0xa7, 0x81, 0xe8, 0xa6, 0x8b]
   }
 ];
 
@@ -211,15 +238,6 @@ describe("wasm gen", () => {
     it("should generate " + fixture.name, () => {
       const binary = encodeNode(fixture.node);
       assert.deepEqual(binary, fixture.expected);
-    });
-  });
-
-  describe("encode UTF8 vec", () => {
-    it("should encode `foo`", () => {
-      const actual = encoder.encodeUTF8Vec("foo");
-      const expected = [3, 0x66, 0x6f, 0x6f];
-
-      assert.deepEqual(actual, expected);
     });
   });
 
