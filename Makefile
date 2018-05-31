@@ -48,6 +48,9 @@ test-whitelisted-spec:
 	$(REPL) $(SPEC_TEST_DIR)/inline-module.wast
 	$(REPL) $(SPEC_TEST_DIR)/store_retval.wast
 	$(REPL) $(SPEC_TEST_DIR)/custom_section.wast
+	$(REPL) $(SPEC_TEST_DIR)/utf8-custom-section-id.wast
+	$(REPL) $(SPEC_TEST_DIR)/utf8-import-field.wast
+	$(REPL) $(SPEC_TEST_DIR)/utf8-import-module.wast
 
 lint:
 	$(ESLINT) packages
