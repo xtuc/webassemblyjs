@@ -1,4 +1,3 @@
-import { edit } from "@webassemblyjs/wasm-edit";
 import { traverse, callInstruction, numberLiteral } from "@webassemblyjs/ast";
 import i32_extend8_s from "./polyfills/i32_extend8_s.json";
 import i32_extend16_s from "./polyfills/i32_extend16_s.json";
@@ -45,17 +44,10 @@ class Polyfills {
 }
 
 export function transformAst(ast) {
-  const polyfillState = {};
-
-  const needsPolyfill = instr => polyfillState[instr] > 0;
-  const requirePolyfill = instr => {
-    polyfillState[instr];
-  };
-
   let numberOfFuncs = 0;
 
   const countFuncVisitor = {
-    Func(path) {
+    Func() {
       ++numberOfFuncs;
     }
   };
