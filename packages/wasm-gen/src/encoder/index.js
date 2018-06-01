@@ -345,3 +345,19 @@ export function encodeIndexInFuncSection(n: IndexInFuncSection): Array<Byte> {
   // $FlowIgnore
   return encodeU32(n.index.value);
 }
+
+export function encodeElem(n: Elem): Array<Byte> {
+  const out = [];
+
+  assertNotIdentifierNode(n.table);
+
+  out.push(...encodeU32(n.table.value));
+
+  out.push(...encodeExpr(n.offset));
+
+  const funcs = n.funcs.map(x => x.value);
+
+  out.push(...encodeVec(funcs));
+
+  return out;
+}
