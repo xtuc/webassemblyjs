@@ -2,6 +2,8 @@
 
 > Toolchain for WebAssembly
 
+![npm](https://img.shields.io/npm/dm/@webassemblyjs/ast.svg)
+
 See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 
 ## Packages

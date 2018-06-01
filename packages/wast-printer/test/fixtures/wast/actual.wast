@@ -111,6 +111,9 @@
   (export "add" (global $add))
   (export "add" (global 0))
 
+  (export "t" (table 0))
+  (export "t" (table $foo))
+
   (table "a" 10 anyfunc)
   (table "b" 0 10 anyfunc)
   (table 10 anyfunc)

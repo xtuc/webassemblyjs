@@ -30,6 +30,15 @@ import { signatures } from "@webassemblyjs/ast";
 console.log(signatures);
 ```
 
+### Path methods
+
+- `findParent: NodeLocator`
+- `replaceWith: Node => void`
+- `remove: () => void`
+- `insertBefore: Node => void`
+- `insertAfter: Node => void`
+- `stop: () => void`
+
 ### AST utils
 
 - function `module(id, fields, metadata)`
