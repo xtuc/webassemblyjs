@@ -1,10 +1,8 @@
 // TODO(sven): add flow in here
 
-const debug = require("debug")("webassemblyjs:modulecontext");
+import { assert } from "mamacro";
 
-function assert(cond) {
-  if (!cond) throw new Error("Assertion error");
-}
+const debug = require("debug")("webassemblyjs:modulecontext");
 
 export function moduleContextFromModuleAST(m) {
   const moduleContext = new ModuleContext();

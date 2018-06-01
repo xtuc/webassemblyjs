@@ -7,7 +7,7 @@ function con(b) {
 }
 
 function code(min, n) {
-  if (n < min || (0xd800 <= n && n < 0xe000) || n >= 0x110000) {
+  if (n < min || (0xd800 <= n && n < 0xe000) || n >= 0x10000) {
     throw new Error("invalid UTF-8 encoding");
   } else {
     return n;
