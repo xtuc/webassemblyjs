@@ -1,20 +1,33 @@
 import { traverse, callInstruction, numberLiteral } from "@webassemblyjs/ast";
-import i32_extend8_s from "./polyfills/i32_extend8_s.json";
-import i32_extend16_s from "./polyfills/i32_extend16_s.json";
-import i64_extend8_s from "./polyfills/i64_extend8_s.json";
-import i64_extend16_s from "./polyfills/i64_extend16_s.json";
-import i64_extend32_s from "./polyfills/i64_extend32_s.json";
+import { parse } from "@webassemblyjs/wast-parser";
+import { readFileSync } from "fs";
+import path from "path";
+
+const funcFromWast = sourcePath => {
+  const ast = parse(readFileSync(sourcePath, "utf8"));
+  return ast.body[0].fields.find(f => f.type === "Func");
+};
 
 class Polyfills {
   constructor(startIndex) {
     this.startIndex = startIndex;
 
     this.asts = {
-      i32_extend8_s,
-      i32_extend16_s,
-      i64_extend8_s,
-      i64_extend16_s,
-      i64_extend32_s
+      i32_extend8_s: funcFromWast(
+        path.join(__dirname, "/polyfills/i32_extend8_s.wast")
+      ),
+      i32_extend16_s: funcFromWast(
+        path.join(__dirname, "/polyfills/i32_extend16_s.wast")
+      ),
+      i64_extend8_s: funcFromWast(
+        path.join(__dirname, "/polyfills/i64_extend8_s.wast")
+      ),
+      i64_extend16_s: funcFromWast(
+        path.join(__dirname, "/polyfills/i64_extend16_s.wast")
+      ),
+      i64_extend32_s: funcFromWast(
+        path.join(__dirname, "/polyfills/i64_extend32_s.wast")
+      )
     };
 
     this.instructions = Object.keys(this.asts);
