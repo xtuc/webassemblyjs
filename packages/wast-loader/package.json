@@ -1,6 +1,6 @@
 {
   "name": "wast-loader",
-  "version": "1.5.9",
+  "version": "1.5.10",
   "description": "Webpack loader for WebAssembly text format",
   "keywords": [
     "webassembly",
