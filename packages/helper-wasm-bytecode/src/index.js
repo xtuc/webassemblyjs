@@ -59,11 +59,6 @@ const valtypes = {
 
 const valtypesByString = invertMap(valtypes);
 
-const limitHasMaximum = {
-  0x00: false,
-  0x01: true
-};
-
 const tableTypes = {
   0x70: "anyfunc"
 };
@@ -342,7 +337,6 @@ module.exports = {
   valtypes,
   exportTypes,
   blockTypes,
-  limitHasMaximum,
   tableTypes,
   globalTypes,
   importTypes,
