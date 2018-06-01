@@ -1361,6 +1361,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const sectionId = readByte();
     eatBytes(1);
 
+    if (isEOF() === true) {
+      throw new Error("unexpected end");
+    }
+
     if (sectionId >= sectionIndex || sectionIndex === sections.custom) {
       sectionIndex = sectionId + 1;
     } else {
@@ -1376,6 +1380,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const u32 = readU32();
     const sectionSizeInBytes = u32.value;
     eatBytes(u32.nextIndex);
+
+    if (isEOF() === true) {
+      throw new Error("unexpected end");
+    }
 
     const sectionSizeInBytesEndLoc = getPosition();
 
@@ -1754,7 +1762,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       }
     }
 
-    throw new CompileError("Unexpected section: " + toHex(sectionId));
+    throw new CompileError("invalid section id: " + toHex(sectionId));
   }
 
   parseModuleHeader();
