@@ -20,7 +20,6 @@ const {
   blockTypes,
   tableTypes,
   globalTypes,
-  limitHasMaximum,
   exportTypes,
   types,
   magicModuleHeader,
@@ -698,18 +697,22 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const instructionByte = readByte();
       eatBytes(1);
 
-      const instruction = symbolsByByte[instructionByte];
-
-      if (typeof instruction.object === "string") {
-        dump([instructionByte], `${instruction.object}.${instruction.name}`);
-      } else {
-        dump([instructionByte], instruction.name);
+      if (instructionByte === 0xfe) {
+        throw new CompileError("Atomic instructions are not implemented");
       }
+
+      const instruction = symbolsByByte[instructionByte];
 
       if (typeof instruction === "undefined") {
         throw new CompileError(
           "Unexpected instruction: " + toHex(instructionByte)
         );
+      }
+
+      if (typeof instruction.object === "string") {
+        dump([instructionByte], `${instruction.object}.${instruction.name}`);
+      } else {
+        dump([instructionByte], instruction.name);
       }
 
       /**
@@ -1005,6 +1008,43 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     }
   }
 
+  // https://webassembly.github.io/spec/core/binary/types.html#limits
+  function parseLimits(): Limit {
+    const limitType = readByte();
+    eatBytes(1);
+
+    dump([limitType], "limit type");
+
+    let min, max;
+
+    if (
+      limitType === 0x01 ||
+      limitType === 0x03 // shared limits
+    ) {
+      const u32min = readU32();
+      min = parseInt(u32min.value);
+      eatBytes(u32min.nextIndex);
+
+      dump([min], "min");
+
+      const u32max = readU32();
+      max = parseInt(u32max.value);
+      eatBytes(u32max.nextIndex);
+
+      dump([max], "max");
+    }
+
+    if (limitType === 0x00) {
+      const u32min = readU32();
+      min = parseInt(u32min.value);
+      eatBytes(u32min.nextIndex);
+
+      dump([min], "min");
+    }
+
+    return t.limit(min, max);
+  }
+
   // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
   function parseTableType(index: number): Table {
     const name = t.withRaw(t.identifier(getUniqueName("table")), String(index));
@@ -1022,32 +1062,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       );
     }
 
-    const limitType = readByte();
-    eatBytes(1);
+    const limits = parseLimits();
 
-    let min, max;
-
-    if (limitHasMaximum[limitType] === true) {
-      const u32min = readU32();
-      min = parseInt(u32min.value);
-      eatBytes(u32min.nextIndex);
-
-      dump([min], "min");
-
-      const u32max = readU32();
-      max = parseInt(u32max.value);
-      eatBytes(u32max.nextIndex);
-
-      dump([max], "max");
-    } else {
-      const u32min = readU32();
-      min = parseInt(u32min.value);
-      eatBytes(u32min.nextIndex);
-
-      dump([min], "min");
-    }
-
-    return t.table(elementType, t.limit(min, max), name);
+    return t.table(elementType, limits, name);
   }
 
   // https://webassembly.github.io/spec/binary/types.html#global-types
@@ -1241,32 +1258,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // https://webassembly.github.io/spec/core/binary/types.html#memory-types
   function parseMemoryType(i: number): Memory {
-    const limitType = readByte();
-    eatBytes(1);
+    const limits = parseLimits();
 
-    let min, max;
-
-    if (limitHasMaximum[limitType] === true) {
-      const u32min = readU32();
-      min = parseInt(u32min.value);
-      eatBytes(u32min.nextIndex);
-
-      dump([min], "min");
-
-      const u32max = readU32();
-      max = parseInt(u32max.value);
-      eatBytes(u32max.nextIndex);
-
-      dump([max], "max");
-    } else {
-      const u32min = readU32();
-      min = parseInt(u32min.value);
-      eatBytes(u32min.nextIndex);
-
-      dump([min], "min");
-    }
-
-    return t.memory(t.limit(min, max), t.indexLiteral(i));
+    return t.memory(limits, t.indexLiteral(i));
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#table-section
