@@ -1217,6 +1217,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     dump([numberOfElements], "num elements");
 
     for (let i = 0; i < numberOfElements; i++) {
+      const startLoc = getPosition();
+
       const tableindexu32 = readU32();
       const tableindex = tableindexu32.value;
       eatBytes(tableindexu32.nextIndex);
@@ -1250,7 +1252,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         indexValues.push(t.indexLiteral(index));
       }
 
-      elems.push(t.elem(t.indexLiteral(tableindex), instr, indexValues));
+      const endLoc = getPosition();
+
+      const elemNode = t.withLoc(
+        t.elem(t.indexLiteral(tableindex), instr, indexValues),
+        endLoc,
+        startLoc
+      );
+
+      elems.push(elemNode);
     }
 
     return elems;
