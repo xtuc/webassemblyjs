@@ -26,7 +26,9 @@ const normalizeName = name =>
     .replace("+", "-plus-")
     .replace(/^\./, "dot-")
     .replace(".", "-dot-")
-    .replace(":", "-colon-");
+    .replace(":", "-colon-")
+    .replace("e", "-lowere-")
+    .replace("E", "-uppere-");
 
 const expected = literal =>
   JSON.stringify(
