@@ -87,20 +87,16 @@ function makeFuncImportNode() {
   const module = getUniqueName();
   const name = getUniqueName();
 
-  const typeidx = 0;
-
   return t.moduleImport(
     module,
     name,
-    t.funcImportDescr(t.numberLiteralFromRaw(typeidx), t.signature([], []))
+    t.funcImportDescr(t.numberLiteralFromRaw(0), t.signature([], []))
   );
 }
 
 function makeGlobalImportNode() {
   const module = getUniqueName();
   const name = getUniqueName();
-
-  const typeidx = 0;
 
   return t.moduleImport(module, name, t.globalType("i32", "const"));
 }

@@ -351,11 +351,12 @@ export function encodeElem(n: Elem): Array<Byte> {
 
   assertNotIdentifierNode(n.table);
 
+  // $FlowIgnore
   out.push(...encodeU32(n.table.value));
-
   out.push(...encodeExpr(n.offset));
 
-  const funcs = n.funcs.map(x => x.value);
+  // $FlowIgnore
+  const funcs = n.funcs.reduce((acc, x) => [...acc, ...encodeU32(x.value)], []);
 
   out.push(...encodeVec(funcs));
 
