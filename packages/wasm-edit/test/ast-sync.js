@@ -102,19 +102,15 @@ function makeGlobalImportNode() {
 
   const typeidx = 0;
 
-  return t.moduleImport(
-    module,
-    name,
-    t.globalType("i32", "const")
-  );
+  return t.moduleImport(module, name, t.globalType("i32", "const"));
 }
 
 function renameImports(name) {
   return {
-    ModuleImport({node}) {
+    ModuleImport({ node }) {
       node.module = node.name = name;
     }
-  }
+  };
 }
 
 describe("AST synchronization", () => {
@@ -144,7 +140,7 @@ describe("AST synchronization", () => {
 
     b => addWithAST(ast, b, [makeFuncImportNode()]),
 
-    b => editWithAST(ast, b, renameImports("c")),
+    b => editWithAST(ast, b, renameImports("c"))
   ];
 
   it("should run steps", function() {
