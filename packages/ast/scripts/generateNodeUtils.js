@@ -75,7 +75,6 @@ function buildObject(typeDef) {
         }
       `;
     } else if (meta.type === "boolean") {
-      // TODO: is this a good idea?!
       // omit optional boolean properties if they are not true
       return `
         if (${meta.name} === true) {

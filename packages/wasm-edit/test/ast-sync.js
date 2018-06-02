@@ -87,13 +87,26 @@ function makeFuncImportNode() {
   const module = getUniqueName();
   const name = getUniqueName();
 
-  const typeidx = 0;
-
   return t.moduleImport(
     module,
     name,
-    t.funcImportDescr(t.numberLiteralFromRaw(typeidx), t.signature([], []))
+    t.funcImportDescr(t.numberLiteralFromRaw(0), t.signature([], []))
   );
+}
+
+function makeGlobalImportNode() {
+  const module = getUniqueName();
+  const name = getUniqueName();
+
+  return t.moduleImport(module, name, t.globalType("i32", "const"));
+}
+
+function renameImports(name) {
+  return {
+    ModuleImport({ node }) {
+      node.module = node.name = name;
+    }
+  };
 }
 
 describe("AST synchronization", () => {
@@ -117,7 +130,13 @@ describe("AST synchronization", () => {
     b => addWithAST(ast, b, makeFuncNodes(0)),
     b => addWithAST(ast, b, [makeFuncExportNode(0)]),
 
-    b => addWithAST(ast, b, [makeFuncImportNode()])
+    b => addWithAST(ast, b, [makeGlobalImportNode()]),
+    b => editWithAST(ast, b, renameImports("a")),
+    b => editWithAST(ast, b, renameImports("b")),
+
+    b => addWithAST(ast, b, [makeFuncImportNode()]),
+
+    b => editWithAST(ast, b, renameImports("c"))
   ];
 
   it("should run steps", function() {

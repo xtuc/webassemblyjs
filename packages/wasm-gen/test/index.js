@@ -205,6 +205,16 @@ const fixtures = [
     expected: [0x44, 0x9a, 0x99, 0x99, 0x99, 0x99, 0x99, 0xb9, 0x3f]
   },
 
+  {
+    name: "(elem 1 (i32.const 2) 3 4)",
+    node: t.elem(
+      t.numberLiteralFromRaw(1),
+      [t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)])],
+      [t.numberLiteralFromRaw(3), t.numberLiteralFromRaw(4)]
+    ),
+    expected: [0x01, 0x41, 0x02, 0x0b, 0x02, 0x03, 0x04]
+  },
+
   /**
    * String encoding
    */
