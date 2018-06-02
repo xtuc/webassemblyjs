@@ -3,6 +3,8 @@
 import debugModule from "debug";
 const debug = debugModule("webassemblyjs:ast:traverse");
 
+import { assert } from "mamacro";
+
 function findParent(
   { parentPath }: NodePathContext<Node>,
   cb: NodePathMatcher
@@ -39,29 +41,27 @@ function insert(
   newNode: Node,
   indexOffset: number = 0
 ) {
-  if (!inList) {
-    throw new Error("insert can only be used for nodes that are within lists");
-  }
+  assert(inList, "insert can only be used for nodes that are within lists");
+  assert(parentPath != null, "Can not remove root node");
 
-  // $FlowIgnore: References?
+  // $FlowIgnore
   const parentList = parentPath.node[parentKey];
   const indexInList = parentList.findIndex(n => n === node);
   parentList.splice(indexInList + indexOffset, 0, newNode);
 }
 
 function remove({ node, parentKey, parentPath }: NodePathContext<Node>) {
-  if (parentPath == null) {
-    throw new Error("Can not remove root node");
-  }
+  assert(parentPath != null, "Can not remove root node");
 
-  const parentNode = parentPath.node;
-  // $FlowIgnore: References?
+  // $FlowIgnore
+  const parentNode: Node = parentPath.node;
+  // $FlowIgnore
   const parentProperty = parentNode[parentKey];
   if (Array.isArray(parentProperty)) {
-    // $FlowIgnore: References?
+    // $FlowIgnore
     parentNode[parentKey] = parentProperty.filter(n => n !== node);
   } else {
-    // $FlowIgnore: References?
+    // $FlowIgnore
     delete parentNode[parentKey];
   }
 
@@ -83,7 +83,7 @@ function replaceWith(context: NodePathContext<Node>, newNode: Node) {
     const indexInList = parentProperty.findIndex(n => n === context.node);
     parentProperty.splice(indexInList, 1, newNode);
   } else {
-    // $FlowIgnore: References?
+    // $FlowIgnore
     parentNode[context.parentKey] = newNode;
   }
   context.node._deleted = true;
