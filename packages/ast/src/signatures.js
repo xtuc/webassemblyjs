@@ -14,6 +14,7 @@ const f64 = "f64";
 
 const vector = t => {
   const vecType = [t];
+  // $FlowIgnore
   vecType.vector = true;
   return vecType;
 };

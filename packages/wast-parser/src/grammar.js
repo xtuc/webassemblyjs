@@ -948,10 +948,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
+      // $FlowIgnore
       const signatureLength = signature.vector ? Infinity : signature.length;
 
       while (
         token.type !== tokens.closeParen &&
+        // $FlowIgnore
         (token.type === tokens.openParen || signaturePtr < signatureLength)
       ) {
         if (token.type === tokens.identifier) {
@@ -978,6 +980,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             )
           );
 
+          // $FlowIgnore
           if (!signature.vector) {
             ++signaturePtr;
           }
