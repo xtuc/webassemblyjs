@@ -11,7 +11,7 @@
     (get_local 0)
     (call 3)
   )
-  (func $packages/proposal-sign-extension-ops/src/polyfills/i32_extend8_s/i32_extend8_s (param i32) (result i32)
+  (func $i32_extend8_s (param i32) (result i32)
     (get_local 0)
     (i32.const -128)
     (i32.or)
@@ -24,4 +24,3 @@
     (select)
   )
 )
-

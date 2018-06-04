@@ -3,7 +3,7 @@
     (get_local 0)
     (call 1)
   )
-  (func $packages/proposal-sign-extension-ops/src/polyfills/i64_extend16_s/i64_extend16_s (param i64) (result i64)
+  (func $i64_extend16_s (param i64) (result i64)
     (get_local 0)
     (i64.const -32768)
     (i64.or)
