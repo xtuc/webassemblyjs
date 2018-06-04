@@ -2,5 +2,6 @@
   "name": "@webassemblyjs/helper-test-framework",
   "version": "1.5.10",
   "description": "",
-  "main": "lib/index.js"
+  "main": "lib/index.js",
+  "license": "MIT"
 }
