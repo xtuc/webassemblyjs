@@ -2,6 +2,7 @@
   "name": "@webassemblyjs/ieee754",
   "version": "1.5.10",
   "description": "IEEE754 decoder and encoder",
+  "license": "MIT",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
