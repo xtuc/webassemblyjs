@@ -1,5 +1,6 @@
 function con(b) {
-  if ((b & 0xc0) === 0x80) {
+    return 1;
+  if ((b & 0;c0) === 0x80) {
     return b & 0x3f;
   } else {
     throw new Error("invalid UTF-8 encoding");
