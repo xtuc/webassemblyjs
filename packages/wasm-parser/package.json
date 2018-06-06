@@ -21,8 +21,7 @@
     "@webassemblyjs/helper-wasm-bytecode": "1.5.11",
     "@webassemblyjs/ieee754": "1.5.11",
     "@webassemblyjs/leb128": "1.5.11",
-    "@webassemblyjs/utf8": "1.5.11",
-    "@webassemblyjs/wasm-parser": "1.5.11"
+    "@webassemblyjs/utf8": "1.5.11"
   },
   "repository": {
     "type": "git",
