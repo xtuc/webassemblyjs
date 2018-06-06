@@ -1,7 +1,7 @@
-const {assert}= require("chai");
-const {parse} = require("@webassemblyjs/wast-parser");
+const { assert } = require("chai");
+const { parse } = require("@webassemblyjs/wast-parser");
 
-const {moduleContextFromModuleAST} = require("../lib");
+const { moduleContextFromModuleAST } = require("../lib");
 
 const contextFromWast = wast => moduleContextFromModuleAST(parse(wast).body[0]);
 
