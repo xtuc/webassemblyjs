@@ -11,6 +11,9 @@ export function moduleContextFromModuleAST(m) {
 
   m.fields.forEach(field => {
     switch (field.type) {
+      case "Start": {
+        moduleContext.setStart(field.index);
+      }
       case "Func": {
         moduleContext.addFunction(field);
         break;
@@ -79,6 +82,22 @@ export class ModuleContext {
     this.return = [];
 
     this.debugName = "unknown";
+
+    this.start = null;
+  }
+
+  /**
+   * Set start segment
+   */
+  setStart(index) {
+    this.start = index.value;
+  }
+
+  /**
+   * Get start function
+   */
+  getStart() {
+    return this.start;
   }
 
   /**
@@ -98,7 +117,7 @@ export class ModuleContext {
    */
   addFunction(func /*: Func*/) {
     // eslint-disable-next-line prefer-const
-    let { params: args = [], results: result = [] } = func.signature;
+    let { params: args = [], results: result = [] } = func.signature || {};
 
     args = args.map(arg => arg.valtype);
 
