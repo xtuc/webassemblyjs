@@ -11,6 +11,7 @@
     "url": "https://github.com/xtuc/webassemblyjs.git"
   },
   "dependencies": {
+    "debug": "^3.1.0",
     "mamacro": "^0.0.3"
   },
   "devDependencies": {
