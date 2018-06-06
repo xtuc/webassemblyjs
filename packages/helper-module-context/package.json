@@ -13,6 +13,9 @@
   "dependencies": {
     "mamacro": "^0.0.3"
   },
+  "devDependencies": {
+    "@webassemblyjs/wast-parser": "1.5.10"
+  },
   "publishConfig": {
     "access": "public"
   },
