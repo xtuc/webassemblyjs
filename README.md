@@ -2,7 +2,7 @@
 
 > Toolchain for WebAssembly
 
-![npm](https://img.shields.io/npm/dm/@webassemblyjs/ast.svg)
+<img alt="npm Downloads" src="https://img.shields.io/npm/dm/@webassemblyjs/ast.svg?maxAge=43200">
 
 See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 
