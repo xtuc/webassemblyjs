@@ -1202,7 +1202,12 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       const endLoc = getPosition();
 
-      const node = t.withLoc(t.global(globalType, init), endLoc, startLoc);
+      const name = t.identifier(getUniqueName("global"));
+      const node = t.withLoc(
+        t.global(globalType, init, name),
+        endLoc,
+        startLoc
+      );
 
       globals.push(node);
       state.globalsInModule.push(node);
