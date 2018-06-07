@@ -13,5 +13,4 @@ matrix:
       env: JOB=test-ci
     - node_js: "node"
       env: JOB=test-pnpm
-
-
+      if: branch = master

@@ -948,7 +948,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
-      while (token.type !== tokens.closeParen) {
+      // $FlowIgnore
+      const signatureLength = signature.vector ? Infinity : signature.length;
+
+      while (
+        token.type !== tokens.closeParen &&
+        // $FlowIgnore
+        (token.type === tokens.openParen || signaturePtr < signatureLength)
+      ) {
         if (token.type === tokens.identifier) {
           args.push(t.identifier(token.value));
 
@@ -963,10 +970,20 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           eatToken();
         } else if (token.type === tokens.number) {
-          // $FlowIgnore
-          const valtype = signature[signaturePtr++] || "f64";
+          args.push(
+            // TODO(sven): refactor the type signature handling
+            // https://github.com/xtuc/webassemblyjs/pull/129 is a good start
+            t.numberLiteralFromRaw(
+              token.value,
+              // $FlowIgnore
+              signature[signaturePtr] || "f64"
+            )
+          );
 
-          args.push(t.numberLiteralFromRaw(token.value, valtype));
+          // $FlowIgnore
+          if (!signature.vector) {
+            ++signaturePtr;
+          }
 
           eatToken();
         } else if (token.type === tokens.openParen) {
@@ -1232,7 +1249,17 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       maybeIgnoreComment();
 
-      while (token.type === tokens.openParen) {
+      while (
+        token.type === tokens.openParen ||
+        token.type === tokens.name ||
+        token.type === tokens.valtype
+      ) {
+        // Instructions without parens
+        if (token.type === tokens.name || token.type === tokens.valtype) {
+          fnBody.push(parseFuncInstr());
+          continue;
+        }
+
         eatToken();
 
         if (lookaheadAndCheck(keywords.param) === true) {
