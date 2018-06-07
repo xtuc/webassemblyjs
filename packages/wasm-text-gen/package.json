@@ -29,6 +29,7 @@
     "@babel/generator": "^7.0.0-beta.40",
     "@babel/template": "^7.0.0-beta.40",
     "@babel/types": "^7.0.0-beta.40",
+    "@webassemblyjs/ast": "1.5.12",
     "@webassemblyjs/wasm-parser": "1.5.12",
     "commander": "^2.14.1"
   }

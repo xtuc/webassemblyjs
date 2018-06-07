@@ -39,7 +39,7 @@ test-pnpm: clean-all
 	yarn install
 	npm i -g pnpm
 	$(LERNA) exec pnpm install
-	make test
+	make build lint
 
 test: build
 	./scripts/test.sh --timeout $(TEST_TIMEOUT)
