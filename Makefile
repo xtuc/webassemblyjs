@@ -20,7 +20,7 @@ REPL = $(NODE) ./packages/repl/lib/bin.js
 .PHONY: test build
 
 clean-all:
-	rm -rf ./node_modules ./packages/*/node_modules
+	rm -rf ./node_modules ./packages/*/node_modules ./packages/*/lib
 
 bootstrap: clean-all
 	yarn install
