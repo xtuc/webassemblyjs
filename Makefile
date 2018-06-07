@@ -35,6 +35,12 @@ watch:
 test-ci: test test-whitelisted-spec lint
 test-ci-windows: test test-whitelisted-spec
 
+test-pnpm: clean-all
+	yarn install
+	npm i -g pnpm
+	$(LERNA) exec pnpm install
+	make test
+
 test: build
 	./scripts/test.sh --timeout $(TEST_TIMEOUT)
 
