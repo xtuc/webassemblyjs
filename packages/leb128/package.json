@@ -1,7 +1,8 @@
 {
   "name": "@webassemblyjs/leb128",
-  "version": "1.5.10",
+  "version": "1.5.12",
   "description": "LEB128 decoder and encoder",
+  "license": "MIT",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
