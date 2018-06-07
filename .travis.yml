@@ -8,6 +8,5 @@ before_script: make bootstrap
 
 script:
   - 'if [ "$JOB" = "test" ]; then make test-ci; fi'
-  - 'if [ "$TRAVIS_TAG" != "false" ]; then make test-pnpm; fi'
-  - 'make test-pnpm'
+  - 'if [ "$TRAVIS_TAG" != "" ]; then make test-pnpm; fi'
 
