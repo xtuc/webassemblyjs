@@ -870,7 +870,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([index], "index");
 
-          args.push(t.numberLiteralFromRaw(indexu32.value.toString(), "f64"));
+          args.push(t.numberLiteralFromRaw(indexu32.value.toString(), "u32"));
         }
       } else if (instructionByte >= 0x28 && instructionByte <= 0x40) {
         /**

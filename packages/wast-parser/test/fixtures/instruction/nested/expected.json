@@ -413,7 +413,7 @@
           "id": "br_table",
           "args": [
             {
-              "type": "FloatLiteral",
+              "type": "NumberLiteral",
               "value": 0,
               "raw": "0"
             },
