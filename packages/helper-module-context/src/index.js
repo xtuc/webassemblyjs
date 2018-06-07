@@ -207,7 +207,7 @@ export class ModuleContext {
 
   defineGlobal(global /*: Global*/) {
     const type = global.globalType.valtype;
-    const mutability = global.mutability;
+    const mutability = global.globalType.mutability;
 
     this.globals.push({ type, mutability });
 

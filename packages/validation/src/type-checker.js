@@ -1,6 +1,5 @@
 import { traverse, isInstruction } from "@webassemblyjs/ast";
 
-import { moduleContextFromModuleAST } from "@webassemblyjs/helper-module-context";
 import getType from "./type-checker/get-type.js";
 import { ANY, POLYMORPHIC } from "./type-checker/types.js";
 
@@ -30,13 +29,10 @@ function checkTypes(a, b) {
   }
 }
 
-export default function validate(ast) {
+export default function validate(ast, moduleContext) {
   if (!ast.body || !ast.body[0] || !ast.body[0].fields) {
     return [];
   }
-
-  // Module context
-  const moduleContext = moduleContextFromModuleAST(ast.body[0]);
 
   errors = [];
 

@@ -1,0 +1,1 @@
+initializer expression cannot reference mutable global

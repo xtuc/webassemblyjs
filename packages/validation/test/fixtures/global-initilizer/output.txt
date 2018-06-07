@@ -1,1 +1,0 @@
-initializer expression can only reference an imported global
