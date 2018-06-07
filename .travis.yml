@@ -1,12 +1,17 @@
 language: node_js
 
-node_js:
-  - "10"
-  - "8"
-
 before_script: make bootstrap
 
-script:
-  - make test-ci
-  - 'if [ "$TRAVIS_TAG" != "" ]; then make test-pnpm; fi'
+script: make $JOB
+
+matrix:
+  fast_finish: true
+  include:
+    - node_js: "10"
+      env: JOB=test-ci
+    - node_js: "8"
+      env: JOB=test-ci
+    - node_js: "node"
+      env: JOB=test-pnpm
+
 
