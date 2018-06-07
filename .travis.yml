@@ -7,6 +7,6 @@ node_js:
 before_script: make bootstrap
 
 script:
-  - 'if [ "$JOB" = "test" ]; then make test-ci; fi'
+  - make test-ci
   - 'if [ "$TRAVIS_TAG" != "" ]; then make test-pnpm; fi'
 
