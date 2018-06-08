@@ -17,11 +17,14 @@ export default function validateAST(ast: Program) {
 
 export function getValidationErrors(ast: Program): Array<string> {
   const errors = [];
-  const moduleContext = moduleContextFromModuleAST(ast.body[0]);
 
-  errors.push(...isConst(ast, moduleContext));
-  errors.push(...importOrderValidate(ast));
-  errors.push(...typeChecker(ast, moduleContext));
+  ast.body.filter(({ type }) => type === "Module").forEach(m => {
+    const moduleContext = moduleContextFromModuleAST(m);
+
+    errors.push(...isConst(ast, moduleContext));
+    errors.push(...importOrderValidate(ast));
+    errors.push(...typeChecker(ast, moduleContext));
+  });
 
   return errors;
 }
