@@ -18,7 +18,17 @@ export default function validateAST(ast: Program) {
 export function getValidationErrors(ast: Program): Array<string> {
   const errors = [];
 
-  ast.body.filter(({ type }) => type === "Module").forEach(m => {
+  let modules = [];
+
+  if (ast.type === "Module") {
+    modules = [ast];
+  }
+
+  if (ast.type === "Program") {
+    modules = ast.body.filter(({ type }) => type === "Module");
+  }
+
+  modules.forEach(m => {
     const moduleContext = moduleContextFromModuleAST(m);
 
     errors.push(...isConst(ast, moduleContext));

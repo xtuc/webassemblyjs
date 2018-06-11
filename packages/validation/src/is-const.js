@@ -6,9 +6,6 @@ import { traverse } from "@webassemblyjs/ast";
  * Determine if a sequence of instructions form a constant expression
  *
  * See https://webassembly.github.io/spec/core/multipage/valid/instructions.html#valid-constant
- *
- * TODO(sven): get_global x should check the mutability of x, but we don't have
- * access to the program at this point.
  */
 export default function isConst(
   ast: Program,
@@ -42,7 +39,9 @@ export default function isConst(
         true
       );
       if (!isValid) {
-        errors.push("initializer expression cannot reference mutable global");
+        errors.push(
+          "constant expression required: initializer expression cannot reference mutable global"
+        );
       }
     }
   });
