@@ -11,6 +11,7 @@
 "use strict";
 
 const assert = require("assert");
+const Long = require("long");
 
 const leb = require("../lib/leb");
 
@@ -223,7 +224,7 @@ function testValue64(value) {
     throw new Error("Bad nextIndex for " + value);
   }
 
-  if (decode.value !== value) {
+  if (decode.value.toString() != value) {
     throw new Error("Value mismatch for " + value);
   }
 
@@ -240,7 +241,7 @@ function testValue64(value) {
     throw new Error("Bad nextIndex for " + value);
   }
 
-  if (decode.value !== value) {
+  if (decode.value.toString() != value) {
     throw new Error("Value mismatch for " + value);
   }
 
@@ -342,9 +343,9 @@ function testOneByteEncodings() {
     buf[0] = value;
 
     assert.equal(leb.decodeInt32(buf).value, asSigned);
-    assert.equal(leb.decodeInt64(buf).value, asSigned);
+    assert.equal(leb.decodeInt64(buf).value.toString(), asSigned);
     assert.equal(leb.decodeUInt32(buf).value, value);
-    assert.equal(leb.decodeUInt64(buf).value, value);
+    assert.equal(leb.decodeUInt64(buf).value.toString(), asSigned);
 
     const decodeInt = leb.decodeIntBuffer(buf);
     const decodeUInt = leb.decodeUIntBuffer(buf);
@@ -380,9 +381,9 @@ function testTwoByteEncodings() {
     buf[1] = (value >> 7) & 0x7f;
 
     assert.equal(leb.decodeInt32(buf).value, asSigned);
-    assert.equal(leb.decodeInt64(buf).value, asSigned);
+    assert.equal(leb.decodeInt64(buf).value.toString(), asSigned);
     assert.equal(leb.decodeUInt32(buf).value, value);
-    assert.equal(leb.decodeUInt64(buf).value, value);
+    assert.equal(leb.decodeUInt64(buf).value.toString(), value);
 
     const decodeInt = leb.decodeIntBuffer(buf);
     const decodeUInt = leb.decodeUIntBuffer(buf);
@@ -565,7 +566,7 @@ describe("it should pass original tests", () => {
   it("testMisc32", testMisc32);
   it("testZero64", testZero64);
   it("testContiguousBits64", testContiguousBits64);
-  it("testLossy64", testLossy64);
+  it.skip("testLossy64", testLossy64); // skip because it's not lossy anymore
   it("testMisc64", testMisc64);
   it("testBuffers", testBuffers);
 });

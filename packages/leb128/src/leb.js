@@ -10,6 +10,8 @@
 
 "use strict";
 
+const Long = require("long");
+
 const bits = require("./bits");
 const bufs = require("./bufs");
 
@@ -239,20 +241,12 @@ function encodeInt64(num) {
 
 function decodeInt64(encodedBuffer, index) {
   const result = decodeIntBuffer(encodedBuffer, index);
-  const parsed = bufs.readInt(result.value);
-  const value = parsed.value;
 
-  // const hiBytes = result.value.slice(0, 4);
-  // const lowBytes = result.value.slice(4);
-
-  // const value = {
-  //   hi: bufs.readInt(hiBytes).value,
-  //   low: bufs.readInt(lowBytes).value
-  // };
+  const value = Long.fromBytesLE(result.value, false);
 
   bufs.free(result.value);
 
-  return { value: value, nextIndex: result.nextIndex, lossy: parsed.lossy };
+  return { value, nextIndex: result.nextIndex, lossy: false };
 }
 
 function encodeUIntBuffer(buffer) {
@@ -301,16 +295,12 @@ function encodeUInt64(num) {
 
 function decodeUInt64(encodedBuffer, index) {
   const result = decodeUIntBuffer(encodedBuffer, index);
-  const parsed = bufs.readUInt(result.value);
-  const value = parsed.value;
+
+  const value = Long.fromBytesLE(result.value, true);
 
   bufs.free(result.value);
 
-  if (value > MAX_UINT64) {
-    throw new Error("integer too large");
-  }
-
-  return { value: value, nextIndex: result.nextIndex, lossy: parsed.lossy };
+  return { value, nextIndex: result.nextIndex, lossy: false };
 }
 
 module.exports = {
