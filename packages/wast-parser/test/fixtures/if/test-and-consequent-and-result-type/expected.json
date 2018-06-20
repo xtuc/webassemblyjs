@@ -19,7 +19,17 @@
           "id": "if",
           "testLabel": {
             "type": "Identifier",
-            "value": "label"
+            "value": "label",
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 5
+              },
+              "end": {
+                "line": 3,
+                "column": 11
+              }
+            }
           },
           "test": [],
           "result": "i32",
@@ -35,14 +45,24 @@
                 },
                 "end": {
                   "line": 5,
-                  "column": 7
+                  "column": 6
                 }
               }
             }
           ],
           "alternate": []
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 9,
+          "column": -1
+        }
+      }
     }
   ]
 }

@@ -1,10 +1,9 @@
 // @flow
 
 import { decode } from "@webassemblyjs/wasm-parser";
-import { traverseWithHooks } from "@webassemblyjs/ast";
+import { traverse } from "@webassemblyjs/ast";
 import { cloneNode } from "@webassemblyjs/ast/lib/clone";
 import { shrinkPaddedLEB128 } from "@webassemblyjs/wasm-opt";
-import { getSectionForNode } from "@webassemblyjs/helper-wasm-section";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 import { applyOperations } from "./apply";
@@ -13,12 +12,6 @@ function hashNode(node: Node): string {
   return JSON.stringify(node);
 }
 
-const decoderOpts = {
-  // FIXME(sven): detection based on the Instr doesn't work for add()
-  // ignoreCodeSection: true,
-  ignoreDataSection: true
-};
-
 function preprocess(ab: ArrayBuffer): ArrayBuffer {
   const optBin = shrinkPaddedLEB128(new Uint8Array(ab));
   return optBin.buffer;
@@ -26,8 +19,8 @@ function preprocess(ab: ArrayBuffer): ArrayBuffer {
 
 function sortBySectionOrder(nodes: Array<Node>) {
   nodes.sort((a, b) => {
-    const sectionA = getSectionForNode(a);
-    const sectionB = getSectionForNode(b);
+    const sectionA = constants.getSectionForNode(a);
+    const sectionB = constants.getSectionForNode(b);
 
     const aId = constants.sections[sectionA];
     const bId = constants.sections[sectionB];
@@ -42,11 +35,18 @@ function sortBySectionOrder(nodes: Array<Node>) {
 }
 
 export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
-  const operations: Array<Operation> = [];
-
   ab = preprocess(ab);
 
-  const ast = decode(ab, decoderOpts);
+  const ast = decode(ab);
+  return editWithAST(ast, ab, visitors);
+}
+
+export function editWithAST(
+  ast: Program,
+  ab: ArrayBuffer,
+  visitors: Object
+): ArrayBuffer {
+  const operations: Array<Operation> = [];
 
   let uint8Buffer = new Uint8Array(ab);
 
@@ -72,7 +72,7 @@ export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
     }
   }
 
-  traverseWithHooks(ast, visitors, before, after);
+  traverse(ast, visitors, before, after);
 
   uint8Buffer = applyOperations(ast, uint8Buffer, operations);
 
@@ -82,10 +82,17 @@ export function edit(ab: ArrayBuffer, visitors: Object): ArrayBuffer {
 export function add(ab: ArrayBuffer, newNodes: Array<Node>): ArrayBuffer {
   ab = preprocess(ab);
 
+  const ast = decode(ab);
+  return addWithAST(ast, ab, newNodes);
+}
+
+export function addWithAST(
+  ast: Program,
+  ab: ArrayBuffer,
+  newNodes: Array<Node>
+): ArrayBuffer {
   // Sort nodes by insertion order
   sortBySectionOrder(newNodes);
-
-  const ast = decode(ab, decoderOpts);
 
   let uint8Buffer = new Uint8Array(ab);
 

@@ -12,12 +12,20 @@ const {
 } = require("webassemblyjs/lib/interpreter/kernel/memory");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const t = require("@webassemblyjs/ast");
+const typeCheck = require("@webassemblyjs/validation").stack;
+const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references")
+  .transform;
 
 function addEndInstruction(body) {
   body.push(t.instruction("end"));
 }
 
 export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
+  function parseQuoteModule(node /*: QuoteModule */) {
+    const raw = node.string.join("");
+    parse(raw);
+  }
+
   function decodeBinaryModule(node /*: BinaryModule */) {
     const raw = node.blob.join("");
     const chars = raw.split("");
@@ -54,9 +62,22 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
   function assert_malformed(node) {
     const [module, expected] = node.args;
 
-    if (module.type === "BinaryModule") {
+    if (t.isBinaryModule(module) === true) {
       try {
         decodeBinaryModule(module);
+        assert(
+          false,
+          `module is valid, expected malformed (${expected.value})`
+        );
+      } catch (err) {
+        assert(
+          new RegExp(expected.value, "ig").test(err.message),
+          `Expected failure of "${expected.value}", "${err.message}" given`
+        );
+      }
+    } else if (t.isQuoteModule(module) === true) {
+      try {
+        parseQuoteModule(module);
         assert(
           false,
           `module is valid, expected malformed (${expected.value})`
@@ -98,8 +119,11 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     const [module, expected] = node.args;
 
     try {
-      createModuleInstanceFromAst(module);
+      const enableTypeChecking =
+        expected.value === "type mismatch" ||
+        expected.value === "global is immutable";
 
+      createModuleInstanceFromAst(module, enableTypeChecking);
       assert(false, `module is valid, expected invalid (${expected.value})`);
     } catch (err) {
       assert(
@@ -226,6 +250,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       return;
     }
 
+    assert(typeof actual !== "undefined", "Actual value is undefined");
+
     const actualType = actual.type;
     const expectedType = expected.type;
 
@@ -269,7 +295,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     }
   }
 
-  function createModuleInstanceFromAst(moduleNode) {
+  function createModuleInstanceFromAst(moduleNode, enableTypeChecking = false) {
     const internalInstanceOptions = {
       checkForI64InSignature: false,
       returnStackLocal: true
@@ -278,9 +304,28 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     const importObject = {
       _internalInstanceOptions: internalInstanceOptions
     };
-    const module = createCompiledModule(moduleNode);
 
-    return new Instance(module, importObject);
+    if (enableTypeChecking === true) {
+      denormalizeTypeReferences(moduleNode);
+
+      const typeErrors = typeCheck(t.program([moduleNode]));
+
+      if (typeErrors.length > 0) {
+        const containsImmutableGlobalViolation = typeErrors.some(
+          x => x === "global is immutable"
+        );
+
+        if (containsImmutableGlobalViolation) {
+          throw new Error("global is immutable");
+        }
+
+        throw new Error("type mismatch");
+      }
+    }
+
+    const compiledModule = createCompiledModule(moduleNode);
+
+    return new Instance(compiledModule, importObject);
   }
 
   function replEval(input) {
@@ -330,13 +375,11 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       }
     } else if (node.type === "Module") {
       const instance = createModuleInstanceFromAst(node);
-      // prettyPrintInstance(instance);
 
       instantiatedModules.unshift(instance);
     } else {
       // else wrap the instruction it into a module and interpret it
       createModuleInstanceFromAst(wrapInModule(node));
-      // prettyPrintInstance(instance);
     }
   }
 
@@ -356,24 +399,6 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       buffer = "";
     }
   }
-
-  // function prettyPrintInstance(instance) {
-  //   if (filename !== undefined) {
-  //     return;
-  //   }
-
-  //   const exports = Object.keys(instance.exports).map(
-  //     name => `  export func "${name}"`
-  //   );
-
-  //   onLog("module:");
-
-  //   if (exports.length > 0) {
-  //     onLog(exports.join("\n"));
-  //   } else {
-  //     onLog("empty");
-  //   }
-  // }
 
   return {
     read

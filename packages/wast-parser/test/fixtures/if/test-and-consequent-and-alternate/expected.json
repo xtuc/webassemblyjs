@@ -19,9 +19,20 @@
           "id": "if",
           "testLabel": {
             "type": "Identifier",
-            "value": "label"
+            "value": "label",
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 6
+              },
+              "end": {
+                "line": 3,
+                "column": 12
+              }
+            }
           },
           "test": [],
+          "result": null,
           "consequent": [
             {
               "type": "Instr",
@@ -34,7 +45,7 @@
                 },
                 "end": {
                   "line": 5,
-                  "column": 10
+                  "column": 9
                 }
               }
             }
@@ -51,13 +62,23 @@
                 },
                 "end": {
                   "line": 8,
-                  "column": 10
+                  "column": 9
                 }
               }
             }
           ]
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 12,
+          "column": -1
+        }
+      }
     }
   ]
 }

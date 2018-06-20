@@ -6,7 +6,7 @@ const { assert } = require("chai");
 const { isConst } = require("../lib/is-const");
 
 function i32ConstOf(v) {
-  return t.objectInstruction("const", "i32", [t.numberLiteral(v)]);
+  return t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(v)]);
 }
 
 describe("validation", () => {

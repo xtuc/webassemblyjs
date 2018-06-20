@@ -6,7 +6,11 @@ cd $ROOT_DIR
 
 OPTS="$@"
 
-npm run build-fuzzer --prefix ./packages/floating-point-hex-parser
+sh ./scripts/generate-ast-utils.sh
+
+if [ -z "$DISABLE_FUZZER_TEST" ]; then
+  yarn --cwd ./packages/floating-point-hex-parser run build-fuzzer
+fi
 
 for D in ./packages/*; do
   if [ ! -d "${D}/src" ]; then

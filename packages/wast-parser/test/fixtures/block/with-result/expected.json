@@ -6,10 +6,30 @@
       "id": "block",
       "label": {
         "type": "Identifier",
-        "value": "test"
+        "value": "test",
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 8
+          },
+          "end": {
+            "line": 1,
+            "column": 13
+          }
+        }
       },
       "instr": [],
-      "result": "i32"
+      "result": "i32",
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 25
+        }
+      }
     },
     {
       "type": "BlockInstruction",
@@ -20,7 +40,17 @@
         "raw": ""
       },
       "instr": [],
-      "result": "i32"
+      "result": "i32",
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 18
+        }
+      }
     },
     {
       "type": "BlockInstruction",
@@ -31,7 +61,17 @@
         "raw": ""
       },
       "instr": [],
-      "result": "i64"
+      "result": "i64",
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 3,
+          "column": 18
+        }
+      }
     },
     {
       "type": "BlockInstruction",
@@ -42,7 +82,17 @@
         "raw": ""
       },
       "instr": [],
-      "result": "f64"
+      "result": "f64",
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 18
+        }
+      }
     }
   ]
 }

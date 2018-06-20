@@ -17,9 +17,29 @@
             "params": [],
             "results": []
           },
-          "body": []
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 10
+            },
+            "end": {
+              "line": 1,
+              "column": 13
+            }
+          }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 14
+        }
+      }
     }
   ]
 }

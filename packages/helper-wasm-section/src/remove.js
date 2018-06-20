@@ -1,9 +1,9 @@
 // @flow
 
-import { traverse, getSectionMetadata } from "@webassemblyjs/ast";
+import { traverse, getSectionMetadata, shiftSection } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-const debug = require("debug")("wasm:removesection");
+const debug = require("debug")("webassemblyjs:wasm:removesection");
 
 export function removeSection(
   ast: Program,
@@ -39,7 +39,7 @@ export function removeSection(
       }
 
       if (encounteredSection === true) {
-        path.shift(delta);
+        shiftSection(ast, path.node, delta);
 
         debug("shift section section=%s detla=%d", section, delta);
       }

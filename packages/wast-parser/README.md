@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-npm install @webassemblyjs/wast-parser
+yarn add @webassemblyjs/wast-parser
 ```
 
 ## Usage

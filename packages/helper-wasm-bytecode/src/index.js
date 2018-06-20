@@ -3,6 +3,8 @@ const illegalop = "illegal";
 const magicModuleHeader = [0x00, 0x61, 0x73, 0x6d];
 const moduleVersion = [0x01, 0x00, 0x00, 0x00];
 
+import { getSectionForNode } from "./section";
+
 function invertMap(obj, keyModifierFn = k => k) {
   const result = {};
   const keys = Object.keys(obj);
@@ -56,11 +58,6 @@ const valtypes = {
 };
 
 const valtypesByString = invertMap(valtypes);
-
-const limitHasMaximum = {
-  0x00: false,
-  0x01: true
-};
 
 const tableTypes = {
   0x70: "anyfunc"
@@ -340,12 +337,12 @@ module.exports = {
   valtypes,
   exportTypes,
   blockTypes,
-  limitHasMaximum,
   tableTypes,
   globalTypes,
   importTypes,
   valtypesByString,
   globalTypesByString,
   exportTypesByName,
-  symbolsByName
+  symbolsByName,
+  getSectionForNode
 };

@@ -1,6 +1,8 @@
 // @flow
 /* eslint no-unused-vars: off */
 
+import { type Instance } from "webassembly/lib/interpreter";
+
 type CompiledModule = {
   _ast: Program,
 

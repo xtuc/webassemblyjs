@@ -16,6 +16,16 @@
             "type": "Identifier",
             "value": "table_0",
             "raw": ""
+          },
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 10
+            },
+            "end": {
+              "line": 1,
+              "column": 24
+            }
           }
         },
         {
@@ -25,13 +35,43 @@
             "type": "ModuleExportDescr",
             "exportType": "Table",
             "id": {
-              "type": "Identifier",
-              "value": "table_0",
+              "type": "NumberLiteral",
+              "value": 0,
               "raw": "0"
+            },
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 38
+              },
+              "end": {
+                "line": 1,
+                "column": 47
+              }
+            }
+          },
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 28
+            },
+            "end": {
+              "line": 1,
+              "column": 48
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 48
+        }
+      }
     }
   ]
 }

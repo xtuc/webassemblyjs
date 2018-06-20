@@ -46,13 +46,26 @@ function restoreFunctionNames(ast) {
     ModuleExport({ node }: NodePath<ModuleExport>) {
       if (node.descr.exportType === "Func") {
         // $FlowIgnore
-        const nodeName: Identifier = node.descr.id;
-        const indexBasedFunctionName = nodeName.value;
-        const index = Number(indexBasedFunctionName.replace("func_", ""));
+        const nodeName: NumberLiteral = node.descr.id;
+        const index = nodeName.value;
         const functionName = functionNames.find(f => f.index === index);
 
         if (functionName) {
-          nodeName.value = functionName.name;
+          node.descr.id = t.identifier(functionName.name);
+        }
+      }
+    },
+
+    ModuleImport({ node }: NodePath<ModuleImport>) {
+      if (node.descr.type === "FuncImportDescr") {
+        // $FlowIgnore
+        const nodeName: NumberLiteral = node.descr.id;
+        const index = nodeName.value;
+        const functionName = functionNames.find(f => f.index === index);
+
+        if (functionName) {
+          // $FlowIgnore
+          node.descr.id = t.identifier(functionName.name);
         }
       }
     },
@@ -128,7 +141,7 @@ export function decode(buf: ArrayBuffer, customOpts: Object): Program {
   const opts: DecoderOpts = Object.assign({}, defaultDecoderOpts, customOpts);
   const ast = decoder.decode(buf, opts);
 
-  if (!opts.ignoreCustomNameSection) {
+  if (opts.ignoreCustomNameSection === false) {
     restoreFunctionNames(ast);
     restoreLocalNames(ast);
     restoreModuleName(ast);

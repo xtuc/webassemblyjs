@@ -12,7 +12,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -20,6 +19,7 @@
               "raw": "0"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 1,
@@ -27,14 +27,34 @@
             },
             "end": {
               "line": 1,
-              "column": 31
+              "column": 30
             }
           }
         }
       ],
       "name": {
         "type": "Identifier",
-        "value": "test"
+        "value": "test",
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 9
+          },
+          "end": {
+            "line": 1,
+            "column": 14
+          }
+        }
+      },
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 31
+        }
       }
     },
     {
@@ -48,7 +68,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -56,6 +75,7 @@
               "raw": "1"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 2,
@@ -63,7 +83,7 @@
             },
             "end": {
               "line": 2,
-              "column": 24
+              "column": 23
             }
           }
         }
@@ -72,6 +92,16 @@
         "type": "Identifier",
         "value": "global_1",
         "raw": ""
+      },
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 24
+        }
       }
     },
     {
@@ -85,7 +115,6 @@
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -93,6 +122,7 @@
               "raw": "1"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 3,
@@ -100,7 +130,7 @@
             },
             "end": {
               "line": 3,
-              "column": 30
+              "column": 29
             }
           }
         }
@@ -109,6 +139,16 @@
         "type": "Identifier",
         "value": "global_2",
         "raw": ""
+      },
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 3,
+          "column": 30
+        }
       }
     }
   ]

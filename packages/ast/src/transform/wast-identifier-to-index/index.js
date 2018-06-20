@@ -1,65 +1,63 @@
 // @flow
 
-import { traverse } from "../../index";
+import {
+  isBlock,
+  isFunc,
+  isIdentifier,
+  numberLiteralFromRaw,
+  traverse
+} from "../../index";
+import {
+  moduleContextFromModuleAST,
+  type ModuleContext
+} from "@webassemblyjs/helper-module-context";
 
 // FIXME(sven): do the same with all block instructions, must be more generic here
 
-const t = require("../../index");
+function newUnexpectedFunction(i) {
+  return new Error("unknown function at offset: " + i);
+}
 
 export function transform(ast: Program) {
-  const functionsInProgram: Array<Index> = [];
-  const globalsInProgram: Array<Index> = [];
+  let module;
 
-  // First collect the indices of all the functions in the Program
   traverse(ast, {
-    ModuleImport({ node }: NodePath<ModuleImport>) {
-      functionsInProgram.push(t.identifier(node.name));
-    },
-
-    Global({ node }: NodePath<Global>) {
-      if (node.name != null) {
-        globalsInProgram.push(node.name);
-      }
-    },
-
-    Func({ node }: NodePath<Func>) {
-      if (node.name == null) {
-        return;
-      }
-
-      functionsInProgram.push(node.name);
+    Module(path: NodePath<Module>) {
+      module = path.node;
     }
   });
+
+  const moduleContext = moduleContextFromModuleAST(module);
 
   // Transform the actual instruction in function bodies
   traverse(ast, {
     Func(path: NodePath<Func>) {
-      transformFuncPath(path, functionsInProgram, globalsInProgram);
+      transformFuncPath(path, moduleContext);
     },
 
     Start(path: NodePath<Start>) {
       const index = path.node.index;
 
-      const offsetInFunctionsInProgram = functionsInProgram.findIndex(
-        ({ value }) => value === index.value
-      );
+      if (isIdentifier(index) === true) {
+        const offsetInModule = moduleContext.getFunctionOffsetByIdentifier(
+          index.value
+        );
 
-      if (offsetInFunctionsInProgram === -1) {
-        throw new Error("unknown function");
+        if (typeof offsetInModule === "undefined") {
+          throw newUnexpectedFunction(index.value);
+        }
+
+        // Replace the index Identifier
+        // $FlowIgnore: reference?
+        path.node.index = numberLiteralFromRaw(offsetInModule);
       }
-
-      const indexNode = t.indexLiteral(offsetInFunctionsInProgram);
-
-      // Replace the index Identifier
-      path.node.index = indexNode;
     }
   });
 }
 
 function transformFuncPath(
   funcPath: NodePath<Func>,
-  functionsInProgram: Array<Index>,
-  globalsInProgram: Array<Index>
+  moduleContext: ModuleContext
 ) {
   const funcNode = funcPath.node;
 
@@ -69,12 +67,19 @@ function transformFuncPath(
       "Function signatures must be denormalised before execution"
     );
   }
-  const params = signature.params;
+
+  const { params } = signature;
+
+  // Add func locals in the context
+  params.forEach(p => moduleContext.addLocal(p.valtype));
 
   traverse(funcNode, {
-    Instr(instrPath: NodePath<GenericInstruction>) {
+    Instr(instrPath: NodePath<Instr>) {
       const instrNode = instrPath.node;
 
+      /**
+       * Local access
+       */
       if (
         instrNode.id === "get_local" ||
         instrNode.id === "set_local" ||
@@ -95,53 +100,90 @@ function transformFuncPath(
             );
           }
 
-          const indexNode = t.indexLiteral(offsetInParams);
-
           // Replace the Identifer node by our new NumberLiteral node
-          instrNode.args[0] = indexNode;
+          instrNode.args[0] = numberLiteralFromRaw(offsetInParams);
         }
       }
 
+      /**
+       * Global access
+       */
       if (instrNode.id === "get_global" || instrNode.id === "set_global") {
         const [firstArg] = instrNode.args;
 
-        if (firstArg.type === "Identifier") {
-          const offsetInGlobalsInProgram = globalsInProgram.findIndex(
-            ({ value }) => value === firstArg.value
+        if (isIdentifier(firstArg) === true) {
+          const globalOffset = moduleContext.getGlobalOffsetByIdentifier(
+            // $FlowIgnore: reference?
+            firstArg.value
           );
 
-          if (offsetInGlobalsInProgram === -1) {
+          if (typeof globalOffset === "undefined") {
+            // $FlowIgnore: reference?
             throw new Error(`global ${firstArg.value} not found in module`);
           }
 
-          const indexNode = t.indexLiteral(offsetInGlobalsInProgram);
+          // Replace the Identifer node by our new NumberLiteral node
+          instrNode.args[0] = numberLiteralFromRaw(globalOffset);
+        }
+      }
+
+      /**
+       * Labels lookup
+       */
+      if (instrNode.id === "br") {
+        const [firstArg] = instrNode.args;
+
+        if (isIdentifier(firstArg) === true) {
+          // if the labels is not found it is going to be replaced with -1
+          // which is invalid.
+          let relativeBlockCount = -1;
+
+          // $FlowIgnore: reference?
+          instrPath.findParent(({ node }) => {
+            if (isBlock(node)) {
+              relativeBlockCount++;
+
+              // $FlowIgnore: reference?
+              const name = node.label || node.name;
+
+              if (typeof name === "object") {
+                // $FlowIgnore: isIdentifier ensures that
+                if (name.value === firstArg.value) {
+                  // Found it
+                  return false;
+                }
+              }
+            }
+
+            if (isFunc(node)) {
+              return false;
+            }
+          });
 
           // Replace the Identifer node by our new NumberLiteral node
-          instrNode.args[0] = indexNode;
+          instrNode.args[0] = numberLiteralFromRaw(relativeBlockCount);
         }
       }
     },
 
+    /**
+     * Func lookup
+     */
     CallInstruction({ node }: NodePath<CallInstruction>) {
       const index = node.index;
 
-      if (index.type === "Identifier") {
-        const offsetInFunctionsInProgram = functionsInProgram.findIndex(
-          ({ value }) => value === index.value
+      if (isIdentifier(index) === true) {
+        const offsetInModule = moduleContext.getFunctionOffsetByIdentifier(
+          index.value
         );
 
-        if (offsetInFunctionsInProgram === -1) {
-          throw new Error(
-            `${
-              index.value
-            } not found in CallInstruction: not declared in Program`
-          );
+        if (typeof offsetInModule === "undefined") {
+          throw newUnexpectedFunction(index.value);
         }
 
-        const indexNode = t.indexLiteral(offsetInFunctionsInProgram);
-
         // Replace the index Identifier
-        node.index = indexNode;
+        // $FlowIgnore: reference?
+        node.index = numberLiteralFromRaw(offsetInModule);
       }
     }
   });

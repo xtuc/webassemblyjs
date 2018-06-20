@@ -2,7 +2,9 @@
 
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 import * as leb from "@webassemblyjs/leb128";
+import * as ieee754 from "@webassemblyjs/ieee754";
 import { encodeNode } from "../index";
+import * as utf8 from "@webassemblyjs/utf8";
 
 function assertNotIdentifierNode(n: Node) {
   if (n.type === "Identifier") {
@@ -23,6 +25,18 @@ export function encodeHeader(): Array<Byte> {
 
 export function encodeU32(v: number): Array<Byte> {
   const uint8view = new Uint8Array(leb.encodeU32(v));
+  const array = [...uint8view];
+  return array;
+}
+
+export function encodeI32(v: number): Array<Byte> {
+  const uint8view = new Uint8Array(leb.encodeI32(v));
+  const array = [...uint8view];
+  return array;
+}
+
+export function encodeI64(v: number): Array<Byte> {
+  const uint8view = new Uint8Array(leb.encodeI64(v));
   const array = [...uint8view];
   return array;
 }
@@ -53,9 +67,7 @@ export function encodeMutability(v: Mutability): Byte {
 }
 
 export function encodeUTF8Vec(str: string): Array<Byte> {
-  const charCodes = str.split("").map(x => x.charCodeAt(0));
-
-  return encodeVec(charCodes);
+  return encodeVec(utf8.encode(str));
 }
 
 export function encodeLimits(n: Limit): Array<Byte> {
@@ -222,9 +234,7 @@ export function encodeTypeInstruction(n: TypeInstruction): Array<Byte> {
   return out;
 }
 
-export function encodeInstr(
-  n: GenericInstruction | ObjectInstruction
-): Array<Byte> {
+export function encodeInstr(n: Instr): Array<Byte> {
   const out = [];
 
   let instructionName = n.id;
@@ -247,8 +257,27 @@ export function encodeInstr(
 
   if (n.args) {
     n.args.forEach(arg => {
-      if (arg.type === "NumberLiteral") {
-        out.push(...encodeU32(arg.value));
+      let encoder = encodeU32;
+
+      // find correct encoder
+      if (n.object === "i32") {
+        encoder = encodeI32;
+      }
+
+      if (n.object === "i64") {
+        encoder = encodeI64;
+      }
+
+      if (n.object === "f32") {
+        encoder = ieee754.encodeF32;
+      }
+
+      if (n.object === "f64") {
+        encoder = ieee754.encodeF64;
+      }
+
+      if (arg.type === "NumberLiteral" || arg.type === "FloatLiteral") {
+        out.push(...encoder(arg.value));
       } else {
         throw new Error(
           "Unsupported instruction argument encoding " +
@@ -274,6 +303,10 @@ function encodeExpr(instrs: Array<Instruction>): Array<Byte> {
   out.push(0x0b); // end
 
   return out;
+}
+
+export function encodeStringLiteral(n: StringLiteral): Array<Byte> {
+  return encodeUTF8Vec(n.value);
 }
 
 export function encodeGlobal(n: Global): Array<Byte> {
@@ -311,4 +344,21 @@ export function encodeIndexInFuncSection(n: IndexInFuncSection): Array<Byte> {
 
   // $FlowIgnore
   return encodeU32(n.index.value);
+}
+
+export function encodeElem(n: Elem): Array<Byte> {
+  const out = [];
+
+  assertNotIdentifierNode(n.table);
+
+  // $FlowIgnore
+  out.push(...encodeU32(n.table.value));
+  out.push(...encodeExpr(n.offset));
+
+  // $FlowIgnore
+  const funcs = n.funcs.reduce((acc, x) => [...acc, ...encodeU32(x.value)], []);
+
+  out.push(...encodeVec(funcs));
+
+  return out;
 }

@@ -18,7 +18,17 @@
         ],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 20
+        }
+      }
     },
     {
       "type": "Func",
@@ -37,7 +47,17 @@
         ],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 19
+        }
+      }
     },
     {
       "type": "Func",
@@ -56,7 +76,17 @@
         ],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 3,
+          "column": 19
+        }
+      }
     },
     {
       "type": "Func",
@@ -75,7 +105,17 @@
         ],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 19
+        }
+      }
     }
   ]
 }

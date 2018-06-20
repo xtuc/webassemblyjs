@@ -13,7 +13,17 @@
             "type": "FuncImportDescr",
             "id": {
               "type": "Identifier",
-              "value": "name"
+              "value": "name",
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 32
+                },
+                "end": {
+                  "line": 2,
+                  "column": 37
+                }
+              }
             },
             "signature": {
               "type": "Signature",
@@ -22,13 +32,33 @@
                 "i32"
               ]
             }
+          },
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 50
+            }
           }
         },
         {
           "type": "Func",
           "name": {
             "type": "Identifier",
-            "value": "main"
+            "value": "main",
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 8
+              },
+              "end": {
+                "line": 3,
+                "column": 13
+              }
+            }
           },
           "signature": {
             "type": "Signature",
@@ -47,13 +77,33 @@
                 },
                 "end": {
                   "line": 4,
-                  "column": 8
+                  "column": 7
                 }
               }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 5,
+              "column": 1
+            }
+          }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 6,
+          "column": -1
+        }
+      }
     }
   ]
 }

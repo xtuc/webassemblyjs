@@ -11,6 +11,16 @@
         "type": "Identifier",
         "value": "memory_0",
         "raw": ""
+      },
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 9
+        }
       }
     },
     {
@@ -24,6 +34,16 @@
         "type": "Identifier",
         "value": "memory_1",
         "raw": ""
+      },
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 10
+        }
       }
     },
     {
@@ -36,6 +56,16 @@
       "id": {
         "type": "Identifier",
         "value": "test"
+      },
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 3,
+          "column": 17
+        }
       }
     },
     {
@@ -47,6 +77,16 @@
       "id": {
         "type": "Identifier",
         "value": "test"
+      },
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 15
+        }
       }
     },
     {
@@ -58,6 +98,16 @@
       "id": {
         "type": "Identifier",
         "value": "a"
+      },
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 1
+        },
+        "end": {
+          "line": 5,
+          "column": 11
+        }
       }
     },
     {
@@ -70,6 +120,16 @@
         "type": "Identifier",
         "value": "memory_5",
         "raw": ""
+      },
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 1
+        },
+        "end": {
+          "line": 6,
+          "column": 11
+        }
       }
     }
   ]

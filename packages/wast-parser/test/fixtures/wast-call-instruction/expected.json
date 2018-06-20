@@ -6,7 +6,17 @@
       "id": "call",
       "index": {
         "type": "Identifier",
-        "value": "f"
+        "value": "f",
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 7
+          },
+          "end": {
+            "line": 1,
+            "column": 9
+          }
+        }
       },
       "instrArgs": [
         {
@@ -21,7 +31,6 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -29,6 +38,7 @@
                   "raw": "12"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 1,
@@ -36,7 +46,7 @@
                 },
                 "end": {
                   "line": 1,
-                  "column": 29
+                  "column": 28
                 }
               }
             }
@@ -48,14 +58,13 @@
             },
             "end": {
               "line": 1,
-              "column": 30
+              "column": 29
             }
           }
         },
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -63,6 +72,7 @@
               "raw": "2"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 1,
@@ -70,14 +80,13 @@
             },
             "end": {
               "line": 1,
-              "column": 44
+              "column": 43
             }
           }
         },
         {
           "type": "Instr",
           "id": "const",
-          "object": "i32",
           "args": [
             {
               "type": "NumberLiteral",
@@ -85,6 +94,7 @@
               "raw": "3"
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 1,
@@ -92,11 +102,21 @@
             },
             "end": {
               "line": 1,
-              "column": 58
+              "column": 57
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 58
+        }
+      }
     }
   ]
 }

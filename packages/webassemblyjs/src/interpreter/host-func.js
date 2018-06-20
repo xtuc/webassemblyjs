@@ -87,6 +87,9 @@ export function createHostfunc(
       allocator
     );
 
+    // push func's params into stackFrame locals
+    stackFrame.locals.push(...argsWithType);
+
     // 2. Enter the block instr∗ with label
     stackFrame.values.push(label.createValue(exportinst.name));
 

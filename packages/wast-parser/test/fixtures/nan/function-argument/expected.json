@@ -9,7 +9,17 @@
           "type": "Func",
           "name": {
             "type": "Identifier",
-            "value": "reinterpret_f32_i32"
+            "value": "reinterpret_f32_i32",
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 8
+              },
+              "end": {
+                "line": 2,
+                "column": 28
+              }
+            }
           },
           "signature": {
             "type": "Signature",
@@ -40,15 +50,15 @@
                 },
                 "end": {
                   "line": 3,
-                  "column": 15
+                  "column": 14
                 }
               }
             },
             {
               "type": "Instr",
               "id": "reinterpret/f32",
-              "object": "i32",
               "args": [],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 4,
@@ -56,11 +66,21 @@
                 },
                 "end": {
                   "line": 4,
-                  "column": 23
+                  "column": 22
                 }
               }
             }
-          ]
+          ],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 5,
+              "column": 1
+            }
+          }
         },
         {
           "type": "Instr",
@@ -73,15 +93,15 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "f32",
               "args": [
                 {
                   "type": "FloatLiteral",
                   "value": 4194304,
-                  "nan": true,
-                  "raw": "nan"
+                  "raw": "nan",
+                  "nan": true
                 }
               ],
+              "object": "f32",
               "loc": {
                 "start": {
                   "line": 6,
@@ -89,7 +109,7 @@
                 },
                 "end": {
                   "line": 6,
-                  "column": 46
+                  "column": 45
                 }
               }
             }
@@ -101,7 +121,7 @@
             },
             "end": {
               "line": 6,
-              "column": 47
+              "column": 46
             }
           }
         },
@@ -113,11 +133,51 @@
             "exportType": "Func",
             "id": {
               "type": "Identifier",
-              "value": "reinterpret_f32_i32"
+              "value": "reinterpret_f32_i32",
+              "loc": {
+                "start": {
+                  "line": 7,
+                  "column": 38
+                },
+                "end": {
+                  "line": 7,
+                  "column": 58
+                }
+              }
+            },
+            "loc": {
+              "start": {
+                "line": 7,
+                "column": 31
+              },
+              "end": {
+                "line": 7,
+                "column": 58
+              }
+            }
+          },
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 3
+            },
+            "end": {
+              "line": 8,
+              "column": -1
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 8,
+          "column": -1
+        }
+      }
     }
   ]
 }

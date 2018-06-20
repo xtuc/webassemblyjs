@@ -7,18 +7,48 @@
         "type": "Signature",
         "params": [],
         "results": []
+      },
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 12
+        }
       }
     },
     {
       "type": "TypeInstruction",
       "id": {
         "type": "Identifier",
-        "value": "t"
+        "value": "t",
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 6
+          },
+          "end": {
+            "line": 2,
+            "column": 8
+          }
+        }
       },
       "functype": {
         "type": "Signature",
         "params": [],
         "results": []
+      },
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 14
+        }
       }
     },
     {
@@ -31,6 +61,16 @@
           }
         ],
         "results": []
+      },
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 23
+        }
       }
     },
     {
@@ -44,6 +84,16 @@
           }
         ],
         "results": []
+      },
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 1
+        },
+        "end": {
+          "line": 5,
+          "column": 26
+        }
       }
     },
     {
@@ -54,6 +104,16 @@
         "results": [
           "i32"
         ]
+      },
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 1
+        },
+        "end": {
+          "line": 6,
+          "column": 24
+        }
       }
     },
     {
@@ -68,6 +128,16 @@
         "results": [
           "i32"
         ]
+      },
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 1
+        },
+        "end": {
+          "line": 7,
+          "column": 36
+        }
       }
     },
     {
@@ -83,6 +153,16 @@
         "results": [
           "i32"
         ]
+      },
+      "loc": {
+        "start": {
+          "line": 8,
+          "column": 1
+        },
+        "end": {
+          "line": 8,
+          "column": 39
+        }
       }
     },
     {
@@ -98,6 +178,16 @@
           }
         ],
         "results": []
+      },
+      "loc": {
+        "start": {
+          "line": 10,
+          "column": 1
+        },
+        "end": {
+          "line": 10,
+          "column": 27
+        }
       }
     }
   ]

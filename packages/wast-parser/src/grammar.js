@@ -1,22 +1,21 @@
 // @flow
+import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
+import { define } from "mamacro";
+
 import { parse32I } from "./number-literals";
 import { parseString } from "./string-literals";
-import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
-const t = require("@webassemblyjs/ast");
 
+const t = require("@webassemblyjs/ast");
 const { tokens, keywords } = require("./tokenizer");
 
-type CreateUnexpectedTokenArgs = {|
-  MSG: string
-|};
-declare function createUnexpectedToken(CreateUnexpectedTokenArgs): void;
+declare function createUnexpectedToken(msg: string): void;
 
-MACRO(
+define(
   createUnexpectedToken,
-  `return new Error(
+  msg => `return new Error(
     "\n" +
     codeFrameFromSource(source, token.loc) + "\n"
-    + MSG + ", given " + tokenToString(token)
+    + ${msg} + ", given " + tokenToString(token)
   );`
 );
 
@@ -41,6 +40,11 @@ function tokenToString(token: Object): string {
   }
 
   return token.type;
+}
+
+function identifierFromToken(token: Object): Identifier {
+  const { end, start } = token.loc;
+  return t.withLoc(t.identifier(token.value), end, start);
 }
 
 type ParserState = {
@@ -68,6 +72,21 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       token = tokensList[++current];
     }
 
+    function getEndLoc(): Position {
+      let currentToken = token;
+
+      if (typeof currentToken === "undefined") {
+        const lastToken = tokensList[tokensList.length - 1];
+        currentToken = lastToken;
+      }
+
+      return currentToken.loc.end;
+    }
+
+    function getStartLoc(): Position {
+      return token.loc.start;
+    }
+
     function eatTokenOfType(type: string) {
       if (token.type !== type) {
         throw new Error(
@@ -83,18 +102,21 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       eatToken();
     }
 
-    function parseExportIdentifier(token: Object, prefix: string) {
-      let index;
+    function parseExportIndex(token: Object): Index {
       if (token.type === tokens.identifier) {
-        index = t.identifier(token.value);
+        const index = identifierFromToken(token);
         eatToken();
+
+        return index;
       } else if (token.type === tokens.number) {
-        index = t.identifier(prefix + "_" + token.value);
-        index = t.withRaw(index, String(token.value));
+        const index = t.numberLiteralFromRaw(token.value);
 
         eatToken();
+
+        return index;
+      } else {
+        throw createUnexpectedToken("unknown export index");
       }
-      return index;
     }
 
     function lookaheadAndCheck(...tokenTypes: Array<string>): boolean {
@@ -119,8 +141,18 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     // TODO(sven): there is probably a better way to do this
     // can refactor it if it get out of hands
     function maybeIgnoreComment() {
-      if (token.type === tokens.comment) {
+      if (typeof token === "undefined") {
+        // Ignore
+        return;
+      }
+
+      while (token.type === tokens.comment) {
         eatToken();
+
+        if (typeof token === "undefined") {
+          // Hit the end
+          break;
+        }
       }
     }
 
@@ -138,7 +170,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseMemory(): Memory {
       let id = t.identifier(getUniqueName("memory"));
-      let limits = t.limits(0);
+      let limits = t.limit(0);
 
       if (token.type === tokens.string || token.type === tokens.identifier) {
         id = t.identifier(token.value);
@@ -160,7 +192,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.string);
 
         // Update limits accordingly
-        limits = t.limits(stringInitializer.length);
+        limits = t.limit(stringInitializer.length);
 
         eatTokenOfType(tokens.closeParen);
       }
@@ -173,9 +205,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken(); // export
 
         if (token.type !== tokens.string) {
-          throw createUnexpectedToken({
-            MSG: "Expected string in export"
-          });
+          throw createUnexpectedToken("Expected string in export");
         }
 
         const name = token.value;
@@ -194,7 +224,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        * Memory signature
        */
       if (token.type === tokens.number) {
-        limits = t.limits(parse32I(token.value));
+        limits = t.limit(parse32I(token.value));
         eatToken();
 
         if (token.type === tokens.number) {
@@ -234,7 +264,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
         eatTokenOfType(tokens.name); // const
 
-        const numberLiteral = t.numberLiteral(token.value, "i32");
+        const numberLiteral = t.numberLiteralFromRaw(token.value, "i32");
         offset = t.objectInstruction("const", "i32", [numberLiteral]);
         eatToken();
 
@@ -242,7 +272,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       } else {
         eatTokenOfType(tokens.name); // get_global
 
-        const numberLiteral = t.numberLiteral(token.value, "i32");
+        const numberLiteral = t.numberLiteralFromRaw(token.value, "i32");
         offset = t.instruction("get_global", [numberLiteral]);
         eatToken();
 
@@ -274,12 +304,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseTable(): Table {
       let name = t.identifier(getUniqueName("table"));
 
-      let limit = t.limits(0);
+      let limit = t.limit(0);
       const elemIndices = [];
       const elemType = "anyfunc";
 
       if (token.type === tokens.string || token.type === tokens.identifier) {
-        name = t.identifier(token.value);
+        name = identifierFromToken(token);
         eatToken();
       } else {
         name = t.withRaw(name, ""); // preserve anonymous
@@ -304,9 +334,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken(); // export
 
           if (token.type !== tokens.string) {
-            throw createUnexpectedToken({
-              MSG: "Expected string in export"
-            });
+            throw createUnexpectedToken("Expected string in export");
           }
 
           const exportName = token.value;
@@ -333,16 +361,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             const max = parseInt(token.value);
             eatToken();
 
-            limit = t.limits(min, max);
+            limit = t.limit(min, max);
           } else {
-            limit = t.limits(min);
+            limit = t.limit(min);
           }
 
           eatToken();
         } else {
-          throw createUnexpectedToken({
-            MSG: "Unexpected token"
-          });
+          throw createUnexpectedToken("Unexpected token");
         }
       }
 
@@ -394,7 +420,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         const fnResult = [];
 
         if (token.type === tokens.identifier) {
-          fnName = t.identifier(token.value);
+          fnName = identifierFromToken(token);
           eatToken();
         }
 
@@ -410,9 +436,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
             fnResult.push(...parseFuncResult());
           } else {
-            throw createUnexpectedToken({
-              MSG: "Unexpected token in import of type"
-            });
+            throw createUnexpectedToken("Unexpected token in import of type");
           }
 
           eatTokenOfType(tokens.closeParen);
@@ -422,7 +446,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           throw new Error("Imported function must have a name");
         }
 
-        descr = t.funcImportDescr(fnName, fnParams, fnResult);
+        descr = t.funcImportDescr(fnName, t.signature(fnParams, fnResult));
       } else if (isKeyword(token, keywords.global)) {
         eatToken(); // keyword
 
@@ -433,14 +457,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           const valtype = token.value;
           eatToken();
 
-          descr = t.globalImportDescr(valtype, "var");
+          descr = t.globalType(valtype, "var");
 
           eatTokenOfType(tokens.closeParen);
         } else {
           const valtype = token.value;
           eatTokenOfType(tokens.valtype);
 
-          descr = t.globalImportDescr(valtype, "const");
+          descr = t.globalType(valtype, "const");
         }
       } else if (isKeyword(token, keywords.memory) === true) {
         eatToken(); // Keyword
@@ -454,7 +478,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error("Unsupported import type: " + tokenToString(token));
       }
 
-      eatTokenOfType(tokens.closeParen);
       eatTokenOfType(tokens.closeParen);
 
       return t.moduleImport(moduleName, name, descr);
@@ -476,7 +499,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const instr = [];
 
       if (token.type === tokens.identifier) {
-        label = t.identifier(token.value);
+        label = identifierFromToken(token);
         eatToken();
       } else {
         label = t.withRaw(label, ""); // preserve anonymous
@@ -498,10 +521,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           // Instruction
           instr.push(parseFuncInstr());
         } else {
-          throw createUnexpectedToken({
-            MSG: "Unexpected token in block body of type"
-          });
+          throw createUnexpectedToken("Unexpected token in block body of type");
         }
+
+        maybeIgnoreComment();
 
         eatTokenOfType(tokens.closeParen);
       }
@@ -526,7 +549,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseIf(): IfInstruction {
-      let blockResult;
+      let blockResult = null;
       let label = t.identifier(getUniqueName("if"));
 
       const testInstrs = [];
@@ -534,7 +557,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const alternate = [];
 
       if (token.type === tokens.identifier) {
-        label = t.identifier(token.value);
+        label = identifierFromToken(token);
         eatToken();
       } else {
         label = t.withRaw(label, ""); // preserve anonymous
@@ -574,9 +597,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             ) {
               consequent.push(parseFuncInstr());
             } else {
-              throw createUnexpectedToken({
-                MSG: "Unexpected token in consequent body of type"
-              });
+              throw createUnexpectedToken(
+                "Unexpected token in consequent body of type"
+              );
             }
 
             eatTokenOfType(tokens.closeParen);
@@ -604,9 +627,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             ) {
               alternate.push(parseFuncInstr());
             } else {
-              throw createUnexpectedToken({
-                MSG: "Unexpected token in alternate body of type"
-              });
+              throw createUnexpectedToken(
+                "Unexpected token in alternate body of type"
+              );
             }
 
             eatTokenOfType(tokens.closeParen);
@@ -632,15 +655,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           continue;
         }
 
-        throw createUnexpectedToken({
-          MSG: "Unexpected token in if body"
-        });
+        throw createUnexpectedToken("Unexpected token in if body");
       }
 
       return t.ifInstruction(
         label,
-        blockResult,
         testInstrs,
+        blockResult,
         consequent,
         alternate
       );
@@ -666,7 +687,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const instr = [];
 
       if (token.type === tokens.identifier) {
-        label = t.identifier(token.value);
+        label = identifierFromToken(token);
         eatToken();
       } else {
         label = t.withRaw(label, ""); // preserve anonymous
@@ -688,9 +709,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           // Instruction
           instr.push(parseFuncInstr());
         } else {
-          throw createUnexpectedToken({
-            MSG: "Unexpected token in loop body"
-          });
+          throw createUnexpectedToken("Unexpected token in loop body");
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -741,11 +760,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
       }
 
-      if (typeRef !== undefined) {
-        return t.callIndirectInstructionWithTypeRef(typeRef, instrs);
-      } else {
-        return t.callIndirectInstruction(params, results, instrs);
-      }
+      return t.callIndirectInstruction(
+        typeRef !== undefined ? typeRef : t.signature(params, results),
+        instrs
+      );
     }
 
     /**
@@ -769,33 +787,39 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       const name = token.value;
       eatToken();
 
+      const moduleExportDescr = parseModuleExportDescr();
+
+      return t.moduleExport(name, moduleExportDescr);
+    }
+
+    function parseModuleExportDescr(): ModuleExportDescr {
+      const startLoc = getStartLoc();
+
       let type = "";
       let index;
 
-      if (token.type === tokens.openParen) {
-        eatToken();
+      eatTokenOfType(tokens.openParen);
 
-        while (token.type !== tokens.closeParen) {
-          if (isKeyword(token, keywords.func)) {
-            type = "Func";
-            eatToken();
-            index = parseExportIdentifier(token, "func");
-          } else if (isKeyword(token, keywords.table)) {
-            type = "Table";
-            eatToken();
-            index = parseExportIdentifier(token, "table");
-          } else if (isKeyword(token, keywords.global)) {
-            type = "Global";
-            eatToken();
-            index = parseExportIdentifier(token, "global");
-          } else if (isKeyword(token, keywords.memory)) {
-            type = "Memory";
-            eatToken();
-            index = parseExportIdentifier(token, "memory");
-          }
-
+      while (token.type !== tokens.closeParen) {
+        if (isKeyword(token, keywords.func)) {
+          type = "Func";
           eatToken();
+          index = parseExportIndex(token);
+        } else if (isKeyword(token, keywords.table)) {
+          type = "Table";
+          eatToken();
+          index = parseExportIndex(token);
+        } else if (isKeyword(token, keywords.global)) {
+          type = "Global";
+          eatToken();
+          index = parseExportIndex(token);
+        } else if (isKeyword(token, keywords.memory)) {
+          type = "Memory";
+          eatToken();
+          index = parseExportIndex(token);
         }
+
+        eatToken();
       }
 
       if (type === "") {
@@ -806,9 +830,12 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         throw new Error("Exported function must have a name");
       }
 
+      const node = t.moduleExportDescr(type, index);
+      const endLoc = getEndLoc();
+
       eatTokenOfType(tokens.closeParen);
 
-      return t.moduleExport(name, type, index);
+      return t.withLoc(node, endLoc, startLoc);
     }
 
     function parseModule(): Module {
@@ -850,7 +877,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           eatToken();
 
           maybeIgnoreComment();
-          maybeIgnoreComment();
         }
 
         eatTokenOfType(tokens.closeParen);
@@ -877,7 +903,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         if (state.registredExportedElements.length > 0) {
           state.registredExportedElements.forEach(decl => {
             moduleFields.push(
-              t.moduleExport(decl.name, decl.exportType, decl.id)
+              t.moduleExport(
+                decl.name,
+                t.moduleExportDescr(decl.exportType, decl.id)
+              )
             );
           });
 
@@ -909,7 +938,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         let value: any;
 
         if (token.type === tokens.number) {
-          value = t.numberLiteral(token.value);
+          value = t.numberLiteralFromRaw(token.value);
         } else {
           throw new Error("Unexpected type for argument: " + token.type);
         }
@@ -919,14 +948,21 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
-      while (token.type !== tokens.closeParen) {
+      // $FlowIgnore
+      const signatureLength = signature.vector ? Infinity : signature.length;
+
+      while (
+        token.type !== tokens.closeParen &&
+        // $FlowIgnore
+        (token.type === tokens.openParen || signaturePtr < signatureLength)
+      ) {
         if (token.type === tokens.identifier) {
           args.push(t.identifier(token.value));
 
           eatToken();
         } else if (token.type === tokens.valtype) {
           // Handle locals
-          args.push(t.valtype(token.value));
+          args.push(t.valtypeLiteral(token.value));
 
           eatToken();
         } else if (token.type === tokens.string) {
@@ -937,9 +973,17 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           args.push(
             // TODO(sven): refactor the type signature handling
             // https://github.com/xtuc/webassemblyjs/pull/129 is a good start
-            // $FlowIgnore
-            t.numberLiteral(token.value, signature[signaturePtr++] || "f64")
+            t.numberLiteralFromRaw(
+              token.value,
+              // $FlowIgnore
+              signature[signaturePtr] || "f64"
+            )
           );
+
+          // $FlowIgnore
+          if (!signature.vector) {
+            ++signaturePtr;
+          }
 
           eatToken();
         } else if (token.type === tokens.openParen) {
@@ -954,20 +998,21 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             lookaheadAndCheck(tokens.valtype) === true ||
             token.type === "keyword" // is any keyword
           ) {
+            // $FlowIgnore
             args.push(parseFuncInstr());
           } else {
-            throw createUnexpectedToken({
-              MSG: "Unexpected token in nested instruction"
-            });
+            throw createUnexpectedToken(
+              "Unexpected token in nested instruction"
+            );
           }
 
           if (token.type === tokens.closeParen) {
             eatToken();
           }
         } else {
-          throw createUnexpectedToken({
-            MSG: "Unexpected token in instruction argument"
-          });
+          throw createUnexpectedToken(
+            "Unexpected token in instruction argument"
+          );
         }
       }
 
@@ -1043,7 +1088,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      * func_type:   ( type <var> )? <param>* <result>*
      */
     function parseFuncInstr(): Instruction {
-      const startLoc = token.loc.start;
+      const startLoc = getStartLoc();
+
+      maybeIgnoreComment();
 
       /**
        * A simple instruction
@@ -1082,7 +1129,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
 
-        const signature = t.signature(object || "", name);
+        const signature = t.signatureForOpcode(object || "", name);
 
         const { args, namedArgs } = parseFuncInstrArguments(signature);
 
@@ -1121,7 +1168,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         let index;
 
         if (token.type === tokens.identifier) {
-          index = t.identifier(token.value);
+          index = identifierFromToken(token);
           eatToken();
         } else if (token.type === tokens.number) {
           index = t.indexLiteral(token.value);
@@ -1161,9 +1208,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         return module;
       } else {
-        throw createUnexpectedToken({
-          MSG: "Unexpected instruction in function body"
-        });
+        throw createUnexpectedToken("Unexpected instruction in function body");
       }
     }
 
@@ -1196,7 +1241,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       // name
       if (token.type === tokens.identifier) {
-        fnName = t.identifier(token.value);
+        fnName = identifierFromToken(token);
         eatToken();
       } else {
         fnName = t.withRaw(fnName, ""); // preserve anonymous
@@ -1204,7 +1249,17 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       maybeIgnoreComment();
 
-      while (token.type === tokens.openParen) {
+      while (
+        token.type === tokens.openParen ||
+        token.type === tokens.name ||
+        token.type === tokens.valtype
+      ) {
+        // Instructions without parens
+        if (token.type === tokens.name || token.type === tokens.valtype) {
+          fnBody.push(parseFuncInstr());
+          continue;
+        }
+
         eatToken();
 
         if (lookaheadAndCheck(keywords.param) === true) {
@@ -1229,19 +1284,17 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           // Instruction
           fnBody.push(parseFuncInstr());
         } else {
-          throw createUnexpectedToken({
-            MSG: "Unexpected token in func body"
-          });
+          throw createUnexpectedToken("Unexpected token in func body");
         }
 
         eatTokenOfType(tokens.closeParen);
       }
 
-      if (typeRef !== undefined) {
-        return t.funcWithTypeRef(fnName, typeRef, fnBody);
-      } else {
-        return t.func(fnName, fnParams, fnResult, fnBody);
-      }
+      return t.func(
+        fnName,
+        typeRef !== undefined ? typeRef : t.signature(fnParams, fnResult),
+        fnBody
+      );
     }
 
     /**
@@ -1251,9 +1304,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseFuncExport(funcId: Identifier) {
       if (token.type !== tokens.string) {
-        throw createUnexpectedToken({
-          MSG: "Function export expected a string"
-        });
+        throw createUnexpectedToken("Function export expected a string");
       }
 
       const name = token.value;
@@ -1287,7 +1338,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       let result = [];
 
       if (token.type === tokens.identifier) {
-        id = t.identifier(token.value);
+        id = identifierFromToken(token);
         eatToken();
       }
 
@@ -1298,7 +1349,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         if (token.type === tokens.closeParen) {
           eatToken();
           // function with an empty signature, we can abort here
-          return t.typeInstructionFunc([], [], id);
+          return t.typeInstruction(id, t.signature([], []));
         }
 
         if (lookaheadAndCheck(tokens.openParen, keywords.param)) {
@@ -1312,7 +1363,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (lookaheadAndCheck(tokens.openParen, keywords.result)) {
           eatToken(); // (
-          eatToken(); // param
+          eatToken(); // result
 
           result = parseFuncResult();
 
@@ -1322,7 +1373,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
       }
 
-      return t.typeInstructionFunc(params, result, id);
+      return t.typeInstruction(id, t.signature(params, result));
     }
 
     /**
@@ -1335,17 +1386,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseFuncResult(): Array<Valtype> {
       const results = [];
 
-      if (token.type !== tokens.valtype) {
-        throw createUnexpectedToken({
-          MSG: "Unexpected token in func result"
-        });
+      while (token.type !== tokens.closeParen) {
+        if (token.type !== tokens.valtype) {
+          throw createUnexpectedToken("Unexpected token in func result");
+        }
+
+        const valtype = token.value;
+        eatToken();
+
+        results.push(valtype);
       }
-
-      const valtype = token.value;
-      eatToken();
-
-      results.push(valtype);
-
       return results;
     }
 
@@ -1356,10 +1406,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseTypeReference() {
       let ref;
       if (token.type === tokens.identifier) {
-        ref = t.identifier(token.value);
+        ref = identifierFromToken(token);
         eatToken();
       } else if (token.type === tokens.number) {
-        ref = t.numberLiteral(token.value);
+        ref = t.numberLiteralFromRaw(token.value);
         eatToken();
       }
       return ref;
@@ -1387,7 +1437,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       maybeIgnoreComment();
 
       if (token.type === tokens.identifier) {
-        name = t.identifier(token.value);
+        name = identifierFromToken(token);
         eatToken();
       } else {
         name = t.withRaw(name, ""); // preserve anonymous
@@ -1438,15 +1488,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
        * global_sig
        */
       if (token.type === tokens.valtype) {
-        type = t.globalImportDescr(token.value, "const");
+        type = t.globalType(token.value, "const");
         eatToken();
       } else if (token.type === tokens.openParen) {
         eatToken(); // (
 
         if (isKeyword(token, keywords.mut) === false) {
-          throw createUnexpectedToken({
-            MSG: "Unsupported global type, expected mut"
-          });
+          throw createUnexpectedToken("Unsupported global type, expected mut");
         }
 
         eatToken(); // mut
@@ -1458,9 +1506,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       if (type === undefined) {
-        throw createUnexpectedToken({
-          MSG: "Could not determine global type"
-        });
+        throw createUnexpectedToken("Could not determine global type");
       }
 
       maybeIgnoreComment();
@@ -1530,7 +1576,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           }
         }
       } else {
-        throw new Error("Function param has no valtype");
+        // ignore
       }
 
       return params;
@@ -1547,13 +1593,13 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      * var:    <nat> | <name>
      */
     function parseElem(): Elem {
-      let tableIndex;
+      let tableIndex = t.indexLiteral(0);
 
       const offset = [];
       const funcs = [];
 
       if (token.type === tokens.identifier) {
-        tableIndex = t.identifier(token.value);
+        tableIndex = identifierFromToken(token);
         eatToken();
       }
 
@@ -1589,9 +1635,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
           eatTokenOfType(tokens.closeParen);
         } else {
-          throw createUnexpectedToken({
-            MSG: "Unsupported token in elem"
-          });
+          throw createUnexpectedToken("Unsupported token in elem");
         }
       }
 
@@ -1611,7 +1655,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseStart(): Start {
       if (token.type === tokens.identifier) {
-        const index = t.identifier(token.value);
+        const index = identifierFromToken(token);
         eatToken();
 
         return t.start(index);
@@ -1630,121 +1674,177 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     if (token.type === tokens.openParen) {
       eatToken();
 
+      const startLoc = getStartLoc();
+
       if (isKeyword(token, keywords.export)) {
         eatToken();
-        return parseExport();
+
+        const node = parseExport();
+        const endLoc = getEndLoc();
+
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.loop)) {
         eatToken();
-        return parseLoop();
+
+        const node = parseLoop();
+        const endLoc = getEndLoc();
+
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.func)) {
         eatToken();
+
         const node = parseFunc();
+        const endLoc = getEndLoc();
+
+        maybeIgnoreComment();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.module)) {
         eatToken();
-        return parseModule();
+
+        const node = parseModule();
+        const endLoc = getEndLoc();
+
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.import)) {
         eatToken();
-        return parseImport();
+
+        const node = parseImport();
+        const endLoc = getEndLoc();
+
+        eatTokenOfType(tokens.closeParen);
+
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.block)) {
         eatToken();
+
         const node = parseBlock();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.memory)) {
         eatToken();
+
         const node = parseMemory();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.data)) {
         eatToken();
+
         const node = parseData();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.table)) {
         eatToken();
+
         const node = parseTable();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.global)) {
         eatToken();
+
         const node = parseGlobal();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.type)) {
         eatToken();
+
         const node = parseType();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.start)) {
         eatToken();
+
         const node = parseStart();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       if (isKeyword(token, keywords.elem)) {
         eatToken();
+
         const node = parseElem();
+        const endLoc = getEndLoc();
+
         eatTokenOfType(tokens.closeParen);
 
-        return node;
+        return t.withLoc(node, endLoc, startLoc);
       }
 
       const instruction = parseFuncInstr();
+      const endLoc = getEndLoc();
+
+      maybeIgnoreComment();
 
       if (typeof instruction === "object") {
-        eatTokenOfType(tokens.closeParen);
+        if (typeof token !== "undefined") {
+          eatTokenOfType(tokens.closeParen);
+        }
 
-        return instruction;
+        return t.withLoc(instruction, endLoc, startLoc);
       }
     }
 
     if (token.type === tokens.comment) {
+      const startLoc = getStartLoc();
+
       const builder =
         token.opts.type === "leading" ? t.leadingComment : t.blockComment;
 
       const node = builder(token.value);
 
-      eatToken();
+      eatToken(); // comment
 
-      return node;
+      const endLoc = getEndLoc();
+
+      return t.withLoc(node, endLoc, startLoc);
     }
 
-    throw createUnexpectedToken({
-      MSG: "Unknown token"
-    });
+    throw createUnexpectedToken("Unknown token");
   }
 
   const body = [];

@@ -28,6 +28,12 @@ You can incrementally build the project with the following command:
 make watch
 ```
 
+#### With tracing
+
+```sh
+WITH_TRACE=1 make build
+```
+
 ### Running linting/tests
 
 You can run lint via:
