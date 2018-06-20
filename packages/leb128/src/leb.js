@@ -41,7 +41,7 @@ const MAX_UINT32 = 0xffffffff;
  * The maximum possible 64-bit unsigned int that is representable as a
  * JavaScript number.
  */
-const MAX_UINT64 = 0xfffffffffffff800;
+// const MAX_UINT64 = 0xfffffffffffff800;
 
 /*
  * Helper functions

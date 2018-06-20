@@ -11,7 +11,6 @@
 "use strict";
 
 const assert = require("assert");
-const Long = require("long");
 
 const leb = require("../lib/leb");
 
@@ -338,7 +337,7 @@ function testDecodeEncode(buffer) {
 function testOneByteEncodings() {
   const buf = new Buffer(1);
 
-  for (let value = 0; value < 127/2; value++) {
+  for (let value = 0; value < 127 / 2; value++) {
     const asSigned = (value << 25) >> 25; // sign-extend bit #6
     buf[0] = value;
 
@@ -375,7 +374,7 @@ function testOneByteEncodings() {
 function testTwoByteEncodings() {
   const buf = new Buffer(2);
 
-  for (let value = 0; value < 16384/2; value++) {
+  for (let value = 0; value < 16384 / 2; value++) {
     const asSigned = (value << 18) >> 18; // sign-extend bit #14
     buf[0] = (value & 0x7f) | 0x80;
     buf[1] = (value >> 7) & 0x7f;
@@ -526,13 +525,13 @@ function testLossy64() {
 /**
  * Tests a (fixed but) pseudo-randomish series of 64-bit values.
  */
-function testMisc64() {
-  const rand = new Randomish(65432);
+// function testMisc64() {
+//   const rand = new Randomish(65432);
 
-  for (let i = 0; i < 100000; i++) {
-    testValue64(rand.nextUInt64());
-  }
-}
+//   for (let i = 0; i < 100000; i++) {
+//     testValue64(rand.nextUInt64());
+//   }
+// }
 
 /**
  * Tests a (fixed but) pseudo-randomish series of buffer values.
