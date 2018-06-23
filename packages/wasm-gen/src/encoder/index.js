@@ -281,6 +281,7 @@ export function encodeInstr(n: Instr): Array<Byte> {
         arg.type === "FloatLiteral" ||
         arg.type === "LongNumberLiteral"
       ) {
+        // $FlowIgnore
         out.push(...encoder(arg.value));
       } else {
         throw new Error(
