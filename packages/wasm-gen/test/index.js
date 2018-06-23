@@ -43,7 +43,7 @@ const fixtures = [
   },
 
   {
-    name: "a (func (result i32)) ModuleImport",
+    name: '(import "a" "b" (func (result i32))',
     node: t.moduleImport(
       "a",
       "b",
