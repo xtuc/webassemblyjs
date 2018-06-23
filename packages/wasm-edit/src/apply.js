@@ -265,7 +265,6 @@ export function applyOperations(
      * Shift following operation's nodes
      */
     if (state.deltaBytes !== 0) {
-
       ops.forEach(op => {
         switch (op.kind) {
           case "update":
@@ -273,7 +272,6 @@ export function applyOperations(
             break;
 
           case "delete":
-          case "add":
             shiftLocNodeByDelta(op.node, state.deltaBytes);
             break;
         }
