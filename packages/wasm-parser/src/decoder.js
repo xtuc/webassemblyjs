@@ -1743,6 +1743,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           metadata.push(...parseNameSection(remainingBytes));
         } else {
           // We don't parse the custom section
+          // FIXME(sven): why this? and why constant 1?
           eatBytes(remainingBytes - 1 /* UTF8 vector size */);
 
           dumpSep(
