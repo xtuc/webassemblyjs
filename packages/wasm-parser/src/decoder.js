@@ -28,17 +28,6 @@ const {
   sections
 } = require("@webassemblyjs/helper-wasm-bytecode");
 
-/**
- * FIXME(sven): we can't do that because number > 2**53 will fail here
- * because they cannot be represented in js.
- */
-function badI32ToI64Conversion(value: number): LongNumber {
-  return {
-    high: value < 0 ? -1 : 0,
-    low: value >>> 0
-  };
-}
-
 function toHex(n: number): string {
   return "0x" + Number(n).toString(16);
 }
@@ -934,9 +923,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "i64 value");
 
+          const { high, low } = value;
+
           const node = {
             type: "LongNumberLiteral",
-            value: badI32ToI64Conversion(value)
+            value: { high, low }
           };
 
           args.push(node);
