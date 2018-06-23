@@ -14,7 +14,10 @@ interface Type {
 }
 
 type Decoded32 = VariableLengthValue;
-type Decoded64 = VariableLengthValue;
+type Decoded64 = {
+  value: LongNumber,
+  nextIndex: number
+};
 type DecodedF32 = VariableLengthValue;
 type DecodedF64 = VariableLengthValue;
 
