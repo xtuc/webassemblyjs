@@ -276,7 +276,11 @@ export function encodeInstr(n: Instr): Array<Byte> {
         encoder = ieee754.encodeF64;
       }
 
-      if (arg.type === "NumberLiteral" || arg.type === "FloatLiteral") {
+      if (
+        arg.type === "NumberLiteral" ||
+        arg.type === "FloatLiteral" ||
+        arg.type === "LongNumberLiteral"
+      ) {
         out.push(...encoder(arg.value));
       } else {
         throw new Error(
