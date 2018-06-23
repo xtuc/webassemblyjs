@@ -266,6 +266,7 @@ export function applyOperations(
      */
     if (state.deltaBytes !== 0) {
       ops.forEach(op => {
+        // We don't need to handle add ops, they are positioning independent
         switch (op.kind) {
           case "update":
             shiftLocNodeByDelta(op.oldNode, state.deltaBytes);
