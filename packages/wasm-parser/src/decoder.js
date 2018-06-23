@@ -921,7 +921,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = value64.value;
           eatBytes(value64.nextIndex);
 
-          dump([value], "i64 value");
+          dump([Number(value.toString())], "i64 value");
 
           const { high, low } = value;
 
@@ -938,9 +938,16 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valueu64.value;
           eatBytes(valueu64.nextIndex);
 
-          dump([value], "u64 value");
+          dump([Number(value.toString())], "u64 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          const { high, low } = value;
+
+          const node = {
+            type: "LongNumberLiteral",
+            value: { high, low }
+          };
+
+          args.push(node);
         }
 
         if (instruction.object === "f32") {
