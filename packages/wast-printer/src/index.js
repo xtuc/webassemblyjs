@@ -766,7 +766,7 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
     out += space;
     out += printIdentifier(n.label);
   }
-  
+
   if (n.result) {
     out += " (result ";
     out += n.result;
