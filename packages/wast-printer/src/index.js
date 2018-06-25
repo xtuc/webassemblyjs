@@ -767,6 +767,17 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
     out += printIdentifier(n.label);
   }
 
+  if (typeof n.result === "string") {
+    out += space;
+
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += n.result;
+    out += ")";
+  }
+
   if (n.instr.length > 0) {
     n.instr.forEach(i => {
       if (compact === false) {
