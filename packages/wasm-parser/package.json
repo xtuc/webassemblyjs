@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@webassemblyjs/helper-test-framework": "1.5.13",
+    "@webassemblyjs/helper-buffer": "1.5.13",
     "@webassemblyjs/helper-wasm-bytecode": "1.5.13",
     "@webassemblyjs/wasm-gen": "1.5.13",
     "@webassemblyjs/wast-parser": "1.5.13",
