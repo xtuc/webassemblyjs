@@ -941,9 +941,6 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([Number(value.toString())], "u64 value");
 
-<<<<<<< HEAD
-          args.push(numberLiteralFromRaw(value));
-=======
           const { high, low } = value;
 
           const node = {
@@ -952,7 +949,6 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           };
 
           args.push(node);
->>>>>>> master
         }
 
         if (instruction.object === "f32") {

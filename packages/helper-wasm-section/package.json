@@ -19,7 +19,7 @@
     "@webassemblyjs/ast": "1.5.13",
     "@webassemblyjs/helper-buffer": "1.5.13",
     "@webassemblyjs/helper-wasm-bytecode": "1.5.13",
-    "@webassemblyjs/node-helper": "1.5.12",
+    "@webassemblyjs/node-helper": "1.5.13",
     "@webassemblyjs/wasm-gen": "1.5.13",
     "debug": "^3.1.0"
   },
