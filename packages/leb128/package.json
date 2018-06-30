@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/leb128",
-  "version": "1.5.12",
+  "version": "1.5.13",
   "description": "LEB128 decoder and encoder",
   "license": "MIT",
   "main": "lib/index.js",
@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "leb": "^0.3.0"
+    "long": "4.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -32,7 +32,7 @@
     (return)
     (block)
     (block $foo)
-    (block $test)
+    (block $test (result i32))
     (block
       (nop)
     )
