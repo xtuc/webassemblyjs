@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-gen",
-  "version": "1.5.12",
+  "version": "1.5.13",
   "description": "WebAssembly binary format printer",
   "main": "lib/index.js",
   "scripts": {
@@ -16,10 +16,10 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.5.12",
-    "@webassemblyjs/helper-wasm-bytecode": "1.5.12",
-    "@webassemblyjs/ieee754": "1.5.12",
-    "@webassemblyjs/leb128": "1.5.12",
-    "@webassemblyjs/utf8": "1.5.12"
+    "@webassemblyjs/ast": "1.5.13",
+    "@webassemblyjs/helper-wasm-bytecode": "1.5.13",
+    "@webassemblyjs/ieee754": "1.5.13",
+    "@webassemblyjs/leb128": "1.5.13",
+    "@webassemblyjs/utf8": "1.5.13"
   }
 }

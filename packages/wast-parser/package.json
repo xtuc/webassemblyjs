@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wast-parser",
-  "version": "1.5.12",
+  "version": "1.5.13",
   "description": "WebAssembly text format parser",
   "keywords": [
     "webassembly",
@@ -17,16 +17,16 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.5.12",
-    "@webassemblyjs/floating-point-hex-parser": "1.5.12",
-    "@webassemblyjs/helper-api-error": "1.5.12",
-    "@webassemblyjs/helper-code-frame": "1.5.12",
-    "@webassemblyjs/helper-fsm": "1.5.12",
+    "@webassemblyjs/ast": "1.5.13",
+    "@webassemblyjs/floating-point-hex-parser": "1.5.13",
+    "@webassemblyjs/helper-api-error": "1.5.13",
+    "@webassemblyjs/helper-code-frame": "1.5.13",
+    "@webassemblyjs/helper-fsm": "1.5.13",
     "long": "^3.2.0",
     "mamacro": "^0.0.3"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-test-framework": "1.5.12"
+    "@webassemblyjs/helper-test-framework": "1.5.13"
   },
   "repository": {
     "type": "git",

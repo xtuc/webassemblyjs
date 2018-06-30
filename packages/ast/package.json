@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/ast",
-  "version": "1.5.12",
+  "version": "1.5.13",
   "description": "AST utils for webassemblyjs",
   "keywords": [
     "webassembly",
@@ -11,9 +11,9 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/helper-module-context": "1.5.12",
-    "@webassemblyjs/helper-wasm-bytecode": "1.5.12",
-    "@webassemblyjs/wast-parser": "1.5.12",
+    "@webassemblyjs/helper-module-context": "1.5.13",
+    "@webassemblyjs/helper-wasm-bytecode": "1.5.13",
+    "@webassemblyjs/wast-parser": "1.5.13",
     "debug": "^3.1.0",
     "mamacro": "^0.0.3"
   },
@@ -25,7 +25,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-test-framework": "1.5.12",
+    "@webassemblyjs/helper-test-framework": "1.5.13",
     "array.prototype.flatmap": "^1.2.1",
     "dump-exports": "^0.1.0"
   }
