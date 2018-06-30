@@ -26,9 +26,7 @@ describe("kernel exec - memory instructions", () => {
       args: [],
 
       code: [
-        t.objectInstruction("const", "i64", [
-          numberLiteralFromRaw("10", "i64")
-        ])
+        t.objectInstruction("const", "i64", [numberLiteralFromRaw("10", "i64")])
       ],
 
       resEqual: new i64(new Long.fromString("10"))
@@ -49,9 +47,7 @@ describe("kernel exec - memory instructions", () => {
 
       args: [],
 
-      code: [
-        t.objectInstruction("const", "f32", [numberLiteralFromRaw(10.0)])
-      ],
+      code: [t.objectInstruction("const", "f32", [numberLiteralFromRaw(10.0)])],
 
       resEqual: new f32(10.0)
     },
@@ -61,9 +57,7 @@ describe("kernel exec - memory instructions", () => {
 
       args: [],
 
-      code: [
-        t.objectInstruction("const", "f64", [numberLiteralFromRaw(10.0)])
-      ],
+      code: [t.objectInstruction("const", "f64", [numberLiteralFromRaw(10.0)])],
 
       resEqual: new f64(10.0)
     },

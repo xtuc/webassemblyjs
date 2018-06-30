@@ -155,9 +155,7 @@ describe("kernel exec - store / load instructions", () => {
     // to test, we store a value, then load it
     const code = [
       t.objectInstruction("const", "i32", [numberLiteralFromRaw(4)]),
-      t.objectInstruction("const", "i32", [
-        numberLiteralFromRaw(-0x01020304)
-      ]),
+      t.objectInstruction("const", "i32", [numberLiteralFromRaw(-0x01020304)]),
       t.objectInstruction("store", "i32"),
       t.objectInstruction("const", "i32", [numberLiteralFromRaw(4)]),
       t.objectInstruction("load16_s", "i32"),
@@ -182,9 +180,7 @@ describe("kernel exec - store / load instructions", () => {
     // to test, we store a value, then load it
     const code = [
       t.objectInstruction("const", "i32", [numberLiteralFromRaw(4)]),
-      t.objectInstruction("const", "i32", [
-        numberLiteralFromRaw(-0x01020304)
-      ]),
+      t.objectInstruction("const", "i32", [numberLiteralFromRaw(-0x01020304)]),
       t.objectInstruction("store", "i32"),
       t.objectInstruction("const", "i32", [numberLiteralFromRaw(4)]),
       t.objectInstruction("load16_u", "i32"),
@@ -290,9 +286,7 @@ describe("kernel exec - store / load instructions", () => {
     // to test, we store a value, then load it
     const code = [
       t.objectInstruction("const", "i32", [numberLiteralFromRaw(4)]),
-      t.objectInstruction("const", "i32", [
-        numberLiteralFromRaw(-0x01020304)
-      ]),
+      t.objectInstruction("const", "i32", [numberLiteralFromRaw(-0x01020304)]),
       t.objectInstruction("store", "i32"),
       t.objectInstruction("const", "i32", [numberLiteralFromRaw(4)]),
       t.objectInstruction("load8_u", "i32"),
@@ -317,9 +311,7 @@ describe("kernel exec - store / load instructions", () => {
     // to test, we store a value, then load it
     const code = [
       t.objectInstruction("const", "i32", [numberLiteralFromRaw(4)]),
-      t.objectInstruction("const", "i32", [
-        numberLiteralFromRaw(-0x01020304)
-      ]),
+      t.objectInstruction("const", "i32", [numberLiteralFromRaw(-0x01020304)]),
       t.objectInstruction("store", "i32"),
       t.objectInstruction("const", "i32", [numberLiteralFromRaw(4)]),
       t.objectInstruction("load8_s", "i32"),
