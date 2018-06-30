@@ -1,6 +1,7 @@
 // @flow
 
 const t = require("@webassemblyjs/ast");
+const { numberLiteralFromRaw } = require("@webassemblyjs/node-helper");
 
 const { assert } = require("chai");
 
@@ -223,7 +224,7 @@ describe("module create interface", () => {
   describe("global", () => {
     it("should have a value", () => {
       const initNode = [
-        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
+        t.objectInstruction("const", "i32", [numberLiteralFromRaw(10)]),
         t.instruction("end")
       ];
 

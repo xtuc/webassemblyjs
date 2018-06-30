@@ -1,6 +1,7 @@
 // @flow
 
 const t = require("@webassemblyjs/ast");
+const { numberLiteralFromRaw } = require("@webassemblyjs/node-helper");
 
 const { assert } = require("chai");
 
@@ -94,7 +95,7 @@ describe("kernel exec - control instruction", () => {
     it("should remove the label when existing the block", () => {
       const code = [
         t.blockInstruction(t.identifier("label"), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
+          t.objectInstruction("const", "i32", [numberLiteralFromRaw(10)]),
           t.instruction("end")
         ]),
         t.instruction("end")
@@ -111,11 +112,11 @@ describe("kernel exec - control instruction", () => {
     it("should break if non-zero", () => {
       const code = [
         t.func(t.identifier("label"), t.signature([], []), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)]),
+          t.objectInstruction("const", "i32", [numberLiteralFromRaw(2)]),
           t.instruction("end")
         ]),
 
-        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+        t.objectInstruction("const", "i32", [numberLiteralFromRaw(1)]),
         t.instruction("br_if", [t.identifier("label")]),
         t.instruction("end")
       ];
@@ -130,14 +131,14 @@ describe("kernel exec - control instruction", () => {
     it("should not break if zero", () => {
       const code = [
         t.func(t.identifier("label"), t.signature([], []), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(20)]),
+          t.objectInstruction("const", "i32", [numberLiteralFromRaw(20)]),
           t.instruction("end")
         ]),
 
-        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
+        t.objectInstruction("const", "i32", [numberLiteralFromRaw(0)]),
         t.instruction("br_if", [t.identifier("label")]),
 
-        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+        t.objectInstruction("const", "i32", [numberLiteralFromRaw(1)]),
         t.instruction("end")
       ];
 
@@ -156,7 +157,7 @@ describe("kernel exec - control instruction", () => {
           t.identifier("test"),
           t.signature([t.instruction("end")], [t.instruction("end")]),
           [
-            t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
+            t.objectInstruction("const", "i32", [numberLiteralFromRaw(0)]),
             t.instruction("end")
           ]
         ),
@@ -165,7 +166,7 @@ describe("kernel exec - control instruction", () => {
           t.identifier("test"),
           [t.instruction("end")],
           [
-            t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
+            t.objectInstruction("const", "i32", [numberLiteralFromRaw(10)]),
             t.instruction("end")
           ],
           [t.instruction("end")]
@@ -181,7 +182,7 @@ describe("kernel exec - control instruction", () => {
     it("should NOT execute consequent but alternate when test is zero", () => {
       const code = [
         t.func(t.identifier("test"), t.signature([], []), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
+          t.objectInstruction("const", "i32", [numberLiteralFromRaw(0)]),
           t.instruction("end")
         ]),
 
@@ -190,7 +191,7 @@ describe("kernel exec - control instruction", () => {
           [t.instruction("end")],
           [t.instruction("end")],
           [
-            t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
+            t.objectInstruction("const", "i32", [numberLiteralFromRaw(10)]),
             t.instruction("end")
           ]
         )
@@ -205,7 +206,7 @@ describe("kernel exec - control instruction", () => {
     it("should execute consequent when test is non-zero", () => {
       const code = [
         t.func(t.identifier("test"), t.signature([], []), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+          t.objectInstruction("const", "i32", [numberLiteralFromRaw(1)]),
           t.instruction("end")
         ]),
 
@@ -214,7 +215,7 @@ describe("kernel exec - control instruction", () => {
           [t.instruction("end")],
           [t.instruction("end")],
           [
-            t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
+            t.objectInstruction("const", "i32", [numberLiteralFromRaw(10)]),
             t.instruction("end")
           ]
         )

@@ -6,7 +6,6 @@ const {
   compare
 } = require("@webassemblyjs/helper-test-framework");
 
-const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const {
   encodeVersion,
   encodeHeader
@@ -65,6 +64,11 @@ describe("Binary decoder", () => {
   };
 
   compare(testSuites, getActual, getExpected);
+
+  function makeBuffer(...splitedBytes) {
+    const bytes = [].concat.apply([], splitedBytes);
+    return new Uint8Array(bytes).buffer;
+  }
 
   describe("section ordering", () => {
     it("should throw when the section are in the wrong order", () => {

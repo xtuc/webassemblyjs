@@ -1,6 +1,7 @@
 // @flow
 
 const t = require("@webassemblyjs/ast");
+const { numberLiteralFromRaw } = require("@webassemblyjs/node-helper");
 
 const Long = require("long");
 const { assert } = require("chai");
@@ -26,7 +27,7 @@ describe("kernel exec - memory instructions", () => {
 
       code: [
         t.objectInstruction("const", "i64", [
-          t.numberLiteralFromRaw("10", "i64")
+          numberLiteralFromRaw("10", "i64")
         ])
       ],
 
@@ -38,7 +39,7 @@ describe("kernel exec - memory instructions", () => {
 
       args: [],
 
-      code: [t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])],
+      code: [t.objectInstruction("const", "i32", [numberLiteralFromRaw(10)])],
 
       resEqual: new i32(new Long.fromString("10"))
     },
@@ -49,7 +50,7 @@ describe("kernel exec - memory instructions", () => {
       args: [],
 
       code: [
-        t.objectInstruction("const", "f32", [t.numberLiteralFromRaw(10.0)])
+        t.objectInstruction("const", "f32", [numberLiteralFromRaw(10.0)])
       ],
 
       resEqual: new f32(10.0)
@@ -61,7 +62,7 @@ describe("kernel exec - memory instructions", () => {
       args: [],
 
       code: [
-        t.objectInstruction("const", "f64", [t.numberLiteralFromRaw(10.0)])
+        t.objectInstruction("const", "f64", [numberLiteralFromRaw(10.0)])
       ],
 
       resEqual: new f64(10.0)
@@ -74,10 +75,10 @@ describe("kernel exec - memory instructions", () => {
 
       code: [
         t.instruction("set_local", [
-          t.numberLiteralFromRaw(0),
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])
+          numberLiteralFromRaw(0),
+          t.objectInstruction("const", "i32", [numberLiteralFromRaw(10)])
         ]),
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)])
+        t.instruction("get_local", [numberLiteralFromRaw(0)])
       ],
 
       resEqual: new i32(10)
@@ -90,8 +91,8 @@ describe("kernel exec - memory instructions", () => {
 
       code: [
         t.instruction("tee_local", [
-          t.numberLiteralFromRaw(0),
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)])
+          numberLiteralFromRaw(0),
+          t.objectInstruction("const", "i32", [numberLiteralFromRaw(2)])
         ])
       ],
 

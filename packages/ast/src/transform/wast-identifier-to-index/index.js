@@ -1,12 +1,7 @@
 // @flow
 
-import {
-  isBlock,
-  isFunc,
-  isIdentifier,
-  numberLiteralFromRaw,
-  traverse
-} from "../../index";
+import { isBlock, isFunc, isIdentifier, traverse } from "../../index";
+import { numberLiteralFromRaw } from "@webassemblyjs/node-helper";
 import {
   moduleContextFromModuleAST,
   type ModuleContext

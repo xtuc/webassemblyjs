@@ -18,6 +18,7 @@
   "dependencies": {
     "@webassemblyjs/ast": "1.5.12",
     "@webassemblyjs/helper-module-context": "1.5.12",
+    "@webassemblyjs/node-helper": "1.5.12",
     "debug": "3.0.1"
   },
   "devDependencies": {

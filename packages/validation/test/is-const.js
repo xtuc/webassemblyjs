@@ -1,12 +1,13 @@
 // @flow
 
 const t = require("@webassemblyjs/ast");
+const { numberLiteralFromRaw } = require("@webassemblyjs/node-helper");
 const { assert } = require("chai");
 
 const { isConst } = require("../lib/is-const");
 
 function i32ConstOf(v) {
-  return t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(v)]);
+  return t.objectInstruction("const", "i32", [numberLiteralFromRaw(v)]);
 }
 
 describe("validation", () => {

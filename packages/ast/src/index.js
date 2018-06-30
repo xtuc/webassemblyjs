@@ -3,7 +3,6 @@
 export * from "./nodes";
 
 export {
-  numberLiteralFromRaw,
   withLoc,
   withRaw,
   funcParam,

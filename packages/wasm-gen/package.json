@@ -20,6 +20,7 @@
     "@webassemblyjs/helper-wasm-bytecode": "1.5.12",
     "@webassemblyjs/ieee754": "1.5.12",
     "@webassemblyjs/leb128": "1.5.12",
+    "@webassemblyjs/node-helper": "1.5.12",
     "@webassemblyjs/utf8": "1.5.12"
   }
 }
