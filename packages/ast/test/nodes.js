@@ -34,10 +34,7 @@ describe("Node utils", () => {
 
       const fn = () => table("bar", fooNode);
 
-      assert.throws(
-        fn,
-        "Argument limits must be of type Limit, given: Foo"
-      );
+      assert.throws(fn, "Argument limits must be of type Limit, given: Foo");
     });
 
     it("should throw when passing a wrong JS type", () => {
