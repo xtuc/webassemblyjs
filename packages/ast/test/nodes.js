@@ -9,7 +9,10 @@ const {
   isStringLiteral,
 
   assertNumberLiteral,
-  assertStringLiteral
+  assertStringLiteral,
+
+  table,
+  identifier
 } = require("../lib/nodes.js");
 
 describe("Node utils", () => {
@@ -24,6 +27,26 @@ describe("Node utils", () => {
 
       assert.typeOf(n.raw, "string");
       assert.equal(n.raw, "1");
+    });
+
+    it("should throw when passing a wrong Node type", () => {
+      const fooNode = { type: "Foo" };
+
+      const fn = () => table("bar", fooNode);
+
+      assert.throws(
+        fn,
+        "Argument limits must be of type Limit, given: Foo"
+      );
+    });
+
+    it("should throw when passing a wrong JS type", () => {
+      const fn = () => identifier(true);
+
+      assert.throws(
+        fn,
+        "Argument value must be of type string, given: boolean"
+      );
     });
   });
 
