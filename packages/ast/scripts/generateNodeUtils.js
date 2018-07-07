@@ -21,23 +21,36 @@ function params(fields) {
     .join(",");
 }
 
-function assertParamType({ array, name, type }) {
+function assertParamType({ assertNodeType, array, name, type }) {
   if (array) {
     // TODO - assert contents of array?
     return `assert(typeof ${name} === "object" && typeof ${name}.length !== "undefined")\n`;
   } else {
-    if (!jsTypes.includes(type)) {
-      return "";
+    if (jsTypes.includes(type)) {
+      return `assert(
+          typeof ${name} === "${type}",
+          "Argument ${name} must be of type ${type}, given: " + typeof ${name}
+      )`;
     }
-    return `assert(typeof ${name} === "${type}")\n`;
+
+    if (assertNodeType === true) {
+      return `assert(
+        ${name}.type === "${type}",
+        "Argument ${name} must be of type ${type}, given: " + ${name}.type
+      )`;
+    }
+
+    return "";
   }
 }
 
 function assertParam(meta) {
   const paramAssertion = assertParamType(meta);
+
   if (paramAssertion === "") {
     return "";
   }
+
   if (meta.maybe || meta.optional) {
     return `
       if (${meta.name} !== null && ${meta.name} !== undefined) {

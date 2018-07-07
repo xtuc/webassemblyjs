@@ -394,6 +394,7 @@ defineType("Table", {
       type: "TableElementType"
     },
     limits: {
+      assertNodeType: true,
       type: "Limit"
     },
     name: {
