@@ -292,7 +292,7 @@ describe("AST traverse", () => {
 
       it("should remove export in module", () => {
         const root = t.module("test", [
-          t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
+          t.moduleExport("a", t.moduleExportDescr("Func", t.indexOfIndex(t.indexLiteral(0))))
         ]);
 
         traverse(root, {

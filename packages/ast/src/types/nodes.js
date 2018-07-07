@@ -43,7 +43,8 @@ type Node =
   | CallInstruction
   | CallIndirectInstruction
   | ByteArray
-  | Func;
+  | Func
+  | Index;
 
 type Block = LoopInstruction | BlockInstruction | Func;
 
@@ -366,4 +367,11 @@ type Func = {
   body: Array<Instruction>,
   isExternal?: boolean,
   metadata?: FuncMetadata
+};
+
+type Index = {
+  ...BaseNode,
+  type: "Index",
+  index: ?Idx,
+  identifier: ?Identifier
 };

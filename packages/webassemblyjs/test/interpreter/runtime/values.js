@@ -34,10 +34,14 @@ describe("module create interface", () => {
       const exportName = "foo";
 
       const node = t.module(null, [
-        t.func(t.identifier(exportName), t.signature([], []), []),
+        t.func(
+          t.indexOfIdentifier(t.identifier(exportName)),
+          t.signature([], []),
+          []
+        ),
         t.moduleExport(
           exportName,
-          t.moduleExportDescr("Func", t.identifier(exportName))
+          t.moduleExportDescr("Func", t.indexOfIdentifier(t.identifier(exportName)))
         )
       ]);
 

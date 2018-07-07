@@ -195,7 +195,7 @@ describe("insert a node", () => {
       undefined,
       t.signature(func.signature.params, func.signature.results)
     );
-    const funcindex = t.indexInFuncSection(t.indexLiteral(0));
+    const funcindex = t.indexInFuncSection(t.indexOfIndex(t.indexLiteral(0)));
 
     it("should insert the node in existing sections", () => {
       const actual = makeBuffer(

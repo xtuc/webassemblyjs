@@ -8,7 +8,9 @@ const codeFrame = require("../lib").codeFrameFromAst;
 
 describe("code frame", () => {
   const m = t.program([
-    t.module(null, [t.func(t.identifier("foo"), t.signature([], []), [])])
+    t.module(null, [
+      t.func(t.indexOfIdentifier(t.identifier("foo")), t.signature([], []), [])
+    ])
   ]);
 
   it("should point to a location", () => {

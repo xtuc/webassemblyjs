@@ -272,7 +272,8 @@ defineType("Elem", {
   unionType: ["Node"],
   fields: {
     table: {
-      type: "Index"
+      type: "Index",
+      assertNodeType: true,
     },
     offset: {
       array: true,
@@ -280,7 +281,8 @@ defineType("Elem", {
     },
     funcs: {
       array: true,
-      type: "Index"
+      type: "Index",
+      assertNodeType: true,
     }
   }
 });
@@ -289,7 +291,8 @@ defineType("IndexInFuncSection", {
   unionType: ["Node"],
   fields: {
     index: {
-      type: "Index"
+      type: "Index",
+      assertNodeType: true,
     }
   }
 });
@@ -308,7 +311,8 @@ defineType("TypeInstruction", {
   fields: {
     id: {
       maybe: true,
-      type: "Index"
+      type: "Index",
+      assertNodeType: true,
     },
     functype: {
       type: "Signature"
@@ -320,7 +324,9 @@ defineType("Start", {
   unionType: ["Node"],
   fields: {
     index: {
-      type: "Index"
+      assertNodeType: true,
+      type: "Index",
+      assertNodeType: true,
     }
   }
 });
@@ -404,7 +410,8 @@ defineType("Table", {
     elements: {
       array: true,
       optional: true,
-      type: "Index"
+      type: "Index",
+      assertNodeType: true,
     }
   }
 });
@@ -417,7 +424,8 @@ defineType("Memory", {
     },
     id: {
       maybe: true,
-      type: "Index"
+      type: "Index",
+      assertNodeType: true,
     }
   }
 });
@@ -456,7 +464,8 @@ defineType("ModuleExportDescr", {
       type: "ExportDescrType"
     },
     id: {
-      type: "Index"
+      type: "Index",
+      assertNodeType: true,
     }
   }
 });
@@ -555,6 +564,7 @@ defineType("CallInstruction", {
       value: "call"
     },
     index: {
+      assertNodeType: true,
       type: "Index"
     },
     instrArgs: {
@@ -599,7 +609,8 @@ defineType("Func", {
   fields: {
     name: {
       maybe: true,
-      type: "Index"
+      type: "Index",
+      assertNodeType: true,
     },
     signature: {
       type: "SignatureOrTypeRef"
@@ -616,6 +627,21 @@ defineType("Func", {
     metadata: {
       optional: true,
       type: "FuncMetadata"
+    }
+  }
+});
+
+defineType("Index", {
+  unionType: ["Node"],
+  fields: {
+    index: {
+      maybe: true,
+      type: "Idx"
+    },
+    identifier: {
+      assertNodeType: true,
+      maybe: true,
+      type: "Identifier"
     }
   }
 });

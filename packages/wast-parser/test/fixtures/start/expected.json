@@ -41,16 +41,20 @@
         {
           "type": "Start",
           "index": {
-            "type": "Identifier",
-            "value": "fn",
-            "loc": {
-              "start": {
-                "line": 3,
-                "column": 9
-              },
-              "end": {
-                "line": 3,
-                "column": 12
+            "type": "Index",
+            "index": null,
+            "identifier": {
+              "type": "Identifier",
+              "value": "fn",
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 9
+                },
+                "end": {
+                  "line": 3,
+                  "column": 12
+                }
               }
             }
           },
