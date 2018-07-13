@@ -59,8 +59,8 @@ function restoreFunctionNames(ast) {
     ModuleImport({ node }: NodePath<ModuleImport>) {
       if (node.descr.type === "FuncImportDescr") {
         // $FlowIgnore
-        const nodeName: NumberLiteral = node.descr.id;
-        const index = nodeName.value;
+        const indexBasedFunctionName: string = node.descr.id;
+        const index = Number(indexBasedFunctionName.replace("func_", ""));
         const functionName = functionNames.find(f => f.index === index);
 
         if (functionName) {

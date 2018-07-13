@@ -405,8 +405,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       const name = token.value;
-
-      let fnName = t.identifier(`${moduleName}.${name}`);
       eatToken();
 
       eatTokenOfType(tokens.openParen);
@@ -418,6 +416,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         const fnParams = [];
         const fnResult = [];
+
+        let fnName = t.identifier(getUniqueName("func"));
 
         if (token.type === tokens.identifier) {
           fnName = identifierFromToken(token);
