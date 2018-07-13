@@ -234,6 +234,26 @@ const fixtures = [
     name: "./-Ɂ?_¶",
     node: t.stringLiteral("./-Ɂ?_¶"),
     expected: [9, 0x2e, 0x2f, 0x2d, 0xc9, 0x81, 0x3f, 0x5f, 0xc2, 0xb6]
+  },
+
+  {
+    name: "0123456789 (x13)",
+    node: t.stringLiteral("0123456789".repeat(13)),
+    expected: [].concat.apply(
+      [0x82, 0x01],
+      new Array(13).fill([
+        0x30,
+        0x31,
+        0x32,
+        0x33,
+        0x34,
+        0x35,
+        0x36,
+        0x37,
+        0x38,
+        0x39
+      ])
+    )
   }
 
   // TODO(sven): utf8 encoder fails here

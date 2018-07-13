@@ -42,8 +42,8 @@ export function encodeI64(v: number): Array<Byte> {
 }
 
 export function encodeVec(elements: Array<Byte>): Array<Byte> {
-  const size = elements.length;
-  return [size, ...elements];
+  const size = encodeU32(elements.length);
+  return [...size, ...elements];
 }
 
 export function encodeValtype(v: Valtype): Byte {
