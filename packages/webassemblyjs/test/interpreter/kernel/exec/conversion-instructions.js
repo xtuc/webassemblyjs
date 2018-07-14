@@ -1,6 +1,7 @@
 // @flow
 
 const t = require("@webassemblyjs/ast");
+const { numberLiteralFromRaw } = require("@webassemblyjs/node-helper");
 
 const Long = require("long");
 const { assert } = require("chai");
@@ -41,7 +42,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 3.1415926, type: "f32" }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -54,7 +55,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 0.0, type: "f32" }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -67,7 +68,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: -0.0, type: "f32" }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -80,7 +81,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 0x400000, type: "f32", nan: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -92,7 +93,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: -0x400000, type: "f32", nan: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -105,7 +106,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: -0x7fffff, type: "f32", nan: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -117,7 +118,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 0x200000, type: "f32", nan: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -129,7 +130,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: -0x200000, type: "f32", nan: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -142,7 +143,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 1, type: "f32", inf: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -154,7 +155,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: -1, type: "f32", inf: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f32", "i32")
       ],
 
@@ -167,7 +168,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 0.0, type: "f64" }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f64", "i64")
       ],
 
@@ -180,7 +181,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 3.14159265358979, type: "f64" }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f64", "i64")
       ],
 
@@ -193,7 +194,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 0.0, type: "f64" }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f64", "i64")
       ],
 
@@ -206,7 +207,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: -0.0, type: "f64" }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f64", "i64")
       ],
 
@@ -218,7 +219,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 1, type: "f64", inf: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f64", "i64")
       ],
 
@@ -230,7 +231,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: -1, type: "f64", inf: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f64", "i64")
       ],
 
@@ -242,7 +243,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: -0xfffffffffffff, type: "f64", nan: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f64", "i64")
       ],
 
@@ -254,7 +255,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: 0x4000000000000, type: "f64", nan: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f64", "i64")
       ],
 
@@ -266,7 +267,7 @@ describe("kernel exec - conversion instructions", () => {
       args: [{ value: -0x4000000000000, type: "f64", nan: true }],
 
       code: [
-        t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
+        t.instruction("get_local", [numberLiteralFromRaw(0)]),
         t.objectInstruction("reinterpret/f64", "i64")
       ],
 

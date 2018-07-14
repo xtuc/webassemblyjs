@@ -1,6 +1,7 @@
 // @flow
 
 const t = require("@webassemblyjs/ast");
+const { numberLiteralFromRaw } = require("@webassemblyjs/node-helper");
 
 const { assert } = require("chai");
 
@@ -20,8 +21,8 @@ describe("kernel exec - parametric instructions", () => {
       args: [],
 
       code: [
-        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
-        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)]),
+        t.objectInstruction("const", "i32", [numberLiteralFromRaw(1)]),
+        t.objectInstruction("const", "i32", [numberLiteralFromRaw(2)]),
         t.instruction("drop", [])
       ],
 

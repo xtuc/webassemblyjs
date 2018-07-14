@@ -1,8 +1,9 @@
 // @flow
 import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 import { define } from "mamacro";
+import { numberLiteralFromRaw } from "@webassemblyjs/node-helper";
 
-import { parse32I } from "./number-literals";
+import { parse32I } from "@webassemblyjs/node-helper/lib/number-literals";
 import { parseString } from "./string-literals";
 
 const t = require("@webassemblyjs/ast");
@@ -109,7 +110,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         return index;
       } else if (token.type === tokens.number) {
-        const index = t.numberLiteralFromRaw(token.value);
+        const index = numberLiteralFromRaw(token.value);
 
         eatToken();
 
@@ -264,7 +265,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         }
         eatTokenOfType(tokens.name); // const
 
-        const numberLiteral = t.numberLiteralFromRaw(token.value, "i32");
+        const numberLiteral = numberLiteralFromRaw(token.value, "i32");
         offset = t.objectInstruction("const", "i32", [numberLiteral]);
         eatToken();
 
@@ -272,7 +273,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       } else {
         eatTokenOfType(tokens.name); // get_global
 
-        const numberLiteral = t.numberLiteralFromRaw(token.value, "i32");
+        const numberLiteral = numberLiteralFromRaw(token.value, "i32");
         offset = t.instruction("get_global", [numberLiteral]);
         eatToken();
 
@@ -938,7 +939,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         let value: any;
 
         if (token.type === tokens.number) {
-          value = t.numberLiteralFromRaw(token.value);
+          value = numberLiteralFromRaw(token.value);
         } else {
           throw new Error("Unexpected type for argument: " + token.type);
         }
@@ -973,7 +974,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           args.push(
             // TODO(sven): refactor the type signature handling
             // https://github.com/xtuc/webassemblyjs/pull/129 is a good start
-            t.numberLiteralFromRaw(
+            numberLiteralFromRaw(
               token.value,
               // $FlowIgnore
               signature[signaturePtr] || "f64"
@@ -1409,7 +1410,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         ref = identifierFromToken(token);
         eatToken();
       } else if (token.type === tokens.number) {
-        ref = t.numberLiteralFromRaw(token.value);
+        ref = numberLiteralFromRaw(token.value);
         eatToken();
       }
       return ref;

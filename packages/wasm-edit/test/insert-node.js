@@ -1,5 +1,6 @@
 const { assert } = require("chai");
 const t = require("@webassemblyjs/ast");
+const { numberLiteralFromRaw } = require("@webassemblyjs/node-helper");
 const {
   encodeVersion,
   encodeHeader
@@ -149,7 +150,7 @@ describe("insert a node", () => {
     ]);
 
     const global = t.global(t.globalType("i32", "var"), [
-      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+      t.objectInstruction("const", "i32", [numberLiteralFromRaw(1)])
     ]);
 
     it("should insert the node in existing section", () => {
@@ -188,7 +189,7 @@ describe("insert a node", () => {
     );
 
     const func = t.func(null, t.signature([], ["i32"]), [
-      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+      t.objectInstruction("const", "i32", [numberLiteralFromRaw(1)])
     ]);
 
     const functype = t.typeInstruction(
@@ -245,10 +246,10 @@ describe("insert a node", () => {
   it("should insert nodes in multiple sections multiple times (implies updating the underlying AST)", () => {
     let bin;
 
-    const index = t.numberLiteralFromRaw(0);
+    const index = numberLiteralFromRaw(0);
 
     const global = t.global(t.globalType("i32", "const"), [
-      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+      t.objectInstruction("const", "i32", [numberLiteralFromRaw(1)])
     ]);
 
     const functype = t.typeInstruction(undefined, t.signature([], []));

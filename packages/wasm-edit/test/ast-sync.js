@@ -7,6 +7,7 @@ const {
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const { compareStrings } = require("@webassemblyjs/helper-test-framework");
 const constants = require("@webassemblyjs/helper-wasm-bytecode");
+const { numberLiteralFromRaw } = require("@webassemblyjs/node-helper");
 
 const { addWithAST, editWithAST } = require("../lib");
 
@@ -26,11 +27,11 @@ function ASTToString(ast) {
 
     // wast will restore the name where wasm uses an index.
     ModuleExport({ node }) {
-      node.descr.id = t.numberLiteralFromRaw(0);
+      node.descr.id = numberLiteralFromRaw(0);
     },
 
     ModuleImport({ node }) {
-      node.descr.id = t.numberLiteralFromRaw(0);
+      node.descr.id = numberLiteralFromRaw(0);
     },
 
     // wasm doesn't add locations for Global nodes
@@ -49,7 +50,7 @@ function ASTToString(ast) {
 
 function makeGlobalNode(n) {
   return t.global(t.globalType("i32", "const"), [
-    t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(n)])
+    t.objectInstruction("const", "i32", [numberLiteralFromRaw(n)])
   ]);
 }
 
@@ -79,7 +80,7 @@ function makeFuncExportNode(i) {
 
   return t.moduleExport(
     name,
-    t.moduleExportDescr("Func", t.numberLiteralFromRaw(i))
+    t.moduleExportDescr("Func", numberLiteralFromRaw(i))
   );
 }
 
@@ -90,7 +91,7 @@ function makeFuncImportNode() {
   return t.moduleImport(
     module,
     name,
-    t.funcImportDescr(t.numberLiteralFromRaw(0), t.signature([], []))
+    t.funcImportDescr(numberLiteralFromRaw(0), t.signature([], []))
   );
 }
 

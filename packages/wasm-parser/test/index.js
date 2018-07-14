@@ -5,8 +5,8 @@ const {
   getFixtures,
   compare
 } = require("@webassemblyjs/helper-test-framework");
-
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
+
 const {
   encodeVersion,
   encodeHeader

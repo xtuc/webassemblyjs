@@ -3,6 +3,7 @@
 import { CompileError } from "@webassemblyjs/helper-api-error";
 import * as ieee754 from "@webassemblyjs/ieee754";
 import * as utf8 from "@webassemblyjs/utf8";
+import { numberLiteralFromRaw } from "@webassemblyjs/node-helper";
 
 import {
   decodeInt32,
@@ -432,7 +433,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           throw new CompileError(`function signature not found (${typeindex})`);
         }
 
-        const id = t.numberLiteralFromRaw(typeindex);
+        const id = numberLiteralFromRaw(typeindex);
 
         importDescr = t.funcImportDescr(
           id,
@@ -548,7 +549,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = t.numberLiteralFromRaw(index, String(index));
+        id = numberLiteralFromRaw(index, String(index));
 
         signature = func.signature;
       } else if (exportTypes[typeIndex] === "Table") {
@@ -560,7 +561,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = t.numberLiteralFromRaw(index, String(index));
+        id = numberLiteralFromRaw(index, String(index));
 
         signature = null;
       } else if (exportTypes[typeIndex] === "Mem") {
@@ -572,7 +573,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = t.numberLiteralFromRaw(index, String(index));
+        id = numberLiteralFromRaw(index, String(index));
 
         signature = null;
       } else if (exportTypes[typeIndex] === "Global") {
@@ -584,7 +585,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        id = t.numberLiteralFromRaw(index, String(index));
+        id = numberLiteralFromRaw(index, String(index));
 
         signature = null;
       } else {
@@ -859,7 +860,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([index], "index");
 
-          args.push(t.numberLiteralFromRaw(indexu32.value.toString(), "u32"));
+          args.push(numberLiteralFromRaw(indexu32.value.toString(), "u32"));
         }
       } else if (instructionByte >= 0x28 && instructionByte <= 0x40) {
         /**
@@ -903,7 +904,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "i32 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          args.push(numberLiteralFromRaw(value));
         }
 
         if (instruction.object === "u32") {
@@ -913,7 +914,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([value], "u32 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          args.push(numberLiteralFromRaw(value));
         }
 
         if (instruction.object === "i64") {
@@ -982,7 +983,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([u32.value], "argument " + i);
 
-          args.push(t.numberLiteralFromRaw(u32.value));
+          args.push(numberLiteralFromRaw(u32.value));
         }
       }
 
@@ -1382,7 +1383,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const sectionSizeInBytesEndLoc = getPosition();
 
     const sectionSizeInBytesNode = t.withLoc(
-      t.numberLiteralFromRaw(sectionSizeInBytes),
+      numberLiteralFromRaw(sectionSizeInBytes),
       sectionSizeInBytesEndLoc,
       startPosition
     );
@@ -1406,7 +1407,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteralFromRaw(numberOfTypes),
+            numberLiteralFromRaw(numberOfTypes),
             endPosition,
             startPosition
           )
@@ -1437,7 +1438,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteralFromRaw(numberOfTable),
+            numberLiteralFromRaw(numberOfTable),
             endPosition,
             startPosition
           )
@@ -1468,7 +1469,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteralFromRaw(numberOfImports),
+            numberLiteralFromRaw(numberOfImports),
             endPosition,
             startPosition
           )
@@ -1497,7 +1498,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteralFromRaw(numberOfFunctions),
+            numberLiteralFromRaw(numberOfFunctions),
             endPosition,
             startPosition
           )
@@ -1528,7 +1529,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteralFromRaw(numberOfExport),
+            numberLiteralFromRaw(numberOfExport),
             endPosition,
             startPosition
           )
@@ -1559,7 +1560,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteralFromRaw(numberOfFuncs),
+            numberLiteralFromRaw(numberOfFuncs),
             endPosition,
             startPosition
           )
@@ -1612,7 +1613,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteralFromRaw(numberOfElements),
+            numberLiteralFromRaw(numberOfElements),
             endPosition,
             startPosition
           )
@@ -1641,7 +1642,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteralFromRaw(numberOfGlobals),
+            numberLiteralFromRaw(numberOfGlobals),
             endPosition,
             startPosition
           )
@@ -1670,7 +1671,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           startOffset,
           sectionSizeInBytesNode,
           t.withLoc(
-            t.numberLiteralFromRaw(numberOfElements),
+            numberLiteralFromRaw(numberOfElements),
             endPosition,
             startPosition
           )
@@ -1701,7 +1702,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const endPosition = getPosition();
 
         metadata.vectorOfSize = t.withLoc(
-          t.numberLiteralFromRaw(numberOfElements),
+          numberLiteralFromRaw(numberOfElements),
           endPosition,
           startPosition
         );

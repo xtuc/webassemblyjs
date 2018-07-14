@@ -1,0 +1,28 @@
+{
+    "name": "@webassemblyjs/node-helper",
+    "version": "1.5.13",
+    "description": "WebAssembly Node Helper",
+    "main": "lib/index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Sven Sauleau",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/xtuc/webassemblyjs.git"
+    },
+    "publishConfig": {
+      "access": "public"
+    },
+    "dependencies": {
+      "@webassemblyjs/floating-point-hex-parser": "1.5.13",
+      "@webassemblyjs/helper-api-error": "1.5.13",
+      "long": "^3.2.0",
+      "mamacro": "0.0.3"
+    },
+    "bin": {
+      "wasm": "./lib/bin.js"
+    }
+  }
+  

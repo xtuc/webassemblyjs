@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@webassemblyjs/floating-point-hex-parser": "1.5.13",
+    "@webassemblyjs/node-helper": "1.5.13",
     "wabt": "^1.0.0"
   },
   "repository": {

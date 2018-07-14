@@ -2,7 +2,7 @@
 
 const { assert } = require("chai");
 
-const { numberLiteralFromRaw } = require("../lib/node-helpers.js");
+const { numberLiteralFromRaw } = require("@webassemblyjs/node-helper");
 
 const {
   isNumberLiteral,
