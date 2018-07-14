@@ -262,6 +262,43 @@ export function applyOperations(
     }
 
     /**
+     * Resize section vec size.
+     * If the length of the LEB-encoded size changes, this can change
+     * the byte length of the section and the offset for nodes in the
+     * section. So we do this first before resizing section byte size
+     * or shifting following operations' nodes.
+     */
+    if (state.deltaElements !== 0 && sectionName !== "start") {
+      const oldBufferLength = state.uint8Buffer.length;
+      state.uint8Buffer = resizeSectionVecSize(
+        ast,
+        state.uint8Buffer,
+        sectionName,
+        state.deltaElements
+      );
+      // Infer bytes added/removed by comparing buffer lengths
+      state.deltaBytes += state.uint8Buffer.length - oldBufferLength;
+    }
+
+    /**
+     * Resize section byte size.
+     * If the length of the LEB-encoded size changes, this can change
+     * the offset for nodes in the section. So we do this before
+     * shifting following operations' nodes.
+     */
+    if (state.deltaBytes !== 0 && sectionName !== "start") {
+      const oldBufferLength = state.uint8Buffer.length;
+      state.uint8Buffer = resizeSectionByteSize(
+        ast,
+        state.uint8Buffer,
+        sectionName,
+        state.deltaBytes
+      );
+      // Infer bytes added/removed by comparing buffer lengths
+      state.deltaBytes += state.uint8Buffer.length - oldBufferLength;
+    }
+
+    /**
      * Shift following operation's nodes
      */
     if (state.deltaBytes !== 0) {
@@ -277,24 +314,6 @@ export function applyOperations(
             break;
         }
       });
-
-      if (sectionName !== "start") {
-        state.uint8Buffer = resizeSectionByteSize(
-          ast,
-          state.uint8Buffer,
-          sectionName,
-          state.deltaBytes
-        );
-      }
-    }
-
-    if (state.deltaElements !== 0 && sectionName !== "start") {
-      state.uint8Buffer = resizeSectionVecSize(
-        ast,
-        state.uint8Buffer,
-        sectionName,
-        state.deltaElements
-      );
     }
 
     uint8Buffer = state.uint8Buffer;
