@@ -48,7 +48,7 @@ describe("resize handling", () => {
      * Phase 1. Shorten all export names and compare.
      */
 
-    // Shortened export names menas 20 exports * 5 bytes per export = 100 bytes.
+    // Shortened export names; 20 exports * 5 bytes per export = 100 bytes.
     // So short enough LEB-encoded section size now only takes 1 byte.
     const newBinary1 = edit(actualBinary, {
       ModuleExport(path) {
