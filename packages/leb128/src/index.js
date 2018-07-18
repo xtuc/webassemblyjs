@@ -3,13 +3,13 @@
 import leb from "./leb";
 
 /**
- * According to https://webassembly.github.io/spec/binary/values.html#binary-int
+ * According to https://webassembly.github.io/spec/core/binary/values.html#binary-int
  * max = ceil(32/7)
  */
 export const MAX_NUMBER_OF_BYTE_U32 = 5;
 
 /**
- * According to https://webassembly.github.io/spec/binary/values.html#binary-int
+ * According to https://webassembly.github.io/spec/core/binary/values.html#binary-int
  * max = ceil(64/7)
  */
 export const MAX_NUMBER_OF_BYTE_U64 = 10;
