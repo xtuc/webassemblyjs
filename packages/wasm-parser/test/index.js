@@ -91,7 +91,7 @@ describe("Binary decoder", () => {
         encodeHeader(),
         encodeVersion(1),
         [constants.sections.data, 0x05, 0x01, 0x01, 0x41, 0x01, 0x00],
-        [constants.sections.custom, 0x04, 0x01, 0x01, 97, 0x00]
+        [constants.sections.custom, 0x04, 0x01, 0x01, 97, 0x00, 0x00]
       );
 
       const ast = decode(buffer, decoderOpts);

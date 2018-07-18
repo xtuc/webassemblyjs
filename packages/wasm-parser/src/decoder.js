@@ -1180,21 +1180,29 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     while (offset - initialOffset < remainingBytes) {
       // name_type
       const sectionTypeByte = readVaruint7();
-      eatBytes(1);
+      eatBytes(sectionTypeByte.nextIndex);
 
       // name_payload_len
       const subSectionSizeInBytesu32 = readVaruint32();
       eatBytes(subSectionSizeInBytesu32.nextIndex);
 
-      if (sectionTypeByte === 0) {
-        nameMetadata.push(...parseNameModule());
-      } else if (sectionTypeByte === 1) {
-        nameMetadata.push(...parseNameSectionFunctions());
-      } else if (sectionTypeByte === 2) {
-        nameMetadata.push(...parseNameSectionLocals());
-      } else {
-        // skip unknown subsection
-        eatBytes(subSectionSizeInBytesu32.value);
+      switch (sectionTypeByte.value) {
+        case 0: {
+          nameMetadata.push(...parseNameModule());
+          break;
+        }
+        case 1: {
+          nameMetadata.push(...parseNameSectionFunctions());
+          break;
+        }
+        case 2: {
+          nameMetadata.push(...parseNameSectionLocals());
+          break;
+        }
+        default: {
+          // skip unknown subsection
+          eatBytes(subSectionSizeInBytesu32.value);
+        }
       }
     }
 
