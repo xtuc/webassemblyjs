@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/webpack-repro",
-  "version": "1.6.1",
+  "version": "1.7.0-1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,9 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@webassemblyjs/ast": "1.6.1",
-    "@webassemblyjs/wasm-edit": "1.6.1",
-    "@webassemblyjs/wasm-parser": "1.6.1"
+    "@webassemblyjs/ast": "1.7.0-1",
+    "@webassemblyjs/wasm-edit": "1.7.0-1",
+    "@webassemblyjs/wasm-parser": "1.7.0-1"
   },
   "private": true
 }
