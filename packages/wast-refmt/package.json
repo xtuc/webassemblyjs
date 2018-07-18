@@ -2,7 +2,8 @@
   "name": "@webassemblyjs/wast-refmt",
   "version": "1.6.0",
   "description": "WAST refmt",
-  "main": "lib/index.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
   "bin": {
     "wast-refmt": "lib/cli.js"
   },

@@ -2,7 +2,8 @@
   "name": "@webassemblyjs/validation",
   "version": "1.6.0",
   "description": "Module AST validations",
-  "main": "lib/index.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

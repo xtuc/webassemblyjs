@@ -2,7 +2,8 @@
   "name": "@webassemblyjs/helper-api-error",
   "version": "1.6.0",
   "description": "Common API errors",
-  "main": "lib/index.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
   "author": "Sven Sauleau",
   "license": "MIT",
   "publishConfig": {

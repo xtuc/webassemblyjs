@@ -12,7 +12,8 @@
   },
   "version": "1.6.0",
   "description": "A function to parse floating point hexadecimal strings as defined by the WebAssembly specification",
-  "main": "lib/index.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
   "keywords": [
     "webassembly",
     "floating-point"

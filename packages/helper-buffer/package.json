@@ -2,7 +2,8 @@
   "name": "@webassemblyjs/helper-buffer",
   "version": "1.6.0",
   "description": "Buffer manipulation utility",
-  "main": "lib/index.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

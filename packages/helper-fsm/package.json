@@ -2,7 +2,8 @@
   "name": "@webassemblyjs/helper-fsm",
   "version": "1.6.0",
   "description": "FSM implementation",
-  "main": "lib/index.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
   "author": "Mauro Bringolf",
   "license": "ISC",
   "publishConfig": {
