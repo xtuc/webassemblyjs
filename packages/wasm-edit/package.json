@@ -23,8 +23,7 @@
     "@webassemblyjs/wasm-gen": "1.6.1",
     "@webassemblyjs/wasm-opt": "1.6.1",
     "@webassemblyjs/wasm-parser": "1.6.1",
-    "@webassemblyjs/wast-printer": "1.6.1",
-    "debug": "^3.1.0"
+    "@webassemblyjs/wast-printer": "1.6.1"
   },
   "devDependencies": {
     "@webassemblyjs/helper-test-framework": "1.6.1"

@@ -2,8 +2,6 @@
 
 import { assert } from "mamacro";
 
-const debug = require("debug")("webassemblyjs:modulecontext");
-
 export function moduleContextFromModuleAST(m) {
   const moduleContext = new ModuleContext();
 
@@ -104,8 +102,6 @@ export class ModuleContext {
    * Reset the active stack frame
    */
   newContext(debugName, expectedResult) {
-    debug("new context %s", debugName);
-
     this.locals = [];
     this.labels = [expectedResult];
     this.return = expectedResult;
@@ -121,8 +117,6 @@ export class ModuleContext {
 
     args = args.map(arg => arg.valtype);
 
-    debug("add new function %s -> %s", args.join(" "), result.join(" "));
-
     this.funcs.push({ args, result });
 
     if (typeof func.name !== "undefined") {
@@ -134,12 +128,6 @@ export class ModuleContext {
     // eslint-disable-next-line prefer-const
     let { params: args, results: result } = funcimport.signature;
     args = args.map(arg => arg.valtype);
-
-    debug(
-      "add new imported function %s -> %s",
-      args.join(" "),
-      result.join(" ")
-    );
 
     this.funcs.unshift({ args, result });
 
@@ -171,8 +159,6 @@ export class ModuleContext {
    * Labels
    */
   addLabel(result) {
-    debug("add label");
-
     this.labels.unshift(result);
   }
 
@@ -200,8 +186,6 @@ export class ModuleContext {
   }
 
   addLocal(type) {
-    debug("add local t=%s index=%d", type, this.locals.length);
-
     this.locals.push(type);
   }
 

@@ -3,8 +3,6 @@ import { signatures } from "./signatures";
 import { traverse } from "./traverse";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 
-const debug = require("debug")("webassemblyjs:ast:utils");
-
 export function isAnonymous(ident: Identifier): boolean {
   return ident.raw === "";
 }
@@ -130,8 +128,6 @@ export function shiftSection(
   ) {
     shiftLoc(node.vectorOfSize, delta);
   }
-
-  debug("shifted %s startOffset=%d", node.type, node.startOffset);
 
   const sectionName = node.section;
 
