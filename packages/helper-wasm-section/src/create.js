@@ -5,7 +5,6 @@ import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 const t = require("@webassemblyjs/ast");
-const debug = require("debug")("webassemblyjs:wasm:createsection");
 
 type Res = { uint8Buffer: Uint8Array, sectionMetadata: SectionMetadata };
 
@@ -58,19 +57,9 @@ export function createEmptySection(
   if (lastSection == null || lastSection.section === "custom") {
     start = 8 /* wasm header size */;
     end = start;
-
-    debug("create empty section=%s first", section);
   } else {
     start = lastSection.startOffset + lastSection.size.value + 1;
     end = start;
-
-    debug(
-      "create empty section=%s after=%s start=%d end=%d",
-      section,
-      lastSection.section,
-      start,
-      end
-    );
   }
 
   // section id
@@ -126,12 +115,6 @@ export function createEmptySection(
 
       if (encounteredSection === true) {
         t.shiftSection(ast, path.node, deltaBytes);
-
-        debug(
-          "shift section section=%s detla=%d",
-          path.node.section,
-          deltaBytes
-        );
       }
     }
   });

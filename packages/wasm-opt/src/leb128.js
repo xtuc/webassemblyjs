@@ -4,8 +4,6 @@ import { traverse, shiftSection } from "@webassemblyjs/ast";
 import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-const debug = require("debug")("webassemblyjs:wasm:opt");
-
 function shiftFollowingSections(ast, { section }, deltaInSizeEncoding) {
   // Once we hit our section every that is after needs to be shifted by the delta
   let encounteredSection = false;
@@ -19,12 +17,6 @@ function shiftFollowingSections(ast, { section }, deltaInSizeEncoding) {
 
       if (encounteredSection === true) {
         shiftSection(ast, path.node, deltaInSizeEncoding);
-
-        debug(
-          "shift section section=%s detla=%d",
-          path.node.section,
-          deltaInSizeEncoding
-        );
       }
     }
   });
@@ -50,12 +42,6 @@ export function shrinkPaddedLEB128(
 
         if (newu32EncodedLen !== oldu32EncodedLen) {
           const deltaInSizeEncoding = oldu32EncodedLen - newu32EncodedLen;
-
-          debug(
-            "found LEB128 encoding size delta section=%s detla=%s",
-            node.section,
-            deltaInSizeEncoding
-          );
 
           uint8Buffer = overrideBytesInBuffer(
             uint8Buffer,

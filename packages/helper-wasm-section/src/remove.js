@@ -3,8 +3,6 @@
 import { traverse, getSectionMetadata, shiftSection } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-const debug = require("debug")("webassemblyjs:wasm:removesection");
-
 export function removeSection(
   ast: Program,
   uint8Buffer: Uint8Array,
@@ -40,8 +38,6 @@ export function removeSection(
 
       if (encounteredSection === true) {
         shiftSection(ast, path.node, delta);
-
-        debug("shift section section=%s detla=%d", section, delta);
       }
     }
   });

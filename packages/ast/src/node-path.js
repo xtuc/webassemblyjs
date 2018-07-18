@@ -1,8 +1,5 @@
 // @flow
 
-import debugModule from "debug";
-const debug = debugModule("webassemblyjs:ast:traverse");
-
 import { assert } from "mamacro";
 
 function findParent(
@@ -66,8 +63,6 @@ function remove({ node, parentKey, parentPath }: NodePathContext<Node>) {
   }
 
   node._deleted = true;
-
-  debug("delete path %s", node.type);
 }
 
 function stop(context: NodePathContext<Node>) {

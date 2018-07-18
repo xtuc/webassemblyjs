@@ -14,7 +14,6 @@
     "@webassemblyjs/helper-module-context": "1.6.1",
     "@webassemblyjs/helper-wasm-bytecode": "1.6.1",
     "@webassemblyjs/wast-parser": "1.6.1",
-    "debug": "^3.1.0",
     "mamacro": "^0.0.3"
   },
   "repository": {
