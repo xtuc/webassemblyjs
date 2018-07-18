@@ -1,5 +1,7 @@
 // @flow
 
+import { assert } from "mamacro";
+
 const {
   parse32F,
   parse64F,
@@ -10,7 +12,15 @@ const {
   isInfLiteral
 } = require("@webassemblyjs/wast-parser/lib/number-literals");
 
-import { longNumberLiteral, floatLiteral, numberLiteral, instr } from "./nodes";
+import {
+  assertNumberLiteral,
+  assertIdentifier,
+  longNumberLiteral,
+  floatLiteral,
+  numberLiteral,
+  instr,
+  index
+} from "./nodes";
 
 export function numberLiteralFromRaw(
   rawValue: number | string,
@@ -112,4 +122,18 @@ export function memIndexLiteral(value: number): Memidx {
   // $FlowIgnore
   const x: U32Literal = numberLiteralFromRaw(value, "u32");
   return x;
+}
+
+export function indexOfIndex(n: NumberLiteral) {
+  console.log(n.type);
+  assertNumberLiteral(n);
+
+  return index(n, null);
+}
+
+export function indexOfIdentifier(n: Identifer) {
+  console.log(n.type);
+  assertIdentifier(n);
+
+  return index(null, n);
 }

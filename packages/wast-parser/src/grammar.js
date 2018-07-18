@@ -1291,7 +1291,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       return t.func(
-        fnName,
+        t.indexOfIdentifier(fnName),
         typeRef !== undefined ? typeRef : t.signature(fnParams, fnResult),
         fnBody
       );
@@ -1655,14 +1655,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      */
     function parseStart(): Start {
       if (token.type === tokens.identifier) {
-        const index = identifierFromToken(token);
+        const index = t.indexOfIdentifier(identifierFromToken(token));
         eatToken();
 
         return t.start(index);
       }
 
       if (token.type === tokens.number) {
-        const index = t.indexLiteral(token.value);
+        const index = t.indexOfIndex(t.numberLiteralFromRaw(token.value));
         eatToken();
 
         return t.start(index);

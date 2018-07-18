@@ -2,6 +2,8 @@
 import Long from "long";
 import { isAnonymous, isInstruction } from "@webassemblyjs/ast";
 
+import { printIndex } from "./nodes/Index";
+
 const compact = false;
 const space = " ";
 const quote = str => `"${str}"`;
@@ -940,16 +942,6 @@ function printModuleExport(n: ModuleExport): string {
 
 function printIdentifier(n: Identifier): string {
   return "$" + n.value;
-}
-
-function printIndex(n: Index): string {
-  if (n.type === "Identifier") {
-    return printIdentifier(n);
-  } else if (n.type === "NumberLiteral") {
-    return printNumberLiteral(n);
-  } else {
-    throw new Error("Unsupported index: " + n.type);
-  }
 }
 
 function printMemory(n: Memory): string {

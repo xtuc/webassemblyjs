@@ -25,16 +25,14 @@ type Memidx = U32Literal;
 type Globalidx = U32Literal;
 type Localidx = U32Literal;
 type Labelidx = U32Literal;
-
-type Index =
+type Idx =
   | Typeidx
   | Funcidx
   | Tableidx
   | Memidx
   | Globalidx
   | Localidx
-  | Labelidx
-  | Identifier; // WAST shorthand
+  | Labelidx;
 
 type SignatureOrTypeRef = Index | Signature;
 

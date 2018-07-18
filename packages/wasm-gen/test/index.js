@@ -92,19 +92,19 @@ const fixtures = [
 
   {
     name: "(call 0)",
-    node: t.callInstruction(t.indexLiteral(0)),
+    node: t.callInstruction(t.indexOfIndex(t.indexLiteral(0))),
     expected: [0x10, 0x00]
   },
 
   {
     name: "a CallIndirectInstruction",
-    node: callIndirectInstructionIndex(t.indexLiteral(10)),
+    node: callIndirectInstructionIndex(t.indexOfIndex(t.indexLiteral(10))),
     expected: [0x11, 0x0a, 0x00]
   },
 
   {
     name: '(export "a" (func 1))',
-    node: t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(1))),
+    node: t.moduleExport("a", t.moduleExportDescr("Func", t.indexOfIndex(t.indexLiteral(1)))),
     expected: [0x01, 0x61, 0x00, 0x01]
   },
 
@@ -208,7 +208,7 @@ const fixtures = [
   {
     name: "(elem 1 (i32.const 2) 3 4)",
     node: t.elem(
-      t.numberLiteralFromRaw(1),
+      t.indexOfIndex(t.numberLiteralFromRaw(1)),
       [t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)])],
       [t.numberLiteralFromRaw(3), t.numberLiteralFromRaw(4)]
     ),

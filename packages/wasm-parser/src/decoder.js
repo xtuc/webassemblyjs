@@ -1343,7 +1343,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     const endLoc = getPosition();
 
-    return t.withLoc(t.start(t.indexLiteral(startFuncIndex)), endLoc, startLoc);
+    const index = t.indexOfIndex(t.numberLiteralFromRaw(startFuncIndex));
+
+    return t.withLoc(t.start(index), endLoc, startLoc);
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#data-section

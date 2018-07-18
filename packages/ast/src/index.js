@@ -10,7 +10,9 @@ export {
   indexLiteral,
   memIndexLiteral,
   instruction,
-  objectInstruction
+  objectInstruction,
+  indexOfIndex,
+  indexOfIdentifier
 } from "./node-helpers.js";
 
 export { traverse } from "./traverse";

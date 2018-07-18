@@ -384,6 +384,10 @@ export function elem(
   offset: Array<Instruction>,
   funcs: Array<Index>
 ): Elem {
+  assert(
+    table.type === "Index",
+    "Argument table must be of type Index, given: " + table.type
+  );
   assert(typeof offset === "object" && typeof offset.length !== "undefined");
 
   assert(typeof funcs === "object" && typeof funcs.length !== "undefined");
@@ -399,6 +403,11 @@ export function elem(
 }
 
 export function indexInFuncSection(index: Index): IndexInFuncSection {
+  assert(
+    index.type === "Index",
+    "Argument index must be of type Index, given: " + index.type
+  );
+
   const node: IndexInFuncSection = {
     type: "IndexInFuncSection",
     index
@@ -420,6 +429,13 @@ export function typeInstruction(
   id: ?Index,
   functype: Signature
 ): TypeInstruction {
+  if (id !== null && id !== undefined) {
+    assert(
+      id.type === "Index",
+      "Argument id must be of type Index, given: " + id.type
+    );
+  }
+
   const node: TypeInstruction = {
     type: "TypeInstruction",
     id,
@@ -430,6 +446,11 @@ export function typeInstruction(
 }
 
 export function start(index: Index): Start {
+  assert(
+    index.type === "Index",
+    "Argument index must be of type Index, given: " + index.type
+  );
+
   const node: Start = {
     type: "Start",
     index
@@ -543,6 +564,13 @@ export function table(
 }
 
 export function memory(limits: Limit, id: ?Index): Memory {
+  if (id !== null && id !== undefined) {
+    assert(
+      id.type === "Index",
+      "Argument id must be of type Index, given: " + id.type
+    );
+  }
+
   const node: Memory = {
     type: "Memory",
     limits,
@@ -593,6 +621,11 @@ export function moduleExportDescr(
   exportType: ExportDescrType,
   id: Index
 ): ModuleExportDescr {
+  assert(
+    id.type === "Index",
+    "Argument id must be of type Index, given: " + id.type
+  );
+
   const node: ModuleExportDescr = {
     type: "ModuleExportDescr",
     exportType,
@@ -720,6 +753,11 @@ export function callInstruction(
   index: Index,
   instrArgs?: Array<Expression>
 ): CallInstruction {
+  assert(
+    index.type === "Index",
+    "Argument index must be of type Index, given: " + index.type
+  );
+
   if (instrArgs !== null && instrArgs !== undefined) {
     assert(
       typeof instrArgs === "object" && typeof instrArgs.length !== "undefined"
@@ -778,6 +816,13 @@ export function func(
   isExternal?: boolean,
   metadata?: FuncMetadata
 ): Func {
+  if (name !== null && name !== undefined) {
+    assert(
+      name.type === "Index",
+      "Argument name must be of type Index, given: " + name.type
+    );
+  }
+
   assert(typeof body === "object" && typeof body.length !== "undefined");
 
   if (isExternal !== null && isExternal !== undefined) {
@@ -801,6 +846,24 @@ export function func(
   if (typeof metadata !== "undefined") {
     node.metadata = metadata;
   }
+
+  return node;
+}
+
+export function index(index: ?Idx, identifier: ?Identifier): Index {
+  if (identifier !== null && identifier !== undefined) {
+    assert(
+      identifier.type === "Identifier",
+      "Argument identifier must be of type Identifier, given: " +
+        identifier.type
+    );
+  }
+
+  const node: Index = {
+    type: "Index",
+    index,
+    identifier
+  };
 
   return node;
 }
@@ -885,6 +948,8 @@ export const isByteArray = isTypeOf("ByteArray");
 
 export const isFunc = isTypeOf("Func");
 
+export const isIndex = isTypeOf("Index");
+
 export const isNode = (node: Node) =>
   isModule(node) ||
   isModuleMetadata(node) ||
@@ -925,7 +990,8 @@ export const isNode = (node: Node) =>
   isCallInstruction(node) ||
   isCallIndirectInstruction(node) ||
   isByteArray(node) ||
-  isFunc(node);
+  isFunc(node) ||
+  isIndex(node);
 
 export const isBlock = (node: Node) =>
   isLoopInstruction(node) || isBlockInstruction(node) || isFunc(node);
@@ -1039,6 +1105,8 @@ export const assertByteArray = assertTypeOf("ByteArray");
 
 export const assertFunc = assertTypeOf("Func");
 
+export const assertIndex = assertTypeOf("Index");
+
 export const unionTypesMap = {
   Module: ["Node"],
   ModuleMetadata: ["Node"],
@@ -1079,7 +1147,8 @@ export const unionTypesMap = {
   CallInstruction: ["Node", "Instruction"],
   CallIndirectInstruction: ["Node", "Instruction"],
   ByteArray: ["Node"],
-  Func: ["Node", "Block"]
+  Func: ["Node", "Block"],
+  Index: ["Node"]
 };
 
 export const nodeAndUnionTypes = [
@@ -1123,6 +1192,7 @@ export const nodeAndUnionTypes = [
   "CallIndirectInstruction",
   "ByteArray",
   "Func",
+  "Index",
   "Node",
   "Block",
   "Instruction",
