@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-module-context",
-  "version": "1.7.0-0",
+  "version": "1.7.1-0",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -16,7 +16,7 @@
     "mamacro": "^0.0.3"
   },
   "devDependencies": {
-    "@webassemblyjs/wast-parser": "1.7.0-0"
+    "@webassemblyjs/wast-parser": "1.7.1-0"
   },
   "publishConfig": {
     "access": "public"
