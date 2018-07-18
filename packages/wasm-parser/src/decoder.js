@@ -1708,8 +1708,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         if (opts.ignoreDataSection === true) {
           const remainingBytes =
-            // $FlowIgnore
-            sectionSizeInBytes - numberOfElements.nextIndex;
+            sectionSizeInBytes - numberOfElementsu32.nextIndex;
+
           eatBytes(remainingBytes); // eat the entire section
 
           dumpSep("ignore data (" + sectionSizeInBytes + " bytes)");
