@@ -83,15 +83,15 @@ describe("Binary decoder", () => {
 
   describe("ignore section(s)", () => {
     const decoderOpts = {
-      ignoreDataSection: true,
-    }
+      ignoreDataSection: true
+    };
 
     it("should eat the data section without overflowing", () => {
       const buffer = makeBuffer(
         encodeHeader(),
         encodeVersion(1),
         [constants.sections.data, 0x05, 0x01, 0x01, 0x41, 0x01, 0x00],
-        [constants.sections.custom, 0x04, 0x01, 0x01, 97, 0x00],
+        [constants.sections.custom, 0x04, 0x01, 0x01, 97, 0x00]
       );
 
       const ast = decode(buffer, decoderOpts);
@@ -99,7 +99,7 @@ describe("Binary decoder", () => {
       let foundCustomSection = false;
 
       traverse(ast, {
-        SectionMetadata({node}) {
+        SectionMetadata({ node }) {
           if (node.section === "custom") {
             foundCustomSection = true;
           }
