@@ -130,7 +130,14 @@ function restoreModuleName(ast) {
       // update module
       t.traverse(ast, {
         Module({ node }: NodePath<Module>) {
-          node.id = moduleNameMetadataPath.node.value;
+          let name = moduleNameMetadataPath.node.value;
+
+          // compatiblity with wast-parser
+          if (name === "") {
+            name = null;
+          }
+
+          node.id = name;
         }
       });
     }
