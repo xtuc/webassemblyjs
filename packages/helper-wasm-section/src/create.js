@@ -2,10 +2,10 @@
 
 import { encodeNode } from "@webassemblyjs/wasm-gen";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
-import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 const t = require("@webassemblyjs/ast");
 const debug = require("debug")("webassemblyjs:wasm:createsection");
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
 
 type Res = { uint8Buffer: Uint8Array, sectionMetadata: SectionMetadata };
 

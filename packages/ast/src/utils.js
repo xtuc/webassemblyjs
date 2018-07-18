@@ -1,8 +1,8 @@
 // @flow
 import { signatures } from "./signatures";
 import { traverse } from "./traverse";
-import constants from "@webassemblyjs/helper-wasm-bytecode";
 
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
 const debug = require("debug")("webassemblyjs:ast:utils");
 
 export function isAnonymous(ident: Identifier): boolean {

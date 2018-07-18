@@ -1,6 +1,6 @@
 // @flow
 
-import leb from "./leb";
+const leb = require("./leb");
 
 /**
  * According to https://webassembly.github.io/spec/core/binary/values.html#binary-int
@@ -16,6 +16,10 @@ export const MAX_NUMBER_OF_BYTE_U64 = 10;
 
 export function decodeInt64(encodedBuffer: Buffer, index: number): any {
   return leb.decodeInt64(encodedBuffer, index);
+}
+
+export function decodeUInt64(encodedBuffer: Buffer, index: number): any {
+  return leb.decodeUInt64(encodedBuffer, index);
 }
 
 export function decodeInt32(encodedBuffer: Buffer, index: number): any {

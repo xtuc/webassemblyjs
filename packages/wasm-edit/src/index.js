@@ -4,7 +4,8 @@ import { decode } from "@webassemblyjs/wasm-parser";
 import { traverse } from "@webassemblyjs/ast";
 import { cloneNode } from "@webassemblyjs/ast/lib/clone";
 import { shrinkPaddedLEB128 } from "@webassemblyjs/wasm-opt";
-import constants from "@webassemblyjs/helper-wasm-bytecode";
+
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
 
 import { applyOperations } from "./apply";
 
