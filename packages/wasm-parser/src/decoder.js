@@ -1730,19 +1730,23 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           t.sectionMetadata("custom", startOffset, sectionSizeInBytesNode)
         ];
 
+        const offsetBeforeReadUTF8 = offset;
         const sectionName = readUTF8String();
+        const bytesEatenByReadUTF8 = offset - offsetBeforeReadUTF8;
         eatBytes(sectionName.nextIndex);
 
         dump([], `section name (${sectionName.value})`);
 
-        const remainingBytes = sectionSizeInBytes - sectionName.nextIndex;
+        // B/c readUTF8String includes an eatBytes call, we have to account
+        // for bytes eaten by readUTF8String itself
+        const remainingBytes =
+          sectionSizeInBytes - sectionName.nextIndex - bytesEatenByReadUTF8;
 
         if (sectionName.value === "name") {
           metadata.push(...parseNameSection(remainingBytes));
         } else {
           // We don't parse the custom section
-          // FIXME(sven): why this? and why constant 1?
-          eatBytes(remainingBytes - 1 /* UTF8 vector size */);
+          eatBytes(remainingBytes);
 
           dumpSep(
             "ignore custom " +
