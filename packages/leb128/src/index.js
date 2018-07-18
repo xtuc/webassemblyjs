@@ -1,6 +1,6 @@
 // @flow
 
-const leb = require("./leb");
+import leb from "./leb";
 
 /**
  * According to https://webassembly.github.io/spec/core/binary/values.html#binary-int

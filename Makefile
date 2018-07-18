@@ -1,4 +1,3 @@
-MOCHA_OPTS =
 NODE_OPTS =
 
 TEST_TIMEOUT = 4000
@@ -7,7 +6,6 @@ LERNA = ./node_modules/.bin/lerna
 FLOWTYPED = ./node_modules/.bin/flow-typed
 NODE = node
 PRETTIER = ./node_modules/.bin/prettier --ignore-path .prettierignore
-MOCHA = ./node_modules/.bin/mocha --reporter=tap $(MOCHA_OPTS)
 BABEL = ./node_modules/.bin/babel --ignore src/types/npm
 ESLINT = ./node_modules/.bin/eslint
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1

@@ -70,7 +70,7 @@ const tokenTypes = {
   keyword: "keyword"
 };
 
-const keywords = {
+export const keywords = {
   module: "module",
   func: "func",
   param: "param",
@@ -182,7 +182,7 @@ const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
   "STOP"
 );
 
-function tokenize(input: string) {
+export function tokenize(input: string) {
   let current: number = 0;
   let char = input[current];
 
@@ -481,8 +481,4 @@ function tokenize(input: string) {
   return tokens;
 }
 
-module.exports = {
-  tokenize,
-  tokens: tokenTypes,
-  keywords
-};
+export const tokens = tokenTypes;

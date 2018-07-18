@@ -23,7 +23,7 @@
     "@webassemblyjs/helper-api-error": "1.7.0-2",
     "@webassemblyjs/helper-code-frame": "1.7.0-2",
     "@webassemblyjs/helper-fsm": "1.7.0-2",
-    "long": "^3.2.0",
+    "@xtuc/long": "4.2.1",
     "mamacro": "^0.0.3"
   },
   "devDependencies": {

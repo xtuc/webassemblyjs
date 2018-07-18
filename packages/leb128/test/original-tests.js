@@ -12,7 +12,7 @@
 
 const assert = require("assert");
 
-const leb = require("../lib/leb");
+const leb = require("../lib/leb").default;
 
 /*
  * Helper functions

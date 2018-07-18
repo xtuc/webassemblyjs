@@ -23,7 +23,7 @@
     "@webassemblyjs/validation": "1.7.0-2",
     "@webassemblyjs/wasm-parser": "1.7.0-2",
     "@webassemblyjs/wast-parser": "1.7.0-2",
-    "long": "^3.2.0",
+    "@xtuc/long": "4.2.1",
     "mamacro": "^0.0.3"
   },
   "devDependencies": {
