@@ -109,4 +109,19 @@ describe("Binary decoder", () => {
       assert.isTrue(foundCustomSection, "Custom section was not detected");
     });
   });
+
+  describe("custom section", () => {
+    it("should catch decoding errors", () => {
+      const buffer = makeBuffer(encodeHeader(), encodeVersion(1), [
+        constants.sections.custom,
+        0x04,
+        0x01,
+        /* Invalid name length */ 0x99,
+        97,
+        0x00
+      ]);
+
+      assert.isOk(decode(buffer));
+    });
+  });
 });
