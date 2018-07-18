@@ -1730,27 +1730,37 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           t.sectionMetadata("custom", startOffset, sectionSizeInBytesNode)
         ];
 
-        const sectionName = readUTF8String();
-        eatBytes(sectionName.nextIndex);
+        try {
+          const sectionName = readUTF8String();
+          eatBytes(sectionName.nextIndex);
 
-        dump([], `section name (${sectionName.value})`);
+          dump([], `section name (${sectionName.value})`);
 
-        const remainingBytes = sectionSizeInBytes - sectionName.nextIndex;
+          const remainingBytes = sectionSizeInBytes - sectionName.nextIndex;
 
-        if (sectionName.value === "name") {
-          metadata.push(...parseNameSection(remainingBytes));
-        } else {
-          // We don't parse the custom section
-          // FIXME(sven): why this? and why constant 1?
-          eatBytes(remainingBytes - 1 /* UTF8 vector size */);
+          if (sectionName.value === "name") {
+            metadata.push(...parseNameSection(remainingBytes));
+          } else {
+            // We don't parse the custom section
+            // FIXME(sven): why this? and why constant 1?
+            eatBytes(remainingBytes - 1 /* UTF8 vector size */);
 
-          dumpSep(
-            "ignore custom " +
-              JSON.stringify(sectionName.value) +
-              " section (" +
-              remainingBytes +
-              " bytes)"
+            dumpSep(
+              "ignore custom " +
+                JSON.stringify(sectionName.value) +
+                " section (" +
+                remainingBytes +
+                " bytes)"
+            );
+          }
+        } catch (e) {
+          console.warn(
+            `Failed to decode custom section @${offset}; ignoring (${
+              e.message
+            }).`
           );
+
+          eatBytes(sectionSizeInBytes);
         }
 
         return { nodes: [], metadata, nextSectionIndex };
