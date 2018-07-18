@@ -234,6 +234,24 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return decodeUInt32(buffer);
   }
 
+  function readVaruint32(): Decoded32 {
+    // where 32 bits = max 4 bytes
+
+    const bytes = readBytes(4);
+    const buffer = Buffer.from(bytes);
+
+    return decodeUInt32(buffer);
+  }
+
+  function readVaruint7(): Decoded32 {
+    // where 7 bits = max 1 bytes
+
+    const bytes = readBytes(1);
+    const buffer = Buffer.from(bytes);
+
+    return decodeUInt32(buffer);
+  }
+
   /**
    * Decode a signed 32bits interger
    */
@@ -1103,9 +1121,6 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   function parseNameSectionFunctions() {
     const functionNames = [];
 
-    const subSectionSizeInBytesu32 = readU32();
-    eatBytes(subSectionSizeInBytesu32.nextIndex);
-
     const numberOfFunctionsu32 = readU32();
     const numbeOfFunctions = numberOfFunctionsu32.value;
     eatBytes(numberOfFunctionsu32.nextIndex);
@@ -1125,14 +1140,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   function parseNameSectionLocals() {
-    const subSectionSizeInBytesu32 = readU32();
-    eatBytes(subSectionSizeInBytesu32.nextIndex);
+    const localNames = [];
 
     const numbeOfFunctionsu32 = readU32();
     const numbeOfFunctions = numbeOfFunctionsu32.value;
     eatBytes(numbeOfFunctionsu32.nextIndex);
-
-    const localNames = [];
 
     for (let i = 0; i < numbeOfFunctions; i++) {
       const functionIndexu32 = readU32();
@@ -1166,8 +1178,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const initialOffset = offset;
 
     while (offset - initialOffset < remainingBytes) {
-      const sectionTypeByte = readByte();
+      // name_type
+      const sectionTypeByte = readVaruint7();
       eatBytes(1);
+
+      // name_payload_len
+      const subSectionSizeInBytesu32 = readVaruint32();
+      eatBytes(subSectionSizeInBytesu32.nextIndex);
 
       if (sectionTypeByte === 0) {
         nameMetadata.push(...parseNameModule());
@@ -1175,6 +1192,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         nameMetadata.push(...parseNameSectionFunctions());
       } else if (sectionTypeByte === 2) {
         nameMetadata.push(...parseNameSectionLocals());
+      } else {
+        // skip unknown subsection
+        eatBytes(subSectionSizeInBytesu32.value);
       }
     }
 
@@ -1738,7 +1758,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const remainingBytes = sectionSizeInBytes - sectionName.nextIndex;
 
         if (sectionName.value === "name") {
-          metadata.push(...parseNameSection(remainingBytes));
+          try {
+            metadata.push(...parseNameSection(remainingBytes));
+          } catch (e) {
+            console.warn(
+              `Failed to decode custom "name" section @${offset}; ignoring (${
+                e.message
+              }).`
+            );
+
+            eatBytes(remainingBytes);
+          }
         } else {
           // We don't parse the custom section
           // FIXME(sven): why this? and why constant 1?
