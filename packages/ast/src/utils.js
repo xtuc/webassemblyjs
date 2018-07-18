@@ -2,6 +2,8 @@
 import { signatures } from "./signatures";
 import { traverse } from "./traverse";
 
+const constants = require("@webassemblyjs/helper-wasm-bytecode");
+
 export function isAnonymous(ident: Identifier): boolean {
   return ident.raw === "";
 }
