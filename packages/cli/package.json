@@ -2,8 +2,8 @@
   "name": "@webassemblyjs/cli",
   "version": "1.6.0",
   "description": "Toolbox for WebAssembly",
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
   "keywords": [
     "webassembly",
     "interpreter",

@@ -2,7 +2,7 @@
   "name": "@webassemblyjs/helper-test-framework",
   "version": "1.6.0",
   "description": "",
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
   "license": "MIT"
 }

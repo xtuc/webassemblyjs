@@ -24,13 +24,13 @@ for D in ./packages/*; do
 
   # Build CJS
   ./node_modules/.bin/babel "${D}/src" \
-    --out-dir "${D}/lib/cjs" \
+    --out-dir "${D}/lib" \
     --ignore packages/dce/src/libwabt.js \
     $OPTS &
 
   # Build ESM
   ESM=1 ./node_modules/.bin/babel "${D}/src" \
-    --out-dir "${D}/lib/esm" \
+    --out-dir "${D}/esm" \
     --ignore packages/dce/src/libwabt.js \
     $OPTS &
 done

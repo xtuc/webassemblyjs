@@ -2,8 +2,8 @@
   "name": "@webassemblyjs/wast-printer",
   "version": "1.6.0",
   "description": "WebAssembly text format printer",
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
   "keywords": [
     "webassembly",
     "javascript",

@@ -11,8 +11,8 @@
     "wast"
   ],
   "author": "Sven Sauleau",
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
   "dependencies": {
     "@webassemblyjs/ast": "1.6.0",
     "@webassemblyjs/wasm-parser": "1.6.0",

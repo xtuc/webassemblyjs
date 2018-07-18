@@ -11,8 +11,8 @@
     "polyfill"
   ],
   "description": "WebAssembly interpreter",
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "mocha"
   },
