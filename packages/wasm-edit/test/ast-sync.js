@@ -6,7 +6,7 @@ const {
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const { compareStrings } = require("@webassemblyjs/helper-test-framework");
-const constants = require("@webassemblyjs/helper-wasm-bytecode");
+const constants = require("@webassemblyjs/helper-wasm-bytecode/").default;
 
 const { addWithAST, editWithAST } = require("../lib");
 

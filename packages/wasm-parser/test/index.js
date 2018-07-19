@@ -11,7 +11,7 @@ const {
   encodeVersion,
   encodeHeader
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
-const constants = require("@webassemblyjs/helper-wasm-bytecode");
+const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 const wabt = require("wabt");
 const { parse } = require("@webassemblyjs/wast-parser");
 const { decode } = require("../lib");

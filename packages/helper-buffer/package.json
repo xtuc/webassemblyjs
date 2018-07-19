@@ -1,8 +1,9 @@
 {
   "name": "@webassemblyjs/helper-buffer",
-  "version": "1.6.1",
+  "version": "1.7.0-3",
   "description": "Buffer manipulation utility",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,7 +17,7 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "devDependencies": {
-    "@webassemblyjs/wasm-parser": "1.6.1",
+    "@webassemblyjs/wasm-parser": "1.7.0-3",
     "jest-diff": "^22.4.0"
   }
 }

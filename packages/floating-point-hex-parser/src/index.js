@@ -1,4 +1,4 @@
-function parse(input) {
+export default function parse(input) {
   input = input.toUpperCase();
   const splitIndex = input.indexOf("P");
   let mantissa, exponent;
@@ -40,5 +40,3 @@ function parse(input) {
 
   return mantissa * (splitIndex !== -1 ? Math.pow(2, exponent) : 1);
 }
-
-module.exports = parse;

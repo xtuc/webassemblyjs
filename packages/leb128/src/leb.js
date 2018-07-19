@@ -10,7 +10,7 @@
 
 "use strict";
 
-const Long = require("long");
+import Long from "@xtuc/long";
 
 const bits = require("./bits");
 const bufs = require("./bufs");
@@ -303,7 +303,7 @@ function decodeUInt64(encodedBuffer, index) {
   return { value, nextIndex: result.nextIndex, lossy: false };
 }
 
-module.exports = {
+export default {
   decodeInt32: decodeInt32,
   decodeInt64: decodeInt64,
   decodeIntBuffer: decodeIntBuffer,

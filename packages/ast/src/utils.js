@@ -2,6 +2,7 @@
 import { signatures } from "./signatures";
 import { traverse } from "./traverse";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
+import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
 
 export function isAnonymous(ident: Identifier): boolean {
   return ident.raw === "";
@@ -134,7 +135,7 @@ export function shiftSection(
   // shift node locations within that section
   traverse(ast, {
     Node({ node }) {
-      const section = constants.getSectionForNode(node);
+      const section = getSectionForNode(node);
 
       if (section === sectionName && typeof node.loc === "object") {
         shiftLoc(node, delta);

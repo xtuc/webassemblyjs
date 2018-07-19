@@ -1,6 +1,6 @@
 const { assert } = require("chai");
 const { execFileSync } = require("child_process");
-const parse = require("../../lib/index.js");
+const parse = require("../../lib").default;
 const numberOfRuns = process.env.FUZZ_AMOUNT
   ? parseInt(process.env.FUZZ_AMOUNT)
   : 20;

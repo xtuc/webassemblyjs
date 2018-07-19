@@ -18,6 +18,10 @@ export function decodeInt64(encodedBuffer: Buffer, index: number): any {
   return leb.decodeInt64(encodedBuffer, index);
 }
 
+export function decodeUInt64(encodedBuffer: Buffer, index: number): any {
+  return leb.decodeUInt64(encodedBuffer, index);
+}
+
 export function decodeInt32(encodedBuffer: Buffer, index: number): any {
   return leb.decodeInt32(encodedBuffer, index);
 }

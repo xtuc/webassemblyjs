@@ -26,7 +26,7 @@ const {
   valtypes,
   moduleVersion,
   sections
-} = require("@webassemblyjs/helper-wasm-bytecode");
+} = require("@webassemblyjs/helper-wasm-bytecode").default;
 
 function toHex(n: number): string {
   return "0x" + Number(n).toString(16);

@@ -1,12 +1,12 @@
 // @flow
+
 import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 import { define } from "mamacro";
+import * as t from "@webassemblyjs/ast";
 
 import { parse32I } from "./number-literals";
 import { parseString } from "./string-literals";
-
-const t = require("@webassemblyjs/ast");
-const { tokens, keywords } = require("./tokenizer");
+import { tokens, keywords } from "./tokenizer";
 
 declare function createUnexpectedToken(msg: string): void;
 

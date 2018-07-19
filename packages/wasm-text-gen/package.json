@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-text-gen",
-  "version": "1.6.1",
+  "version": "1.7.0-3",
   "description": "Emit documentation/code for your WASM binary Edit",
   "keywords": [
     "webassembly",
@@ -9,7 +9,8 @@
     "binary",
     "markdown"
   ],
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "mocha"
   },
@@ -29,8 +30,8 @@
     "@babel/generator": "^7.0.0-beta.40",
     "@babel/template": "^7.0.0-beta.40",
     "@babel/types": "^7.0.0-beta.40",
-    "@webassemblyjs/ast": "1.6.1",
-    "@webassemblyjs/wasm-parser": "1.6.1",
+    "@webassemblyjs/ast": "1.7.0-3",
+    "@webassemblyjs/wasm-parser": "1.7.0-3",
     "commander": "^2.14.1"
   }
 }

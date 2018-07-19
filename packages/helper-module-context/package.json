@@ -1,8 +1,9 @@
 {
   "name": "@webassemblyjs/helper-module-context",
-  "version": "1.6.1",
+  "version": "1.7.0-3",
   "description": "",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,7 +15,7 @@
     "mamacro": "^0.0.3"
   },
   "devDependencies": {
-    "@webassemblyjs/wast-parser": "1.6.1"
+    "@webassemblyjs/wast-parser": "1.7.0-3"
   },
   "publishConfig": {
     "access": "public"
