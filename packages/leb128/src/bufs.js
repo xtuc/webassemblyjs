@@ -90,7 +90,7 @@ export function alloc(length) {
   if (result) {
     bufPool[length] = undefined;
   } else {
-    result = new Buffer(length);
+    result = new Uint8Array(length);
   }
 
   result.fill(0);
