@@ -54,7 +54,6 @@ function runWasm2Wast(buffer) {
 
   if (
     typeof _webassemblyjs_wasmParser === "undefined" ||
-    typeof _webassemblyjs_wasmGen === "undefined" ||
     typeof _webassemblyjs_wastPrinter === "undefined"
   ) {
     throw new Error("webassemblyjs has not been loaded correctly");
