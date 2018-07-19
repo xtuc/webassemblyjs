@@ -24,7 +24,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@xtuc/buffer": "^5.2.0",
+    "@xtuc/buffer": "^5.2.2",
     "wabt": "^1.0.0"
   }
 }

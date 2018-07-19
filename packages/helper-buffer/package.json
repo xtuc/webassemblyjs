@@ -21,6 +21,6 @@
     "jest-diff": "^22.4.0"
   },
   "dependencies": {
-    "@xtuc/buffer": "^5.2.0"
+    "@xtuc/buffer": "^5.2.2"
   }
 }

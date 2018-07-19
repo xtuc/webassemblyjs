@@ -23,7 +23,7 @@
     "@webassemblyjs/ieee754": "1.7.2-0",
     "@webassemblyjs/leb128": "1.7.2-0",
     "@webassemblyjs/utf8": "1.7.2-0",
-    "@xtuc/buffer": "^5.2.0"
+    "@xtuc/buffer": "^5.2.2"
   },
   "repository": {
     "type": "git",
