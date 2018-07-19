@@ -1,2 +1,3 @@
 packages/*/lib
+packages/*/esm
 packages/dce/src/libwabt.js
