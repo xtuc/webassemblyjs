@@ -62,5 +62,5 @@ export function fromHexdump(str: string): Buffer {
     return acc;
   }, []);
 
-  return Buffer.from(bytes);
+  return Uint8Array.from(bytes);
 }
