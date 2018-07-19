@@ -354,7 +354,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       if (type == constants.types.func) {
         dump([type], "func");
 
-        const paramValtypes: Array<Valtype> = parseVec(b => constants.valtypes[b]);
+        const paramValtypes: Array<Valtype> = parseVec(
+          b => constants.valtypes[b]
+        );
         const params = paramValtypes.map(v => t.funcParam(/*valtype*/ v));
 
         const result: Array<Valtype> = parseVec(b => constants.valtypes[b]);
@@ -1379,7 +1381,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const sectionId = readByte();
     eatBytes(1);
 
-    if (sectionId >= sectionIndex || sectionIndex === constants.sections.custom) {
+    if (
+      sectionId >= sectionIndex ||
+      sectionIndex === constants.sections.custom
+    ) {
       sectionIndex = sectionId + 1;
     } else {
       if (sectionId !== constants.sections.custom)
