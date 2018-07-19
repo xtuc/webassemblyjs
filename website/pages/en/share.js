@@ -37,8 +37,8 @@ class Share extends React.Component {
           </div>
         </div>
 
-        <script src="https://bundle.run/@webassemblyjs/wasm-parser@1.7.2-0" />
-        <script src="https://bundle.run/@webassemblyjs/wast-printer@1.7.2-0" />
+        <script src="https://bundle.run/@webassemblyjs/wasm-parser@1.7.2" />
+        <script src="https://bundle.run/@webassemblyjs/wast-printer@1.7.2" />
         <script src="/js/share.js" />
 
         <p style={{ textAlign: "center" }}>
