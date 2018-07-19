@@ -3,6 +3,7 @@
 import { CompileError } from "@webassemblyjs/helper-api-error";
 import * as ieee754 from "@webassemblyjs/ieee754";
 import * as utf8 from "@webassemblyjs/utf8";
+import * as t from "@webassemblyjs/ast";
 
 import {
   decodeInt32,
@@ -13,20 +14,7 @@ import {
   MAX_NUMBER_OF_BYTE_U64
 } from "@webassemblyjs/leb128";
 
-const t = require("@webassemblyjs/ast");
-const {
-  importTypes,
-  symbolsByByte,
-  blockTypes,
-  tableTypes,
-  globalTypes,
-  exportTypes,
-  types,
-  magicModuleHeader,
-  valtypes,
-  moduleVersion,
-  sections
-} = require("@webassemblyjs/helper-wasm-bytecode").default;
+import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 function toHex(n: number): string {
   return "0x" + Number(n).toString(16);
@@ -290,7 +278,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     const header = readBytes(4);
 
-    if (byteArrayEq(magicModuleHeader, header) === false) {
+    if (byteArrayEq(constants.magicModuleHeader, header) === false) {
       throw new CompileError("magic header not detected");
     }
 
@@ -306,7 +294,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     const version = readBytes(4);
 
-    if (byteArrayEq(moduleVersion, version) === false) {
+    if (byteArrayEq(constants.moduleVersion, version) === false) {
       throw new CompileError("unknown binary version");
     }
 
@@ -363,13 +351,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const type = readByte();
       eatBytes(1);
 
-      if (type == types.func) {
+      if (type == constants.types.func) {
         dump([type], "func");
 
-        const paramValtypes: Array<Valtype> = parseVec(b => valtypes[b]);
+        const paramValtypes: Array<Valtype> = parseVec(
+          b => constants.valtypes[b]
+        );
         const params = paramValtypes.map(v => t.funcParam(/*valtype*/ v));
 
-        const result: Array<Valtype> = parseVec(b => valtypes[b]);
+        const result: Array<Valtype> = parseVec(b => constants.valtypes[b]);
 
         const endLoc = getPosition();
 
@@ -425,7 +415,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const descrTypeByte = readByte();
       eatBytes(1);
 
-      const descrType = importTypes[descrTypeByte];
+      const descrType = constants.importTypes[descrTypeByte];
 
       dump([descrTypeByte], "import kind");
 
@@ -557,7 +547,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       let id: Identifier, signature;
 
-      if (exportTypes[typeIndex] === "Func") {
+      if (constants.exportTypes[typeIndex] === "Func") {
         const func = state.functionsInModule[index];
 
         if (typeof func === "undefined") {
@@ -569,7 +559,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         id = t.numberLiteralFromRaw(index, String(index));
 
         signature = func.signature;
-      } else if (exportTypes[typeIndex] === "Table") {
+      } else if (constants.exportTypes[typeIndex] === "Table") {
         const table = state.tablesInModule[index];
 
         if (typeof table === "undefined") {
@@ -581,7 +571,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         id = t.numberLiteralFromRaw(index, String(index));
 
         signature = null;
-      } else if (exportTypes[typeIndex] === "Mem") {
+      } else if (constants.exportTypes[typeIndex] === "Mem") {
         const memNode = state.memoriesInModule[index];
 
         if (typeof memNode === "undefined") {
@@ -593,7 +583,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         id = t.numberLiteralFromRaw(index, String(index));
 
         signature = null;
-      } else if (exportTypes[typeIndex] === "Global") {
+      } else if (constants.exportTypes[typeIndex] === "Global") {
         const global = state.globalsInModule[index];
 
         if (typeof global === "undefined") {
@@ -614,7 +604,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       state.elementsInExportSection.push({
         name: name.value,
-        type: exportTypes[typeIndex],
+        type: constants.exportTypes[typeIndex],
         signature,
         id,
         index,
@@ -665,7 +655,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const valtypeByte = readByte();
         eatBytes(1);
 
-        const type = valtypes[valtypeByte];
+        const type = constants.valtypes[valtypeByte];
         locals.push(type);
 
         dump([valtypeByte], type);
@@ -708,7 +698,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new CompileError("Atomic instructions are not implemented");
       }
 
-      const instruction = symbolsByByte[instructionByte];
+      const instruction = constants.symbolsByByte[instructionByte];
 
       if (typeof instruction === "undefined") {
         throw new CompileError(
@@ -735,7 +725,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const blocktypeByte = readByte();
         eatBytes(1);
 
-        const blocktype = blockTypes[blocktypeByte];
+        const blocktype = constants.blockTypes[blocktypeByte];
 
         dump([blocktypeByte], "blocktype");
 
@@ -759,7 +749,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const blocktypeByte = readByte();
         eatBytes(1);
 
-        const blocktype = blockTypes[blocktypeByte];
+        const blocktype = constants.blockTypes[blocktypeByte];
 
         dump([blocktypeByte], "blocktype");
 
@@ -802,7 +792,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const blocktypeByte = readByte();
         eatBytes(1);
 
-        const blocktype = blockTypes[blocktypeByte];
+        const blocktype = constants.blockTypes[blocktypeByte];
 
         dump([blocktypeByte], "blocktype");
 
@@ -1070,7 +1060,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     dump([elementTypeByte], "element type");
 
-    const elementType = tableTypes[elementTypeByte];
+    const elementType = constants.tableTypes[elementTypeByte];
 
     if (typeof elementType === "undefined") {
       throw new CompileError(
@@ -1088,7 +1078,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const valtypeByte = readByte();
     eatBytes(1);
 
-    const type = valtypes[valtypeByte];
+    const type = constants.valtypes[valtypeByte];
 
     dump([valtypeByte], type);
 
@@ -1099,7 +1089,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const globalTypeByte = readByte();
     eatBytes(1);
 
-    const globalType = globalTypes[globalTypeByte];
+    const globalType = constants.globalTypes[globalTypeByte];
 
     dump([globalTypeByte], `global type (${globalType})`);
 
@@ -1391,10 +1381,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const sectionId = readByte();
     eatBytes(1);
 
-    if (sectionId >= sectionIndex || sectionIndex === sections.custom) {
+    if (
+      sectionId >= sectionIndex ||
+      sectionIndex === constants.sections.custom
+    ) {
       sectionIndex = sectionId + 1;
     } else {
-      if (sectionId !== sections.custom)
+      if (sectionId !== constants.sections.custom)
         throw new CompileError("Unexpected section: " + toHex(sectionId));
     }
 
@@ -1416,7 +1409,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     );
 
     switch (sectionId) {
-      case sections.type: {
+      case constants.sections.type: {
         dumpSep("section Type");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1445,7 +1438,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.table: {
+      case constants.sections.table: {
         dumpSep("section Table");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1476,7 +1469,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.import: {
+      case constants.sections.import: {
         dumpSep("section Import");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1507,7 +1500,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.func: {
+      case constants.sections.func: {
         dumpSep("section Function");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1538,7 +1531,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.export: {
+      case constants.sections.export: {
         dumpSep("section Export");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1569,7 +1562,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.code: {
+      case constants.sections.code: {
         dumpSep("section Code");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1606,7 +1599,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.start: {
+      case constants.sections.start: {
         dumpSep("section Start");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1622,7 +1615,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.element: {
+      case constants.sections.element: {
         dumpSep("section Element");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1651,7 +1644,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.global: {
+      case constants.sections.global: {
         dumpSep("section Global");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1680,7 +1673,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.memory: {
+      case constants.sections.memory: {
         dumpSep("section Memory");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1709,7 +1702,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.data: {
+      case constants.sections.data: {
         dumpSep("section Data");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1749,7 +1742,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         }
       }
 
-      case sections.custom: {
+      case constants.sections.custom: {
         dumpSep("section Custom");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");

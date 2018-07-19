@@ -11,9 +11,8 @@
 "use strict";
 
 import Long from "@xtuc/long";
-
-const bits = require("./bits");
-const bufs = require("./bufs");
+import * as bits from "./bits";
+import * as bufs from "./bufs";
 
 /*
  * Module variables

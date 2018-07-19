@@ -84,7 +84,7 @@ function isLossyToAdd(accum, num) {
  * with all zeroes. This returns a buffer from the pool if it is
  * available, or a freshly-allocated buffer if not.
  */
-function alloc(length) {
+export function alloc(length) {
   let result = bufPool[length];
 
   if (result) {
@@ -100,7 +100,7 @@ function alloc(length) {
 /**
  * Releases a buffer back to the pool.
  */
-function free(buffer) {
+export function free(buffer) {
   const length = buffer.length;
 
   if (length < TEMP_BUF_MAXIMUM_LENGTH) {
@@ -114,7 +114,7 @@ function free(buffer) {
  * use if the given buffer was allocated within this module (since
  * otherwise the buffer might possibly be shared externally).
  */
-function resize(buffer, length) {
+export function resize(buffer, length) {
   if (length === buffer.length) {
     return buffer;
   }
@@ -129,7 +129,7 @@ function resize(buffer, length) {
 /**
  * Reads an arbitrary signed int from a buffer.
  */
-function readInt(buffer) {
+export function readInt(buffer) {
   const length = buffer.length;
   const positive = buffer[length - 1] < 0x80;
   let result = positive ? 0 : -1;
@@ -161,7 +161,7 @@ function readInt(buffer) {
 /**
  * Reads an arbitrary unsigned int from a buffer.
  */
-function readUInt(buffer) {
+export function readUInt(buffer) {
   const length = buffer.length;
   let result = 0;
   let lossy = false;
@@ -190,7 +190,7 @@ function readUInt(buffer) {
 /**
  * Writes a little-endian 64-bit signed int into a buffer.
  */
-function writeInt64(value, buffer) {
+export function writeInt64(value, buffer) {
   if (value < MIN_EXACT_INT64 || value > MAX_EXACT_INT64) {
     throw new Error("Value out of range.");
   }
@@ -205,7 +205,7 @@ function writeInt64(value, buffer) {
 /**
  * Writes a little-endian 64-bit unsigned int into a buffer.
  */
-function writeUInt64(value, buffer) {
+export function writeUInt64(value, buffer) {
   if (value < 0 || value > MAX_EXACT_UINT64) {
     throw new Error("Value out of range.");
   }
@@ -216,13 +216,3 @@ function writeUInt64(value, buffer) {
   buffer.writeUInt32LE(lowWord, 0);
   buffer.writeUInt32LE(highWord, 4);
 }
-
-module.exports = {
-  alloc: alloc,
-  free: free,
-  readInt: readInt,
-  readUInt: readUInt,
-  resize: resize,
-  writeInt64: writeInt64,
-  writeUInt64: writeUInt64
-};
