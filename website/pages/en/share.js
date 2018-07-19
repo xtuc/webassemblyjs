@@ -29,19 +29,6 @@ class Share extends React.Component {
             <div className="action-buttons" />
 
             <span className="language">
-              <code>wasmgen -o text</code>
-            </span>
-          </div>
-          <div className="window-body" id="wasmgen-editor">
-            <pre className="code-output" id="wasmgen-output" />
-          </div>
-        </div>
-
-        <div className="window" style={{ width: "80%" }}>
-          <div className="window-header">
-            <div className="action-buttons" />
-
-            <span className="language">
               <code>wasm2wast</code>
             </span>
           </div>
@@ -50,9 +37,8 @@ class Share extends React.Component {
           </div>
         </div>
 
-        <script src="https://bundle.run/@webassemblyjs/wasm-gen@1.5.1" />
-        <script src="https://bundle.run/@webassemblyjs/wasm-parser@1.5.1" />
-        <script src="https://bundle.run/@webassemblyjs/wast-printer@1.5.1" />
+        <script src="https://bundle.run/@webassemblyjs/wasm-parser@1.7.2" />
+        <script src="https://bundle.run/@webassemblyjs/wast-printer@1.7.2" />
         <script src="/js/share.js" />
 
         <p style={{ textAlign: "center" }}>
