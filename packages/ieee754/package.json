@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/ieee754",
-  "version": "1.7.1",
+  "version": "1.7.2-1",
   "description": "IEEE754 decoder and encoder",
   "license": "MIT",
   "main": "lib/index.js",
@@ -12,6 +12,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@xtuc/buffer": "^5.2.2",
     "@xtuc/ieee754": "^1.2.0"
   }
 }

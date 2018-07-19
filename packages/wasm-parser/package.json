@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-parser",
-  "version": "1.7.1",
+  "version": "1.7.2-1",
   "keywords": [
     "webassembly",
     "javascript",
@@ -17,12 +17,13 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.7.1",
-    "@webassemblyjs/helper-api-error": "1.7.1",
-    "@webassemblyjs/helper-wasm-bytecode": "1.7.1",
-    "@webassemblyjs/ieee754": "1.7.1",
-    "@webassemblyjs/leb128": "1.7.1",
-    "@webassemblyjs/utf8": "1.7.1"
+    "@webassemblyjs/ast": "1.7.2-1",
+    "@webassemblyjs/helper-api-error": "1.7.2-1",
+    "@webassemblyjs/helper-wasm-bytecode": "1.7.2-1",
+    "@webassemblyjs/ieee754": "1.7.2-1",
+    "@webassemblyjs/leb128": "1.7.2-1",
+    "@webassemblyjs/utf8": "1.7.2-1",
+    "@xtuc/buffer": "^5.2.2"
   },
   "repository": {
     "type": "git",
@@ -32,11 +33,11 @@
     "access": "public"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-buffer": "1.7.1",
-    "@webassemblyjs/helper-test-framework": "1.7.1",
-    "@webassemblyjs/helper-wasm-bytecode": "1.7.1",
-    "@webassemblyjs/wasm-gen": "1.7.1",
-    "@webassemblyjs/wast-parser": "1.7.1",
+    "@webassemblyjs/helper-buffer": "1.7.2-1",
+    "@webassemblyjs/helper-test-framework": "1.7.2-1",
+    "@webassemblyjs/helper-wasm-bytecode": "1.7.2-1",
+    "@webassemblyjs/wasm-gen": "1.7.2-1",
+    "@webassemblyjs/wast-parser": "1.7.2-1",
     "wabt": "^1.0.0"
   }
 }

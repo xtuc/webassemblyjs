@@ -1,6 +1,6 @@
 {
   "name": "wast-loader",
-  "version": "1.7.1",
+  "version": "1.7.2-1",
   "description": "Webpack loader for WebAssembly text format",
   "keywords": [
     "webassembly",
@@ -24,6 +24,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@xtuc/buffer": "^5.2.2",
     "wabt": "^1.0.0"
   }
 }
