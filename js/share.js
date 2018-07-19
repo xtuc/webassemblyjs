@@ -1,21 +1,3 @@
-function runWasmgen(buffer) {
-  const output = document.getElementById("wasmgen-output");
-  const editor = document.getElementById("wasmgen-editor");
-
-  const opts = {
-    out: "text"
-  };
-
-  const out = _webassemblyjs_wasmGen(buffer, opts);
-
-  const lineCount = out.split("\n").length - 1;
-  const sizePerLine = 20;
-
-  editor.style.height = lineCount * sizePerLine;
-
-  output.innerHTML = '<code className="language-txt">' + out + "</code>";
-}
-
 function runWasm2Wast(buffer) {
   const output = document.getElementById("wasm2wast-output");
   const editor = document.getElementById("wasm2wast-editor");
@@ -113,7 +95,6 @@ function runWasm2Wast(buffer) {
       encodeInUrl(arrayBuffer);
 
       runWasm2Wast(arrayBuffer);
-      runWasmgen(arrayBuffer);
     };
 
     fileReader.readAsArrayBuffer(file);
@@ -123,6 +104,5 @@ function runWasm2Wast(buffer) {
 
   if (typeof savedBuffer !== "undefined") {
     runWasm2Wast(savedBuffer);
-    runWasmgen(savedBuffer);
   }
 })();
