@@ -1,6 +1,6 @@
 // @flow
-const t = require("@webassemblyjs/ast");
 import * as decoder from "./decoder";
+import * as t from "@webassemblyjs/ast";
 
 const defaultDecoderOpts = {
   dump: false,

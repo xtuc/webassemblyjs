@@ -1,6 +1,6 @@
 // @flow
 
-import { write, read } from "ieee754";
+import { write, read } from "@xtuc/ieee754";
 
 /**
  * According to https://webassembly.github.io/spec/binary/values.html#binary-float
