@@ -1,5 +1,6 @@
 // @flow
 
+const { Buffer } = require("@xtuc/buffer");
 const { compareStrings } = require("@webassemblyjs/helper-test-framework");
 
 const { decode } = require("../lib");

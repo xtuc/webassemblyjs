@@ -11,6 +11,7 @@
 "use strict";
 
 const assert = require("assert");
+const { Buffer } = require("@xtuc/buffer");
 
 const leb = require("../lib/leb").default;
 

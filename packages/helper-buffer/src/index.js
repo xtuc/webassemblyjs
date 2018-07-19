@@ -1,5 +1,7 @@
 // @flow
 
+import { Buffer } from "@xtuc/buffer";
+
 function concatUint8Arrays(...arrays: Array<Uint8Array>) {
   const totalLength = arrays.reduce((a, b) => a + b.length, 0);
   const result = new Uint8Array(totalLength);

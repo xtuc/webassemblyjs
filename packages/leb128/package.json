@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@xtuc/long": "4.2.1"
+    "@xtuc/long": "4.2.1",
+    "@xtuc/buffer": "^5.2.0"
   },
   "publishConfig": {
     "access": "public"

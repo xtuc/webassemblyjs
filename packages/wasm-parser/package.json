@@ -22,7 +22,8 @@
     "@webassemblyjs/helper-wasm-bytecode": "1.7.1",
     "@webassemblyjs/ieee754": "1.7.1",
     "@webassemblyjs/leb128": "1.7.1",
-    "@webassemblyjs/utf8": "1.7.1"
+    "@webassemblyjs/utf8": "1.7.1",
+    "@xtuc/buffer": "^5.2.0"
   },
   "repository": {
     "type": "git",
