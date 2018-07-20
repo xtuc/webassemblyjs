@@ -1,6 +1,6 @@
 // @flow
-const t = require("@webassemblyjs/ast");
 import * as decoder from "./decoder";
+import * as t from "@webassemblyjs/ast";
 
 const defaultDecoderOpts = {
   dump: false,
@@ -59,8 +59,8 @@ function restoreFunctionNames(ast) {
     ModuleImport({ node }: NodePath<ModuleImport>) {
       if (node.descr.type === "FuncImportDescr") {
         // $FlowIgnore
-        const nodeName: NumberLiteral = node.descr.id;
-        const index = nodeName.value;
+        const indexBasedFunctionName: string = node.descr.id;
+        const index = Number(indexBasedFunctionName.replace("func_", ""));
         const functionName = functionNames.find(f => f.index === index);
 
         if (functionName) {
@@ -130,7 +130,14 @@ function restoreModuleName(ast) {
       // update module
       t.traverse(ast, {
         Module({ node }: NodePath<Module>) {
-          node.id = moduleNameMetadataPath.node.value;
+          let name = moduleNameMetadataPath.node.value;
+
+          // compatiblity with wast-parser
+          if (name === "") {
+            name = null;
+          }
+
+          node.id = name;
         }
       });
     }

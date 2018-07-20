@@ -11,7 +11,7 @@ const {
   encodeVersion,
   encodeHeader
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
-const constants = require("@webassemblyjs/helper-wasm-bytecode");
+const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 const wabt = require("wabt");
 const { parse } = require("@webassemblyjs/wast-parser");
 const { decode } = require("../lib");
@@ -78,6 +78,35 @@ describe("Binary decoder", () => {
       const fn = () => decode(buffer);
 
       assert.throws(fn, "Unexpected section: 0x3");
+    });
+  });
+
+  describe("ignore section(s)", () => {
+    const decoderOpts = {
+      ignoreDataSection: true
+    };
+
+    it("should eat the data section without overflowing", () => {
+      const buffer = makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.data, 0x05, 0x01, 0x01, 0x41, 0x01, 0x00],
+        [constants.sections.custom, 0x04, 0x01, 0x01, 97, 0x00, 0x00]
+      );
+
+      const ast = decode(buffer, decoderOpts);
+
+      let foundCustomSection = false;
+
+      traverse(ast, {
+        SectionMetadata({ node }) {
+          if (node.section === "custom") {
+            foundCustomSection = true;
+          }
+        }
+      });
+
+      assert.isTrue(foundCustomSection, "Custom section was not detected");
     });
   });
 });

@@ -1,9 +1,10 @@
 {
   "name": "@webassemblyjs/ieee754",
-  "version": "1.6.0",
+  "version": "1.7.2",
   "description": "IEEE754 decoder and encoder",
   "license": "MIT",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,6 +12,7 @@
     "access": "public"
   },
   "dependencies": {
-    "ieee754": "^1.1.11"
+    "@xtuc/buffer": "^5.2.2",
+    "@xtuc/ieee754": "^1.2.0"
   }
 }

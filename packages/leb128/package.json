@@ -1,14 +1,16 @@
 {
   "name": "@webassemblyjs/leb128",
-  "version": "1.6.0",
+  "version": "1.7.2",
   "description": "LEB128 decoder and encoder",
   "license": "MIT",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "long": "4.0.0"
+    "@xtuc/buffer": "^5.2.2",
+    "@xtuc/long": "4.2.1"
   },
   "publishConfig": {
     "access": "public"

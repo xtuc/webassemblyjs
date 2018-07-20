@@ -4,8 +4,6 @@ import { encodeU32 } from "@webassemblyjs/wasm-gen";
 import { getSectionMetadata, traverse, shiftSection } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-const debug = require("debug")("webassemblyjs:wasm:resizesection");
-
 export function resizeSectionByteSize(
   ast: Program,
   uint8Buffer: Uint8Array,
@@ -64,23 +62,9 @@ export function resizeSectionByteSize(
 
       if (encounteredSection === true) {
         shiftSection(ast, path.node, deltaBytes);
-
-        debug(
-          "shift section section=%s detla=%d",
-          path.node.section,
-          deltaBytes
-        );
       }
     }
   });
-
-  debug(
-    "resize byte size section=%s newValue=%s start=%d end=%d",
-    section,
-    newSectionSize,
-    start,
-    end
-  );
 
   return overrideBytesInBuffer(uint8Buffer, start, end, newBytes);
 }
@@ -116,13 +100,6 @@ export function resizeSectionVecSize(
   // Update AST
   sectionMetadata.vectorOfSize.value = newValue;
   sectionMetadata.vectorOfSize.loc.end.column = start + newBytes.length;
-
-  debug(
-    "resize vec size section=%s detla=%d newValue=%s",
-    section,
-    deltaElements,
-    newValue
-  );
 
   return overrideBytesInBuffer(uint8Buffer, start, end, newBytes);
 }

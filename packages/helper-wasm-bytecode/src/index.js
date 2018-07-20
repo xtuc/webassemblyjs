@@ -3,8 +3,6 @@ const illegalop = "illegal";
 const magicModuleHeader = [0x00, 0x61, 0x73, 0x6d];
 const moduleVersion = [0x01, 0x00, 0x00, 0x00];
 
-import { getSectionForNode } from "./section";
-
 function invertMap(obj, keyModifierFn = k => k) {
   const result = {};
   const keys = Object.keys(obj);
@@ -328,7 +326,7 @@ const symbolsByName = invertMap(symbolsByByte, obj => {
   return obj.name;
 });
 
-module.exports = {
+export default {
   symbolsByByte,
   sections,
   magicModuleHeader,
@@ -343,6 +341,7 @@ module.exports = {
   valtypesByString,
   globalTypesByString,
   exportTypesByName,
-  symbolsByName,
-  getSectionForNode
+  symbolsByName
 };
+
+export { getSectionForNode } from "./section";

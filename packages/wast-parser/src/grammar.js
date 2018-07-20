@@ -1,12 +1,12 @@
 // @flow
+
 import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 import { define } from "mamacro";
+import * as t from "@webassemblyjs/ast";
 
 import { parse32I } from "./number-literals";
 import { parseString } from "./string-literals";
-
-const t = require("@webassemblyjs/ast");
-const { tokens, keywords } = require("./tokenizer");
+import { tokens, keywords } from "./tokenizer";
 
 declare function createUnexpectedToken(msg: string): void;
 
@@ -405,8 +405,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       const name = token.value;
-
-      let fnName = t.identifier(`${moduleName}.${name}`);
       eatToken();
 
       eatTokenOfType(tokens.openParen);
@@ -418,6 +416,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         const fnParams = [];
         const fnResult = [];
+
+        let fnName = t.identifier(getUniqueName("func"));
 
         if (token.type === tokens.identifier) {
           fnName = identifierFromToken(token);

@@ -1,8 +1,9 @@
 {
   "name": "@webassemblyjs/helper-wasm-section",
-  "version": "1.6.0",
+  "version": "1.7.2",
   "description": "",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,13 +17,12 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.6.0",
-    "@webassemblyjs/helper-buffer": "1.6.0",
-    "@webassemblyjs/helper-wasm-bytecode": "1.6.0",
-    "@webassemblyjs/wasm-gen": "1.6.0",
-    "debug": "^3.1.0"
+    "@webassemblyjs/ast": "1.7.2",
+    "@webassemblyjs/helper-buffer": "1.7.2",
+    "@webassemblyjs/helper-wasm-bytecode": "1.7.2",
+    "@webassemblyjs/wasm-gen": "1.7.2"
   },
   "devDependencies": {
-    "@webassemblyjs/wasm-parser": "1.6.0"
+    "@webassemblyjs/wasm-parser": "1.7.2"
   }
 }

@@ -1,6 +1,6 @@
 // @flow
 
-const debug = require("debug")("webassemblyjs:wasm");
+import { Buffer } from "@xtuc/buffer";
 
 function concatUint8Arrays(...arrays: Array<Uint8Array>) {
   const totalLength = arrays.reduce((a, b) => a + b.length, 0);
@@ -27,14 +27,6 @@ export function overrideBytesInBuffer(
 ): Uint8Array {
   const beforeBytes = buffer.slice(0, startLoc);
   const afterBytes = buffer.slice(endLoc, buffer.length);
-
-  debug(
-    "overrideBytesInBuffer start=%d end=%d newBytes=%s",
-    startLoc,
-    endLoc,
-    // $FlowIgnore
-    newBytes.map(dec => dec.toString("16")).join()
-  );
 
   // replacement is empty, we can omit it
   if (newBytes.length === 0) {

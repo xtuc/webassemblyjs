@@ -1,5 +1,13 @@
+const useESM = process.env["ESM"] === "1";
+
+let modules = "commonjs";
+
+if (useESM) {
+  modules = false;
+}
+
 const presets = [
-  '@babel/preset-env',
+  ['@babel/preset-env', { modules }],
   '@babel/preset-flow',
 ];
 

@@ -1,6 +1,6 @@
 {
   "name": "webassemblyjs",
-  "version": "1.6.0",
+  "version": "1.7.2",
   "keywords": [
     "webassembly",
     "interpreter",
@@ -12,21 +12,22 @@
   ],
   "description": "WebAssembly interpreter",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "mocha"
   },
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.6.0",
-    "@webassemblyjs/validation": "1.6.0",
-    "@webassemblyjs/wasm-parser": "1.6.0",
-    "@webassemblyjs/wast-parser": "1.6.0",
-    "long": "^3.2.0",
+    "@webassemblyjs/ast": "1.7.2",
+    "@webassemblyjs/validation": "1.7.2",
+    "@webassemblyjs/wasm-parser": "1.7.2",
+    "@webassemblyjs/wast-parser": "1.7.2",
+    "@xtuc/long": "4.2.1",
     "mamacro": "^0.0.3"
   },
   "devDependencies": {
-    "@webassemblyjs/floating-point-hex-parser": "1.6.0",
+    "@webassemblyjs/floating-point-hex-parser": "1.7.2",
     "wabt": "^1.0.0"
   },
   "repository": {

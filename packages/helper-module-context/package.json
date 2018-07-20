@@ -1,8 +1,9 @@
 {
   "name": "@webassemblyjs/helper-module-context",
-  "version": "1.6.0",
+  "version": "1.7.2",
   "description": "",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,11 +12,10 @@
     "url": "https://github.com/xtuc/webassemblyjs.git"
   },
   "dependencies": {
-    "debug": "^3.1.0",
     "mamacro": "^0.0.3"
   },
   "devDependencies": {
-    "@webassemblyjs/wast-parser": "1.6.0"
+    "@webassemblyjs/wast-parser": "1.7.2"
   },
   "publishConfig": {
     "access": "public"
