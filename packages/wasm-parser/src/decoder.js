@@ -1101,12 +1101,23 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return t.globalType(type, globalType);
   }
 
-  function parseNameModule() {
-    const name = readUTF8String();
-    eatBytes(name.nextIndex);
+  // function parseNameModule() {
+  //   const lenu32 = readVaruint32();
+  //   eatBytes(lenu32.nextIndex);
 
-    return [t.moduleNameMetadata(name.value)];
-  }
+  //   console.log("len", lenu32);
+
+  //   const strlen = lenu32.value;
+
+  //   dump([strlen], "string length");
+
+  //   const bytes = readBytes(strlen);
+  //   eatBytes(strlen);
+
+  //   const value = utf8.decode(bytes);
+
+  //   return [t.moduleNameMetadata(value)];
+  // }
 
   // this section contains an array of function names and indices
   function parseNameSectionFunctions() {
@@ -1178,10 +1189,16 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       eatBytes(subSectionSizeInBytesu32.nextIndex);
 
       switch (sectionTypeByte.value) {
-        case 0: {
-          nameMetadata.push(...parseNameModule());
-          break;
-        }
+        // case 0: {
+        // TODO(sven): re-enable that
+        // Current status: it seems that when we decode the module's name
+        // no name_payload_len is used.
+        //
+        // See https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#name-section
+        //
+        // nameMetadata.push(...parseNameModule());
+        // break;
+        // }
         case 1: {
           nameMetadata.push(...parseNameSectionFunctions());
           break;
