@@ -31,7 +31,13 @@ function stripMetadata(ast) {
       delete node.loc;
     },
 
+    // wasm doesn't have comments
     BlockComment(path) {
+      path.remove();
+    },
+
+    // wasm doesn't have comments
+    LeadingComment(path) {
       path.remove();
     }
   });
