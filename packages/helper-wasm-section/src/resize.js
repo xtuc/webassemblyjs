@@ -37,8 +37,6 @@ export function resizeSectionByteSize(
 
   // the new u32 has a different encoded length
   if (newu32EncodedLen !== oldu32EncodedLen) {
-    console.warn("LEB128 encoding changed, this might lead to bugs");
-
     const deltaInSizeEncoding = newu32EncodedLen - oldu32EncodedLen;
 
     sectionMetadata.size.loc.end.column = start + newu32EncodedLen;
