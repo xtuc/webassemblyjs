@@ -14,7 +14,10 @@ interface Type {
 }
 
 type Decoded32 = VariableLengthValue;
-type Decoded64 = VariableLengthValue;
+type Decoded64 = {
+  value: LongNumber,
+  nextIndex: number
+};
 type DecodedF32 = VariableLengthValue;
 type DecodedF64 = VariableLengthValue;
 
@@ -45,7 +48,7 @@ type DecodedModuleFunc = {
 
 type DecodedElementInExportSection = {
   name: string,
-  type: ExportDescr,
+  type: ModuleExportDescr,
   signature: ?DecodedModuleType,
   id: ?Index,
   index: number,
@@ -63,14 +66,15 @@ type DecodedElementInCodeSection = {
 };
 
 type DecodedModuleMemory = Memory;
-
 type DecodedModuleTable = Table;
+type DecodedModuleGlobal = Global;
 
 type State = {
   typesInModule: Array<DecodedModuleType>,
   functionsInModule: Array<DecodedModuleFunc>,
   tablesInModule: Array<DecodedModuleTable>,
   memoriesInModule: Array<DecodedModuleMemory>,
+  globalsInModule: Array<DecodedModuleGlobal>,
 
   elementsInExportSection: Array<DecodedElementInExportSection>,
   elementsInCodeSection: Array<DecodedElementInCodeSection>

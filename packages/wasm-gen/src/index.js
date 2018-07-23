@@ -41,6 +41,12 @@ export function encodeNode(n: Node): Array<Byte> {
     case "IndexInFuncSection":
       return encoder.encodeIndexInFuncSection(n);
 
+    case "StringLiteral":
+      return encoder.encodeStringLiteral(n);
+
+    case "Elem":
+      return encoder.encodeElem(n);
+
     default:
       throw new Error(
         "Unsupported encoding for node of type: " + JSON.stringify(n.type)

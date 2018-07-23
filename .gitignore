@@ -58,3 +58,6 @@ typings/
 .env
 
 lib/
+esm/
+
+package-lock.json

@@ -34,7 +34,7 @@
                 },
                 "end": {
                   "line": 3,
-                  "column": 8
+                  "column": 7
                 }
               }
             },
@@ -49,13 +49,23 @@
                 },
                 "end": {
                   "line": 4,
-                  "column": 8
+                  "column": 7
                 }
               }
             }
           ]
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 6,
+          "column": -1
+        }
+      }
     }
   ]
 }

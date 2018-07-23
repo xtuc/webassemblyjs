@@ -57,11 +57,6 @@ const valtypes = {
 
 const valtypesByString = invertMap(valtypes);
 
-const limitHasMaximum = {
-  0x00: false,
-  0x01: true
-};
-
 const tableTypes = {
   0x70: "anyfunc"
 };
@@ -331,7 +326,7 @@ const symbolsByName = invertMap(symbolsByByte, obj => {
   return obj.name;
 });
 
-module.exports = {
+export default {
   symbolsByByte,
   sections,
   magicModuleHeader,
@@ -340,7 +335,6 @@ module.exports = {
   valtypes,
   exportTypes,
   blockTypes,
-  limitHasMaximum,
   tableTypes,
   globalTypes,
   importTypes,
@@ -349,3 +343,5 @@ module.exports = {
   exportTypesByName,
   symbolsByName
 };
+
+export { getSectionForNode } from "./section";

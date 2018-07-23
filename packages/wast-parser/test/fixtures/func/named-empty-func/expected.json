@@ -5,53 +5,133 @@
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "test"
+        "value": "test",
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 7
+          },
+          "end": {
+            "line": 1,
+            "column": 12
+          }
+        }
       },
       "signature": {
         "type": "Signature",
         "params": [],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 11
+        }
+      }
     },
     {
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "TEST"
+        "value": "TEST",
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 6
+          },
+          "end": {
+            "line": 2,
+            "column": 11
+          }
+        }
       },
       "signature": {
         "type": "Signature",
         "params": [],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 10
+        }
+      }
     },
     {
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "!"
+        "value": "!",
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 6
+          },
+          "end": {
+            "line": 3,
+            "column": 8
+          }
+        }
       },
       "signature": {
         "type": "Signature",
         "params": [],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 3,
+          "column": 7
+        }
+      }
     },
     {
       "type": "Func",
       "name": {
         "type": "Identifier",
-        "value": "$"
+        "value": "$",
+        "loc": {
+          "start": {
+            "line": 4,
+            "column": 6
+          },
+          "end": {
+            "line": 4,
+            "column": 8
+          }
+        }
       },
       "signature": {
         "type": "Signature",
         "params": [],
         "results": []
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 1
+        },
+        "end": {
+          "line": 4,
+          "column": 7
+        }
+      }
     }
   ]
 }

@@ -3,29 +3,56 @@
   "body": [
     {
       "type": "BinaryModule",
+      "id": null,
       "blob": [
         ""
       ],
-      "id": null,
-      "fields": []
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 2,
+          "column": -1
+        }
+      }
     },
     {
       "type": "BinaryModule",
-      "blob": [
-        "\\00asm",
-        "\\01\\00\\00\\00"
-      ],
       "id": "M2",
-      "fields": []
-    },
-    {
-      "type": "BinaryModule",
       "blob": [
         "\\00asm",
         "\\01\\00\\00\\00"
       ],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 3,
+          "column": -1
+        }
+      }
+    },
+    {
+      "type": "BinaryModule",
       "id": null,
-      "fields": []
+      "blob": [
+        "\\00asm",
+        "\\01\\00\\00\\00"
+      ],
+      "loc": {
+        "start": {
+          "line": 3,
+          "column": 1
+        },
+        "end": {
+          "line": 6,
+          "column": -1
+        }
+      }
     }
   ]
 }

@@ -16,7 +16,6 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -24,6 +23,7 @@
                   "raw": "0"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 2,
@@ -31,24 +31,55 @@
                 },
                 "end": {
                   "line": 2,
-                  "column": 45
+                  "column": 44
                 }
               }
             }
           ],
           "name": {
             "type": "Identifier",
-            "value": "test"
+            "value": "test",
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 10
+              },
+              "end": {
+                "line": 2,
+                "column": 15
+              }
+            }
+          },
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 45
+            }
           }
         },
         {
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
-              "value": "test"
+              "value": "test",
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 10
+                },
+                "end": {
+                  "line": 2,
+                  "column": 15
+                }
+              }
             }
           }
         },
@@ -63,7 +94,6 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -71,6 +101,7 @@
                   "raw": "1"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 3,
@@ -78,7 +109,7 @@
                 },
                 "end": {
                   "line": 3,
-                  "column": 39
+                  "column": 38
                 }
               }
             }
@@ -87,13 +118,24 @@
             "type": "Identifier",
             "value": "global_1",
             "raw": ""
+          },
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 39
+            }
           }
         },
         {
           "type": "ModuleExport",
           "name": "b",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "global_1",
@@ -112,7 +154,6 @@
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -120,6 +161,7 @@
                   "raw": "1"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 4,
@@ -127,7 +169,7 @@
                 },
                 "end": {
                   "line": 4,
-                  "column": 45
+                  "column": 44
                 }
               }
             }
@@ -136,13 +178,24 @@
             "type": "Identifier",
             "value": "global_2",
             "raw": ""
+          },
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 3
+            },
+            "end": {
+              "line": 4,
+              "column": 45
+            }
           }
         },
         {
           "type": "ModuleExport",
           "name": "c",
           "descr": {
-            "type": "Global",
+            "type": "ModuleExportDescr",
+            "exportType": "Global",
             "id": {
               "type": "Identifier",
               "value": "global_2",
@@ -150,7 +203,17 @@
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 5,
+          "column": -1
+        }
+      }
     }
   ]
 }

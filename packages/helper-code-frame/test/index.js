@@ -8,7 +8,7 @@ const codeFrame = require("../lib").codeFrameFromAst;
 
 describe("code frame", () => {
   const m = t.program([
-    t.module(null, [t.func(t.identifier("foo"), [], [], [])])
+    t.module(null, [t.func(t.identifier("foo"), t.signature([], []), [])])
   ]);
 
   it("should point to a location", () => {
@@ -73,7 +73,9 @@ describe("code frame", () => {
     // Add 100 modules to our program
     for (let i = 0; i < 100; i++) {
       m.body.push(
-        t.module(null, [t.func(t.identifier("foo" + i), [], [], [])])
+        t.module(null, [
+          t.func(t.identifier("foo" + i), t.signature([], []), [])
+        ])
       );
     }
 

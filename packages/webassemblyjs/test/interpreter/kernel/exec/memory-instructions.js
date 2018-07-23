@@ -2,7 +2,7 @@
 
 const t = require("@webassemblyjs/ast");
 
-const Long = require("long");
+const Long = require("@xtuc/long").default;
 const { assert } = require("chai");
 
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
@@ -25,7 +25,9 @@ describe("kernel exec - memory instructions", () => {
       args: [],
 
       code: [
-        t.objectInstruction("const", "i64", [t.numberLiteral("10", "i64")])
+        t.objectInstruction("const", "i64", [
+          t.numberLiteralFromRaw("10", "i64")
+        ])
       ],
 
       resEqual: new i64(new Long.fromString("10"))
@@ -36,7 +38,7 @@ describe("kernel exec - memory instructions", () => {
 
       args: [],
 
-      code: [t.objectInstruction("const", "i32", [t.numberLiteral(10)])],
+      code: [t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])],
 
       resEqual: new i32(new Long.fromString("10"))
     },
@@ -46,7 +48,9 @@ describe("kernel exec - memory instructions", () => {
 
       args: [],
 
-      code: [t.objectInstruction("const", "f32", [t.numberLiteral(10.0)])],
+      code: [
+        t.objectInstruction("const", "f32", [t.numberLiteralFromRaw(10.0)])
+      ],
 
       resEqual: new f32(10.0)
     },
@@ -56,7 +60,9 @@ describe("kernel exec - memory instructions", () => {
 
       args: [],
 
-      code: [t.objectInstruction("const", "f64", [t.numberLiteral(10.0)])],
+      code: [
+        t.objectInstruction("const", "f64", [t.numberLiteralFromRaw(10.0)])
+      ],
 
       resEqual: new f64(10.0)
     },
@@ -68,10 +74,10 @@ describe("kernel exec - memory instructions", () => {
 
       code: [
         t.instruction("set_local", [
-          t.numberLiteral(0),
-          t.objectInstruction("const", "i32", [t.numberLiteral(10)])
+          t.numberLiteralFromRaw(0),
+          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])
         ]),
-        t.instruction("get_local", [t.numberLiteral(0)])
+        t.instruction("get_local", [t.numberLiteralFromRaw(0)])
       ],
 
       resEqual: new i32(10)
@@ -84,8 +90,8 @@ describe("kernel exec - memory instructions", () => {
 
       code: [
         t.instruction("tee_local", [
-          t.numberLiteral(0),
-          t.objectInstruction("const", "i32", [t.numberLiteral(2)])
+          t.numberLiteralFromRaw(0),
+          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)])
         ])
       ],
 

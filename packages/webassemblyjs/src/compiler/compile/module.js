@@ -44,7 +44,7 @@ export function createCompiledModule(ast: Program): CompiledModule {
 
   t.traverse(ast, {
     ModuleExport({ node }: NodePath<ModuleExport>) {
-      if (node.descr.type === "Func") {
+      if (node.descr.exportType === "Func") {
         exports.push({
           name: node.name,
           kind: "function"

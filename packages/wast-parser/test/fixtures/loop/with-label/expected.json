@@ -19,11 +19,31 @@
           "id": "loop",
           "label": {
             "type": "Identifier",
-            "value": "1"
+            "value": "1",
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 8
+              },
+              "end": {
+                "line": 2,
+                "column": 10
+              }
+            }
           },
           "instr": []
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 3,
+          "column": -1
+        }
+      }
     }
   ]
 }

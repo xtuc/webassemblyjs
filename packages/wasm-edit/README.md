@@ -7,7 +7,7 @@ Replace in-place an AST node in the binary.
 ## Installation
 
 ```sh
-npm install @webassemblyjs/wasm-edit
+yarn add @webassemblyjs/wasm-edit
 ```
 
 ## Usage
@@ -70,6 +70,17 @@ import { add } from "@webassemblyjs/wasm-edit";
 const binary = [/*...*/];
 
 const newBinary = add(actualBinary, [
-  t.moduleImport("env", "mem", t.memory(t.limits(1)))
+  t.moduleImport("env", "mem", t.memory(t.limit(1)))
 ]);
 ```
+
+## Providing the AST
+
+Providing an AST allows you to handle the decoding yourself, here is the API:
+
+```js
+addWithAST(Program, ArrayBuffer, Array<Node>): ArrayBuffer;
+editWithAST(Program, ArrayBuffer, visitors): ArrayBuffer;
+```
+
+Note that the AST will be updated in-place.

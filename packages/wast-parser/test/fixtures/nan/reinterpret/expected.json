@@ -17,20 +17,19 @@
         {
           "type": "Instr",
           "id": "reinterpret/f32",
-          "object": "i32",
           "args": [
             {
               "type": "Instr",
               "id": "const",
-              "object": "f32",
               "args": [
                 {
                   "type": "FloatLiteral",
                   "value": 4194304,
-                  "nan": true,
-                  "raw": "nan"
+                  "raw": "nan",
+                  "nan": true
                 }
               ],
+              "object": "f32",
               "loc": {
                 "start": {
                   "line": 1,
@@ -38,11 +37,12 @@
                 },
                 "end": {
                   "line": 1,
-                  "column": 42
+                  "column": 41
                 }
               }
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 1,
@@ -50,11 +50,21 @@
             },
             "end": {
               "line": 1,
-              "column": 43
+              "column": 42
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 43
+        }
+      }
     }
   ]
 }

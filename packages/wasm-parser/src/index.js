@@ -1,6 +1,6 @@
 // @flow
-const t = require("@webassemblyjs/ast");
 import * as decoder from "./decoder";
+import * as t from "@webassemblyjs/ast";
 
 const defaultDecoderOpts = {
   dump: false,
@@ -44,15 +44,28 @@ function restoreFunctionNames(ast) {
 
     // Also update the reference in the export
     ModuleExport({ node }: NodePath<ModuleExport>) {
-      if (node.descr.type === "Func") {
+      if (node.descr.exportType === "Func") {
         // $FlowIgnore
-        const nodeName: Identifier = node.descr.id;
-        const indexBasedFunctionName = nodeName.value;
+        const nodeName: NumberLiteral = node.descr.id;
+        const index = nodeName.value;
+        const functionName = functionNames.find(f => f.index === index);
+
+        if (functionName) {
+          node.descr.id = t.identifier(functionName.name);
+        }
+      }
+    },
+
+    ModuleImport({ node }: NodePath<ModuleImport>) {
+      if (node.descr.type === "FuncImportDescr") {
+        // $FlowIgnore
+        const indexBasedFunctionName: string = node.descr.id;
         const index = Number(indexBasedFunctionName.replace("func_", ""));
         const functionName = functionNames.find(f => f.index === index);
 
         if (functionName) {
-          nodeName.value = functionName.name;
+          // $FlowIgnore
+          node.descr.id = t.identifier(functionName.name);
         }
       }
     },
@@ -117,7 +130,14 @@ function restoreModuleName(ast) {
       // update module
       t.traverse(ast, {
         Module({ node }: NodePath<Module>) {
-          node.id = moduleNameMetadataPath.node.value;
+          let name = moduleNameMetadataPath.node.value;
+
+          // compatiblity with wast-parser
+          if (name === "") {
+            name = null;
+          }
+
+          node.id = name;
         }
       });
     }
@@ -128,7 +148,7 @@ export function decode(buf: ArrayBuffer, customOpts: Object): Program {
   const opts: DecoderOpts = Object.assign({}, defaultDecoderOpts, customOpts);
   const ast = decoder.decode(buf, opts);
 
-  if (!opts.ignoreCustomNameSection) {
+  if (opts.ignoreCustomNameSection === false) {
     restoreFunctionNames(ast);
     restoreLocalNames(ast);
     restoreModuleName(ast);

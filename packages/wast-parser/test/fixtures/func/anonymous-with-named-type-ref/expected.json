@@ -5,7 +5,17 @@
       "type": "TypeInstruction",
       "id": {
         "type": "Identifier",
-        "value": "foo"
+        "value": "foo",
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 7
+          },
+          "end": {
+            "line": 1,
+            "column": 11
+          }
+        }
       },
       "functype": {
         "type": "Signature",
@@ -17,6 +27,16 @@
         "results": [
           "i32"
         ]
+      },
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 42
+        }
       }
     },
     {
@@ -28,9 +48,29 @@
       },
       "signature": {
         "type": "Identifier",
-        "value": "foo"
+        "value": "foo",
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 12
+          },
+          "end": {
+            "line": 2,
+            "column": 16
+          }
+        }
       },
-      "body": []
+      "body": [],
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 1
+        },
+        "end": {
+          "line": 2,
+          "column": 16
+        }
+      }
     }
   ]
 }

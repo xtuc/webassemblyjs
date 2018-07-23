@@ -1,5 +1,6 @@
 // @flow
 
+import { define } from "mamacro";
 import { FSM, makeTransition } from "@webassemblyjs/helper-fsm";
 import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 
@@ -8,9 +9,10 @@ declare function unexpectedCharacter(): void;
 /**
  * Throw an error in case the current character is invalid
  */
-MACRO(
+define(
   unexpectedCharacter,
-  'throw new Error(getCodeFrame(input, line, column) + `Unexpected character "${char}"`);'
+  () =>
+    `throw new Error(getCodeFrame(input, line, column) + "Unexpected character " + JSON.stringify(char));`
 );
 
 // eslint-disable-next-line
@@ -68,7 +70,7 @@ const tokenTypes = {
   keyword: "keyword"
 };
 
-const keywords = {
+export const keywords = {
   module: "module",
   func: "func",
   param: "param",
@@ -180,7 +182,7 @@ const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
   "STOP"
 );
 
-function tokenize(input: string) {
+export function tokenize(input: string) {
   let current: number = 0;
   let char = input[current];
 
@@ -195,7 +197,7 @@ function tokenize(input: string) {
    */
   function pushToken(type: string) {
     return function(v: string | number, opts: Object = {}) {
-      const startColumn = opts.startColumn || column;
+      const startColumn = opts.startColumn || column - String(v).length;
       delete opts.startColumn;
 
       const endColumn = opts.endColumn || startColumn + String(v).length - 1;
@@ -253,6 +255,8 @@ function tokenize(input: string) {
   while (current < input.length) {
     // ;;
     if (char === ";" && lookahead() === ";") {
+      const startColumn = column;
+
       eatCharacter(2);
 
       let text = "";
@@ -266,13 +270,17 @@ function tokenize(input: string) {
         }
       }
 
-      pushCommentToken(text, { type: "leading" });
+      const endColumn = column;
+
+      pushCommentToken(text, { type: "leading", startColumn, endColumn });
 
       continue;
     }
 
     // (;
     if (char === "(" && lookahead() === ";") {
+      const startColumn = column;
+
       eatCharacter(2);
 
       let text = "";
@@ -297,7 +305,9 @@ function tokenize(input: string) {
         }
       }
 
-      pushCommentToken(text, { type: "block" });
+      const endColumn = column;
+
+      pushCommentToken(text, { type: "block", startColumn, endColumn });
 
       continue;
     }
@@ -336,6 +346,8 @@ function tokenize(input: string) {
     }
 
     if (char === "$") {
+      const startColumn = column;
+
       eatCharacter();
 
       let value = "";
@@ -345,7 +357,9 @@ function tokenize(input: string) {
         eatCharacter();
       }
 
-      pushIdentifierToken(value);
+      const endColumn = column;
+
+      pushIdentifierToken(value, { startColumn, endColumn });
 
       continue;
     }
@@ -467,8 +481,4 @@ function tokenize(input: string) {
   return tokens;
 }
 
-module.exports = {
-  tokenize,
-  tokens: tokenTypes,
-  keywords
-};
+export const tokens = tokenTypes;

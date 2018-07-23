@@ -1,7 +1,7 @@
 // @flow
 
 import * as parser from "./grammar";
-const { tokenize } = require("./tokenizer");
+import { tokenize } from "./tokenizer";
 
 export function parse(source: string): Program {
   const tokens = tokenize(source);
@@ -11,3 +11,5 @@ export function parse(source: string): Program {
 
   return ast;
 }
+
+export * from "./number-literals";

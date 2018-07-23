@@ -17,13 +17,24 @@
             "params": [],
             "results": []
           },
-          "body": []
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 19
+            }
+          }
         },
         {
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Func",
+            "type": "ModuleExportDescr",
+            "exportType": "Func",
             "id": {
               "type": "Identifier",
               "value": "func_0"
@@ -44,13 +55,24 @@
               "i32"
             ]
           },
-          "body": []
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 3
+            },
+            "end": {
+              "line": 3,
+              "column": 32
+            }
+          }
         },
         {
           "type": "ModuleExport",
           "name": "b",
           "descr": {
-            "type": "Func",
+            "type": "ModuleExportDescr",
+            "exportType": "Func",
             "id": {
               "type": "Identifier",
               "value": "func_1"
@@ -73,20 +95,41 @@
             ],
             "results": []
           },
-          "body": []
+          "body": [],
+          "loc": {
+            "start": {
+              "line": 4,
+              "column": 3
+            },
+            "end": {
+              "line": 4,
+              "column": 31
+            }
+          }
         },
         {
           "type": "ModuleExport",
           "name": "c",
           "descr": {
-            "type": "Func",
+            "type": "ModuleExportDescr",
+            "exportType": "Func",
             "id": {
               "type": "Identifier",
               "value": "func_2"
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 5,
+          "column": -1
+        }
+      }
     }
   ]
 }

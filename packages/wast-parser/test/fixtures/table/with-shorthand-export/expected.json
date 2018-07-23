@@ -16,13 +16,24 @@
             "type": "Identifier",
             "value": "table_0",
             "raw": ""
+          },
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 10
+            },
+            "end": {
+              "line": 1,
+              "column": 37
+            }
           }
         },
         {
           "type": "ModuleExport",
           "name": "a",
           "descr": {
-            "type": "Table",
+            "type": "ModuleExportDescr",
+            "exportType": "Table",
             "id": {
               "type": "Identifier",
               "value": "table_0",
@@ -30,7 +41,17 @@
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 38
+        }
+      }
     }
   ]
 }

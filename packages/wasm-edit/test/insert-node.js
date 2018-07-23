@@ -5,7 +5,7 @@ const {
   encodeHeader
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
-const constants = require("@webassemblyjs/helper-wasm-bytecode");
+const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 const {
   compareArrayBuffers
 } = require("@webassemblyjs/helper-buffer/lib/compare");
@@ -30,7 +30,7 @@ describe("insert a node", () => {
       const actualBinary = makeBuffer(encodeHeader(), encodeVersion(1));
 
       const newBinary = add(actualBinary, [
-        t.moduleImport("a", "b", t.memory(t.limits(1)))
+        t.moduleImport("a", "b", t.memory(t.limit(1)))
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -45,7 +45,7 @@ describe("insert a node", () => {
       ]);
 
       const newBinary = add(actualBinary, [
-        t.moduleImport("a", "b", t.memory(t.limits(1)))
+        t.moduleImport("a", "b", t.memory(t.limit(1)))
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -80,7 +80,7 @@ describe("insert a node", () => {
       );
 
       const newBinary = add(actual, [
-        t.moduleExport("a", "Func", t.indexLiteral(0))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -99,7 +99,7 @@ describe("insert a node", () => {
       );
 
       const newBinary = add(actual, [
-        t.moduleExport("a", "Func", t.indexLiteral(0))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -123,7 +123,7 @@ describe("insert a node", () => {
       );
 
       const newBinary = add(actual, [
-        t.moduleExport("a", "Func", t.indexLiteral(0))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
       ]);
 
       return WebAssembly.instantiate(newBinary).then(m => {
@@ -149,7 +149,7 @@ describe("insert a node", () => {
     ]);
 
     const global = t.global(t.globalType("i32", "var"), [
-      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
     ]);
 
     it("should insert the node in existing section", () => {
@@ -187,16 +187,13 @@ describe("insert a node", () => {
       [constants.sections.code, 0x06, 0x01, 0x04, 0x00, 0x41, 0x01, 0x0b]
     );
 
-    const func = t.func(
-      null,
-      [],
-      ["i32"],
-      [t.objectInstruction("const", "i32", [t.numberLiteral(1)])]
-    );
+    const func = t.func(null, t.signature([], ["i32"]), [
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+    ]);
 
-    const functype = t.typeInstructionFunc(
-      func.signature.params,
-      func.signature.results
+    const functype = t.typeInstruction(
+      undefined,
+      t.signature(func.signature.params, func.signature.results)
     );
     const funcindex = t.indexInFuncSection(t.indexLiteral(0));
 
@@ -248,18 +245,21 @@ describe("insert a node", () => {
   it("should insert nodes in multiple sections multiple times (implies updating the underlying AST)", () => {
     let bin;
 
-    const index = t.numberLiteral(0);
+    const index = t.numberLiteralFromRaw(0);
 
     const global = t.global(t.globalType("i32", "const"), [
-      t.objectInstruction("const", "i32", [t.numberLiteral(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
     ]);
 
-    const functype = t.typeInstructionFunc([], []);
+    const functype = t.typeInstruction(undefined, t.signature([], []));
 
     const funcindex = t.indexInFuncSection(index);
-    const moduleExport = t.moduleExport("foo", "Func", index);
+    const moduleExport = t.moduleExport(
+      "foo",
+      t.moduleExportDescr("Func", index)
+    );
 
-    const func = t.func(t.identifier("foo"), [], [], []);
+    const func = t.func(t.identifier("foo"), t.signature([], []), []);
 
     // (module)
     bin = makeBuffer(encodeHeader(), encodeVersion(1));
@@ -299,7 +299,7 @@ describe("insert a node", () => {
   });
 
   it("should insert type instructions with LEB128 padded type section size", () => {
-    const functype = t.typeInstructionFunc([], []);
+    const functype = t.typeInstruction(undefined, t.signature([], []));
 
     let bin;
 

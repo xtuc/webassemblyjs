@@ -84,6 +84,8 @@ type StackLocal = {
   value: any
 };
 
+type i32 = any;
+
 interface IntegerValue<T> extends NumericOperations<T> {
   div_s(operand: T): T;
   div_u(operand: T): T;
@@ -156,5 +158,3 @@ interface TableInstance {
 }
 
 type SignatureMap = { [string]: string } | [string, string];
-
-declare var MACRO: any;

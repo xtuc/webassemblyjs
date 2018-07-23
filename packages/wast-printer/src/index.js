@@ -1,6 +1,7 @@
 // @flow
-import Long from "long";
-import { isAnonymous } from "@webassemblyjs/ast";
+
+import { isAnonymous, isInstruction } from "@webassemblyjs/ast";
+import Long from "@xtuc/long";
 
 const compact = false;
 const space = " ";
@@ -201,13 +202,14 @@ function printData(n: Data, depth: number): string {
   out += printInstruction(n.offset, depth);
   out += space;
 
-  out += '"';
+  let value = "";
 
   n.init.values.forEach(byte => {
-    out += String.fromCharCode(byte);
+    value += String.fromCharCode(byte);
   });
 
-  out += '"';
+  // Avoid non-displayable characters
+  out += JSON.stringify(value);
 
   out += ")";
 
@@ -496,7 +498,7 @@ function printInstruction(n: Instruction, depth: number): string {
   switch (n.type) {
     case "Instr":
       // $FlowIgnore
-      return printGenericInstruction(n);
+      return printGenericInstruction(n, depth + 1);
 
     case "BlockInstruction":
       // $FlowIgnore
@@ -614,7 +616,7 @@ function printLoopInstruction(n: LoopInstruction, depth: number): string {
   return out;
 }
 
-function printCallInstruction(n: CallInstruction /*, depth: number*/): string {
+function printCallInstruction(n: CallInstruction, depth: number): string {
   let out = "";
 
   out += "(";
@@ -623,6 +625,14 @@ function printCallInstruction(n: CallInstruction /*, depth: number*/): string {
   out += space;
 
   out += printIndex(n.index);
+
+  if (typeof n.instrArgs === "object") {
+    // $FlowIgnore
+    n.instrArgs.forEach(arg => {
+      out += space;
+      out += printFuncInstructionArg(arg, depth + 1);
+    });
+  }
 
   out += ")";
 
@@ -758,6 +768,17 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
     out += printIdentifier(n.label);
   }
 
+  if (typeof n.result === "string") {
+    out += space;
+
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += n.result;
+    out += ")";
+  }
+
   if (n.instr.length > 0) {
     n.instr.forEach(i => {
       if (compact === false) {
@@ -781,7 +802,7 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
   return out;
 }
 
-function printGenericInstruction(n: GenericInstruction): string {
+function printGenericInstruction(n: Instr, depth: number): string {
   let out = "";
 
   out += "(";
@@ -795,7 +816,7 @@ function printGenericInstruction(n: GenericInstruction): string {
 
   n.args.forEach(arg => {
     out += space;
-    out += printFuncInstructionArg(arg);
+    out += printFuncInstructionArg(arg, depth + 1);
   });
 
   out += ")";
@@ -823,7 +844,7 @@ function printFloatLiteral(n: FloatLiteral): string {
   return String(n.value);
 }
 
-function printFuncInstructionArg(n: Object): string {
+function printFuncInstructionArg(n: Object, depth: number): string {
   let out = "";
 
   if (n.type === "NumberLiteral") {
@@ -846,8 +867,8 @@ function printFuncInstructionArg(n: Object): string {
     out += printFloatLiteral(n);
   }
 
-  if (n.type === "Instr") {
-    out += printGenericInstruction(n);
+  if (isInstruction(n)) {
+    out += printInstruction(n, depth + 1);
   }
 
   return out;
@@ -870,7 +891,7 @@ function printModuleExport(n: ModuleExport): string {
   out += space;
   out += quote(n.name);
 
-  if (n.descr.type === "Func") {
+  if (n.descr.exportType === "Func") {
     out += space;
     out += "(";
     out += "func";
@@ -879,15 +900,38 @@ function printModuleExport(n: ModuleExport): string {
     out += printIndex(n.descr.id);
 
     out += ")";
-  }
-
-  if (n.descr.type === "Mem") {
+  } else if (n.descr.exportType === "Global") {
     out += space;
+
+    out += "(";
+    out += "global";
+    out += space;
+
+    out += printIndex(n.descr.id);
+
+    out += ")";
+  } else if (n.descr.exportType === "Mem") {
+    out += space;
+
     out += "(";
     out += "memory";
     out += space;
+
     out += printIndex(n.descr.id);
+
     out += ")";
+  } else if (n.descr.exportType === "Table") {
+    out += space;
+
+    out += "(";
+    out += "table";
+    out += space;
+
+    out += printIndex(n.descr.id);
+
+    out += ")";
+  } else {
+    throw new Error("printModuleExport: unknown type: " + n.descr.exportType);
   }
 
   out += ")";

@@ -1,10 +1,8 @@
 // @flow
 
 import { encodeU32 } from "@webassemblyjs/wasm-gen";
-import { getSectionMetadata, traverse } from "@webassemblyjs/ast";
+import { getSectionMetadata, traverse, shiftSection } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
-
-const debug = require("debug")("wasm:resizesection");
 
 export function resizeSectionByteSize(
   ast: Program,
@@ -39,6 +37,8 @@ export function resizeSectionByteSize(
 
   // the new u32 has a different encoded length
   if (newu32EncodedLen !== oldu32EncodedLen) {
+    console.warn("LEB128 encoding changed, this might lead to bugs");
+
     const deltaInSizeEncoding = newu32EncodedLen - oldu32EncodedLen;
 
     sectionMetadata.size.loc.end.column = start + newu32EncodedLen;
@@ -61,24 +61,10 @@ export function resizeSectionByteSize(
       }
 
       if (encounteredSection === true) {
-        path.shift(deltaBytes);
-
-        debug(
-          "shift section section=%s detla=%d",
-          path.node.section,
-          deltaBytes
-        );
+        shiftSection(ast, path.node, deltaBytes);
       }
     }
   });
-
-  debug(
-    "resize byte size section=%s newValue=%s start=%d end=%d",
-    section,
-    newSectionSize,
-    start,
-    end
-  );
 
   return overrideBytesInBuffer(uint8Buffer, start, end, newBytes);
 }
@@ -114,13 +100,6 @@ export function resizeSectionVecSize(
   // Update AST
   sectionMetadata.vectorOfSize.value = newValue;
   sectionMetadata.vectorOfSize.loc.end.column = start + newBytes.length;
-
-  debug(
-    "resize vec size section=%s detla=%d newValue=%s",
-    section,
-    deltaElements,
-    newValue
-  );
 
   return overrideBytesInBuffer(uint8Buffer, start, end, newBytes);
 }

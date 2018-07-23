@@ -25,7 +25,7 @@
             },
             "end": {
               "line": 2,
-              "column": 6
+              "column": 5
             }
           }
         },
@@ -40,11 +40,21 @@
             },
             "end": {
               "line": 3,
-              "column": 6
+              "column": 5
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 2
+        },
+        "end": {
+          "line": 4,
+          "column": -1
+        }
+      }
     },
     {
       "type": "Func",
@@ -64,7 +74,6 @@
         {
           "type": "Instr",
           "id": "add",
-          "object": "i32",
           "args": [
             {
               "type": "Instr",
@@ -77,14 +86,13 @@
                 },
                 "end": {
                   "line": 7,
-                  "column": 15
+                  "column": 14
                 }
               }
             },
             {
               "type": "Instr",
               "id": "const",
-              "object": "i32",
               "args": [
                 {
                   "type": "NumberLiteral",
@@ -92,6 +100,7 @@
                   "raw": "1"
                 }
               ],
+              "object": "i32",
               "loc": {
                 "start": {
                   "line": 7,
@@ -99,7 +108,7 @@
                 },
                 "end": {
                   "line": 7,
-                  "column": 29
+                  "column": 28
                 }
               }
             },
@@ -114,11 +123,12 @@
                 },
                 "end": {
                   "line": 7,
-                  "column": 35
+                  "column": 34
                 }
               }
             }
           ],
+          "object": "i32",
           "loc": {
             "start": {
               "line": 7,
@@ -126,11 +136,21 @@
             },
             "end": {
               "line": 7,
-              "column": 36
+              "column": 35
             }
           }
         }
-      ]
+      ],
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 1
+        },
+        "end": {
+          "line": 8,
+          "column": -1
+        }
+      }
     }
   ]
 }

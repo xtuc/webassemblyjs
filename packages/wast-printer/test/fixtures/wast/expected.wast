@@ -32,7 +32,7 @@
     (return)
     (block)
     (block $foo)
-    (block $test)
+    (block $test (result i32))
     (block
       (nop)
     )
@@ -95,6 +95,10 @@
   (; b ;)
 
   (export "add" (func $add))
+  (export "add" (global $add))
+  (export "add" (global 0))
+  (export "t" (table 0))
+  (export "t" (table $foo))
   (table $a 10 anyfunc)
   (table $b 0 10 anyfunc)
   (table 10 anyfunc)
