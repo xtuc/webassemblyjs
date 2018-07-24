@@ -116,14 +116,21 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     offset = offset + n;
   }
 
-  function readBytes(numberOfBytes: number): Array<Byte> {
+  function readBytesAtOffset(
+    _offset: number,
+    numberOfBytes: number
+  ): Array<Byte> {
     const arr = [];
 
     for (let i = 0; i < numberOfBytes; i++) {
-      arr.push(buf[offset + i]);
+      arr.push(buf[_offset + i]);
     }
 
     return arr;
+  }
+
+  function readBytes(numberOfBytes: number): Array<Byte> {
+    return readBytesAtOffset(offset, numberOfBytes);
   }
 
   function readF64(): DecodedF64 {
@@ -194,19 +201,22 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   function readUTF8String(): DecodedUTF8String {
     const lenu32 = readU32();
-    eatBytes(lenu32.nextIndex);
+
+    // Don't eat any bytes. Instead, peek ahead of the current offset using
+    // readBytesAtOffset below. This keeps readUTF8String neutral with respect
+    // to the current offset, just like the other readX functions.
 
     const strlen = lenu32.value;
 
     dump([strlen], "string length");
 
-    const bytes = readBytes(strlen);
+    const bytes = readBytesAtOffset(offset + lenu32.nextIndex, strlen);
 
     const value = utf8.decode(bytes);
 
     return {
       value,
-      nextIndex: strlen
+      nextIndex: strlen + lenu32.nextIndex
     };
   }
 
@@ -1790,8 +1800,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           }
         } else {
           // We don't parse the custom section
-          // FIXME(sven): why this? and why constant 1?
-          eatBytes(remainingBytes - 1 /* UTF8 vector size */);
+          eatBytes(remainingBytes);
 
           dumpSep(
             "ignore custom " +
