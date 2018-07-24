@@ -5,7 +5,6 @@ before_script: make bootstrap
 script: make $JOB
 
 matrix:
-  fast_finish: true
   include:
     - node_js: "10"
       env: JOB=test-ci
@@ -14,3 +13,6 @@ matrix:
     - node_js: "node"
       env: JOB=test-pnpm
       if: branch = master
+
+  allow_failures:
+    - node_js: "node"

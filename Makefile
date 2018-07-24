@@ -1,6 +1,6 @@
 NODE_OPTS =
 
-TEST_TIMEOUT = 4000
+TEST_TIMEOUT = 6000
 
 LERNA = ./node_modules/.bin/lerna
 FLOWTYPED = ./node_modules/.bin/flow-typed
