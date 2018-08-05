@@ -12,7 +12,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@xtuc/buffer": "^5.2.2",
     "@xtuc/ieee754": "^1.2.0"
   }
 }

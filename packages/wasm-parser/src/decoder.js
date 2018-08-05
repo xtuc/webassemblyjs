@@ -4,7 +4,6 @@ import { CompileError } from "@webassemblyjs/helper-api-error";
 import * as ieee754 from "@webassemblyjs/ieee754";
 import * as utf8 from "@webassemblyjs/utf8";
 import * as t from "@webassemblyjs/ast";
-import { Buffer } from "@xtuc/buffer";
 
 import {
   decodeInt32,

@@ -1,7 +1,6 @@
 // @flow
 
 const { assert } = require("chai");
-const { Buffer } = require("@xtuc/buffer");
 
 const { decodeUInt32, decodeInt64 } = require("../lib");
 

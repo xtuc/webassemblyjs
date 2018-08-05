@@ -1,5 +1,4 @@
 const wabt = require("wabt");
-const { Buffer } = require("@xtuc/buffer");
 
 const filename = "module.wast";
 

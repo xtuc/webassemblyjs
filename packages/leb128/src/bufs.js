@@ -4,14 +4,6 @@
  * bufs: Buffer utilities.
  */
 
-import { Buffer } from "@xtuc/buffer";
-
-/*
- * Modules used
- */
-
-("use strict");
-
 /*
  * Module variables
  */
