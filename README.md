@@ -38,4 +38,4 @@ We recommend you to add https://github.com/feross/buffer in your building proces
 
 ## Licence
 
-[MIT](https://github.com/xtuc/webassemblyjs/blob/master/LICENCE)
+[MIT](https://github.com/xtuc/webassemblyjs/blob/master/LICENSE)
