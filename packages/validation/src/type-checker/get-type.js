@@ -168,7 +168,9 @@ export default function getType(moduleContext, stack, instruction) {
         error = `Call to undefined function index ${instruction.index.value}.`;
         break;
       }
+
       ({ args, result } = moduleContext.getFunction(instruction.index.value));
+
       break;
     }
     /**

@@ -129,7 +129,7 @@ export class ModuleContext {
     let { params: args, results: result } = funcimport.signature;
     args = args.map(arg => arg.valtype);
 
-    this.funcs.unshift({ args, result });
+    this.funcs.push({ args, result });
 
     if (typeof funcimport.id !== "undefined") {
       // imports are first, we can assume their index in the array
