@@ -312,7 +312,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
 
       if (typeErrors.length > 0) {
         const containsImmutableGlobalViolation = typeErrors.some(
-          x => x === "global is immutable"
+          x => /global is immutable/.match(x)
         );
 
         if (containsImmutableGlobalViolation) {

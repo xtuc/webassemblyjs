@@ -61,16 +61,20 @@ export default function getType(moduleContext, stack, instruction) {
      */
     case "set_global": {
       const index = instruction.args[0].value;
+
       if (!moduleContext.hasGlobal(index)) {
         error = `Module does not have global ${index}`;
         break;
       }
-      if (!moduleContext.isMutableGlobal(index)) {
+
+      if (moduleContext.isImmutableGlobal(index)) {
         error = "global is immutable";
         break;
       }
+
       args = [moduleContext.getGlobal(index)];
       result = [];
+
       break;
     }
     /**
@@ -491,10 +495,7 @@ export default function getType(moduleContext, stack, instruction) {
     /**
      * Skip type checking
      */
-    default: {
-      throw new Error(`Unknown instruction ${instruction.id}.`);
-      break;
-    }
+    default: throw new Error(`Unknown instruction ${instruction.id}.`);
   }
 
   return {

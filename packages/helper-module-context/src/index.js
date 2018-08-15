@@ -23,7 +23,10 @@ export function moduleContextFromModuleAST(m) {
       case "ModuleImport": {
         switch (field.descr.type) {
           case "GlobalType": {
-            moduleContext.importGlobal(field.descr.valtype);
+            moduleContext.importGlobal(
+              field.descr.valtype,
+              field.descr.mutability,
+            );
             break;
           }
           case "Memory": {
@@ -208,7 +211,7 @@ export class ModuleContext {
 
   defineGlobal(global /*: Global*/) {
     const type = global.globalType.valtype;
-    const mutability = global.mutability;
+    const mutability = global.globalType.mutability;
 
     this.globals.push({ type, mutability });
 
@@ -219,11 +222,15 @@ export class ModuleContext {
   }
 
   importGlobal(type, mutability) {
-    this.globals.unshift({ type, mutability });
+    this.globals.push({ type, mutability });
   }
 
   isMutableGlobal(index) {
     return this.globals[index].mutability === "var";
+  }
+
+  isImmutableGlobal(index) {
+    return this.globals[index].mutability === "const";
   }
 
   /**

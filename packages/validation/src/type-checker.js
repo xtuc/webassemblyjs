@@ -114,6 +114,7 @@ function createTypeChecker() {
 
     if (type.error) {
       onError(type.error, index);
+
       return false;
     }
 
