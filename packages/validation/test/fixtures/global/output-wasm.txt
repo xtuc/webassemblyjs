@@ -1,0 +1,1 @@
+global is immutable at func_0:1.

@@ -1,0 +1,7 @@
+Expected type f64 but got none at func_0.
+Expected type ANY but got none at func_1:0.
+Expected type f64 but got none at func_2.
+Type mismatch in select at func_3:3.
+Stack contains too few arguments for select at func_4:3.
+Expected type i32 but got f32 at func_5:2.
+Expected type i32 but got f32 at func_6:2.

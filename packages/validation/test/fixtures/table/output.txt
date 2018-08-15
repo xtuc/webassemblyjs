@@ -1,9 +1,9 @@
-Stack contains additional type POLYMORPHIC,i32.
-Expected type i32 but got none.
-Expected type i32 but got i64.
-br_table index 1 at position 1 has mismatching result type.
-Expected type i32 but got none.
-Expected type i32 but got i64.
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got i64.
+Stack contains additional type POLYMORPHIC,i32 at type-arg-void-vs-num.
+Expected type i32 but got none at type-arg-void-vs-num:0.
+Expected type i32 but got i64 at type-arg-num-vs-num:0.
+br_table index 1 at position 1 has mismatching result type. at type-arg-num-vs-arg-num:0.
+Expected type i32 but got none at type-index-void-vs-i32:0.
+Expected type i32 but got i64 at type-index-num-vs-i32:0.
+Expected type i32 but got none at type-arg-index-void-vs-i32:0.
+Expected type i32 but got none at type-arg-void-vs-num-nested:0.
+Expected type i32 but got i64 at type-arg-index-num-vs-i32:0.

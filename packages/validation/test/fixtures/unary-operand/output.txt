@@ -1,5 +1,5 @@
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got none.
+Expected type i32 but got none at type-unary-operand-missing-in-block:0.
+Expected type i32 but got none at type-unary-operand-missing-in-else:0.
+Expected type i32 but got none at type-unary-operand-missing-in-else:0.
+Expected type i32 but got none at type-unary-operand-missing-in-loop:0.
+Expected type i32 but got none at type-unary-operand-missing:0.

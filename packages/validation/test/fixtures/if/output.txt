@@ -1,6 +1,6 @@
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got f32.
+Expected type i32 but got none at type-if-operand-missing:0.
+Expected type i32 but got none at type-if-operand-missing-in-block:0.
+Expected type i32 but got none at type-if-operand-missing-in-if:0.
+Expected type i32 but got none at type-if-operand-missing-in-else:0.
+Expected type i32 but got none at type-if-operand-missing-in-block:0.
+Expected type i32 but got f32 at func_5:1.

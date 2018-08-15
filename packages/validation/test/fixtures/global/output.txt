@@ -1,1 +1,1 @@
-global is immutable
+global is immutable at try-mutate-const-global:1.

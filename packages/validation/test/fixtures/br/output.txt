@@ -1,3 +1,3 @@
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got none.
+Expected type i32 but got none at type-arg-empty-vs-num:0.
+Expected type i32 but got none at type-br-operand-missing-in-block:0.
+Expected type i32 but got none at type-br-operand-missing-in-if:0.

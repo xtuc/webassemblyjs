@@ -1,8 +1,7 @@
-Expected type f64 but got none.
-Expected type ANY but got none.
-Expected type f64 but got none.
-Type mismatch in select
-Stack contains too few arguments for select
-Expected type i32 but got f32.
-Expected type i32 but got f32.
-
+Expected type f64 but got none at func_0.
+Expected type ANY but got none at type-unary-operand-missing-in-block:0.
+Expected type f64 but got none at func_2.
+Type mismatch in select at func_3:3.
+Stack contains too few arguments for select at arity-0:0.
+Expected type i32 but got f32 at type-mixed-arg-num-vs-num:1.
+Expected type i32 but got f32 at last:2.

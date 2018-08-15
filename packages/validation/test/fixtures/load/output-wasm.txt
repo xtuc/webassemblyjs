@@ -1,0 +1,5 @@
+Expected type i32 but got f32 at func_0:1.
+Expected type i32 but got f32 at func_1:1.
+Expected type i32 but got f32 at func_2:1.
+Expected type i32 but got f32 at func_3:1.
+Expected type i32 but got f32 at func_4:1.

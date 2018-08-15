@@ -1,26 +1,25 @@
-Expected type i32 but got i64.
-Expected type i64 but got i32.
-Expected type i32 but got i64.
-Expected type i64 but got i32.
-Expected type i32 but got i64.
-Expected type i64 but got i32.
-Expected type i32 but got i64.
-Expected type i64 but got i32.
-Expected type f64 but got i32.
-Expected type i32 but got f32.
-Expected type i32 but got f32.
-Expected type f32 but got i32.
-Expected type i32 but got i64.
-Expected type i64 but got i32.
-Expected type f32 but got i64.
-Expected type f64 but got i32.
-Expected type f32 but got i64.
-Expected type f64 but got i64.
-Expected type f32 but got i32.
-Expected type f64 but got i32.
-Expected type f32 but got i64.
-Expected type f64 but got i64.
-Expected type f32 but got i32.
-Expected type f64 but got i32.
-Expected type i64 but got i32.
-
+Expected type i32 but got i64 at func_0:0.
+Expected type i64 but got i32 at func_1:0.
+Expected type i32 but got i64 at func_2:0.
+Expected type i64 but got i32 at func_3:0.
+Expected type i32 but got i64 at func_4:0.
+Expected type i64 but got i32 at func_5:0.
+Expected type i32 but got i64 at func_6:0.
+Expected type i64 but got i32 at func_7:0.
+Expected type f64 but got i32 at func_8:0.
+Expected type i32 but got f32 at func_9:0.
+Expected type i32 but got f32 at func_10:0.
+Expected type f32 but got i32 at func_11:0.
+Expected type i32 but got i64 at func_12:0.
+Expected type i64 but got i32 at func_13:0.
+Expected type f32 but got i64 at func_14:0.
+Expected type f64 but got i32 at func_15:0.
+Expected type f32 but got i64 at func_16:0.
+Expected type f64 but got i64 at func_17:0.
+Expected type f32 but got i32 at func_18:0.
+Expected type f64 but got i32 at func_19:0.
+Expected type f32 but got i64 at func_20:0.
+Expected type f64 but got i64 at func_21:0.
+Expected type f32 but got i32 at func_22:0.
+Expected type f64 but got i32 at func_23:0.
+Expected type i64 but got i32 at func_24:0.

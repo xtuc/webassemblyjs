@@ -1,4 +1,4 @@
-Expected type i32 but got f32.
-Expected type i32 but got i64.
-Expected type i32 but got i64.
-Expected type i32 but got f64.
+Expected type i32 but got f32 at func_0:0.
+Expected type i32 but got i64 at ff:0.
+Expected type i32 but got i64 at func_2:2.
+Expected type i32 but got f64 at func_3:0.

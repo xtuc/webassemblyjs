@@ -1,5 +1,5 @@
 Expected type i32 but got f32 at func_0:1.
 Expected type i32 but got f32 at func_1:1.
 Expected type f64 but got i32 at func_2.
-Expected type i64 but got i32 at type-local-num-vs-num.
+Expected type i64 but got i32 at func_3.
 Expected type i32 but got none at func_4:0.
