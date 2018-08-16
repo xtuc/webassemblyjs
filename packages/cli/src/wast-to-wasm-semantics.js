@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 // @flow
 
-
 const wastIdentifierToIndex = require("@webassemblyjs/ast/lib/transform/wast-identifier-to-index");
 const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references");
 const { parse } = require("@webassemblyjs/wast-parser");

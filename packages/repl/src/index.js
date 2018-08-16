@@ -311,8 +311,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       const typeErrors = typeCheck(t.program([moduleNode]));
 
       if (typeErrors.length > 0) {
-        const containsImmutableGlobalViolation = typeErrors.some(
-          x => x.match(/global is immutable/)
+        const containsImmutableGlobalViolation = typeErrors.some(x =>
+          x.match(/global is immutable/)
         );
 
         if (containsImmutableGlobalViolation) {

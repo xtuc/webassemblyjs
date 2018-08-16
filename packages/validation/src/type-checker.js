@@ -5,7 +5,7 @@ import getType from "./type-checker/get-type.js";
 import { ANY, POLYMORPHIC } from "./type-checker/types.js";
 
 function createTypeChecker() {
-  let errors = [];
+  const errors = [];
   let stopFuncCheck = false;
 
   // current function name is injected during the traversal
@@ -20,9 +20,7 @@ function createTypeChecker() {
 
     msg += ".";
 
-    errors.push(
-      msg
-    );
+    errors.push(msg);
   }
 
   function checkTypes(a, b, index) {
@@ -251,7 +249,6 @@ function createTypeChecker() {
     setStopFuncCheck(state) {
       stopFuncCheck = state;
     },
-
 
     getStopFuncCheck() {
       return stopFuncCheck;

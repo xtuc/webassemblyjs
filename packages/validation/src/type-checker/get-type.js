@@ -495,7 +495,8 @@ export default function getType(moduleContext, stack, instruction) {
     /**
      * Skip type checking
      */
-    default: throw new Error(`Unknown instruction ${instruction.id}.`);
+    default:
+      throw new Error(`Unknown instruction ${instruction.id}.`);
   }
 
   return {

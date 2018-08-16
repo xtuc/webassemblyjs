@@ -25,7 +25,7 @@ export function moduleContextFromModuleAST(m) {
           case "GlobalType": {
             moduleContext.importGlobal(
               field.descr.valtype,
-              field.descr.mutability,
+              field.descr.mutability
             );
             break;
           }
