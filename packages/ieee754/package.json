@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/ieee754",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "IEEE754 decoder and encoder",
   "license": "MIT",
   "main": "lib/index.js",

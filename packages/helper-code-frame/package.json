@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-code-frame",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -14,9 +14,9 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/wast-printer": "1.7.4"
+    "@webassemblyjs/wast-printer": "1.7.5"
   },
   "devDependencies": {
-    "@webassemblyjs/ast": "1.7.4"
+    "@webassemblyjs/ast": "1.7.5"
   }
 }
