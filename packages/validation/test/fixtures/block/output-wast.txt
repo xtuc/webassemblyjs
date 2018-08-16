@@ -1,0 +1,1 @@
+Expected type i32 but got f32 at func_0.

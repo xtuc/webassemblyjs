@@ -30,7 +30,8 @@
     "wasmast": "lib/wasmast.js",
     "wasmrun": "lib/wasmrun.js",
     "wasm2wast": "lib/wasm2wast.js",
-    "wastast": "lib/wastast.js"
+    "wastast": "lib/wastast.js",
+    "wast-to-wasm-semantics": "lib/wast-to-wasm-semantics.js"
   },
   "repository": {
     "type": "git",
