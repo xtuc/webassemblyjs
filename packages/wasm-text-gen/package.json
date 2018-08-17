@@ -24,7 +24,7 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "bin": {
-    "wasmgen": "src/cli.js"
+    "wasmgen": "lib/cli.js"
   },
   "dependencies": {
     "@babel/generator": "^7.0.0-beta.40",
