@@ -910,7 +910,7 @@ function printModuleExport(n: ModuleExport): string {
     out += printIndex(n.descr.id);
 
     out += ")";
-  } else if (n.descr.exportType === "Mem") {
+  } else if (n.descr.exportType === "Memory") {
     out += space;
 
     out += "(";
