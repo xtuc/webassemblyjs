@@ -6,7 +6,10 @@ const { assert } = require("chai");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
-const { getSectionMetadata, getSectionMetadatas } = require("@webassemblyjs/ast");
+const {
+  getSectionMetadata,
+  getSectionMetadatas
+} = require("@webassemblyjs/ast");
 const {
   compareArrayBuffers
 } = require("@webassemblyjs/helper-buffer/lib/compare");
@@ -233,17 +236,14 @@ describe("remove", () => {
       makeBuffer(
         encodeHeader(),
         encodeVersion(1),
-        [constants.sections.custom, 0x03, 0x01, char('a'), 0x00],
-        [constants.sections.custom, 0x03, 0x01, char('b'), 0x00],
-        [constants.sections.custom, 0x03, 0x01, char('c'), 0x00],
+        [constants.sections.custom, 0x03, 0x01, char("a"), 0x00],
+        [constants.sections.custom, 0x03, 0x01, char("b"), 0x00],
+        [constants.sections.custom, 0x03, 0x01, char("c"), 0x00]
       )
     );
 
     const expected = new Uint8Array(
-      makeBuffer(
-        encodeHeader(),
-        encodeVersion(1),
-      )
+      makeBuffer(encodeHeader(), encodeVersion(1))
     );
 
     const ast = decode(actual);

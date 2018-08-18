@@ -1,6 +1,10 @@
 // @flow
 
-import { traverse, getSectionMetadatas, shiftSection } from "@webassemblyjs/ast";
+import {
+  traverse,
+  getSectionMetadatas,
+  shiftSection
+} from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
 export function removeSections(
