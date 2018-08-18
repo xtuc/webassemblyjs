@@ -25,6 +25,23 @@ export function getSectionMetadata(
   return section;
 }
 
+export function getSectionMetadatas(
+  ast: Node,
+  name: SectionName
+): Array<SectionMetadata> {
+  let sections = [];
+
+  traverse(ast, {
+    SectionMetadata({ node }: NodePath<SectionMetadata>) {
+      if (node.section === name) {
+        sections.push(node);
+      }
+    }
+  });
+
+  return sections;
+}
+
 export function sortSectionMetadata(m: Module) {
   if (m.metadata == null) {
     console.warn("sortSectionMetadata: no metadata to sort");
