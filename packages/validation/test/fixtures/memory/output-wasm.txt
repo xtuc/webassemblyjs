@@ -1,0 +1,2 @@
+Expected type i32 but got f32 at func_0:1.
+Expected type f32 but got i32 at func_1:2.

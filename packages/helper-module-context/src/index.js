@@ -1,10 +1,6 @@
 // TODO(sven): add flow in here
 
-const debug = require("debug")("webassemblyjs:modulecontext");
-
-function assert(cond) {
-  if (!cond) throw new Error("Assertion error");
-}
+import { assert } from "mamacro";
 
 export function moduleContextFromModuleAST(m) {
   const moduleContext = new ModuleContext();
@@ -13,6 +9,9 @@ export function moduleContextFromModuleAST(m) {
 
   m.fields.forEach(field => {
     switch (field.type) {
+      case "Start": {
+        moduleContext.setStart(field.index);
+      }
       case "Func": {
         moduleContext.addFunction(field);
         break;
@@ -24,7 +23,10 @@ export function moduleContextFromModuleAST(m) {
       case "ModuleImport": {
         switch (field.descr.type) {
           case "GlobalType": {
-            moduleContext.importGlobal(field.descr.valtype);
+            moduleContext.importGlobal(
+              field.descr.valtype,
+              field.descr.mutability
+            );
             break;
           }
           case "Memory": {
@@ -81,14 +83,28 @@ export class ModuleContext {
     this.return = [];
 
     this.debugName = "unknown";
+
+    this.start = null;
+  }
+
+  /**
+   * Set start segment
+   */
+  setStart(index) {
+    this.start = index.value;
+  }
+
+  /**
+   * Get start function
+   */
+  getStart() {
+    return this.start;
   }
 
   /**
    * Reset the active stack frame
    */
   newContext(debugName, expectedResult) {
-    debug("new context %s", debugName);
-
     this.locals = [];
     this.labels = [expectedResult];
     this.return = expectedResult;
@@ -100,11 +116,9 @@ export class ModuleContext {
    */
   addFunction(func /*: Func*/) {
     // eslint-disable-next-line prefer-const
-    let { params: args = [], results: result = [] } = func.signature;
+    let { params: args = [], results: result = [] } = func.signature || {};
 
     args = args.map(arg => arg.valtype);
-
-    debug("add new function %s -> %s", args.join(" "), result.join(" "));
 
     this.funcs.push({ args, result });
 
@@ -118,13 +132,7 @@ export class ModuleContext {
     let { params: args, results: result } = funcimport.signature;
     args = args.map(arg => arg.valtype);
 
-    debug(
-      "add new imported function %s -> %s",
-      args.join(" "),
-      result.join(" ")
-    );
-
-    this.funcs.unshift({ args, result });
+    this.funcs.push({ args, result });
 
     if (typeof funcimport.id !== "undefined") {
       // imports are first, we can assume their index in the array
@@ -154,8 +162,6 @@ export class ModuleContext {
    * Labels
    */
   addLabel(result) {
-    debug("add label");
-
     this.labels.unshift(result);
   }
 
@@ -183,8 +189,6 @@ export class ModuleContext {
   }
 
   addLocal(type) {
-    debug("add local t=%s index=%d", type, this.locals.length);
-
     this.locals.push(type);
   }
 
@@ -207,7 +211,7 @@ export class ModuleContext {
 
   defineGlobal(global /*: Global*/) {
     const type = global.globalType.valtype;
-    const mutability = global.mutability;
+    const mutability = global.globalType.mutability;
 
     this.globals.push({ type, mutability });
 
@@ -218,11 +222,15 @@ export class ModuleContext {
   }
 
   importGlobal(type, mutability) {
-    this.globals.unshift({ type, mutability });
+    this.globals.push({ type, mutability });
   }
 
   isMutableGlobal(index) {
     return this.globals[index].mutability === "var";
+  }
+
+  isImmutableGlobal(index) {
+    return this.globals[index].mutability === "const";
   }
 
   /**

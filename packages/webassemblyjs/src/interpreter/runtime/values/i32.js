@@ -1,5 +1,6 @@
 // @flow
-const Long = require("long");
+
+import Long from "@xtuc/long";
 
 const { RuntimeError } = require("../../../errors");
 

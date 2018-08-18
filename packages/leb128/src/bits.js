@@ -26,7 +26,7 @@
  * The `bitLength` must be no more than 32. The `defaultBit` if not
  * specified is taken to be `0`.
  */
-function extract(buffer, bitIndex, bitLength, defaultBit) {
+export function extract(buffer, bitIndex, bitLength, defaultBit) {
   if (bitLength < 0 || bitLength > 32) {
     throw new Error("Bad value for bitLength.");
   }
@@ -72,7 +72,7 @@ function extract(buffer, bitIndex, bitLength, defaultBit) {
  * Injects the given bits into the given buffer at the given index. Any
  * bits in the value beyond the length to set are ignored.
  */
-function inject(buffer, bitIndex, bitLength, value) {
+export function inject(buffer, bitIndex, bitLength, value) {
   if (bitLength < 0 || bitLength > 32) {
     throw new Error("Bad value for bitLength.");
   }
@@ -108,7 +108,7 @@ function inject(buffer, bitIndex, bitLength, value) {
 /**
  * Gets the sign bit of the given buffer.
  */
-function getSign(buffer) {
+export function getSign(buffer) {
   return buffer[buffer.length - 1] >>> 7;
 }
 
@@ -119,7 +119,7 @@ function getSign(buffer) {
  * If the buffer consists entirely of the other bit value, then this returns
  * `-1`.
  */
-function highOrder(bit, buffer) {
+export function highOrder(bit, buffer) {
   let length = buffer.length;
   const fullyWrongByte = (bit ^ 1) * 0xff; // the other-bit extended to a full byte
 
@@ -144,10 +144,3 @@ function highOrder(bit, buffer) {
 
   return result;
 }
-
-module.exports = {
-  extract: extract,
-  inject: inject,
-  getSign: getSign,
-  highOrder: highOrder
-};

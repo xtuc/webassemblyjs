@@ -1,30 +1,27 @@
 // @flow
 
-declare function trace(msg?: string): void;
-declare function assert(cond: boolean, msg?: string): void;
-declare function assertNItemsOnStack(n: number): void;
+import { assertRuntimeError, define } from "mamacro";
 
 import { Memory } from "../runtime/values/memory";
 import { RuntimeError } from "../../errors";
+
 const t = require("@webassemblyjs/ast");
 
-MACRO(
-  assert,
-  (cond, msg) => `if (!(${cond})) {
-    throw new RuntimeError("Assertion error: " + (${msg} || "unknown"));
-  }`
-);
+declare function trace(msg?: string): void;
+declare function assertNItemsOnStack(n: number): void;
 
-MACRO(
+define(
   assertNItemsOnStack,
   n => `
-  const s = ${n};
-  if (frame.values.length < s) {
-    throw new RuntimeError("Assertion error: expected " + s  + " on the stack, found " + frame.values.length);
+  if (frame.values.length < ${n}) {
+    throw new RuntimeError(
+      "Assertion error: expected " + JSON.stringify(${n})
+        + " on the stack, found " + frame.values.length
+    );
   }`
 );
 
-MACRO(
+define(
   trace,
   msg => `
     function indent(nb) {
@@ -84,7 +81,7 @@ export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
 
     const frame = stack[framepointer];
 
-    assert(frame !== undefined, "no frame at " + framepointer);
+    assertRuntimeError(frame !== undefined, "no frame at " + framepointer);
 
     framepointer++;
 
@@ -101,7 +98,7 @@ export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
     }
 
     function setLocalByIndex(index: number, value: StackLocal) {
-      assert(typeof index === "number");
+      assertRuntimeError(typeof index === "number");
 
       frame.locals[index] = value;
     }
@@ -249,7 +246,7 @@ export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
       // FIXME(sven): that's wrong
       const frame = stack[framepointer - 1];
 
-      assert(frame !== undefined, "no active frame");
+      assertRuntimeError(frame !== undefined, "no active frame");
 
       const nextStackFrame = stackframe.createChildStackFrame(frame, instrs);
 
@@ -273,7 +270,7 @@ export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
     while (true) {
       const instruction = frame.code[frame._pc];
 
-      assert(
+      assertRuntimeError(
         instruction !== undefined,
         `no instruction at pc ${frame._pc} in frame ${framepointer}`
       );
@@ -359,7 +356,7 @@ export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
           // https://webassembly.github.io/spec/core/exec/instructions.html#exec-loop
           const loop = instruction;
 
-          assert(
+          assertRuntimeError(
             typeof loop.instr === "object" &&
               typeof loop.instr.length !== "undefined"
           );
@@ -412,7 +409,7 @@ export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
           if (call.index.type === "NumberLiteral") {
             const index = call.index.value;
 
-            assert(typeof frame.originatingModule !== "undefined");
+            assertRuntimeError(typeof frame.originatingModule !== "undefined");
 
             // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
             const funcaddr = frame.originatingModule.funcaddrs[index];
@@ -483,7 +480,7 @@ export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
             throw newRuntimeError("Block has no id");
           }
 
-          assert(
+          assertRuntimeError(
             typeof block.instr === "object" &&
               typeof block.instr.length !== "undefined"
           );

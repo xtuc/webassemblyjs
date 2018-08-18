@@ -1,6 +1,9 @@
 // @flow
 
-import { CompileError } from "webassemblyjs/lib/errors";
+import { CompileError } from "@webassemblyjs/helper-api-error";
+import * as ieee754 from "@webassemblyjs/ieee754";
+import * as utf8 from "@webassemblyjs/utf8";
+import * as t from "@webassemblyjs/ast";
 
 import {
   decodeInt32,
@@ -11,35 +14,7 @@ import {
   MAX_NUMBER_OF_BYTE_U64
 } from "@webassemblyjs/leb128";
 
-const t = require("@webassemblyjs/ast");
-const {
-  importTypes,
-  symbolsByByte,
-  blockTypes,
-  tableTypes,
-  globalTypes,
-  limitHasMaximum,
-  exportTypes,
-  types,
-  magicModuleHeader,
-  valtypes,
-  moduleVersion,
-  sections
-} = require("@webassemblyjs/helper-wasm-bytecode");
-
-const ieee754 = require("./ieee754");
-const { utf8ArrayToStr } = require("./utf8");
-
-/**
- * FIXME(sven): we can't do that because number > 2**53 will fail here
- * because they cannot be represented in js.
- */
-function badI32ToI64Conversion(value: number): LongNumber {
-  return {
-    high: value < 0 ? -1 : 0,
-    low: value >>> 0
-  };
-}
+import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 function toHex(n: number): string {
   return "0x" + Number(n).toString(16);
@@ -123,7 +98,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
      * Decoded tables from:
      * - Table section
      */
-    tablesInModule: []
+    tablesInModule: [],
+
+    /**
+     * Decoded globals from:
+     * - Global section
+     */
+    globalsInModule: []
   };
 
   function isEOF(): boolean {
@@ -134,27 +115,49 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     offset = offset + n;
   }
 
-  function readBytes(numberOfBytes: number): Array<Byte> {
+  function readBytesAtOffset(
+    _offset: number,
+    numberOfBytes: number
+  ): Array<Byte> {
     const arr = [];
 
     for (let i = 0; i < numberOfBytes; i++) {
-      arr.push(buf[offset + i]);
+      arr.push(buf[_offset + i]);
     }
 
     return arr;
   }
 
+  function readBytes(numberOfBytes: number): Array<Byte> {
+    return readBytesAtOffset(offset, numberOfBytes);
+  }
+
   function readF64(): DecodedF64 {
     const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F64);
-    const buffer = Buffer.from(bytes);
+    const value = ieee754.decodeF64(bytes);
 
-    const value = ieee754.decode(
-      buffer,
-      0,
-      true,
-      ieee754.SINGLE_PRECISION_MANTISSA,
-      ieee754.NUMBER_OF_BYTE_F64
-    );
+    if (Math.sign(value) * value === Infinity) {
+      return {
+        value: Math.sign(value),
+        inf: true,
+        nextIndex: ieee754.NUMBER_OF_BYTE_F64
+      };
+    }
+
+    if (isNaN(value)) {
+      const sign = bytes[bytes.length - 1] >> 7 ? -1 : 1;
+      let mantissa = 0;
+      for (let i = 0; i < bytes.length - 2; ++i) {
+        mantissa += bytes[i] * 256 ** i;
+      }
+      mantissa += (bytes[bytes.length - 2] % 16) * 256 ** (bytes.length - 2);
+
+      return {
+        value: sign * mantissa,
+        nan: true,
+        nextIndex: ieee754.NUMBER_OF_BYTE_F64
+      };
+    }
 
     return {
       value,
@@ -164,15 +167,30 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   function readF32(): DecodedF32 {
     const bytes = readBytes(ieee754.NUMBER_OF_BYTE_F32);
-    const buffer = Buffer.from(bytes);
+    const value = ieee754.decodeF32(bytes);
 
-    const value = ieee754.decode(
-      buffer,
-      0,
-      true,
-      ieee754.SINGLE_PRECISION_MANTISSA,
-      ieee754.NUMBER_OF_BYTE_F32
-    );
+    if (Math.sign(value) * value === Infinity) {
+      return {
+        value: Math.sign(value),
+        inf: true,
+        nextIndex: ieee754.NUMBER_OF_BYTE_F32
+      };
+    }
+
+    if (isNaN(value)) {
+      const sign = bytes[bytes.length - 1] >> 7 ? -1 : 1;
+      let mantissa = 0;
+      for (let i = 0; i < bytes.length - 2; ++i) {
+        mantissa += bytes[i] * 256 ** i;
+      }
+      mantissa += (bytes[bytes.length - 2] % 128) * 256 ** (bytes.length - 2);
+
+      return {
+        value: sign * mantissa,
+        nan: true,
+        nextIndex: ieee754.NUMBER_OF_BYTE_F32
+      };
+    }
 
     return {
       value,
@@ -182,18 +200,22 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   function readUTF8String(): DecodedUTF8String {
     const lenu32 = readU32();
-    const len = lenu32.value;
 
-    dump([len], "string length");
+    // Don't eat any bytes. Instead, peek ahead of the current offset using
+    // readBytesAtOffset below. This keeps readUTF8String neutral with respect
+    // to the current offset, just like the other readX functions.
 
-    eatBytes(lenu32.nextIndex);
+    const strlen = lenu32.value;
 
-    const bytes = readBytes(len);
-    const value = utf8ArrayToStr(bytes);
+    dump([strlen], "string length");
+
+    const bytes = readBytesAtOffset(offset + lenu32.nextIndex, strlen);
+
+    const value = utf8.decode(bytes);
 
     return {
       value,
-      nextIndex: len
+      nextIndex: strlen + lenu32.nextIndex
     };
   }
 
@@ -205,6 +227,24 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
    */
   function readU32(): Decoded32 {
     const bytes = readBytes(MAX_NUMBER_OF_BYTE_U32);
+    const buffer = Buffer.from(bytes);
+
+    return decodeUInt32(buffer);
+  }
+
+  function readVaruint32(): Decoded32 {
+    // where 32 bits = max 4 bytes
+
+    const bytes = readBytes(4);
+    const buffer = Buffer.from(bytes);
+
+    return decodeUInt32(buffer);
+  }
+
+  function readVaruint7(): Decoded32 {
+    // where 7 bits = max 1 bytes
+
+    const bytes = readBytes(1);
     const buffer = Buffer.from(bytes);
 
     return decodeUInt32(buffer);
@@ -248,7 +288,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     const header = readBytes(4);
 
-    if (byteArrayEq(magicModuleHeader, header) === false) {
+    if (byteArrayEq(constants.magicModuleHeader, header) === false) {
       throw new CompileError("magic header not detected");
     }
 
@@ -264,7 +304,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     const version = readBytes(4);
 
-    if (byteArrayEq(moduleVersion, version) === false) {
+    if (byteArrayEq(constants.moduleVersion, version) === false) {
       throw new CompileError("unknown binary version");
     }
 
@@ -321,13 +361,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const type = readByte();
       eatBytes(1);
 
-      if (type == types.func) {
+      if (type == constants.types.func) {
         dump([type], "func");
 
-        const paramValtypes: Array<Valtype> = parseVec(b => valtypes[b]);
+        const paramValtypes: Array<Valtype> = parseVec(
+          b => constants.valtypes[b]
+        );
         const params = paramValtypes.map(v => t.funcParam(/*valtype*/ v));
 
-        const result: Array<Valtype> = parseVec(b => valtypes[b]);
+        const result: Array<Valtype> = parseVec(b => constants.valtypes[b]);
 
         const endLoc = getPosition();
 
@@ -383,7 +425,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const descrTypeByte = readByte();
       eatBytes(1);
 
-      const descrType = importTypes[descrTypeByte];
+      const descrType = constants.importTypes[descrTypeByte];
 
       dump([descrTypeByte], "import kind");
 
@@ -408,7 +450,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           throw new CompileError(`function signature not found (${typeindex})`);
         }
 
-        const id = t.numberLiteralFromRaw(i);
+        const id = getUniqueName("func");
 
         importDescr = t.funcImportDescr(
           id,
@@ -422,6 +464,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         });
       } else if (descrType === "global") {
         importDescr = parseGlobalType();
+
+        const globalNode = t.global(importDescr, []);
+
+        state.globalsInModule.push(globalNode);
       } else if (descrType === "table") {
         importDescr = parseTableType(i);
       } else if (descrType === "mem") {
@@ -511,7 +557,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       let id: Identifier, signature;
 
-      if (exportTypes[typeIndex] === "Func") {
+      if (constants.exportTypes[typeIndex] === "Func") {
         const func = state.functionsInModule[index];
 
         if (typeof func === "undefined") {
@@ -523,7 +569,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         id = t.numberLiteralFromRaw(index, String(index));
 
         signature = func.signature;
-      } else if (exportTypes[typeIndex] === "Table") {
+      } else if (constants.exportTypes[typeIndex] === "Table") {
         const table = state.tablesInModule[index];
 
         if (typeof table === "undefined") {
@@ -535,12 +581,24 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         id = t.numberLiteralFromRaw(index, String(index));
 
         signature = null;
-      } else if (exportTypes[typeIndex] === "Mem") {
+      } else if (constants.exportTypes[typeIndex] === "Mem") {
         const memNode = state.memoriesInModule[index];
 
         if (typeof memNode === "undefined") {
           throw new CompileError(
             `entry not found at index ${index} in memory section`
+          );
+        }
+
+        id = t.numberLiteralFromRaw(index, String(index));
+
+        signature = null;
+      } else if (constants.exportTypes[typeIndex] === "Global") {
+        const global = state.globalsInModule[index];
+
+        if (typeof global === "undefined") {
+          throw new CompileError(
+            `entry not found at index ${index} in global section`
           );
         }
 
@@ -556,7 +614,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       state.elementsInExportSection.push({
         name: name.value,
-        type: exportTypes[typeIndex],
+        type: constants.exportTypes[typeIndex],
         signature,
         id,
         index,
@@ -607,7 +665,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const valtypeByte = readByte();
         eatBytes(1);
 
-        const type = valtypes[valtypeByte];
+        const type = constants.valtypes[valtypeByte];
         locals.push(type);
 
         dump([valtypeByte], type);
@@ -646,18 +704,22 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const instructionByte = readByte();
       eatBytes(1);
 
-      const instruction = symbolsByByte[instructionByte];
-
-      if (typeof instruction.object === "string") {
-        dump([instructionByte], `${instruction.object}.${instruction.name}`);
-      } else {
-        dump([instructionByte], instruction.name);
+      if (instructionByte === 0xfe) {
+        throw new CompileError("Atomic instructions are not implemented");
       }
+
+      const instruction = constants.symbolsByByte[instructionByte];
 
       if (typeof instruction === "undefined") {
         throw new CompileError(
           "Unexpected instruction: " + toHex(instructionByte)
         );
+      }
+
+      if (typeof instruction.object === "string") {
+        dump([instructionByte], `${instruction.object}.${instruction.name}`);
+      } else {
+        dump([instructionByte], instruction.name);
       }
 
       /**
@@ -673,7 +735,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const blocktypeByte = readByte();
         eatBytes(1);
 
-        const blocktype = blockTypes[blocktypeByte];
+        const blocktype = constants.blockTypes[blocktypeByte];
 
         dump([blocktypeByte], "blocktype");
 
@@ -697,7 +759,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const blocktypeByte = readByte();
         eatBytes(1);
 
-        const blocktype = blockTypes[blocktypeByte];
+        const blocktype = constants.blockTypes[blocktypeByte];
 
         dump([blocktypeByte], "blocktype");
 
@@ -740,7 +802,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const blocktypeByte = readByte();
         eatBytes(1);
 
-        const blocktype = blockTypes[blocktypeByte];
+        const blocktype = constants.blockTypes[blocktypeByte];
 
         dump([blocktypeByte], "blocktype");
 
@@ -815,7 +877,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dump([index], "index");
 
-          args.push(t.numberLiteralFromRaw(indexu32.value.toString(), "f64"));
+          args.push(t.numberLiteralFromRaw(indexu32.value.toString(), "u32"));
         }
       } else if (instructionByte >= 0x28 && instructionByte <= 0x40) {
         /**
@@ -857,7 +919,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = value32.value;
           eatBytes(value32.nextIndex);
 
-          dump([value], "value");
+          dump([value], "i32 value");
 
           args.push(t.numberLiteralFromRaw(value));
         }
@@ -867,7 +929,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valueu32.value;
           eatBytes(valueu32.nextIndex);
 
-          dump([value], "value");
+          dump([value], "u32 value");
 
           args.push(t.numberLiteralFromRaw(value));
         }
@@ -877,11 +939,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = value64.value;
           eatBytes(value64.nextIndex);
 
-          dump([value], "value");
+          dump([Number(value.toString())], "i64 value");
+
+          const { high, low } = value;
 
           const node = {
             type: "LongNumberLiteral",
-            value: badI32ToI64Conversion(value)
+            value: { high, low }
           };
 
           args.push(node);
@@ -892,9 +956,16 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valueu64.value;
           eatBytes(valueu64.nextIndex);
 
-          dump([value], "value");
+          dump([Number(value.toString())], "u64 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          const { high, low } = value;
+
+          const node = {
+            type: "LongNumberLiteral",
+            value: { high, low }
+          };
+
+          args.push(node);
         }
 
         if (instruction.object === "f32") {
@@ -902,9 +973,12 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valuef32.value;
           eatBytes(valuef32.nextIndex);
 
-          dump([value], "value");
+          dump([value], "f32 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          args.push(
+            // $FlowIgnore
+            t.floatLiteral(value, valuef32.nan, valuef32.inf, String(value))
+          );
         }
 
         if (instruction.object === "f64") {
@@ -912,9 +986,12 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = valuef64.value;
           eatBytes(valuef64.nextIndex);
 
-          dump([value], "value");
+          dump([value], "f64 value");
 
-          args.push(t.numberLiteralFromRaw(value));
+          args.push(
+            // $FlowIgnore
+            t.floatLiteral(value, valuef64.nan, valuef64.inf, String(value))
+          );
         }
       } else {
         for (let i = 0; i < instruction.numberOfArgs; i++) {
@@ -947,29 +1024,19 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     }
   }
 
-  // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
-  function parseTableType(index: number): Table {
-    const name = t.withRaw(t.identifier(getUniqueName("table")), String(index));
-
-    const elementTypeByte = readByte();
-    eatBytes(1);
-
-    dump([elementTypeByte], "element type");
-
-    const elementType = tableTypes[elementTypeByte];
-
-    if (typeof elementType === "undefined") {
-      throw new CompileError(
-        "Unknown element type in table: " + toHex(elementType)
-      );
-    }
-
+  // https://webassembly.github.io/spec/core/binary/types.html#limits
+  function parseLimits(): Limit {
     const limitType = readByte();
     eatBytes(1);
 
+    dump([limitType], "limit type");
+
     let min, max;
 
-    if (limitHasMaximum[limitType] === true) {
+    if (
+      limitType === 0x01 ||
+      limitType === 0x03 // shared limits
+    ) {
       const u32min = readU32();
       min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
@@ -981,7 +1048,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       eatBytes(u32max.nextIndex);
 
       dump([max], "max");
-    } else {
+    }
+
+    if (limitType === 0x00) {
       const u32min = readU32();
       min = parseInt(u32min.value);
       eatBytes(u32min.nextIndex);
@@ -989,7 +1058,29 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       dump([min], "min");
     }
 
-    return t.table(elementType, t.limit(min, max), name);
+    return t.limit(min, max);
+  }
+
+  // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
+  function parseTableType(index: number): Table {
+    const name = t.withRaw(t.identifier(getUniqueName("table")), String(index));
+
+    const elementTypeByte = readByte();
+    eatBytes(1);
+
+    dump([elementTypeByte], "element type");
+
+    const elementType = constants.tableTypes[elementTypeByte];
+
+    if (typeof elementType === "undefined") {
+      throw new CompileError(
+        "Unknown element type in table: " + toHex(elementType)
+      );
+    }
+
+    const limits = parseLimits();
+
+    return t.table(elementType, limits, name);
   }
 
   // https://webassembly.github.io/spec/binary/types.html#global-types
@@ -997,7 +1088,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const valtypeByte = readByte();
     eatBytes(1);
 
-    const type = valtypes[valtypeByte];
+    const type = constants.valtypes[valtypeByte];
 
     dump([valtypeByte], type);
 
@@ -1008,7 +1099,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const globalTypeByte = readByte();
     eatBytes(1);
 
-    const globalType = globalTypes[globalTypeByte];
+    const globalType = constants.globalTypes[globalTypeByte];
 
     dump([globalTypeByte], `global type (${globalType})`);
 
@@ -1019,19 +1110,27 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return t.globalType(type, globalType);
   }
 
-  function parseNameModule() {
-    const name = readUTF8String();
-    eatBytes(name.nextIndex);
+  // function parseNameModule() {
+  //   const lenu32 = readVaruint32();
+  //   eatBytes(lenu32.nextIndex);
 
-    return [t.moduleNameMetadata(name.value)];
-  }
+  //   console.log("len", lenu32);
+
+  //   const strlen = lenu32.value;
+
+  //   dump([strlen], "string length");
+
+  //   const bytes = readBytes(strlen);
+  //   eatBytes(strlen);
+
+  //   const value = utf8.decode(bytes);
+
+  //   return [t.moduleNameMetadata(value)];
+  // }
 
   // this section contains an array of function names and indices
   function parseNameSectionFunctions() {
     const functionNames = [];
-
-    const subSectionSizeInBytesu32 = readU32();
-    eatBytes(subSectionSizeInBytesu32.nextIndex);
 
     const numberOfFunctionsu32 = readU32();
     const numbeOfFunctions = numberOfFunctionsu32.value;
@@ -1052,14 +1151,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   function parseNameSectionLocals() {
-    const subSectionSizeInBytesu32 = readU32();
-    eatBytes(subSectionSizeInBytesu32.nextIndex);
+    const localNames = [];
 
     const numbeOfFunctionsu32 = readU32();
     const numbeOfFunctions = numbeOfFunctionsu32.value;
     eatBytes(numbeOfFunctionsu32.nextIndex);
-
-    const localNames = [];
 
     for (let i = 0; i < numbeOfFunctions; i++) {
       const functionIndexu32 = readU32();
@@ -1093,15 +1189,37 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const initialOffset = offset;
 
     while (offset - initialOffset < remainingBytes) {
-      const sectionTypeByte = readByte();
-      eatBytes(1);
+      // name_type
+      const sectionTypeByte = readVaruint7();
+      eatBytes(sectionTypeByte.nextIndex);
 
-      if (sectionTypeByte === 0) {
-        nameMetadata.push(...parseNameModule());
-      } else if (sectionTypeByte === 1) {
-        nameMetadata.push(...parseNameSectionFunctions());
-      } else if (sectionTypeByte === 2) {
-        nameMetadata.push(...parseNameSectionLocals());
+      // name_payload_len
+      const subSectionSizeInBytesu32 = readVaruint32();
+      eatBytes(subSectionSizeInBytesu32.nextIndex);
+
+      switch (sectionTypeByte.value) {
+        // case 0: {
+        // TODO(sven): re-enable that
+        // Current status: it seems that when we decode the module's name
+        // no name_payload_len is used.
+        //
+        // See https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#name-section
+        //
+        // nameMetadata.push(...parseNameModule());
+        // break;
+        // }
+        case 1: {
+          nameMetadata.push(...parseNameSectionFunctions());
+          break;
+        }
+        case 2: {
+          nameMetadata.push(...parseNameSectionLocals());
+          break;
+        }
+        default: {
+          // skip unknown subsection
+          eatBytes(subSectionSizeInBytesu32.value);
+        }
       }
     }
 
@@ -1114,6 +1232,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     dump([numberOfGlobals], "num globals");
 
     for (let i = 0; i < numberOfGlobals; i++) {
+      const startLoc = getPosition();
+
       const globalType = parseGlobalType();
 
       /**
@@ -1123,7 +1243,12 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       parseInstructionBlock(init);
 
-      globals.push(t.global(globalType, init));
+      const endLoc = getPosition();
+
+      const node = t.withLoc(t.global(globalType, init), endLoc, startLoc);
+
+      globals.push(node);
+      state.globalsInModule.push(node);
     }
 
     return globals;
@@ -1135,6 +1260,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     dump([numberOfElements], "num elements");
 
     for (let i = 0; i < numberOfElements; i++) {
+      const startLoc = getPosition();
+
       const tableindexu32 = readU32();
       const tableindex = tableindexu32.value;
       eatBytes(tableindexu32.nextIndex);
@@ -1168,7 +1295,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         indexValues.push(t.indexLiteral(index));
       }
 
-      elems.push(t.elem(t.indexLiteral(tableindex), instr, indexValues));
+      const endLoc = getPosition();
+
+      const elemNode = t.withLoc(
+        t.elem(t.indexLiteral(tableindex), instr, indexValues),
+        endLoc,
+        startLoc
+      );
+
+      elems.push(elemNode);
     }
 
     return elems;
@@ -1176,32 +1311,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // https://webassembly.github.io/spec/core/binary/types.html#memory-types
   function parseMemoryType(i: number): Memory {
-    const limitType = readByte();
-    eatBytes(1);
+    const limits = parseLimits();
 
-    let min, max;
-
-    if (limitHasMaximum[limitType] === true) {
-      const u32min = readU32();
-      min = parseInt(u32min.value);
-      eatBytes(u32min.nextIndex);
-
-      dump([min], "min");
-
-      const u32max = readU32();
-      max = parseInt(u32max.value);
-      eatBytes(u32max.nextIndex);
-
-      dump([max], "max");
-    } else {
-      const u32min = readU32();
-      min = parseInt(u32min.value);
-      eatBytes(u32min.nextIndex);
-
-      dump([min], "min");
-    }
-
-    return t.memory(t.limit(min, max), t.indexLiteral(i));
+    return t.memory(limits, t.indexLiteral(i));
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#table-section
@@ -1286,12 +1398,27 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
-  function parseSection(): {
+  function parseSection(
+    sectionIndex: number
+  ): {
     nodes: Array<Node>,
-    metadata: SectionMetadata | Array<SectionMetadata>
+    metadata: SectionMetadata | Array<SectionMetadata>,
+    nextSectionIndex: number
   } {
     const sectionId = readByte();
     eatBytes(1);
+
+    if (
+      sectionId >= sectionIndex ||
+      sectionIndex === constants.sections.custom
+    ) {
+      sectionIndex = sectionId + 1;
+    } else {
+      if (sectionId !== constants.sections.custom)
+        throw new CompileError("Unexpected section: " + toHex(sectionId));
+    }
+
+    const nextSectionIndex = sectionIndex;
 
     const startOffset = offset;
     const startPosition = getPosition();
@@ -1309,7 +1436,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     );
 
     switch (sectionId) {
-      case sections.type: {
+      case constants.sections.type: {
         dumpSep("section Type");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1335,10 +1462,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = parseTypeSection(numberOfTypes);
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.table: {
+      case constants.sections.table: {
         dumpSep("section Table");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1366,10 +1493,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = parseTableSection(numberOfTable);
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.import: {
+      case constants.sections.import: {
         dumpSep("section Import");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1397,10 +1524,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = parseImportSection(numberOfImports);
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.func: {
+      case constants.sections.func: {
         dumpSep("section Function");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1428,10 +1555,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = [];
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.export: {
+      case constants.sections.export: {
         dumpSep("section Export");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1459,10 +1586,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = [];
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.code: {
+      case constants.sections.code: {
         dumpSep("section Code");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1496,10 +1623,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = [];
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.start: {
+      case constants.sections.start: {
         dumpSep("section Start");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1512,10 +1639,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = [parseStartSection()];
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.element: {
+      case constants.sections.element: {
         dumpSep("section Element");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1541,10 +1668,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = parseElemSection(numberOfElements);
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.global: {
+      case constants.sections.global: {
         dumpSep("section Global");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1570,10 +1697,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = parseGlobalSection(numberOfGlobals);
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.memory: {
+      case constants.sections.memory: {
         dumpSep("section Memory");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1599,10 +1726,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const nodes = parseMemorySection(numberOfElements);
 
-        return { nodes, metadata };
+        return { nodes, metadata, nextSectionIndex };
       }
 
-      case sections.data: {
+      case constants.sections.data: {
         dumpSep("section Data");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1629,20 +1756,20 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         if (opts.ignoreDataSection === true) {
           const remainingBytes =
-            // $FlowIgnore
-            sectionSizeInBytes - numberOfElements.nextIndex;
+            sectionSizeInBytes - numberOfElementsu32.nextIndex;
+
           eatBytes(remainingBytes); // eat the entire section
 
           dumpSep("ignore data (" + sectionSizeInBytes + " bytes)");
 
-          return { nodes: [], metadata };
+          return { nodes: [], metadata, nextSectionIndex };
         } else {
           const nodes = parseDataSection(numberOfElements);
-          return { nodes, metadata };
+          return { nodes, metadata, nextSectionIndex };
         }
       }
 
-      case sections.custom: {
+      case constants.sections.custom: {
         dumpSep("section Custom");
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
@@ -1659,10 +1786,20 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const remainingBytes = sectionSizeInBytes - sectionName.nextIndex;
 
         if (sectionName.value === "name") {
-          metadata.push(...parseNameSection(remainingBytes));
+          try {
+            metadata.push(...parseNameSection(remainingBytes));
+          } catch (e) {
+            console.warn(
+              `Failed to decode custom "name" section @${offset}; ignoring (${
+                e.message
+              }).`
+            );
+
+            eatBytes(remainingBytes);
+          }
         } else {
           // We don't parse the custom section
-          eatBytes(remainingBytes - 1 /* UTF8 vector size */);
+          eatBytes(remainingBytes);
 
           dumpSep(
             "ignore custom " +
@@ -1673,7 +1810,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           );
         }
 
-        return { nodes: [], metadata };
+        return { nodes: [], metadata, nextSectionIndex };
       }
     }
 
@@ -1684,6 +1821,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   parseVersion();
 
   const moduleFields = [];
+  let sectionIndex = 0;
   const moduleMetadata = {
     sections: [],
     functionNames: [],
@@ -1694,7 +1832,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
    * All the generate declaration are going to be stored in our state
    */
   while (offset < buf.length) {
-    const { nodes, metadata } = parseSection();
+    const { nodes, metadata, nextSectionIndex } = parseSection(sectionIndex);
 
     moduleFields.push(...nodes);
 
@@ -1708,6 +1846,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         moduleMetadata.sections.push(metadataItem);
       }
     });
+    // Ignore custom section
+    if (nextSectionIndex) {
+      sectionIndex = nextSectionIndex;
+    }
   }
 
   /**

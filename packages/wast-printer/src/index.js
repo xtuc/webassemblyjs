@@ -1,6 +1,7 @@
 // @flow
-import Long from "long";
+
 import { isAnonymous, isInstruction } from "@webassemblyjs/ast";
+import Long from "@xtuc/long";
 
 const compact = false;
 const space = " ";
@@ -767,6 +768,17 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
     out += printIdentifier(n.label);
   }
 
+  if (typeof n.result === "string") {
+    out += space;
+
+    out += "(";
+    out += "result";
+    out += space;
+
+    out += n.result;
+    out += ")";
+  }
+
   if (n.instr.length > 0) {
     n.instr.forEach(i => {
       if (compact === false) {
@@ -888,15 +900,38 @@ function printModuleExport(n: ModuleExport): string {
     out += printIndex(n.descr.id);
 
     out += ")";
-  }
-
-  if (n.descr.type === "Mem") {
+  } else if (n.descr.exportType === "Global") {
     out += space;
+
+    out += "(";
+    out += "global";
+    out += space;
+
+    out += printIndex(n.descr.id);
+
+    out += ")";
+  } else if (n.descr.exportType === "Memory") {
+    out += space;
+
     out += "(";
     out += "memory";
     out += space;
+
     out += printIndex(n.descr.id);
+
     out += ")";
+  } else if (n.descr.exportType === "Table") {
+    out += space;
+
+    out += "(";
+    out += "table";
+    out += space;
+
+    out += printIndex(n.descr.id);
+
+    out += ")";
+  } else {
+    throw new Error("printModuleExport: unknown type: " + n.descr.exportType);
   }
 
   out += ")";

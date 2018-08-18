@@ -1,9 +1,10 @@
 // @flow
 
 import { decode } from "@webassemblyjs/wasm-parser";
-import { traverseWithHooks } from "@webassemblyjs/ast";
+import { traverse } from "@webassemblyjs/ast";
 import { cloneNode } from "@webassemblyjs/ast/lib/clone";
 import { shrinkPaddedLEB128 } from "@webassemblyjs/wasm-opt";
+import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 
 import { applyOperations } from "./apply";
@@ -19,8 +20,8 @@ function preprocess(ab: ArrayBuffer): ArrayBuffer {
 
 function sortBySectionOrder(nodes: Array<Node>) {
   nodes.sort((a, b) => {
-    const sectionA = constants.getSectionForNode(a);
-    const sectionB = constants.getSectionForNode(b);
+    const sectionA = getSectionForNode(a);
+    const sectionB = getSectionForNode(b);
 
     const aId = constants.sections[sectionA];
     const bId = constants.sections[sectionB];
@@ -72,7 +73,7 @@ export function editWithAST(
     }
   }
 
-  traverseWithHooks(ast, visitors, before, after);
+  traverse(ast, visitors, before, after);
 
   uint8Buffer = applyOperations(ast, uint8Buffer, operations);
 

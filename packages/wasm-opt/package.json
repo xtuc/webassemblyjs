@@ -1,8 +1,9 @@
 {
   "name": "@webassemblyjs/wasm-opt",
-  "version": "1.5.4",
+  "version": "1.7.5",
   "description": "",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,10 +17,9 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.5.4",
-    "@webassemblyjs/helper-buffer": "1.5.4",
-    "@webassemblyjs/wasm-gen": "1.5.4",
-    "@webassemblyjs/wasm-parser": "1.5.4",
-    "debug": "^3.1.0"
+    "@webassemblyjs/ast": "1.7.5",
+    "@webassemblyjs/helper-buffer": "1.7.5",
+    "@webassemblyjs/wasm-gen": "1.7.5",
+    "@webassemblyjs/wasm-parser": "1.7.5"
   }
 }

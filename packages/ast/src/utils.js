@@ -2,8 +2,7 @@
 import { signatures } from "./signatures";
 import { traverse } from "./traverse";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
-
-const debug = require("debug")("webassemblyjs:ast:utils");
+import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
 
 export function isAnonymous(ident: Identifier): boolean {
   return ident.raw === "";
@@ -24,6 +23,23 @@ export function getSectionMetadata(
   });
 
   return section;
+}
+
+export function getSectionMetadatas(
+  ast: Node,
+  name: SectionName
+): Array<SectionMetadata> {
+  const sections = [];
+
+  traverse(ast, {
+    SectionMetadata({ node }: NodePath<SectionMetadata>) {
+      if (node.section === name) {
+        sections.push(node);
+      }
+    }
+  });
+
+  return sections;
 }
 
 export function sortSectionMetadata(m: Module) {
@@ -131,14 +147,12 @@ export function shiftSection(
     shiftLoc(node.vectorOfSize, delta);
   }
 
-  debug("shifted %s startOffset=%d", node.type, node.startOffset);
-
   const sectionName = node.section;
 
   // shift node locations within that section
   traverse(ast, {
     Node({ node }) {
-      const section = constants.getSectionForNode(node);
+      const section = getSectionForNode(node);
 
       if (section === sectionName && typeof node.loc === "object") {
         shiftLoc(node, delta);

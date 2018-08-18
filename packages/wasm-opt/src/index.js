@@ -1,6 +1,7 @@
 // @flow
 
 import { decode } from "@webassemblyjs/wasm-parser";
+import { shrinkPaddedLEB128 as makeShrinkPaddedLEB128 } from "./leb128.js";
 
 class OptimizerError extends Error {
   constructor(name, initalError) {
@@ -14,8 +15,6 @@ const decoderOpts = {
   ignoreCodeSection: true,
   ignoreDataSection: true
 };
-
-import { shrinkPaddedLEB128 as makeShrinkPaddedLEB128 } from "./leb128.js";
 
 export function shrinkPaddedLEB128(uint8Buffer: Uint8Array): Uint8Array {
   try {

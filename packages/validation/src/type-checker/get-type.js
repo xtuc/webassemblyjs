@@ -1,5 +1,13 @@
 import { ANY, POLYMORPHIC } from "./types";
 
+function equalResultTypes(t1, t2) {
+  if (t1.length !== t2.length) {
+    return false;
+  }
+
+  return t1.every((t, i) => t === t2[i]);
+}
+
 export default function getType(moduleContext, stack, instruction) {
   let args = [];
   let result = [];
@@ -53,16 +61,20 @@ export default function getType(moduleContext, stack, instruction) {
      */
     case "set_global": {
       const index = instruction.args[0].value;
+
       if (!moduleContext.hasGlobal(index)) {
         error = `Module does not have global ${index}`;
         break;
       }
-      if (!moduleContext.isMutableGlobal(index)) {
+
+      if (moduleContext.isImmutableGlobal(index)) {
         error = "global is immutable";
         break;
       }
+
       args = [moduleContext.getGlobal(index)];
       result = [];
+
       break;
     }
     /**
@@ -160,7 +172,9 @@ export default function getType(moduleContext, stack, instruction) {
         error = `Call to undefined function index ${instruction.index.value}.`;
         break;
       }
+
       ({ args, result } = moduleContext.getFunction(instruction.index.value));
+
       break;
     }
     /**
@@ -435,7 +449,38 @@ export default function getType(moduleContext, stack, instruction) {
         break;
       }
 
-      args = [...moduleContext.getLabel(index), "i32"];
+      const t = moduleContext.getLabel(index);
+
+      let validLabels = true;
+
+      for (let i = 1; i < instruction.args.length; ++i) {
+        const arg = instruction.args[i];
+        if (arg.type === "Instr") {
+          // No more indices, only nested instructions
+          break;
+        }
+
+        const index = arg.value;
+
+        if (!moduleContext.hasLabel(index)) {
+          error = `Module does not have memory ${index}`;
+          validLabels = false;
+          break;
+        }
+
+        if (!equalResultTypes(moduleContext.getLabel(index), t)) {
+          error = `br_table index ${index} at position ${i} has mismatching result type.`;
+          validLabels = false;
+          break;
+        }
+      }
+
+      if (!validLabels) {
+        break;
+      }
+
+      args = [...t, "i32"];
+      result = [POLYMORPHIC];
       break;
     }
     /**
@@ -450,10 +495,8 @@ export default function getType(moduleContext, stack, instruction) {
     /**
      * Skip type checking
      */
-    default: {
+    default:
       throw new Error(`Unknown instruction ${instruction.id}.`);
-      break;
-    }
   }
 
   return {

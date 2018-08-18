@@ -13,12 +13,10 @@ import {
   resizeSectionByteSize,
   resizeSectionVecSize,
   createEmptySection,
-  removeSection
+  removeSections
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
-
-const debug = require("debug")("webassemblyjs:wasm");
 
 type State = {
   uint8Buffer: Uint8Array,
@@ -82,8 +80,6 @@ function applyUpdate(
             const newValue = node.metadata.bodySize + bodySizeDeltaBytes;
             const newByteArray = encodeU32(newValue);
 
-            debug("resize func body newValue=%d", newValue);
-
             // function body size byte
             // FIXME(sven): only handles one byte u32
             const start = node.loc.start.column;
@@ -140,7 +136,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
      * The start section only contains one element,
      * we need to remove the whole section
      */
-    uint8Buffer = removeSection(ast, uint8Buffer, "start");
+    uint8Buffer = removeSections(ast, uint8Buffer, "start");
 
     const deltaBytes = -(sectionMetadata.size.value + 1) /* section id */;
 
@@ -200,15 +196,6 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    */
   const deltaBytes = newByteArray.length;
 
-  debug(
-    "add node=%s section=%s after=%d deltaBytes=%s deltaElements=%s",
-    node.type,
-    sectionName,
-    start,
-    deltaBytes,
-    deltaElements
-  );
-
   uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
 
   node.loc = {
@@ -262,6 +249,43 @@ export function applyOperations(
     }
 
     /**
+     * Resize section vec size.
+     * If the length of the LEB-encoded size changes, this can change
+     * the byte length of the section and the offset for nodes in the
+     * section. So we do this first before resizing section byte size
+     * or shifting following operations' nodes.
+     */
+    if (state.deltaElements !== 0 && sectionName !== "start") {
+      const oldBufferLength = state.uint8Buffer.length;
+      state.uint8Buffer = resizeSectionVecSize(
+        ast,
+        state.uint8Buffer,
+        sectionName,
+        state.deltaElements
+      );
+      // Infer bytes added/removed by comparing buffer lengths
+      state.deltaBytes += state.uint8Buffer.length - oldBufferLength;
+    }
+
+    /**
+     * Resize section byte size.
+     * If the length of the LEB-encoded size changes, this can change
+     * the offset for nodes in the section. So we do this before
+     * shifting following operations' nodes.
+     */
+    if (state.deltaBytes !== 0 && sectionName !== "start") {
+      const oldBufferLength = state.uint8Buffer.length;
+      state.uint8Buffer = resizeSectionByteSize(
+        ast,
+        state.uint8Buffer,
+        sectionName,
+        state.deltaBytes
+      );
+      // Infer bytes added/removed by comparing buffer lengths
+      state.deltaBytes += state.uint8Buffer.length - oldBufferLength;
+    }
+
+    /**
      * Shift following operation's nodes
      */
     if (state.deltaBytes !== 0) {
@@ -277,24 +301,6 @@ export function applyOperations(
             break;
         }
       });
-
-      if (sectionName !== "start") {
-        state.uint8Buffer = resizeSectionByteSize(
-          ast,
-          state.uint8Buffer,
-          sectionName,
-          state.deltaBytes
-        );
-      }
-    }
-
-    if (state.deltaElements !== 0 && sectionName !== "start") {
-      state.uint8Buffer = resizeSectionVecSize(
-        ast,
-        state.uint8Buffer,
-        sectionName,
-        state.deltaElements
-      );
     }
 
     uint8Buffer = state.uint8Buffer;

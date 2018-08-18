@@ -5,14 +5,17 @@ const {
 const { assert } = require("chai");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
-const constants = require("@webassemblyjs/helper-wasm-bytecode");
+const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 const { getSectionMetadata } = require("@webassemblyjs/ast");
+const {
+  compareArrayBuffers
+} = require("@webassemblyjs/helper-buffer/lib/compare");
 
 const {
   resizeSectionVecSize,
   resizeSectionByteSize,
   createEmptySection,
-  removeSection
+  removeSections
 } = require("../lib");
 
 const section = "import";
@@ -211,7 +214,7 @@ describe("remove", () => {
     );
 
     const ast = decode(actual);
-    const newBin = removeSection(ast, actual, sectionName);
+    const newBin = removeSections(ast, actual, sectionName);
 
     // should have updated ast
     const code = getSectionMetadata(ast, "code");
@@ -221,5 +224,28 @@ describe("remove", () => {
     assert.equal(20, code.vectorOfSize.loc.start.column);
 
     assert.deepEqual(newBin, expected);
+  });
+
+  it("should remove multiple sections at once", () => {
+    const char = c => c.charCodeAt(0);
+
+    const actual = new Uint8Array(
+      makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.custom, 0x03, 0x01, char("a"), 0x00],
+        [constants.sections.custom, 0x03, 0x01, char("b"), 0x00],
+        [constants.sections.custom, 0x03, 0x01, char("c"), 0x00]
+      )
+    );
+
+    const expected = new Uint8Array(
+      makeBuffer(encodeHeader(), encodeVersion(1))
+    );
+
+    const ast = decode(actual);
+    const newBin = removeSections(ast, actual, "custom");
+
+    compareArrayBuffers(newBin, expected);
   });
 });

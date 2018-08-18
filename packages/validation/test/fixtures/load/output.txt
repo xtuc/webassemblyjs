@@ -1,5 +1,0 @@
-Expected type i32 but got f32.
-Expected type i32 but got f32.
-Expected type i32 but got f32.
-Expected type i32 but got f32.
-Expected type i32 but got f32.

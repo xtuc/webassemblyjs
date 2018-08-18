@@ -12,7 +12,7 @@ const {
 } = require("webassemblyjs/lib/interpreter/kernel/memory");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const t = require("@webassemblyjs/ast");
-const typeCheck = require("@webassemblyjs/validation").stack;
+const { getValidationErrors } = require("@webassemblyjs/validation");
 const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references")
   .transform;
 
@@ -21,6 +21,11 @@ function addEndInstruction(body) {
 }
 
 export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
+  function parseQuoteModule(node /*: QuoteModule */) {
+    const raw = node.string.join("");
+    parse(raw);
+  }
+
   function decodeBinaryModule(node /*: BinaryModule */) {
     const raw = node.blob.join("");
     const chars = raw.split("");
@@ -57,9 +62,22 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
   function assert_malformed(node) {
     const [module, expected] = node.args;
 
-    if (module.type === "BinaryModule") {
+    if (t.isBinaryModule(module) === true) {
       try {
         decodeBinaryModule(module);
+        assert(
+          false,
+          `module is valid, expected malformed (${expected.value})`
+        );
+      } catch (err) {
+        assert(
+          new RegExp(expected.value, "ig").test(err.message),
+          `Expected failure of "${expected.value}", "${err.message}" given`
+        );
+      }
+    } else if (t.isQuoteModule(module) === true) {
+      try {
+        parseQuoteModule(module);
         assert(
           false,
           `module is valid, expected malformed (${expected.value})`
@@ -240,6 +258,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       return;
     }
 
+    assert(typeof actual !== "undefined", "Actual value is undefined");
+
     const actualType = actual.type;
     const expectedType = expected.type;
 
@@ -296,11 +316,11 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     if (enableTypeChecking === true) {
       denormalizeTypeReferences(moduleNode);
 
-      const typeErrors = typeCheck(t.program([moduleNode]));
+      const typeErrors = getValidationErrors(t.program([moduleNode]));
 
       if (typeErrors.length > 0) {
-        const containsImmutableGlobalViolation = typeErrors.some(
-          x => x === "global is immutable"
+        const containsImmutableGlobalViolation = typeErrors.some(x =>
+          x.match(/global is immutable/)
         );
 
         if (containsImmutableGlobalViolation) {

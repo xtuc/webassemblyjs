@@ -1,6 +1,6 @@
 // @flow
 
-const {
+import {
   parse32F,
   parse64F,
   parse32I,
@@ -8,7 +8,7 @@ const {
   parseU32,
   isNanLiteral,
   isInfLiteral
-} = require("@webassemblyjs/wast-parser/lib/number-literals");
+} from "@webassemblyjs/wast-parser";
 
 import { longNumberLiteral, floatLiteral, numberLiteral, instr } from "./nodes";
 

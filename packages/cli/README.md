@@ -17,7 +17,9 @@ wasm2wast module.wasm
 ```
 
 Options:
+
 | name | description |
-|-------------|---------------|
+|------|-------------|
 | `--no-name-resolution` | disable name resolution |
+| `--ignore-code-section` | don't print the code |
 

@@ -7,7 +7,7 @@ const t = require("@webassemblyjs/ast");
 const {
   compareArrayBuffers
 } = require("@webassemblyjs/helper-buffer/lib/compare");
-const constants = require("@webassemblyjs/helper-wasm-bytecode");
+const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 
 const { add, edit } = require("../lib");
 

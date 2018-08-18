@@ -1,8 +1,9 @@
 {
   "name": "@webassemblyjs/helper-wasm-bytecode",
-  "version": "1.5.4",
+  "version": "1.7.5",
   "description": "WASM's Bytecode constants",
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

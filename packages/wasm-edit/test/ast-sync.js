@@ -6,7 +6,7 @@ const {
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const { compareStrings } = require("@webassemblyjs/helper-test-framework");
-const constants = require("@webassemblyjs/helper-wasm-bytecode");
+const constants = require("@webassemblyjs/helper-wasm-bytecode/").default;
 
 const { addWithAST, editWithAST } = require("../lib");
 
@@ -61,17 +61,19 @@ function removeNodesOfType(t) {
   };
 }
 
+function makeTypeNode() {
+  return t.typeInstruction(undefined, t.signature([], []));
+}
+
 function makeFuncNodes(i, params = [], results = [], body = []) {
   body.push(t.instruction("nop"));
 
-  const id = t.identifier(getUniqueName("func"));
+  const id = t.identifier(`func_${i}`);
   const func = t.func(id, t.signature(params, results), body);
-
-  const functype = t.typeInstruction(undefined, t.signature(params, results));
 
   const funcindex = t.indexInFuncSection(i);
 
-  return [func, functype, funcindex];
+  return [func, funcindex];
 }
 
 function makeFuncExportNode(i) {
@@ -87,13 +89,26 @@ function makeFuncImportNode() {
   const module = getUniqueName();
   const name = getUniqueName();
 
-  const typeidx = 0;
-
   return t.moduleImport(
     module,
     name,
-    t.funcImportDescr(t.numberLiteralFromRaw(typeidx), t.signature([], []))
+    t.funcImportDescr(t.numberLiteralFromRaw(0), t.signature([], []))
   );
+}
+
+function makeGlobalImportNode() {
+  const module = getUniqueName();
+  const name = getUniqueName();
+
+  return t.moduleImport(module, name, t.globalType("i32", "const"));
+}
+
+function renameImports(name) {
+  return {
+    ModuleImport({ node }) {
+      node.module = node.name = name;
+    }
+  };
 }
 
 describe("AST synchronization", () => {
@@ -114,10 +129,17 @@ describe("AST synchronization", () => {
     b => addWithAST(ast, b, [makeGlobalNode(10)]),
     b => editWithAST(ast, b, removeNodesOfType("TypeInstruction")),
 
-    b => addWithAST(ast, b, makeFuncNodes(0)),
+    b => addWithAST(ast, b, [makeTypeNode()]),
+
+    b => addWithAST(ast, b, [makeFuncImportNode()]),
+    b => editWithAST(ast, b, renameImports("c")),
+
+    b => addWithAST(ast, b, makeFuncNodes(1)),
     b => addWithAST(ast, b, [makeFuncExportNode(0)]),
 
-    b => addWithAST(ast, b, [makeFuncImportNode()])
+    b => addWithAST(ast, b, [makeGlobalImportNode()]),
+    b => editWithAST(ast, b, renameImports("a")),
+    b => editWithAST(ast, b, renameImports("b"))
   ];
 
   it("should run steps", function() {
