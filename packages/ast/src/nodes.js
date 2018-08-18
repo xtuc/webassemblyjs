@@ -19,7 +19,10 @@ export function module(
   metadata?: ModuleMetadata
 ): Module {
   if (id !== null && id !== undefined) {
-    assert(typeof id === "string");
+    assert(
+      typeof id === "string",
+      "Argument id must be of type string, given: " + typeof id
+    );
   }
 
   assert(typeof fields === "object" && typeof fields.length !== "undefined");
@@ -76,7 +79,10 @@ export function moduleMetadata(
 }
 
 export function moduleNameMetadata(value: string): ModuleNameMetadata {
-  assert(typeof value === "string");
+  assert(
+    typeof value === "string",
+    "Argument value must be of type string, given: " + typeof value
+  );
 
   const node: ModuleNameMetadata = {
     type: "ModuleNameMetadata",
@@ -90,9 +96,14 @@ export function functionNameMetadata(
   value: string,
   index: number
 ): FunctionNameMetadata {
-  assert(typeof value === "string");
-
-  assert(typeof index === "number");
+  assert(
+    typeof value === "string",
+    "Argument value must be of type string, given: " + typeof value
+  );
+  assert(
+    typeof index === "number",
+    "Argument index must be of type number, given: " + typeof index
+  );
 
   const node: FunctionNameMetadata = {
     type: "FunctionNameMetadata",
@@ -108,11 +119,19 @@ export function localNameMetadata(
   localIndex: number,
   functionIndex: number
 ): LocalNameMetadata {
-  assert(typeof value === "string");
-
-  assert(typeof localIndex === "number");
-
-  assert(typeof functionIndex === "number");
+  assert(
+    typeof value === "string",
+    "Argument value must be of type string, given: " + typeof value
+  );
+  assert(
+    typeof localIndex === "number",
+    "Argument localIndex must be of type number, given: " + typeof localIndex
+  );
+  assert(
+    typeof functionIndex === "number",
+    "Argument functionIndex must be of type number, given: " +
+      typeof functionIndex
+  );
 
   const node: LocalNameMetadata = {
     type: "LocalNameMetadata",
@@ -126,7 +145,10 @@ export function localNameMetadata(
 
 export function binaryModule(id: ?string, blob: Array<string>): BinaryModule {
   if (id !== null && id !== undefined) {
-    assert(typeof id === "string");
+    assert(
+      typeof id === "string",
+      "Argument id must be of type string, given: " + typeof id
+    );
   }
 
   assert(typeof blob === "object" && typeof blob.length !== "undefined");
@@ -142,7 +164,10 @@ export function binaryModule(id: ?string, blob: Array<string>): BinaryModule {
 
 export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
   if (id !== null && id !== undefined) {
-    assert(typeof id === "string");
+    assert(
+      typeof id === "string",
+      "Argument id must be of type string, given: " + typeof id
+    );
   }
 
   assert(typeof string === "object" && typeof string.length !== "undefined");
@@ -162,7 +187,10 @@ export function sectionMetadata(
   size: NumberLiteral,
   vectorOfSize: NumberLiteral
 ): SectionMetadata {
-  assert(typeof startOffset === "number");
+  assert(
+    typeof startOffset === "number",
+    "Argument startOffset must be of type number, given: " + typeof startOffset
+  );
 
   const node: SectionMetadata = {
     type: "SectionMetadata",
@@ -199,7 +227,10 @@ export function instr(
   args: Array<Expression>,
   namedArgs?: Object
 ): Instr {
-  assert(typeof id === "string");
+  assert(
+    typeof id === "string",
+    "Argument id must be of type string, given: " + typeof id
+  );
 
   assert(typeof args === "object" && typeof args.length !== "undefined");
 
@@ -251,7 +282,10 @@ export function ifInstruction(
 }
 
 export function stringLiteral(value: string): StringLiteral {
-  assert(typeof value === "string");
+  assert(
+    typeof value === "string",
+    "Argument value must be of type string, given: " + typeof value
+  );
 
   const node: StringLiteral = {
     type: "StringLiteral",
@@ -262,9 +296,14 @@ export function stringLiteral(value: string): StringLiteral {
 }
 
 export function numberLiteral(value: number, raw: string): NumberLiteral {
-  assert(typeof value === "number");
-
-  assert(typeof raw === "string");
+  assert(
+    typeof value === "number",
+    "Argument value must be of type number, given: " + typeof value
+  );
+  assert(
+    typeof raw === "string",
+    "Argument raw must be of type string, given: " + typeof raw
+  );
 
   const node: NumberLiteral = {
     type: "NumberLiteral",
@@ -279,7 +318,10 @@ export function longNumberLiteral(
   value: LongNumber,
   raw: string
 ): LongNumberLiteral {
-  assert(typeof raw === "string");
+  assert(
+    typeof raw === "string",
+    "Argument raw must be of type string, given: " + typeof raw
+  );
 
   const node: LongNumberLiteral = {
     type: "LongNumberLiteral",
@@ -296,17 +338,29 @@ export function floatLiteral(
   inf?: boolean,
   raw: string
 ): FloatLiteral {
-  assert(typeof value === "number");
+  assert(
+    typeof value === "number",
+    "Argument value must be of type number, given: " + typeof value
+  );
 
   if (nan !== null && nan !== undefined) {
-    assert(typeof nan === "boolean");
+    assert(
+      typeof nan === "boolean",
+      "Argument nan must be of type boolean, given: " + typeof nan
+    );
   }
 
   if (inf !== null && inf !== undefined) {
-    assert(typeof inf === "boolean");
+    assert(
+      typeof inf === "boolean",
+      "Argument inf must be of type boolean, given: " + typeof inf
+    );
   }
 
-  assert(typeof raw === "string");
+  assert(
+    typeof raw === "string",
+    "Argument raw must be of type string, given: " + typeof raw
+  );
 
   const node: FloatLiteral = {
     type: "FloatLiteral",
@@ -398,7 +452,10 @@ export function globalType(
 }
 
 export function leadingComment(value: string): LeadingComment {
-  assert(typeof value === "string");
+  assert(
+    typeof value === "string",
+    "Argument value must be of type string, given: " + typeof value
+  );
 
   const node: LeadingComment = {
     type: "LeadingComment",
@@ -409,7 +466,10 @@ export function leadingComment(value: string): LeadingComment {
 }
 
 export function blockComment(value: string): BlockComment {
-  assert(typeof value === "string");
+  assert(
+    typeof value === "string",
+    "Argument value must be of type string, given: " + typeof value
+  );
 
   const node: BlockComment = {
     type: "BlockComment",
@@ -457,6 +517,11 @@ export function table(
   name: ?Identifier,
   elements?: Array<Index>
 ): Table {
+  assert(
+    limits.type === "Limit",
+    "Argument limits must be of type Limit, given: " + limits.type
+  );
+
   if (elements !== null && elements !== undefined) {
     assert(
       typeof elements === "object" && typeof elements.length !== "undefined"
@@ -505,9 +570,14 @@ export function moduleImport(
   name: string,
   descr: ImportDescr
 ): ModuleImport {
-  assert(typeof module === "string");
-
-  assert(typeof name === "string");
+  assert(
+    typeof module === "string",
+    "Argument module must be of type string, given: " + typeof module
+  );
+  assert(
+    typeof name === "string",
+    "Argument name must be of type string, given: " + typeof name
+  );
 
   const node: ModuleImport = {
     type: "ModuleImport",
@@ -536,7 +606,10 @@ export function moduleExport(
   name: string,
   descr: ModuleExportDescr
 ): ModuleExport {
-  assert(typeof name === "string");
+  assert(
+    typeof name === "string",
+    "Argument name must be of type string, given: " + typeof name
+  );
 
   const node: ModuleExport = {
     type: "ModuleExport",
@@ -548,10 +621,16 @@ export function moduleExport(
 }
 
 export function limit(min: number, max?: number): Limit {
-  assert(typeof min === "number");
+  assert(
+    typeof min === "number",
+    "Argument min must be of type number, given: " + typeof min
+  );
 
   if (max !== null && max !== undefined) {
-    assert(typeof max === "number");
+    assert(
+      typeof max === "number",
+      "Argument max must be of type number, given: " + typeof max
+    );
   }
 
   const node: Limit = {
@@ -595,10 +674,16 @@ export function program(body: Array<Node>): Program {
 }
 
 export function identifier(value: string, raw?: string): Identifier {
-  assert(typeof value === "string");
+  assert(
+    typeof value === "string",
+    "Argument value must be of type string, given: " + typeof value
+  );
 
   if (raw !== null && raw !== undefined) {
-    assert(typeof raw === "string");
+    assert(
+      typeof raw === "string",
+      "Argument raw must be of type string, given: " + typeof raw
+    );
   }
 
   const node: Identifier = {
@@ -696,7 +781,10 @@ export function func(
   assert(typeof body === "object" && typeof body.length !== "undefined");
 
   if (isExternal !== null && isExternal !== undefined) {
-    assert(typeof isExternal === "boolean");
+    assert(
+      typeof isExternal === "boolean",
+      "Argument isExternal must be of type boolean, given: " + typeof isExternal
+    );
   }
 
   const node: Func = {

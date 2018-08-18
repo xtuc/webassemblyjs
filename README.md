@@ -2,6 +2,8 @@
 
 > Toolchain for WebAssembly
 
+<img alt="npm Downloads" src="https://img.shields.io/npm/dm/@webassemblyjs/ast.svg?maxAge=43200">
+
 See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 
 ## Packages
@@ -29,6 +31,11 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [wast-refmt](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-refmt) - WAST refmt
 - [webassemblyjs](https://github.com/xtuc/webassemblyjs/tree/master/packages/webassemblyjs) - WebAssembly interpreter, implements the W3C WebAssembly API.
 
+## Node's Buffer
+
+Some packages rely on Node's Buffer which isn't available in other environments.
+We recommend you to add https://github.com/feross/buffer in your building process.
+
 ## Licence
 
-[MIT](https://github.com/xtuc/webassemblyjs/blob/master/LICENCE)
+[MIT](https://github.com/xtuc/webassemblyjs/blob/master/LICENSE)

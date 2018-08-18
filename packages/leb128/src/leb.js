@@ -10,8 +10,9 @@
 
 "use strict";
 
-const bits = require("./bits");
-const bufs = require("./bufs");
+import Long from "@xtuc/long";
+import * as bits from "./bits";
+import * as bufs from "./bufs";
 
 /*
  * Module variables
@@ -39,7 +40,7 @@ const MAX_UINT32 = 0xffffffff;
  * The maximum possible 64-bit unsigned int that is representable as a
  * JavaScript number.
  */
-const MAX_UINT64 = 0xfffffffffffff800;
+// const MAX_UINT64 = 0xfffffffffffff800;
 
 /*
  * Helper functions
@@ -239,20 +240,12 @@ function encodeInt64(num) {
 
 function decodeInt64(encodedBuffer, index) {
   const result = decodeIntBuffer(encodedBuffer, index);
-  const parsed = bufs.readInt(result.value);
-  const value = parsed.value;
 
-  // const hiBytes = result.value.slice(0, 4);
-  // const lowBytes = result.value.slice(4);
-
-  // const value = {
-  //   hi: bufs.readInt(hiBytes).value,
-  //   low: bufs.readInt(lowBytes).value
-  // };
+  const value = Long.fromBytesLE(result.value, false);
 
   bufs.free(result.value);
 
-  return { value: value, nextIndex: result.nextIndex, lossy: parsed.lossy };
+  return { value, nextIndex: result.nextIndex, lossy: false };
 }
 
 function encodeUIntBuffer(buffer) {
@@ -301,19 +294,15 @@ function encodeUInt64(num) {
 
 function decodeUInt64(encodedBuffer, index) {
   const result = decodeUIntBuffer(encodedBuffer, index);
-  const parsed = bufs.readUInt(result.value);
-  const value = parsed.value;
+
+  const value = Long.fromBytesLE(result.value, true);
 
   bufs.free(result.value);
 
-  if (value > MAX_UINT64) {
-    throw new Error("integer too large");
-  }
-
-  return { value: value, nextIndex: result.nextIndex, lossy: parsed.lossy };
+  return { value, nextIndex: result.nextIndex, lossy: false };
 }
 
-module.exports = {
+export default {
   decodeInt32: decodeInt32,
   decodeInt64: decodeInt64,
   decodeIntBuffer: decodeIntBuffer,

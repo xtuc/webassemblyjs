@@ -6,7 +6,6 @@ set -e
 
 PACKAGES="./packages/*"
 
-
 ./node_modules/.bin/mocha "$PACKAGES/test/**/*.js" \
     --recursive \
     --reporter=tap \

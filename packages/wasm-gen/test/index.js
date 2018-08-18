@@ -43,7 +43,7 @@ const fixtures = [
   },
 
   {
-    name: "a (func (result i32)) ModuleImport",
+    name: '(import "a" "b" (func (result i32))',
     node: t.moduleImport(
       "a",
       "b",
@@ -172,7 +172,96 @@ const fixtures = [
     name: "(func (unreachable))",
     node: t.func(null, t.signature([], []), [t.instruction("unreachable")]),
     expected: [0x03, 0x00, 0x00, 0x0b]
+  },
+
+  /**
+   * t . const 1
+   */
+  {
+    name: "(i32.const 1)",
+    node: t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+    expected: [0x41, 0x01]
+  },
+
+  {
+    name: "(i64.const 1)",
+    node: t.objectInstruction("const", "i64", [t.numberLiteralFromRaw(1)]),
+    expected: [0x42, 0x01]
+  },
+
+  {
+    name: "(f32.const 0.1)",
+    node: t.objectInstruction("const", "f32", [
+      t.floatLiteral(0.1, false, false, "0.1")
+    ]),
+    expected: [0x43, 0xcd, 0xcc, 0xcc, 0x3d]
+  },
+
+  {
+    name: "(f64.const 0.1)",
+    node: t.objectInstruction("const", "f64", [
+      t.floatLiteral(0.1, false, false, "0.1")
+    ]),
+    expected: [0x44, 0x9a, 0x99, 0x99, 0x99, 0x99, 0x99, 0xb9, 0x3f]
+  },
+
+  {
+    name: "(elem 1 (i32.const 2) 3 4)",
+    node: t.elem(
+      t.numberLiteralFromRaw(1),
+      [t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)])],
+      [t.numberLiteralFromRaw(3), t.numberLiteralFromRaw(4)]
+    ),
+    expected: [0x01, 0x41, 0x02, 0x0b, 0x02, 0x03, 0x04]
+  },
+
+  /**
+   * String encoding
+   */
+  {
+    name: "a",
+    node: t.stringLiteral("a"),
+    expected: [1, 0x61]
+  },
+
+  {
+    name: "foo",
+    node: t.stringLiteral("foo"),
+    expected: [3, 0x66, 0x6f, 0x6f]
+  },
+
+  {
+    name: "./-Ɂ?_¶",
+    node: t.stringLiteral("./-Ɂ?_¶"),
+    expected: [9, 0x2e, 0x2f, 0x2d, 0xc9, 0x81, 0x3f, 0x5f, 0xc2, 0xb6]
+  },
+
+  {
+    name: "0123456789 (x13)",
+    node: t.stringLiteral("0123456789".repeat(13)),
+    expected: [].concat.apply(
+      [0x82, 0x01],
+      new Array(13).fill([
+        0x30,
+        0x31,
+        0x32,
+        0x33,
+        0x34,
+        0x35,
+        0x36,
+        0x37,
+        0x38,
+        0x39
+      ])
+    )
   }
+
+  // TODO(sven): utf8 encoder fails here
+  // {
+  //   name: "🤣见見",
+  //   node: t.stringLiteral("🤣见見"),
+  //   expected: [10, 0xf0, 0x9f, 0xa4, 0xa3, 0xe8, 0xa7, 0x81, 0xe8, 0xa6, 0x8b]
+  // }
 ];
 
 describe("wasm gen", () => {
@@ -180,15 +269,6 @@ describe("wasm gen", () => {
     it("should generate " + fixture.name, () => {
       const binary = encodeNode(fixture.node);
       assert.deepEqual(binary, fixture.expected);
-    });
-  });
-
-  describe("encode UTF8 vec", () => {
-    it("should encode `foo`", () => {
-      const actual = encoder.encodeUTF8Vec("foo");
-      const expected = [3, 0x66, 0x6f, 0x6f];
-
-      assert.deepEqual(actual, expected);
     });
   });
 

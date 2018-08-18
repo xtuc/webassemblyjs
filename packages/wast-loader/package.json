@@ -1,6 +1,6 @@
 {
   "name": "wast-loader",
-  "version": "1.5.7",
+  "version": "1.7.5",
   "description": "Webpack loader for WebAssembly text format",
   "keywords": [
     "webassembly",
@@ -10,6 +10,7 @@
     "wast"
   ],
   "main": "lib/index.js",
+  "module": "esm/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

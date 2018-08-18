@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const parse = require("../lib");
+const parse = require("../lib").default;
 
 it("Positive values should be parsed correctly", () => {
   expect(parse("0x1")).to.be.equal(1);

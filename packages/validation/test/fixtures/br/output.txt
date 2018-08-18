@@ -1,3 +1,0 @@
-Expected type i32 but got none.
-Expected type i32 but got none.
-Expected type i32 but got none.

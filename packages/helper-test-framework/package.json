@@ -1,6 +1,8 @@
 {
   "name": "@webassemblyjs/helper-test-framework",
-  "version": "1.5.7",
+  "version": "1.7.5",
   "description": "",
-  "main": "lib/index.js"
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "license": "MIT"
 }

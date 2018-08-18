@@ -1,12 +1,12 @@
 // @flow
+
 import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 import { define } from "mamacro";
+import * as t from "@webassemblyjs/ast";
 
 import { parse32I } from "./number-literals";
 import { parseString } from "./string-literals";
-
-const t = require("@webassemblyjs/ast");
-const { tokens, keywords } = require("./tokenizer");
+import { tokens, keywords } from "./tokenizer";
 
 declare function createUnexpectedToken(msg: string): void;
 
@@ -405,8 +405,6 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       }
 
       const name = token.value;
-
-      let fnName = t.identifier(`${moduleName}.${name}`);
       eatToken();
 
       eatTokenOfType(tokens.openParen);
@@ -418,6 +416,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         const fnParams = [];
         const fnResult = [];
+
+        let fnName = t.identifier(getUniqueName("func"));
 
         if (token.type === tokens.identifier) {
           fnName = identifierFromToken(token);
@@ -948,7 +948,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatToken();
       }
 
-      while (token.type !== tokens.closeParen) {
+      // $FlowIgnore
+      const signatureLength = signature.vector ? Infinity : signature.length;
+
+      while (
+        token.type !== tokens.closeParen &&
+        // $FlowIgnore
+        (token.type === tokens.openParen || signaturePtr < signatureLength)
+      ) {
         if (token.type === tokens.identifier) {
           args.push(t.identifier(token.value));
 
@@ -969,9 +976,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             t.numberLiteralFromRaw(
               token.value,
               // $FlowIgnore
-              signature[signaturePtr++] || "f64"
+              signature[signaturePtr] || "f64"
             )
           );
+
+          // $FlowIgnore
+          if (!signature.vector) {
+            ++signaturePtr;
+          }
 
           eatToken();
         } else if (token.type === tokens.openParen) {
@@ -1237,7 +1249,17 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
       maybeIgnoreComment();
 
-      while (token.type === tokens.openParen) {
+      while (
+        token.type === tokens.openParen ||
+        token.type === tokens.name ||
+        token.type === tokens.valtype
+      ) {
+        // Instructions without parens
+        if (token.type === tokens.name || token.type === tokens.valtype) {
+          fnBody.push(parseFuncInstr());
+          continue;
+        }
+
         eatToken();
 
         if (lookaheadAndCheck(keywords.param) === true) {
@@ -1364,20 +1386,16 @@ export function parse(tokensList: Array<Object>, source: string): Program {
     function parseFuncResult(): Array<Valtype> {
       const results = [];
 
-      // type is optional
-      if (token.type === tokens.closeParen) {
-        return results;
+      while (token.type !== tokens.closeParen) {
+        if (token.type !== tokens.valtype) {
+          throw createUnexpectedToken("Unexpected token in func result");
+        }
+
+        const valtype = token.value;
+        eatToken();
+
+        results.push(valtype);
       }
-
-      if (token.type !== tokens.valtype) {
-        throw createUnexpectedToken("Unexpected token in func result");
-      }
-
-      const valtype = token.value;
-      eatToken();
-
-      results.push(valtype);
-
       return results;
     }
 

@@ -1,0 +1,4 @@
+Label 1 does not exist at func_0:0.
+Label 1 does not exist at func_1:1.
+Label 1 does not exist at func_2:2.
+Label 1 does not exist at func_3:2.
