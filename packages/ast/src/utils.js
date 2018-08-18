@@ -29,7 +29,7 @@ export function getSectionMetadatas(
   ast: Node,
   name: SectionName
 ): Array<SectionMetadata> {
-  let sections = [];
+  const sections = [];
 
   traverse(ast, {
     SectionMetadata({ node }: NodePath<SectionMetadata>) {

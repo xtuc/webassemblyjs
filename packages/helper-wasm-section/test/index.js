@@ -6,10 +6,7 @@ const { assert } = require("chai");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
-const {
-  getSectionMetadata,
-  getSectionMetadatas
-} = require("@webassemblyjs/ast");
+const { getSectionMetadata } = require("@webassemblyjs/ast");
 const {
   compareArrayBuffers
 } = require("@webassemblyjs/helper-buffer/lib/compare");
