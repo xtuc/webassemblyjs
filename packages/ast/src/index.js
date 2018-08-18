@@ -19,6 +19,7 @@ export { signatures } from "./signatures";
 
 export {
   getSectionMetadata,
+  getSectionMetadatas,
   sortSectionMetadata,
   orderedInsertNode,
   assertHasLoc,

@@ -1,51 +1,57 @@
 // @flow
 
-import { traverse, getSectionMetadata, shiftSection } from "@webassemblyjs/ast";
+import {
+  traverse,
+  getSectionMetadatas,
+  shiftSection
+} from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
-export function removeSection(
+export function removeSections(
   ast: Program,
   uint8Buffer: Uint8Array,
   section: SectionName
 ): Uint8Array {
-  const sectionMetadata = getSectionMetadata(ast, section);
+  const sectionMetadatas = getSectionMetadatas(ast, section);
 
-  if (typeof sectionMetadata === "undefined") {
+  if (sectionMetadatas.length === 0) {
     throw new Error("Section metadata not found");
   }
 
-  // replacement is nothing
-  const replacement = [];
+  return sectionMetadatas.reverse().reduce((uint8Buffer, sectionMetadata) => {
+    const startsIncludingId = sectionMetadata.startOffset - 1;
+    const ends = sectionMetadata.startOffset + sectionMetadata.size.value + 1;
 
-  const startsIncludingId = sectionMetadata.startOffset - 1;
-  const ends = sectionMetadata.startOffset + sectionMetadata.size.value + 1;
+    const delta = -(ends - startsIncludingId);
 
-  const delta = -(ends - startsIncludingId);
+    /**
+     * update AST
+     */
 
-  /**
-   * update AST
-   */
+    // Once we hit our section every that is after needs to be shifted by the delta
+    let encounteredSection = false;
 
-  // Once we hit our section every that is after needs to be shifted by the delta
-  let encounteredSection = false;
+    traverse(ast, {
+      SectionMetadata(path) {
+        if (path.node.section === section) {
+          encounteredSection = true;
+          return path.remove();
+        }
 
-  traverse(ast, {
-    SectionMetadata(path) {
-      if (path.node.section === section) {
-        encounteredSection = true;
-        return path.remove();
+        if (encounteredSection === true) {
+          shiftSection(ast, path.node, delta);
+        }
       }
+    });
 
-      if (encounteredSection === true) {
-        shiftSection(ast, path.node, delta);
-      }
-    }
-  });
+    // replacement is nothing
+    const replacement = [];
 
-  return overrideBytesInBuffer(
-    uint8Buffer,
-    startsIncludingId,
-    ends,
-    replacement
-  );
+    return overrideBytesInBuffer(
+      uint8Buffer,
+      startsIncludingId,
+      ends,
+      replacement
+    );
+  }, uint8Buffer);
 }

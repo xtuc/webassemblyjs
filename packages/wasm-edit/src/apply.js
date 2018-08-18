@@ -13,7 +13,7 @@ import {
   resizeSectionByteSize,
   resizeSectionVecSize,
   createEmptySection,
-  removeSection
+  removeSections
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
@@ -136,7 +136,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
      * The start section only contains one element,
      * we need to remove the whole section
      */
-    uint8Buffer = removeSection(ast, uint8Buffer, "start");
+    uint8Buffer = removeSections(ast, uint8Buffer, "start");
 
     const deltaBytes = -(sectionMetadata.size.value + 1) /* section id */;
 
