@@ -22,7 +22,7 @@ describe("validation", () => {
 
   describe("wast", () => {
     const pre = f => {
-      const errors = validations.stack(parse(f));
+      const errors = validations.getValidationErrors(parse(f));
 
       return errorsToString(errors);
     };
@@ -35,7 +35,7 @@ describe("validation", () => {
       const module = wabt.parseWat(suite, f);
       const { buffer } = module.toBinary({ write_debug_names: false });
 
-      const errors = validations.stack(decode(buffer));
+      const errors = validations.getValidationErrors(decode(buffer));
 
       return errorsToString(errors);
     };

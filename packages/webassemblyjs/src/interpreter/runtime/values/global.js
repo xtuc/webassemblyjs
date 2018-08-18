@@ -1,6 +1,6 @@
 // @flow
 
-import { isConst, getType, typeEq } from "@webassemblyjs/validation";
+import { getType, typeEq } from "@webassemblyjs/validation";
 
 const { evaluate } = require("../../partial-evaluation");
 const { CompileError } = require("../../../errors");
@@ -11,10 +11,6 @@ export function createInstance(
 ): GlobalInstance {
   let value;
   const { valtype, mutability } = node.globalType;
-
-  if (node.init.length > 0 && isConst(node.init) === false) {
-    throw new CompileError("constant expression required");
-  }
 
   // None or multiple constant expressions in the initializer seems not possible
   // TODO(sven): find a specification reference for that

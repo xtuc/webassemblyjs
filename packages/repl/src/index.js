@@ -12,7 +12,7 @@ const {
 } = require("webassemblyjs/lib/interpreter/kernel/memory");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const t = require("@webassemblyjs/ast");
-const typeCheck = require("@webassemblyjs/validation").stack;
+const { getValidationErrors } = require("@webassemblyjs/validation");
 const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references")
   .transform;
 
@@ -308,7 +308,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     if (enableTypeChecking === true) {
       denormalizeTypeReferences(moduleNode);
 
-      const typeErrors = typeCheck(t.program([moduleNode]));
+      const typeErrors = getValidationErrors(t.program([moduleNode]));
 
       if (typeErrors.length > 0) {
         const containsImmutableGlobalViolation = typeErrors.some(x =>
