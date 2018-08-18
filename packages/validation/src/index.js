@@ -21,10 +21,12 @@ export function getValidationErrors(ast: Program): Array<string> {
 
   let modules = [];
 
+  // $FlowIgnore
   if (ast.type === "Module") {
     modules = [ast];
   }
 
+  // $FlowIgnore
   if (ast.type === "Program") {
     modules = ast.body.filter(({ type }) => type === "Module");
   }
@@ -32,6 +34,7 @@ export function getValidationErrors(ast: Program): Array<string> {
   modules.forEach(m => {
     const moduleContext = moduleContextFromModuleAST(m);
 
+    // $FlowIgnore
     errors.push(...imports(ast, moduleContext));
     errors.push(...isConst(ast, moduleContext));
     errors.push(...importOrderValidate(ast));

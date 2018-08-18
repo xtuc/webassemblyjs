@@ -7,9 +7,8 @@ import { traverse } from "@webassemblyjs/ast";
  *
  * See https://webassembly.github.io/spec/core/multipage/valid/instructions.html#valid-constant
  */
-export default function (
-  ast: Program,
-  moduleContext: Object
+export default function(
+  ast: Program /*, moduleContext: Object */
 ): Array<string> {
   const errors = [];
 
