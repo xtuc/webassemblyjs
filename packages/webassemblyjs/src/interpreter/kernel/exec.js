@@ -51,6 +51,7 @@ const f64 = require("../runtime/values/f64");
 const label = require("../runtime/values/label");
 const stackframe = require("./stackframe");
 const { createTrap } = require("./signals");
+const { compare } = require("./instruction/comparison");
 
 // Syntactic sugar for the Syntactic sugar
 // TODO(sven): do it AOT?
@@ -1068,18 +1069,7 @@ export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
         case "copysign":
         case "or":
         case "xor":
-        case "and":
-        case "eq":
-        case "ne":
-        case "lt_s":
-        case "lt_u":
-        case "le_s":
-        case "le_u":
-        case "gt":
-        case "gt_s":
-        case "gt_u":
-        case "ge_s":
-        case "ge_u": {
+        case "and": {
           let binopFn;
           switch (instruction.object) {
             case "i32":
@@ -1127,6 +1117,48 @@ export function executeStackFrame(firstFrame: StackFrame): ?StackLocal {
 
           const [c1, c2] = pop2(instruction.object, instruction.object);
           pushResult(binopFn(c1, c2, instruction.id));
+
+          break;
+        }
+
+        /**
+         * Comparison operations
+         */
+        case "eq":
+        case "ne":
+        case "lt_s":
+        case "lt_u":
+        case "le_s":
+        case "le_u":
+        case "gt":
+        case "gt_s":
+        case "gt_u":
+        case "ge_s":
+        case "ge_u": {
+          const [left, right] = instruction.args;
+
+          // Interpret left branch first if it's a child instruction
+          if (typeof left !== "undefined") {
+            const code = [left];
+            addEndInstruction(code);
+
+            createAndExecuteChildStackFrame(code, {
+              passCurrentContext: true
+            });
+          }
+
+          // Interpret right branch first if it's a child instruction
+          if (typeof right !== "undefined") {
+            const code = [right];
+            addEndInstruction(code);
+
+            createAndExecuteChildStackFrame(code, {
+              passCurrentContext: true
+            });
+          }
+
+          const [c1, c2] = pop2(instruction.object, instruction.object);
+          pushResult(compare(c1, c2, instruction.id));
 
           break;
         }
