@@ -2,6 +2,7 @@ NODE_OPTS =
 
 TEST_TIMEOUT = 10000
 
+TRACE = 0
 LERNA = ./node_modules/.bin/lerna
 FLOWTYPED = ./node_modules/.bin/flow-typed
 NODE = node
@@ -25,10 +26,10 @@ bootstrap: clean-all
 	$(LERNA) bootstrap
 
 build:
-	./scripts/build.sh
+	WITH_TRACE=$(TRACE) ./scripts/build.sh
 
 watch:
-	./scripts/build.sh --watch
+	WITH_TRACE=$(TRACE) ./scripts/build.sh --watch
 
 test-ci: test test-whitelisted-spec lint
 test-ci-windows: test test-whitelisted-spec
