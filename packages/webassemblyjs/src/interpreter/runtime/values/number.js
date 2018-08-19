@@ -1,6 +1,7 @@
 // @flow
 
 import { RuntimeError } from "../../../errors";
+import type { i32 } from "./i32";
 
 export class Float<U> implements FloatingPointValue<Float<U>, U> {
   _value: number;
@@ -80,6 +81,10 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
   }
 
   reinterpret(): any {
+    throw new RuntimeError("unsupported operation");
+  }
+
+  eq(_operand: Float<U>): i32 {
     throw new RuntimeError("unsupported operation");
   }
 

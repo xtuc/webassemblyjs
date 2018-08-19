@@ -24,7 +24,14 @@ if (existsSync("./testsuite-failing.txt") === true) {
   failingList = readFileSync("./testsuite-failing.txt", "utf8").split("\n");
 }
 
-const repl = createRepl({ filename, isVerbose, onAssert, onOk, onLog, failingList });
+const repl = createRepl({
+  filename,
+  isVerbose,
+  onAssert,
+  onOk,
+  onLog,
+  failingList
+});
 
 if (filename === undefined) {
   const rl = readline.createInterface({
