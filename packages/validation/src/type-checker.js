@@ -134,11 +134,7 @@ function createTypeChecker() {
         checkStacks(type.result, newStack);
       }
 
-      if (newStack === false) {
-        stack = false;
-      } else {
-        stack = [...stack, ...newStack];
-      }
+      stack = [...stack, ...type.result];
 
       moduleContext.popLabel();
     } else if (instruction.type === "IfInstruction") {
@@ -216,8 +212,7 @@ function createTypeChecker() {
 
       moduleContext.popLabel();
 
-      // Add to existing stack
-      stack = [...stack, ...stackConsequent];
+      stack = type.result;
     } else {
       if (stack === false) {
         return false;
