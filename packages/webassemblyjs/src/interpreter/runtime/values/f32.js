@@ -5,6 +5,9 @@ import { i32 } from "./i32";
 
 const type = "f32";
 
+const one = new i32(1);
+const zero = new i32(0);
+
 export class f32 extends Float<f32> {
   reinterpret(): i32 {
     const floatArray = new Float32Array(1);
@@ -57,10 +60,19 @@ export class f32 extends Float<f32> {
     return new f32(value[0]);
   }
 
-  gt(operand: Float<f32>): i32 {
-    const one = new i32(1);
-    const zero = new i32(0);
+  eq(operand: Float<f32>): i32 {
+    if (operand instanceof f32nan) {
+      return operand.eq();
+    }
 
+    if (this._value === operand._value) {
+      return one;
+    } else {
+      return zero;
+    }
+  }
+
+  gt(operand: Float<f32>): i32 {
     const z1 = this;
     const z2 = operand;
 
@@ -158,6 +170,11 @@ export class f32nan extends f32 {
 
   div(): f32 {
     return this;
+  }
+
+  eq(): i32 {
+    // If either z1 or z2 is a NaN, then return 0.
+    return new i32(0);
   }
 }
 

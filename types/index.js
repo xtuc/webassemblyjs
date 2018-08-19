@@ -121,6 +121,7 @@ interface FloatingPointValue<T, U> extends NumericOperations<T> {
   neg(): T;
   abs(): T;
   reinterpret(): U;
+  eq(operand: T): i32;
 }
 
 interface NumericOperations<T> {
