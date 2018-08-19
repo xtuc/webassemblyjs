@@ -1,0 +1,1 @@
+constant expression required: initializer expression cannot reference mutable global
