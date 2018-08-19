@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const readline = require("readline");
-const { createReadStream } = require("fs");
+const { createReadStream, readFileSync, existsSync } = require("fs");
 
 const { createRepl } = require("./index");
 
@@ -18,7 +18,13 @@ function onLog(txt) {
 
 function onOk() {}
 
-const repl = createRepl({ isVerbose, onAssert, onOk, onLog });
+let failingList;
+
+if (existsSync("./testsuite-failing.txt") === true) {
+  failingList = readFileSync("./testsuite-failing.txt", "utf8").split("\n");
+}
+
+const repl = createRepl({ filename, isVerbose, onAssert, onOk, onLog, failingList });
 
 if (filename === undefined) {
   const rl = readline.createInterface({
