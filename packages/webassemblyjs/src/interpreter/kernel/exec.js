@@ -47,12 +47,6 @@ const stackframe = require("./stackframe");
 const { createTrap } = require("./signals");
 const { compare } = require("./instruction/comparison");
 
-// Syntactic sugar for the Syntactic sugar
-// TODO(sven): do it AOT?
-function addEndInstruction(body) {
-  body.push(t.instruction("end"));
-}
-
 function assertStackDepth(depth: number) {
   if (depth >= 300) {
     throw new RuntimeError(`Maximum call stack depth reached (${depth})`);
@@ -535,7 +529,7 @@ export function executeStackFrame(
         case "br": {
           // https://webassembly.github.io/spec/core/exec/instructions.html#exec-br
 
-          const [label, ...children] = instruction.args;
+          const label = instruction.args[0];
 
           if (label.type === "Identifier") {
             throw newRuntimeError(
@@ -611,24 +605,11 @@ export function executeStackFrame(
           stack = stack.slice(0, -(l + 1));
           framepointer -= l + 1;
 
-          // execute childrens
-          addEndInstruction(children);
-          createAndExecuteChildStackFrame(children, {
-            passCurrentContext: true
-          });
-
           return;
         }
 
         case "br_if": {
-          const [label, ...children] = instruction.args;
-
-          // execute childrens
-          addEndInstruction(children);
-
-          createAndExecuteChildStackFrame(children, {
-            passCurrentContext: true
-          });
+          const label = instruction.args[0];
 
           // 1. Assert: due to validation, a value of type i32 is on the top of the stack.
           // 2. Pop the value ci32.const c from the stack.
@@ -734,7 +715,7 @@ export function executeStackFrame(
             // WAST
 
             const code = [init];
-            addEndInstruction(code);
+            code.push(t.instruction("end"));
 
             createAndExecuteChildStackFrame(code, {
               passCurrentContext: true
@@ -768,7 +749,7 @@ export function executeStackFrame(
             // WAST
 
             const code = [init];
-            addEndInstruction(code);
+            code.push(t.instruction("end"));
 
             createAndExecuteChildStackFrame(code, {
               passCurrentContext: true
@@ -808,17 +789,7 @@ export function executeStackFrame(
 
         case "set_global": {
           // https://webassembly.github.io/spec/core/exec/instructions.html#exec-set-global
-          const [index, right] = instruction.args;
-
-          // Interpret right branch first if it's a child instruction
-          if (typeof right !== "undefined") {
-            const code = [right];
-            addEndInstruction(code);
-
-            createAndExecuteChildStackFrame(code, {
-              passCurrentContext: true
-            });
-          }
+          const index = instruction.args[0];
 
           // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
           const globaladdr = frame.originatingModule.globaladdrs[index.value];
@@ -874,13 +845,6 @@ export function executeStackFrame(
         }
 
         case "return": {
-          const { args } = instruction;
-
-          if (args.length > 0) {
-            addEndInstruction(args);
-            createAndExecuteChildStackFrame(args, { passCurrentContext: true });
-          }
-
           // Abort execution and return the first item on the stack
           returnRegister = [pop1()];
           return;
@@ -895,14 +859,7 @@ export function executeStackFrame(
         case "store8":
         case "store16":
         case "store32": {
-          const { id, object, args } = instruction;
-
-          // Interpret children first
-          // only WAST
-          if (typeof args !== "undefined" && args.length > 0) {
-            addEndInstruction(args);
-            createAndExecuteChildStackFrame(args, { passCurrentContext: true });
-          }
+          const { id, object } = instruction;
 
           const memory = getMemory();
 
@@ -943,14 +900,7 @@ export function executeStackFrame(
         case "load8_u":
         case "load32_s":
         case "load32_u": {
-          const { id, object, args } = instruction;
-
-          // Interpret children first
-          // only WAST
-          if (typeof args !== "undefined" && args.length > 0) {
-            addEndInstruction(args);
-            createAndExecuteChildStackFrame(args, { passCurrentContext: true });
-          }
+          const { id, object } = instruction;
 
           const memory = getMemory();
 
@@ -1090,28 +1040,6 @@ export function executeStackFrame(
               );
           }
 
-          const [left, right] = instruction.args;
-
-          // Interpret left branch first if it's a child instruction
-          if (typeof left !== "undefined") {
-            const code = [left];
-            addEndInstruction(code);
-
-            createAndExecuteChildStackFrame(code, {
-              passCurrentContext: true
-            });
-          }
-
-          // Interpret right branch first if it's a child instruction
-          if (typeof right !== "undefined") {
-            const code = [right];
-            addEndInstruction(code);
-
-            createAndExecuteChildStackFrame(code, {
-              passCurrentContext: true
-            });
-          }
-
           const [c1, c2] = pop2(instruction.object, instruction.object);
           pushResult(binopFn(c1, c2, instruction.id));
 
@@ -1132,28 +1060,6 @@ export function executeStackFrame(
         case "gt_u":
         case "ge_s":
         case "ge_u": {
-          const [left, right] = instruction.args;
-
-          // Interpret left branch first if it's a child instruction
-          if (typeof left !== "undefined") {
-            const code = [left];
-            addEndInstruction(code);
-
-            createAndExecuteChildStackFrame(code, {
-              passCurrentContext: true
-            });
-          }
-
-          // Interpret right branch first if it's a child instruction
-          if (typeof right !== "undefined") {
-            const code = [right];
-            addEndInstruction(code);
-
-            createAndExecuteChildStackFrame(code, {
-              passCurrentContext: true
-            });
-          }
-
           const [c1, c2] = pop2(instruction.object, instruction.object);
           pushResult(compare(c1, c2, instruction.id));
 
@@ -1197,18 +1103,6 @@ export function executeStackFrame(
               throw createTrap(
                 "Unsupported operation " + instruction.id + " on " + opType
               );
-          }
-
-          const [operand] = instruction.args;
-
-          // Interpret argument first if it's a child instruction
-          if (typeof operand !== "undefined") {
-            const code = [operand];
-            addEndInstruction(code);
-
-            createAndExecuteChildStackFrame(code, {
-              passCurrentContext: true
-            });
           }
 
           const c = pop1OfType(opType);
