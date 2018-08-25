@@ -2,6 +2,7 @@
 
 import { transform as wastIdentifierToIndex } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
 import { transform as denormalizeTypeReferences } from "@webassemblyjs/ast/lib/transform/denormalize-type-references";
+import { flatten } from "@webassemblyjs/helper-flaten-ast";
 
 const t = require("@webassemblyjs/ast");
 
@@ -87,6 +88,11 @@ export function createCompiledModule(ast: Program): CompiledModule {
       node.instr.push(t.instruction("end"));
     }
   });
+
+  /**
+   * Flatten AST
+   */
+  flatten(ast);
 
   return new Module(ast, exports, imports, start);
 }

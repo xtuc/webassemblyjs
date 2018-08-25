@@ -23,7 +23,7 @@ export function flatten(ast: Node): Node {
   function CallInstruction(path: NodePath<CallInstruction>) {
     const { instrArgs } = path.node;
 
-    if (instrArgs.length === 0) {
+    if (typeof instrArgs === "undefined" || instrArgs.length === 0) {
       // no nested instructions
       return;
     }
