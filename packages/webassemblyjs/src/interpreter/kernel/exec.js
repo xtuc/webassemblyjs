@@ -47,12 +47,6 @@ const stackframe = require("./stackframe");
 const { createTrap } = require("./signals");
 const { compare } = require("./instruction/comparison");
 
-// Syntactic sugar for the Syntactic sugar
-// TODO(sven): do it AOT?
-function addEndInstruction(body) {
-  body.push(t.instruction("end"));
-}
-
 function assertStackDepth(depth: number) {
   if (depth >= 300) {
     throw new RuntimeError(`Maximum call stack depth reached (${depth})`);
@@ -721,7 +715,7 @@ export function executeStackFrame(
             // WAST
 
             const code = [init];
-            addEndInstruction(code);
+            code.push(t.instruction("end"));
 
             createAndExecuteChildStackFrame(code, {
               passCurrentContext: true
@@ -755,7 +749,7 @@ export function executeStackFrame(
             // WAST
 
             const code = [init];
-            addEndInstruction(code);
+            code.push(t.instruction("end"));
 
             createAndExecuteChildStackFrame(code, {
               passCurrentContext: true
@@ -865,7 +859,7 @@ export function executeStackFrame(
         case "store8":
         case "store16":
         case "store32": {
-          const { id, object, args } = instruction;
+          const { id, object } = instruction;
 
           const memory = getMemory();
 
@@ -906,7 +900,7 @@ export function executeStackFrame(
         case "load8_u":
         case "load32_s":
         case "load32_u": {
-          const { id, object, args } = instruction;
+          const { id, object } = instruction;
 
           const memory = getMemory();
 
