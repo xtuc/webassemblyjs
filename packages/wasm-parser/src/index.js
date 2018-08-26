@@ -2,6 +2,11 @@
 import * as decoder from "./decoder";
 import * as t from "@webassemblyjs/ast";
 
+/**
+ * TODO(sven): I added initial props, but we should rather fix
+ * https://github.com/xtuc/webassemblyjs/issues/405
+ */
+
 const defaultDecoderOpts = {
   dump: false,
   ignoreCodeSection: false,
@@ -35,7 +40,10 @@ function restoreFunctionNames(ast) {
       const index = Number(indexBasedFunctionName.replace("func_", ""));
       const functionName = functionNames.find(f => f.index === index);
       if (functionName) {
+        const oldValue = nodeName.value;
+
         nodeName.value = functionName.name;
+        nodeName.initial = oldValue;
 
         // $FlowIgnore
         delete nodeName.raw;
@@ -75,7 +83,10 @@ function restoreFunctionNames(ast) {
       const index = node.index.value;
       const functionName = functionNames.find(f => f.index === index);
       if (functionName) {
+        const oldValue = node.index;
+
         node.index = t.identifier(functionName.name);
+        node.initial = oldValue;
 
         // $FlowIgnore
         delete node.raw;

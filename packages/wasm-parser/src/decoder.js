@@ -5,6 +5,8 @@ import * as ieee754 from "@webassemblyjs/ieee754";
 import * as utf8 from "@webassemblyjs/utf8";
 import * as t from "@webassemblyjs/ast";
 
+// TODO(sven): define with loc, that can get the endLoc in its own code
+
 import {
   decodeInt32,
   decodeUInt32,
@@ -726,6 +728,16 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
        * End of the function
        */
       if (instruction.name === "end") {
+        const endLoc = getPosition();
+
+        const node = t.withLoc(
+          t.instruction(instruction.name),
+          endLoc,
+          startLoc
+        );
+
+        code.push(node);
+
         break;
       }
 
@@ -799,6 +811,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         code.push(ifNode);
         instructionAlreadyCreated = true;
       } else if (instruction.name === "block") {
+        const startLoc = getPosition();
+
         const blocktypeByte = readByte();
         eatBytes(1);
 
@@ -818,7 +832,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         // preserve anonymous
         const label = t.withRaw(t.identifier(getUniqueName("block")), "");
 
-        const blockNode = t.blockInstruction(label, instr, blocktype);
+        const endLoc = getPosition();
+
+        const blockNode = t.withLoc(
+          t.blockInstruction(label, instr, blocktype),
+          endLoc,
+          startLoc
+        );
 
         code.push(blockNode);
         instructionAlreadyCreated = true;
@@ -829,7 +849,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         dump([index], "index");
 
-        const callNode = t.callInstruction(t.indexLiteral(index));
+        const endLoc = getPosition();
+
+        const callNode = t.withLoc(
+          t.callInstruction(t.indexLiteral(index)),
+          endLoc,
+          startLoc
+        );
 
         code.push(callNode);
         instructionAlreadyCreated = true;
@@ -1005,13 +1031,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       }
 
       if (instructionAlreadyCreated === false) {
-        if (typeof instruction.object === "string") {
-          code.push(
-            t.objectInstruction(instruction.name, instruction.object, args)
-          );
-        } else {
-          const endLoc = getPosition();
+        const endLoc = getPosition();
 
+        if (typeof instruction.object === "string") {
+          const node = t.withLoc(
+            t.objectInstruction(instruction.name, instruction.object, args),
+            endLoc,
+            startLoc
+          );
+
+          code.push(node);
+        } else {
           const node = t.withLoc(
             t.instruction(instruction.name, args),
             endLoc,

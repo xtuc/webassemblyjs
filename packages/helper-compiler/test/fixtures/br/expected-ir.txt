@@ -1,0 +1,10 @@
+Func table:
+dummy at 22
+func_1 at 25
+
+24 | end
+28 | block
+29 | br 33
+31 | call @24
+33 | end
+34 | end

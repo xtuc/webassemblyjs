@@ -159,3 +159,13 @@ interface TableInstance {
 }
 
 type SignatureMap = { [string]: string } | [string, string];
+
+type IR = {
+  funcTable: Array<{
+    name: string,
+    startAt: number
+  }>,
+  program: {
+    [number]: Instruction
+  }
+};
