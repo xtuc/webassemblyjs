@@ -1,6 +1,6 @@
 Func table:
-dummy at 22
-func_1 at 25
+dummy at 24
+func_1 at 28
 
 24 | end
 28 | block

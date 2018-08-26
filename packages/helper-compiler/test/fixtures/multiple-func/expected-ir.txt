@@ -1,6 +1,6 @@
 Func table:
-a at 22
-b at 27
+a at 24
+b at 29
 
 24 | i32.const 1
 26 | end

@@ -118,7 +118,7 @@ export class Module {
 
     return {
       name: func.name.value,
-      startAt: getStartByteOffset(func),
+      startAt: getFunctionBeginingByteOffset(func),
       instructions: this._program
     };
   }

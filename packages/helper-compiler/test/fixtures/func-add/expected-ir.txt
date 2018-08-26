@@ -1,5 +1,5 @@
 Func table:
-func_0 at 21
+func_0 at 23
 
 23 | i32.const 1
 25 | i32.const 1
