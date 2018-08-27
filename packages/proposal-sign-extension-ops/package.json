@@ -1,0 +1,35 @@
+{
+  "name": "@webassemblyjs/proposal-sign-ops",
+  "version": "1.5.6",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Mauro Bringolf",
+  "license": "MIT",
+  "dependencies": {
+    "@webassemblyjs/ast": "1.5.6",
+    "@webassemblyjs/helper-buffer": "1.5.6",
+    "@webassemblyjs/helper-wasm-bytecode": "1.5.6",
+    "@webassemblyjs/helper-wasm-section": "1.5.6",
+    "@webassemblyjs/wasm-edit": "1.5.6",
+    "@webassemblyjs/wasm-gen": "1.5.6",
+    "@webassemblyjs/wasm-opt": "1.5.6",
+    "debug": "^3.1.0"
+  },
+  "devDependencies": {
+    "@webassemblyjs/helper-test-framework": "1.5.6",
+    "@webassemblyjs/wast-parser": "1.5.6",
+    "@webassemblyjs/wasm-parser": "1.5.6",
+    "@webassemblyjs/wast-printer": "1.5.6",
+    "wabt": "1.0.0"
+  }
+}

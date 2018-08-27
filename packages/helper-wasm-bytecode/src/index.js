@@ -312,6 +312,13 @@ const symbolsByByte = {
   0xba: createSymbolObject("convert_u/i64", "f64"),
   0xbb: createSymbolObject("promote/f32", "f64"),
 
+  // Sign extension op proposal
+  0xc0: createSymbolObject("extend8_s", "i32"),
+  0xc1: createSymbolObject("extend16_s", "i32"),
+  0xc2: createSymbolObject("extend8_s", "i64"),
+  0xc3: createSymbolObject("extend16_s", "i64"),
+  0xc4: createSymbolObject("extend32_s", "i64"),
+
   0xbc: createSymbolObject("reinterpret/f32", "i32"),
   0xbd: createSymbolObject("reinterpret/f64", "i64"),
   0xbe: createSymbolObject("reinterpret/i32", "f32"),

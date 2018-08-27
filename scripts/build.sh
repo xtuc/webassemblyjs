@@ -35,6 +35,8 @@ for D in ./packages/*; do
     $OPTS &
 done
 
+
 wait
 
+cp -r packages/proposal-sign-extension-ops/src/polyfills packages/proposal-sign-extension-ops/lib/
 cp -v packages/dce/src/libwabt.js packages/dce/lib/libwabt.js

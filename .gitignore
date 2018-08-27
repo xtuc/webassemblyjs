@@ -61,3 +61,6 @@ lib/
 esm/
 
 package-lock.json
+
+# Generated polyfill binaries
+packages/proposal-sign-extension-ops/src/polyfills/*.wasm
