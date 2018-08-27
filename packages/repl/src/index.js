@@ -20,7 +20,17 @@ function addEndInstruction(body) {
   body.push(t.instruction("end"));
 }
 
-export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
+export function createRepl({
+  filename = "stdin",
+  isVerbose,
+  onAssert,
+  onLog,
+  onOk,
+  failingList = []
+}) {
+  // keep track of the number of commands
+  let seq = 0;
+
   function parseQuoteModule(node /*: QuoteModule */) {
     const raw = node.string.join("");
     parse(raw);
@@ -103,6 +113,14 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
         invoke(action);
         assert(false, `invoke is valid, expected trapped (${expected.value})`);
       } catch (err) {
+        // It's the same thing
+        if (
+          expected.value === "unreachable" &&
+          err.message === "Execution has been trapped"
+        ) {
+          return;
+        }
+
         assert(
           err.message.toLowerCase() === expected.value.toLowerCase(),
           `Expected failure of ${expected.value}, ${err.message} given`
@@ -232,10 +250,16 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
 
   function assert(cond, msg = "unknown") {
     if (cond === false) {
-      error(new Error("assertion failure: " + msg));
-      onAssert();
+      const isInFailingList = failingList.includes(`${filename} ${seq}`);
 
-      return;
+      if (isInFailingList === false) {
+        error(new Error(seq + ": assertion failure: " + msg));
+        onAssert();
+
+        return;
+      } else {
+        onLog("Ignore assertion " + seq);
+      }
     }
 
     onOk();
@@ -390,6 +414,8 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
     buffer += input + "\n";
 
     if (openParens === 0) {
+      seq++;
+
       try {
         replEval(buffer);
       } catch (err) {

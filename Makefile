@@ -55,6 +55,7 @@ test-whitelisted-spec:
 	$(REPL) $(SPEC_TEST_DIR)/utf8-custom-section-id.wast
 	$(REPL) $(SPEC_TEST_DIR)/utf8-import-field.wast
 	$(REPL) $(SPEC_TEST_DIR)/utf8-import-module.wast
+	$(REPL) $(SPEC_TEST_DIR)/block.wast
 
 lint:
 	$(ESLINT) packages

@@ -1,0 +1,2 @@
+testsuite/block.wast 53
+testsuite/block.wast 54
