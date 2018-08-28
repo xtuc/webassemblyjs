@@ -4,8 +4,24 @@ import { CompileError } from "@webassemblyjs/helper-api-error";
 import * as ieee754 from "@webassemblyjs/ieee754";
 import * as utf8 from "@webassemblyjs/utf8";
 import * as t from "@webassemblyjs/ast";
+import { define } from "mamacro";
 
-// TODO(sven): define with loc, that can get the endLoc in its own code
+declare function WITH_LOC<T>(n: T, startLoc: Position): T;
+
+define(
+  WITH_LOC,
+  (node, startLoc) => `
+    (function() {
+      const endLoc = getPosition();
+
+       return t.withLoc(
+        ${node},
+        endLoc,
+        ${startLoc}
+      );
+    })()
+  `
+);
 
 import {
   decodeInt32,
@@ -373,12 +389,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         const result: Array<Valtype> = parseVec(b => constants.valtypes[b]);
 
-        const endLoc = getPosition();
-
         typeInstructionNodes.push(
-          t.withLoc(
+          WITH_LOC(
             t.typeInstruction(undefined, t.signature(params, result)),
-            endLoc,
             startLoc
           )
         );
@@ -482,12 +495,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         throw new CompileError("Unsupported import of type: " + descrType);
       }
 
-      const endLoc = getPosition();
-
       imports.push(
-        t.withLoc(
+        WITH_LOC(
           t.moduleImport(moduleName.value, name.value, importDescr),
-          endLoc,
           startLoc
         )
       );
@@ -728,13 +738,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
        * End of the function
        */
       if (instruction.name === "end") {
-        const endLoc = getPosition();
-
-        const node = t.withLoc(
-          t.instruction(instruction.name),
-          endLoc,
-          startLoc
-        );
+        const node = WITH_LOC(t.instruction(instruction.name), startLoc);
 
         code.push(node);
 
@@ -768,6 +772,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         code.push(loopNode);
         instructionAlreadyCreated = true;
       } else if (instruction.name === "if") {
+        const startLoc = getPosition();
+
         const blocktypeByte = readByte();
         eatBytes(1);
 
@@ -800,12 +806,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         // wast sugar
         const testInstrs = [];
 
-        const ifNode = t.ifInstruction(
-          testIndex,
-          testInstrs,
-          blocktype,
-          consequentInstr,
-          alternate
+        const ifNode = WITH_LOC(
+          t.ifInstruction(
+            testIndex,
+            testInstrs,
+            blocktype,
+            consequentInstr,
+            alternate
+          ),
+          startLoc
         );
 
         code.push(ifNode);
@@ -832,11 +841,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         // preserve anonymous
         const label = t.withRaw(t.identifier(getUniqueName("block")), "");
 
-        const endLoc = getPosition();
-
-        const blockNode = t.withLoc(
+        const blockNode = WITH_LOC(
           t.blockInstruction(label, instr, blocktype),
-          endLoc,
           startLoc
         );
 
@@ -849,11 +855,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         dump([index], "index");
 
-        const endLoc = getPosition();
-
-        const callNode = t.withLoc(
+        const callNode = WITH_LOC(
           t.callInstruction(t.indexLiteral(index)),
-          endLoc,
           startLoc
         );
 
@@ -1031,20 +1034,16 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       }
 
       if (instructionAlreadyCreated === false) {
-        const endLoc = getPosition();
-
         if (typeof instruction.object === "string") {
-          const node = t.withLoc(
+          const node = WITH_LOC(
             t.objectInstruction(instruction.name, instruction.object, args),
-            endLoc,
             startLoc
           );
 
           code.push(node);
         } else {
-          const node = t.withLoc(
+          const node = WITH_LOC(
             t.instruction(instruction.name, args),
-            endLoc,
             startLoc
           );
 
@@ -1273,9 +1272,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       parseInstructionBlock(init);
 
-      const endLoc = getPosition();
-
-      const node = t.withLoc(t.global(globalType, init), endLoc, startLoc);
+      const node = WITH_LOC(t.global(globalType, init), startLoc);
 
       globals.push(node);
       state.globalsInModule.push(node);
@@ -1325,11 +1322,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         indexValues.push(t.indexLiteral(index));
       }
 
-      const endLoc = getPosition();
-
-      const elemNode = t.withLoc(
+      const elemNode = WITH_LOC(
         t.elem(t.indexLiteral(tableindex), instr, indexValues),
-        endLoc,
         startLoc
       );
 
@@ -1388,9 +1382,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     dump([startFuncIndex], "index");
 
-    const endLoc = getPosition();
-
-    return t.withLoc(t.start(t.indexLiteral(startFuncIndex)), endLoc, startLoc);
+    return WITH_LOC(t.start(t.indexLiteral(startFuncIndex)), startLoc);
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#data-section
@@ -1451,18 +1443,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const nextSectionIndex = sectionIndex;
 
     const startOffset = offset;
-    const startPosition = getPosition();
+    const startLoc = getPosition();
 
     const u32 = readU32();
     const sectionSizeInBytes = u32.value;
     eatBytes(u32.nextIndex);
 
-    const sectionSizeInBytesEndLoc = getPosition();
-
-    const sectionSizeInBytesNode = t.withLoc(
+    const sectionSizeInBytesNode = WITH_LOC(
       t.numberLiteralFromRaw(sectionSizeInBytes),
-      sectionSizeInBytesEndLoc,
-      startPosition
+      startLoc
     );
 
     switch (sectionId) {
@@ -1471,23 +1460,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const u32 = readU32();
         const numberOfTypes = u32.value;
         eatBytes(u32.nextIndex);
 
-        const endPosition = getPosition();
-
         const metadata = t.sectionMetadata(
           "type",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(
-            t.numberLiteralFromRaw(numberOfTypes),
-            endPosition,
-            startPosition
-          )
+          WITH_LOC(t.numberLiteralFromRaw(numberOfTypes), startLoc)
         );
 
         const nodes = parseTypeSection(numberOfTypes);
@@ -1500,13 +1483,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const u32 = readU32();
         const numberOfTable = u32.value;
         eatBytes(u32.nextIndex);
-
-        const endPosition = getPosition();
 
         dump([numberOfTable], "num tables");
 
@@ -1514,11 +1495,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           "table",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(
-            t.numberLiteralFromRaw(numberOfTable),
-            endPosition,
-            startPosition
-          )
+          WITH_LOC(t.numberLiteralFromRaw(numberOfTable), startLoc)
         );
 
         const nodes = parseTableSection(numberOfTable);
@@ -1531,13 +1508,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const numberOfImportsu32 = readU32();
         const numberOfImports = numberOfImportsu32.value;
         eatBytes(numberOfImportsu32.nextIndex);
-
-        const endPosition = getPosition();
 
         dump([numberOfImports], "number of imports");
 
@@ -1545,11 +1520,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           "import",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(
-            t.numberLiteralFromRaw(numberOfImports),
-            endPosition,
-            startPosition
-          )
+          WITH_LOC(t.numberLiteralFromRaw(numberOfImports), startLoc)
         );
 
         const nodes = parseImportSection(numberOfImports);
@@ -1562,23 +1533,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const numberOfFunctionsu32 = readU32();
         const numberOfFunctions = numberOfFunctionsu32.value;
         eatBytes(numberOfFunctionsu32.nextIndex);
 
-        const endPosition = getPosition();
-
         const metadata = t.sectionMetadata(
           "func",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(
-            t.numberLiteralFromRaw(numberOfFunctions),
-            endPosition,
-            startPosition
-          )
+          WITH_LOC(t.numberLiteralFromRaw(numberOfFunctions), startLoc)
         );
 
         parseFuncSection(numberOfFunctions);
@@ -1593,23 +1558,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const u32 = readU32();
         const numberOfExport = u32.value;
         eatBytes(u32.nextIndex);
 
-        const endPosition = getPosition();
-
         const metadata = t.sectionMetadata(
           "export",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(
-            t.numberLiteralFromRaw(numberOfExport),
-            endPosition,
-            startPosition
-          )
+          WITH_LOC(t.numberLiteralFromRaw(numberOfExport), startLoc)
         );
 
         parseExportSection(numberOfExport);
@@ -1624,23 +1583,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const u32 = readU32();
         const numberOfFuncs = u32.value;
         eatBytes(u32.nextIndex);
 
-        const endPosition = getPosition();
-
         const metadata = t.sectionMetadata(
           "code",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(
-            t.numberLiteralFromRaw(numberOfFuncs),
-            endPosition,
-            startPosition
-          )
+          WITH_LOC(t.numberLiteralFromRaw(numberOfFuncs), startLoc)
         );
 
         if (opts.ignoreCodeSection === true) {
@@ -1677,23 +1630,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const numberOfElementsu32 = readU32();
         const numberOfElements = numberOfElementsu32.value;
         eatBytes(numberOfElementsu32.nextIndex);
 
-        const endPosition = getPosition();
-
         const metadata = t.sectionMetadata(
           "element",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(
-            t.numberLiteralFromRaw(numberOfElements),
-            endPosition,
-            startPosition
-          )
+          WITH_LOC(t.numberLiteralFromRaw(numberOfElements), startLoc)
         );
 
         const nodes = parseElemSection(numberOfElements);
@@ -1706,23 +1653,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const numberOfGlobalsu32 = readU32();
         const numberOfGlobals = numberOfGlobalsu32.value;
         eatBytes(numberOfGlobalsu32.nextIndex);
 
-        const endPosition = getPosition();
-
         const metadata = t.sectionMetadata(
           "global",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(
-            t.numberLiteralFromRaw(numberOfGlobals),
-            endPosition,
-            startPosition
-          )
+          WITH_LOC(t.numberLiteralFromRaw(numberOfGlobals), startLoc)
         );
 
         const nodes = parseGlobalSection(numberOfGlobals);
@@ -1735,23 +1676,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const numberOfElementsu32 = readU32();
         const numberOfElements = numberOfElementsu32.value;
         eatBytes(numberOfElementsu32.nextIndex);
 
-        const endPosition = getPosition();
-
         const metadata = t.sectionMetadata(
           "memory",
           startOffset,
           sectionSizeInBytesNode,
-          t.withLoc(
-            t.numberLiteralFromRaw(numberOfElements),
-            endPosition,
-            startPosition
-          )
+          WITH_LOC(t.numberLiteralFromRaw(numberOfElements), startLoc)
         );
 
         const nodes = parseMemorySection(numberOfElements);
@@ -1770,18 +1705,15 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           sectionSizeInBytesNode
         );
 
-        const startPosition = getPosition();
+        const startLoc = getPosition();
 
         const numberOfElementsu32 = readU32();
         const numberOfElements = numberOfElementsu32.value;
         eatBytes(numberOfElementsu32.nextIndex);
 
-        const endPosition = getPosition();
-
-        metadata.vectorOfSize = t.withLoc(
+        metadata.vectorOfSize = WITH_LOC(
           t.numberLiteralFromRaw(numberOfElements),
-          endPosition,
-          startPosition
+          startLoc
         );
 
         if (opts.ignoreDataSection === true) {
