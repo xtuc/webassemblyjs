@@ -620,4 +620,25 @@ defineType("Func", {
   }
 });
 
+/**
+ * Intrinsics
+ */
+defineType("InternalBrUnless", {
+  unionType: ["Node", "Intrinsic"],
+  fields: {
+    target: {
+      type: "number"
+    }
+  }
+});
+
+defineType("InternalGoto", {
+  unionType: ["Node", "Intrinsic"],
+  fields: {
+    target: {
+      type: "number"
+    }
+  }
+});
+
 module.exports = definitions;

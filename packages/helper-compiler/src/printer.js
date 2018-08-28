@@ -3,6 +3,16 @@
 function printInstruction(instruction: Instruction): string {
   let out = "";
 
+  if (instruction.type === "InternalBrUnless") {
+    out += "_br_unless";
+    out += " " + instruction.target;
+  }
+
+  if (instruction.type === "InternalGoto") {
+    out += "_goto";
+    out += " " + instruction.target;
+  }
+
   if (typeof instruction.object === "string") {
     out += instruction.object;
     out += ".";

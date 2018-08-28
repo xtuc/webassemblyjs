@@ -805,6 +805,34 @@ export function func(
   return node;
 }
 
+export function internalBrUnless(target: number): InternalBrUnless {
+  assert(
+    typeof target === "number",
+    "Argument target must be of type number, given: " + typeof target
+  );
+
+  const node: InternalBrUnless = {
+    type: "InternalBrUnless",
+    target
+  };
+
+  return node;
+}
+
+export function internalGoto(target: number): InternalGoto {
+  assert(
+    typeof target === "number",
+    "Argument target must be of type number, given: " + typeof target
+  );
+
+  const node: InternalGoto = {
+    type: "InternalGoto",
+    target
+  };
+
+  return node;
+}
+
 export const isModule = isTypeOf("Module");
 
 export const isModuleMetadata = isTypeOf("ModuleMetadata");
@@ -885,6 +913,10 @@ export const isByteArray = isTypeOf("ByteArray");
 
 export const isFunc = isTypeOf("Func");
 
+export const isInternalBrUnless = isTypeOf("InternalBrUnless");
+
+export const isInternalGoto = isTypeOf("InternalGoto");
+
 export const isNode = (node: Node) =>
   isModule(node) ||
   isModuleMetadata(node) ||
@@ -925,7 +957,9 @@ export const isNode = (node: Node) =>
   isCallInstruction(node) ||
   isCallIndirectInstruction(node) ||
   isByteArray(node) ||
-  isFunc(node);
+  isFunc(node) ||
+  isInternalBrUnless(node) ||
+  isInternalGoto(node);
 
 export const isBlock = (node: Node) =>
   isLoopInstruction(node) || isBlockInstruction(node) || isFunc(node);
@@ -956,6 +990,9 @@ export const isImportDescr = (node: Node) =>
   isTable(node) ||
   isMemory(node) ||
   isFuncImportDescr(node);
+
+export const isIntrinsic = (node: Node) =>
+  isInternalBrUnless(node) || isInternalGoto(node);
 
 export const assertModule = assertTypeOf("Module");
 
@@ -1039,6 +1076,10 @@ export const assertByteArray = assertTypeOf("ByteArray");
 
 export const assertFunc = assertTypeOf("Func");
 
+export const assertInternalBrUnless = assertTypeOf("InternalBrUnless");
+
+export const assertInternalGoto = assertTypeOf("InternalGoto");
+
 export const unionTypesMap = {
   Module: ["Node"],
   ModuleMetadata: ["Node"],
@@ -1079,7 +1120,9 @@ export const unionTypesMap = {
   CallInstruction: ["Node", "Instruction"],
   CallIndirectInstruction: ["Node", "Instruction"],
   ByteArray: ["Node"],
-  Func: ["Node", "Block"]
+  Func: ["Node", "Block"],
+  InternalBrUnless: ["Node", "Intrinsic"],
+  InternalGoto: ["Node", "Intrinsic"]
 };
 
 export const nodeAndUnionTypes = [
@@ -1123,10 +1166,13 @@ export const nodeAndUnionTypes = [
   "CallIndirectInstruction",
   "ByteArray",
   "Func",
+  "InternalBrUnless",
+  "InternalGoto",
   "Node",
   "Block",
   "Instruction",
   "Expression",
   "NumericLiteral",
-  "ImportDescr"
+  "ImportDescr",
+  "Intrinsic"
 ];

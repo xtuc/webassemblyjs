@@ -5,29 +5,23 @@ import {
   traverse,
   getFunctionBeginingByteOffset,
   getEndBlockByteOffset,
+  // eslint-disable-next-line no-unused-vars
   getStartByteOffset,
   isCallInstruction,
-  isBlock
+  isIfInstruction,
+  isBlock,
+  internalBrUnless,
+  internalGoto,
+  getEndByteOffset
 } from "@webassemblyjs/ast";
 
 declare function LABEL_POP(): void;
 declare function LABEL_PUSH(n: Node): void;
-declare function EMIT(n: Node): void;
 
 define(
   LABEL_POP,
   () => `
     this._labels.pop();
-  `
-);
-
-define(
-  EMIT,
-  node => `
-    const node = ${node};
-    const offset = getStartByteOffset(node);
-
-    this._program.push({ offset, node });
   `
 );
 
@@ -75,6 +69,12 @@ export class Module {
     this._context = createContext(ast);
   }
 
+  _emit(node: Node) {
+    const offset = getStartByteOffset(node);
+
+    this._program.push({ offset, node });
+  }
+
   beginFuncBody(func: Func) {
     this._labels = [];
     this._program = [];
@@ -108,7 +108,39 @@ export class Module {
       node.args[0].value = getEndBlockByteOffset(target);
     }
 
-    EMIT(node);
+    if (isIfInstruction(node)) {
+      const alternateOffset = getStartByteOffset(node.alternate[0]);
+      const internalBrUnlessNode = internalBrUnless(alternateOffset);
+      internalBrUnlessNode.loc = node.loc;
+
+      this._emit(internalBrUnlessNode);
+
+      node.consequent.forEach(n => this._emit(n));
+
+      // Skipping the alternate once the consequent block has been executed.
+      // We inject a goto at the offset of the else instruction
+      //
+      // TODO(sven): properly replace the else instruction instead, keep it in
+      // the ast.
+      const internalGotoNode = internalGoto(
+        getEndByteOffset(node.alternate[node.alternate.length - 1])
+      );
+
+      internalGotoNode.loc = {
+        start: {
+          line: -1,
+          column: node.alternate[0].loc.start.column - 1
+        }
+      };
+
+      this._emit(internalGotoNode);
+
+      node.alternate.forEach(n => this._emit(n));
+
+      return;
+    }
+
+    this._emit(node);
   }
 
   finalizeFunc(func: Func) {
