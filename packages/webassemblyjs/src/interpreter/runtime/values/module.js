@@ -152,11 +152,14 @@ function instantiateDataSections(
  * Create Module's internal elements instances
  */
 function instantiateInternals(
+  funcTable: Array<IRFuncTable>,
   n: Module,
   allocator: Allocator,
   internals: Object,
   moduleInstance: ModuleInstance
 ) {
+  let funcIndex = 0;
+
   traverse(n, {
     Func({ node }: NodePath<Func>) {
       // Only instantiate/allocate our own functions
@@ -164,7 +167,9 @@ function instantiateInternals(
         return;
       }
 
-      const funcinstance = func.createInstance(node, moduleInstance);
+      const atOffset = funcTable[funcIndex].startAt;
+
+      const funcinstance = func.createInstance(atOffset, node, moduleInstance);
 
       const addr = allocator.malloc(1 /* size of the funcinstance struct */);
       allocator.set(addr, funcinstance);
@@ -176,6 +181,8 @@ function instantiateInternals(
           internals.instantiatedFuncs[node.name.value] = { addr };
         }
       }
+
+      funcIndex++;
     },
 
     Table({ node }: NodePath<Table>) {
@@ -392,6 +399,7 @@ function instantiateExports(
 }
 
 export function createInstance(
+  funcTable: Array<IRFuncTable>,
   allocator: Allocator,
   n: Module,
   externalElements: any = {}
@@ -425,7 +433,7 @@ export function createInstance(
     moduleInstance
   );
 
-  instantiateInternals(n, allocator, instantiatedInternals, moduleInstance);
+  instantiateInternals(funcTable, n, allocator, instantiatedInternals, moduleInstance);
 
   instantiateDataSections(n, allocator, moduleInstance);
 

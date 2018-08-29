@@ -33,6 +33,12 @@ function stripMetadata(ast) {
 
     BlockComment(path) {
       path.remove();
+    },
+
+    Instr(path) {
+      if (path.node.id === "end") {
+        path.remove();
+      }
     }
   });
 

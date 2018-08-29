@@ -1,7 +1,11 @@
 // @flow
 import { RuntimeError } from "../../../errors";
 
-function createInstance(n: Func, fromModule: ModuleInstance): FuncInstance {
+function createInstance(
+  atOffset: number,
+  n: Func,
+  fromModule: ModuleInstance
+): FuncInstance {
   //       [param*, result*]
   const type = [[], []];
 
@@ -23,6 +27,7 @@ function createInstance(n: Func, fromModule: ModuleInstance): FuncInstance {
   const code = n.body;
 
   return {
+    atOffset,
     type,
     code,
     module: fromModule,

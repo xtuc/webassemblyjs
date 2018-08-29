@@ -59,6 +59,8 @@ type createChildStackFrameOptions = {
 };
 
 export function executeStackFrame(
+  { program }: IR,
+  offset: number,
   firstFrame: StackFrame,
   depth: number = 0
 ): ?StackLocal {
@@ -262,22 +264,25 @@ export function executeStackFrame(
       }
     }
 
+    const offsets = Object.keys(program);
+    let pc = offsets.indexOf(String(offset));
+
     while (true) {
-      const instruction = frame.code[frame._pc];
+      const instruction = program[offsets[pc]];
 
       assertRuntimeError(
         instruction !== undefined,
-        `no instruction at pc ${frame._pc} in frame ${framepointer}`
+        `no instruction at pc ${pc} in frame ${framepointer}`
       );
 
       // $FlowIgnore
       trace("exec " + instruction.id);
 
       if (typeof frame.trace === "function") {
-        frame.trace(framepointer, frame._pc, instruction, frame);
+        frame.trace(framepointer, pc, instruction, frame);
       }
 
-      frame._pc++;
+      pc++;
 
       switch (instruction.type) {
         /**

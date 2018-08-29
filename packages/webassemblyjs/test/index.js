@@ -13,7 +13,7 @@ function toArrayBuffer(buf) {
 }
 
 describe("interpreter", () => {
-  describe("wasm", () => {
+  describe.only("wasm", () => {
     const testSuites = glob.sync(
       "packages/webassemblyjs/test/fixtures/**/module.wasm"
     );

@@ -392,7 +392,8 @@ export default function getType(moduleContext, stack, instruction) {
     /**
      * return
      */
-    case "return": {
+    case "return":
+    case "end": {
       args = moduleContext.return;
       result = [POLYMORPHIC];
       stack.return = true;
@@ -483,6 +484,7 @@ export default function getType(moduleContext, stack, instruction) {
       result = [POLYMORPHIC];
       break;
     }
+
     /**
      * call_indirect
      */
@@ -492,6 +494,7 @@ export default function getType(moduleContext, stack, instruction) {
       result = instruction.signature.results.map(p => p.valtype);
       break;
     }
+
     /**
      * Skip type checking
      */

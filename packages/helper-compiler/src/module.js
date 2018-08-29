@@ -85,9 +85,9 @@ export class Module {
 
   onFuncInstruction(node: Instruction) {
     if (isCallInstruction(node)) {
-      assert(node.initial !== null);
+      assert(node.numeric !== null);
 
-      const funcIndex = node.initial.value;
+      const funcIndex = node.numeric.value;
       const func = this._context.funcs[funcIndex];
       assert(func !== null);
 

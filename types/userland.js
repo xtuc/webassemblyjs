@@ -1,10 +1,10 @@
 // @flow
 /* eslint no-unused-vars: off */
 
-import { type Instance } from "webassembly/lib/interpreter";
+import { type Instance } from "webassemblyjs/lib/interpreter";
 
 type CompiledModule = {
-  _ast: Program,
+  _ir: IR,
 
   exports: Array<CompiledModuleExportDescr>,
   imports: Array<CompiledModuleImportDescr>

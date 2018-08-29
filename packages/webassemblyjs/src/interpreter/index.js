@@ -70,6 +70,8 @@ export class Instance {
     }
 
     const moduleInstance = modulevalue.createInstance(
+      module._ir.funcTable,
+
       this._allocator,
 
       // $FlowIgnore: that's the correct type but Flow fails to get it
@@ -81,6 +83,7 @@ export class Instance {
     moduleInstance.exports.forEach(exportinst => {
       if (exportinst.value.type === "Func") {
         this.exports[exportinst.name] = createHostfunc(
+          module._ir,
           moduleInstance,
           exportinst,
           this._allocator,
@@ -141,7 +144,6 @@ export class Instance {
     }
 
     const stackFrame = createStackFrame(
-      funcinst.code,
       params,
       funcinst.module,
       this._allocator

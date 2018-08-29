@@ -12,6 +12,7 @@ const label = require("./runtime/values/label");
 const { ExecutionHasBeenTrapped } = require("./kernel/signals");
 
 export function createHostfunc(
+  ir: IR,
   moduleinst: ModuleInstance,
   exportinst: ExportInstance,
   allocator: Allocator,
@@ -81,7 +82,6 @@ export function createHostfunc(
     );
 
     const stackFrame = createStackFrame(
-      funcinst.code,
       argsWithType,
       funcinst.module,
       allocator
@@ -99,70 +99,23 @@ export function createHostfunc(
       id: t.identifier(exportinst.name)
     });
 
-    // function trace(depth, pc, i, frame) {
-    //   function ident() {
-    //     let out = "";
-
-    //     for (let i = 0; i < depth; i++) {
-    //       out += "\t|";
-    //     }
-
-    //     return out;
-    //   }
-
-    //   console.log(
-    //     ident(),
-    //     `-------------- pc: ${pc} - depth: ${depth} --------------`
-    //   );
-
-    //   console.log(ident(), "instruction:", i.id);
-
-    //   console.log(ident(), "locals:");
-    //   frame.locals.forEach((stackLocal: StackLocal) => {
-    //     console.log(
-    //       ident(),
-    //       `\t- type: ${stackLocal.type}, value: ${stackLocal.value}`
-    //     );
-    //   });
-
-    //   console.log(ident(), "values:");
-    //   frame.values.forEach((stackLocal: StackLocal) => {
-    //     console.log(
-    //       ident(),
-    //       `\t- type: ${stackLocal.type}, value: ${stackLocal.value}`
-    //     );
-    //   });
-
-    //   console.log(ident(), "");
-
-    //   console.log(ident(), "labels:");
-    //   frame.labels.forEach((label, k) => {
-    //     let value = "unknown";
-
-    //     if (label.id != null) {
-    //       value = label.id.value;
-    //     }
-    //     console.log(ident(), `\t- ${k} id: ${value}`);
-    //   });
-
-    //   console.log(
-    //     ident(),
-    //     "--------------------------------------------------\n"
-    //   );
-    // }
-
-    // stackFrame.trace = trace;
-
-    return executeStackFrameAndGetResult(stackFrame, returnStackLocal);
+    return executeStackFrameAndGetResult(
+      ir,
+      funcinst.atOffset,
+      stackFrame,
+      returnStackLocal
+    );
   };
 }
 
 export function executeStackFrameAndGetResult(
+  ir: IR,
+  offset: number,
   stackFrame: StackFrame,
   returnStackLocal: boolean
 ): any {
   try {
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, offset, stackFrame);
 
     if (returnStackLocal === true) {
       return res;

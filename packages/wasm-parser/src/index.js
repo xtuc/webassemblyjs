@@ -43,7 +43,7 @@ function restoreFunctionNames(ast) {
         const oldValue = nodeName.value;
 
         nodeName.value = functionName.name;
-        nodeName.initial = oldValue;
+        nodeName.numeric = oldValue;
 
         // $FlowIgnore
         delete nodeName.raw;
@@ -86,7 +86,7 @@ function restoreFunctionNames(ast) {
         const oldValue = node.index;
 
         node.index = t.identifier(functionName.name);
-        node.initial = oldValue;
+        node.numeric = oldValue;
 
         // $FlowIgnore
         delete node.raw;
