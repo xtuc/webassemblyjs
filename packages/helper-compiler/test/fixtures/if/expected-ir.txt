@@ -7,4 +7,4 @@ func_0 at 25
 31 | _goto 35
 32 | i32.const 0
 34 | end
-35 | end
+35 | return

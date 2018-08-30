@@ -2,9 +2,9 @@ Func table:
 dummy at 24
 func_1 at 28
 
-24 | end
+24 | return
 28 | block
 29 | br 33
 31 | call @24
 33 | end
-34 | end
+34 | return

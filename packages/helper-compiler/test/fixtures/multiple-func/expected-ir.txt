@@ -3,6 +3,6 @@ a at 24
 b at 29
 
 24 | i32.const 1
-26 | end
+26 | return
 29 | i32.const 1
-31 | end
+31 | return

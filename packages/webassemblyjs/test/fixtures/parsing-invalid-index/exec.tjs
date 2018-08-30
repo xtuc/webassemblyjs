@@ -1,4 +1,0 @@
-it("should fail on negative indices", () => {
-  const fn = () => WebAssembly.instantiateFromSource(watmodule);
-  assert.throws(fn, "Illegal value for u32: -2");
-});

@@ -5,6 +5,7 @@ const chai = require("chai");
 const { readFileSync } = require("fs");
 const path = require("path");
 const vm = require("vm");
+const wabt = require("wabt");
 
 const WebAssembly = require("../lib");
 
@@ -13,7 +14,7 @@ function toArrayBuffer(buf) {
 }
 
 describe("interpreter", () => {
-  describe.only("wasm", () => {
+  describe("wasm", () => {
     const testSuites = glob.sync(
       "packages/webassemblyjs/test/fixtures/**/module.wasm"
     );
@@ -57,8 +58,12 @@ describe("interpreter", () => {
         const module = readFileSync(suite, "utf8");
         const exec = readFileSync(execFile, "utf8");
 
+        const wabtModule = wabt.parseWat(suite, readFileSync(suite, "utf8"));
+        const { buffer } = wabtModule.toBinary({ write_debug_names: true });
+
         const sandbox = {
           WebAssembly,
+          wasmmodule: buffer,
           watmodule: module,
           require: require,
           console: global.console,

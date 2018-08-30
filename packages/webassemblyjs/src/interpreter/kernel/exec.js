@@ -8,6 +8,7 @@ import { RuntimeError } from "../../errors";
 const t = require("@webassemblyjs/ast");
 
 declare function trace(msg?: string): void;
+declare function GOTO(l: number): void;
 declare function assertNItemsOnStack(n: number): void;
 
 define(
@@ -25,6 +26,13 @@ define(
   trace,
   msg => `
     console.log("trace " + ${msg});
+  `
+);
+
+define(
+  GOTO,
+  labelOffset => `
+    pc = offsets.indexOf(String(${labelOffset}));
   `
 );
 
@@ -451,167 +459,175 @@ export function executeStackFrame(
           break;
         }
 
-        case "block": {
-          // https://webassembly.github.io/spec/core/exec/instructions.html#blocks
+        // case "block": {
+        //   // https://webassembly.github.io/spec/core/exec/instructions.html#blocks
 
-          const block = instruction;
+        //   const block = instruction;
 
-          /**
-           * Used to keep track of the number of values added on top of the stack
-           * because we need to remove the label after the execution of this block.
-           */
-          let numberOfValuesAddedOnTopOfTheStack = 0;
+        //   /**
+        //    * Used to keep track of the number of values added on top of the stack
+        //    * because we need to remove the label after the execution of this block.
+        //    */
+        //   let numberOfValuesAddedOnTopOfTheStack = 0;
 
-          // 2. Enter the block instr∗ with label
-          frame.labels.push({
-            value: block,
-            arity: 0,
-            id: block.label
-          });
+        //   // 2. Enter the block instr∗ with label
+        //   frame.labels.push({
+        //     value: block,
+        //     arity: 0,
+        //     id: block.label
+        //   });
 
-          trace("entering block " + block.label.value);
+        //   trace("entering block " + block.label.value);
 
-          if (block.label.type === "Identifier") {
-            pushResult(label.createValue(block.label.value));
-          } else {
-            throw newRuntimeError("Block has no id");
-          }
+        //   if (block.label.type === "Identifier") {
+        //     pushResult(label.createValue(block.label.value));
+        //   } else {
+        //     throw newRuntimeError("Block has no id");
+        //   }
 
-          assertRuntimeError(
-            typeof block.instr === "object" &&
-              typeof block.instr.length !== "undefined"
-          );
+        //   assertRuntimeError(
+        //     typeof block.instr === "object" &&
+        //       typeof block.instr.length !== "undefined"
+        //   );
 
-          if (block.instr.length > 0) {
-            const oldStackSize = frame.values.length;
+        //   if (block.instr.length > 0) {
+        //     const oldStackSize = frame.values.length;
 
-            createAndExecuteChildStackFrame(block.instr, {
-              passCurrentContext: true
-            });
+        //     createAndExecuteChildStackFrame(block.instr, {
+        //       passCurrentContext: true
+        //     });
 
-            numberOfValuesAddedOnTopOfTheStack =
-              frame.values.length - oldStackSize;
-          }
+        //     numberOfValuesAddedOnTopOfTheStack =
+        //       frame.values.length - oldStackSize;
+        //   }
 
-          /**
-           * Wen exiting the block
-           *
-           * > Let m be the number of values on the top of the stack
-           *
-           * The Stack (values) are seperated by StackFrames and we are running on
-           * one single thread, there's no need to check if values were added.
-           *
-           * We tracked it in numberOfValuesAddedOnTopOfTheStack anyway.
-           */
-          const topOfTheStack = frame.values.slice(
-            frame.values.length - numberOfValuesAddedOnTopOfTheStack
-          );
+        //   /**
+        //    * Wen exiting the block
+        //    *
+        //    * > Let m be the number of values on the top of the stack
+        //    *
+        //    * The Stack (values) are seperated by StackFrames and we are running on
+        //    * one single thread, there's no need to check if values were added.
+        //    *
+        //    * We tracked it in numberOfValuesAddedOnTopOfTheStack anyway.
+        //    */
+        //   const topOfTheStack = frame.values.slice(
+        //     frame.values.length - numberOfValuesAddedOnTopOfTheStack
+        //   );
 
-          frame.values.splice(
-            frame.values.length - numberOfValuesAddedOnTopOfTheStack
-          );
+        //   frame.values.splice(
+        //     frame.values.length - numberOfValuesAddedOnTopOfTheStack
+        //   );
 
-          // 3. Assert: due to validation, the label LL is now on the top of the stack.
-          // 4. Pop the label from the stack.
-          pop1OfType("label");
+        //   // 3. Assert: due to validation, the label LL is now on the top of the stack.
+        //   // 4. Pop the label from the stack.
+        //   pop1OfType("label");
 
-          frame.values = [...frame.values, ...topOfTheStack];
+        //   frame.values = [...frame.values, ...topOfTheStack];
 
-          // Remove label
-          frame.labels = frame.labels.filter(x => {
-            if (x.id == null) {
-              return true;
-            }
+        //   // Remove label
+        //   frame.labels = frame.labels.filter(x => {
+        //     if (x.id == null) {
+        //       return true;
+        //     }
 
-            return x.id.value !== block.label.value;
-          });
+        //     return x.id.value !== block.label.value;
+        //   });
 
-          trace("exiting block " + block.label.value);
+        //   trace("exiting block " + block.label.value);
+
+        //   break;
+        // }
+
+        case "br": {
+          const label = instruction.args[0];
+
+          GOTO(label.value);
 
           break;
         }
 
-        case "br": {
-          // https://webassembly.github.io/spec/core/exec/instructions.html#exec-br
+        // case "br": {
+        //   // https://webassembly.github.io/spec/core/exec/instructions.html#exec-br
 
-          const label = instruction.args[0];
+        //   const label = instruction.args[0];
 
-          if (label.type === "Identifier") {
-            throw newRuntimeError(
-              "Internal compiler error: Identifier argument in br must be " +
-                "transformed to a NumberLiteral node"
-            );
-          }
+        //   if (label.type === "Identifier") {
+        //     throw newRuntimeError(
+        //       "Internal compiler error: Identifier argument in br must be " +
+        //         "transformed to a NumberLiteral node"
+        //     );
+        //   }
 
-          const l = label.value;
+        //   const l = label.value;
 
-          // 1. Assert: due to validation, the stack contains at least l+1 labels.
-          assertNItemsOnStack(l + 1);
+        //   // 1. Assert: due to validation, the stack contains at least l+1 labels.
+        //   assertNItemsOnStack(l + 1);
 
-          // 2. Let L be the l-th label appearing on the stack, starting from the top and counting from zero.
-          let seenLabels = 0;
-          let labelidx = { value: "unknown" };
-          // for (var i = 0, len = frame.values.length; i < len; i++) {
-          for (let i = frame.values.length; i--; ) {
-            if (frame.values[i].type === "label") {
-              if (seenLabels === l) {
-                labelidx = frame.values[i];
-                break;
-              }
+        //   // 2. Let L be the l-th label appearing on the stack, starting from the top and counting from zero.
+        //   let seenLabels = 0;
+        //   let labelidx = { value: "unknown" };
+        //   // for (var i = 0, len = frame.values.length; i < len; i++) {
+        //   for (let i = frame.values.length; i--; ) {
+        //     if (frame.values[i].type === "label") {
+        //       if (seenLabels === l) {
+        //         labelidx = frame.values[i];
+        //         break;
+        //       }
 
-              seenLabels++;
-            }
-          }
+        //       seenLabels++;
+        //     }
+        //   }
 
-          // $FlowIgnore
-          const L = frame.labels.find(x => x.id.value === labelidx.value);
+        //   // $FlowIgnore
+        //   const L = frame.labels.find(x => x.id.value === labelidx.value);
 
-          if (typeof L === "undefined") {
-            throw newRuntimeError(`br: unknown label ${labelidx.value}`);
-          }
+        //   if (typeof L === "undefined") {
+        //     throw newRuntimeError(`br: unknown label ${labelidx.value}`);
+        //   }
 
-          // 3. Let n be the arity of L.
-          const n = L.arity;
+        //   // 3. Let n be the arity of L.
+        //   const n = L.arity;
 
-          // 4. Assert: due to validation, there are at least nn values on the top of the stack.
-          assertNItemsOnStack(n);
+        //   // 4. Assert: due to validation, there are at least nn values on the top of the stack.
+        //   assertNItemsOnStack(n);
 
-          // 5. Pop the values valn from the stack
-          const val = frame.values[n];
+        //   // 5. Pop the values valn from the stack
+        //   const val = frame.values[n];
 
-          const bottomOfTheStack = frame.values.slice(0, n);
-          const topOfTheStack = frame.values.slice(n + 1);
+        //   const bottomOfTheStack = frame.values.slice(0, n);
+        //   const topOfTheStack = frame.values.slice(n + 1);
 
-          frame.values = [...bottomOfTheStack, ...topOfTheStack];
+        //   frame.values = [...bottomOfTheStack, ...topOfTheStack];
 
-          // 6. Repeat l+1 times:
-          for (let i = 0; i < l + 1; i++) {
-            // a. While the top of the stack is a value, do:
-            // i. Pop the value from the stack
-            const value = frame.values[frame.values.length - 1];
+        //   // 6. Repeat l+1 times:
+        //   for (let i = 0; i < l + 1; i++) {
+        //     // a. While the top of the stack is a value, do:
+        //     // i. Pop the value from the stack
+        //     const value = frame.values[frame.values.length - 1];
 
-            if (typeof value === "undefined") {
-              break;
-            }
+        //     if (typeof value === "undefined") {
+        //       break;
+        //     }
 
-            if (value.type !== "label") {
-              pop1();
-            }
-          }
+        //     if (value.type !== "label") {
+        //       pop1();
+        //     }
+        //   }
 
-          // b. Assert: due to validation, the top of the stack now is a label.
-          // c. Pop the label from the stack.
-          pop1OfType("label");
+        //   // b. Assert: due to validation, the top of the stack now is a label.
+        //   // c. Pop the label from the stack.
+        //   pop1OfType("label");
 
-          // 7. Push the values valn to the stack.
-          pushResult(val);
+        //   // 7. Push the values valn to the stack.
+        //   pushResult(val);
 
-          // 0 is the current frame, 1 is it's parent.
-          stack = stack.slice(0, -(l + 1));
-          framepointer -= l + 1;
+        //   // 0 is the current frame, 1 is it's parent.
+        //   stack = stack.slice(0, -(l + 1));
+        //   framepointer -= l + 1;
 
-          return;
-        }
+        //   return;
+        // }
 
         case "br_if": {
           const label = instruction.args[0];
@@ -1117,7 +1133,7 @@ export function executeStackFrame(
           break;
         }
 
-        case "end": {
+        case "return": {
           // Pop active frame from the stack
           stack.pop();
           framepointer--;

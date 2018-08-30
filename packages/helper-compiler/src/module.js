@@ -146,6 +146,9 @@ export class Module {
   finalizeFunc(func: Func) {
     LABEL_POP();
 
+    // transform the function body `end` into a return
+    this._program[this._program.length - 1].node.id = "return";
+
     this._currentFunc = null;
 
     return {
