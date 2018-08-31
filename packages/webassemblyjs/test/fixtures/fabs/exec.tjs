@@ -1,22 +1,26 @@
-const m = WebAssembly.instantiateFromSource(watmodule);
+it.only("should not change positive input", () => {
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    const res = m.instance.exports.abs(0.5);
 
-it("should not change positive input", () => {
-  const res = m.exports.abs(0.5);
-
-  assert.typeOf(res, "number");
-  assert.equal(res, 0.5);
+    assert.typeOf(res, "number");
+    assert.equal(res, 0.5);
+  });
 });
 
-it("should flip negative input", () => {
-  const res = m.exports.abs(-12341234);
+it.only("should flip negative input", () => {
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    const res = m.instance.exports.abs(-12341234);
 
-  assert.typeOf(res, "number");
-  assert.equal(res, 12341234);
+    assert.typeOf(res, "number");
+    assert.equal(res, 12341234);
+  });
 });
 
-it("should flip negative zero", () => {
-  const res = m.exports.abs(-0);
+it.only("should flip negative zero", () => {
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    const res = m.instance.exports.abs(-0);
 
-  assert.typeOf(res, "number");
-  assert.equal(res, 0);
+    assert.typeOf(res, "number");
+    assert.equal(res, 0);
+  });
 });

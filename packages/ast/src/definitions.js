@@ -641,4 +641,13 @@ defineType("InternalGoto", {
   }
 });
 
+defineType("InternalCallExtern", {
+  unionType: ["Node", "Intrinsic"],
+  fields: {
+    target: {
+      type: "number"
+    }
+  }
+});
+
 module.exports = definitions;

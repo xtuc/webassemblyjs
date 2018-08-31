@@ -72,7 +72,7 @@ export function executeStackFrame(
   firstFrame: StackFrame,
   depth: number = 0
 ): ?StackLocal {
-  let stack: Array<StackFrame> = [firstFrame];
+  const stack: Array<StackFrame> = [firstFrame];
   let framepointer = 0;
 
   // eax
@@ -322,6 +322,51 @@ export function executeStackFrame(
 
           break;
         }
+
+        case "InternalGoto": {
+          throw new Error("InternalGoto");
+          break;
+        }
+
+        case "InternalCallExtern": {
+          const { target } = instruction;
+
+          // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
+          const funcaddr = frame.originatingModule.funcaddrs[target];
+
+          if (typeof funcaddr === "undefined") {
+            throw newRuntimeError(
+              `No function was found in module at address ${target}`
+            );
+          }
+
+          // 3. Let a be the function address F.module.funcaddrs[x]
+
+          const subroutine = frame.allocator.get(funcaddr);
+
+          if (typeof subroutine !== "object") {
+            throw newRuntimeError(
+              `Cannot call function at address ${funcaddr}: not a function`
+            );
+          }
+
+          // 4. Invoke the function instance at address a
+
+          // FIXME(sven): assert that res has type of resultType
+          const [argTypes, resultType] = subroutine.type;
+
+          const args = popArrayOfValTypes(argTypes);
+
+          assertRuntimeError(subroutine.isExternal);
+
+          const res = subroutine.code(args.map(arg => arg.value));
+
+          if (typeof res !== "undefined") {
+            pushResult(castIntoStackLocalOfType(resultType, res));
+          }
+
+          break;
+        }
       }
 
       switch (instruction.id) {
@@ -400,64 +445,73 @@ export function executeStackFrame(
         }
 
         case "call": {
-          // According to the spec call doesn't support an Identifier as argument
-          // but the Script syntax supports it.
-          // https://webassembly.github.io/spec/core/exec/instructions.html#exec-call
+          const index = instruction.index.value;
+          GOTO(index);
 
-          const call = instruction;
-
-          if (call.index.type === "Identifier") {
-            throw newRuntimeError(
-              "Internal compiler error: Identifier argument in call must be " +
-                "transformed to a NumberLiteral node"
-            );
-          }
-
-          // WASM
-          if (call.index.type === "NumberLiteral") {
-            const index = call.index.value;
-
-            assertRuntimeError(typeof frame.originatingModule !== "undefined");
-
-            // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
-            const funcaddr = frame.originatingModule.funcaddrs[index];
-
-            if (typeof funcaddr === "undefined") {
-              throw newRuntimeError(
-                `No function were found in module at address ${index}`
-              );
-            }
-
-            // 3. Let a be the function address F.module.funcaddrs[x]
-
-            const subroutine = frame.allocator.get(funcaddr);
-
-            if (typeof subroutine !== "object") {
-              throw newRuntimeError(
-                `Cannot call function at address ${funcaddr}: not a function`
-              );
-            }
-
-            // 4. Invoke the function instance at address a
-
-            // FIXME(sven): assert that res has type of resultType
-            const [argTypes, resultType] = subroutine.type;
-
-            const args = popArrayOfValTypes(argTypes);
-
-            if (subroutine.isExternal === false) {
-              createAndExecuteChildStackFrame(subroutine.code);
-            } else {
-              const res = subroutine.code(args.map(arg => arg.value));
-
-              if (typeof res !== "undefined") {
-                pushResult(castIntoStackLocalOfType(resultType, res));
-              }
-            }
-          }
+          // FIXME(sven): create a new stack frame
 
           break;
         }
+
+        // case "call": {
+        //   // According to the spec call doesn't support an Identifier as argument
+        //   // but the Script syntax supports it.
+        //   // https://webassembly.github.io/spec/core/exec/instructions.html#exec-call
+
+        //   const call = instruction;
+
+        //   if (call.index.type === "Identifier") {
+        //     throw newRuntimeError(
+        //       "Internal compiler error: Identifier argument in call must be " +
+        //         "transformed to a NumberLiteral node"
+        //     );
+        //   }
+
+        //   // WASM
+        //   if (call.index.type === "NumberLiteral") {
+        //     const index = call.index.value;
+
+        //     assertRuntimeError(typeof frame.originatingModule !== "undefined");
+
+        //     // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
+        //     const funcaddr = frame.originatingModule.funcaddrs[index];
+
+        //     if (typeof funcaddr === "undefined") {
+        //       throw newRuntimeError(
+        //         `No function was found in module at address ${index}`
+        //       );
+        //     }
+
+        //     // 3. Let a be the function address F.module.funcaddrs[x]
+
+        //     const subroutine = frame.allocator.get(funcaddr);
+
+        //     if (typeof subroutine !== "object") {
+        //       throw newRuntimeError(
+        //         `Cannot call function at address ${funcaddr}: not a function`
+        //       );
+        //     }
+
+        //     // 4. Invoke the function instance at address a
+
+        //     // FIXME(sven): assert that res has type of resultType
+        //     const [argTypes, resultType] = subroutine.type;
+
+        //     const args = popArrayOfValTypes(argTypes);
+
+        //     if (subroutine.isExternal === false) {
+        //       createAndExecuteChildStackFrame(subroutine.code);
+        //     } else {
+        //       const res = subroutine.code(args.map(arg => arg.value));
+
+        //       if (typeof res !== "undefined") {
+        //         pushResult(castIntoStackLocalOfType(resultType, res));
+        //       }
+        //     }
+        //   }
+
+        //   break;
+        // }
 
         // case "block": {
         //   // https://webassembly.github.io/spec/core/exec/instructions.html#blocks
@@ -541,7 +595,6 @@ export function executeStackFrame(
 
         case "br": {
           const label = instruction.args[0];
-
           GOTO(label.value);
 
           break;
@@ -865,11 +918,11 @@ export function executeStackFrame(
           break;
         }
 
-        case "return": {
-          // Abort execution and return the first item on the stack
-          returnRegister = [pop1()];
-          return;
-        }
+        // case "return": {
+        //   // Abort execution and return the first item on the stack
+        //   returnRegister = [pop1()];
+        //   return;
+        // }
 
         /**
          * Memory operations

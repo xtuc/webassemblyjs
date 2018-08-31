@@ -4,9 +4,9 @@ const importObject = {
   }
 };
 
-it("should import the global value", () => {
-  const m = WebAssembly.instantiateFromSource(watmodule, importObject);
-
-  assert.typeOf(m.exports.get(), "number");
-  assert.equal(m.exports.get(), 1);
+it.only("should import the global value", () => {
+  return WebAssembly.instantiate(wasmmodule, importObject).then(m => {
+    assert.typeOf(m.instance.exports.get(), "number");
+    assert.equal(m.instance.exports.get(), 1);
+  });
 });

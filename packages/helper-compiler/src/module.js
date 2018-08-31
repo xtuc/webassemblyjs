@@ -2,17 +2,20 @@
 
 import { define, assert } from "mamacro";
 import {
-  traverse,
-  getFunctionBeginingByteOffset,
   getEndBlockByteOffset,
-  // eslint-disable-next-line no-unused-vars
+  getEndByteOffset,
+  getFunctionBeginingByteOffset,
   getStartByteOffset,
-  isCallInstruction,
-  isIfInstruction,
-  isBlock,
   internalBrUnless,
   internalGoto,
-  getEndByteOffset
+  internalCallExtern,
+  isBlock,
+  isCallInstruction,
+  isFuncImportDescr,
+  isIdentifier,
+  isIfInstruction,
+  isNumberLiteral,
+  traverse
 } from "@webassemblyjs/ast";
 
 declare function LABEL_POP(): void;
@@ -38,7 +41,7 @@ define(
  * TODO(sven): refactor current implementation?
  */
 type Context = {
-  funcs: Array<Func>
+  funcs: Array<{ node?: Func, isImplemented: boolean }>
 };
 
 function createContext(ast: Program): Context {
@@ -47,8 +50,19 @@ function createContext(ast: Program): Context {
   };
 
   traverse(ast, {
+    ModuleImport(path: NodePath<ModuleImport>) {
+      if (isFuncImportDescr(path.node.descr)) {
+        context.funcs.push({
+          isImplemented: false
+        });
+      }
+    },
+
     Func(path: NodePath<Func>) {
-      context.funcs.push(path.node);
+      context.funcs.push({
+        isImplemented: true,
+        node: path.node
+      });
     }
   });
 
@@ -87,12 +101,35 @@ export class Module {
     if (isCallInstruction(node)) {
       assert(node.numeric !== null);
 
-      const funcIndex = node.numeric.value;
-      const func = this._context.funcs[funcIndex];
-      assert(func !== null);
+      let funcIndex = null;
 
-      // transform module index into byte offset
-      node.index.value = getFunctionBeginingByteOffset(func);
+      if (isNumberLiteral(node.index)) {
+        funcIndex = node.index.value;
+      }
+
+      if (isIdentifier(node.index)) {
+        funcIndex = node.numeric.value;
+      }
+
+      assert(funcIndex !== null);
+
+      const funcInContext = this._context.funcs[funcIndex];
+
+      if (funcInContext.isImplemented === true) {
+        const func = funcInContext.node;
+
+        // transform module index into byte offset
+        node.index.value = getFunctionBeginingByteOffset(func);
+
+        this._emit(node);
+      } else {
+        const internalCallExternNode = internalCallExtern(funcIndex);
+        internalCallExternNode.loc = node.loc;
+
+        this._emit(internalCallExternNode);
+      }
+
+      return;
     }
 
     if (isBlock(node)) {

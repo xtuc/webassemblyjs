@@ -45,7 +45,8 @@ type Node =
   | ByteArray
   | Func
   | InternalBrUnless
-  | InternalGoto;
+  | InternalGoto
+  | InternalCallExtern;
 
 type Block = LoopInstruction | BlockInstruction | Func;
 
@@ -71,7 +72,7 @@ type NumericLiteral = NumberLiteral | LongNumberLiteral | FloatLiteral;
 
 type ImportDescr = GlobalType | Table | Memory | FuncImportDescr;
 
-type Intrinsic = InternalBrUnless | InternalGoto;
+type Intrinsic = InternalBrUnless | InternalGoto | InternalCallExtern;
 
 type Module = {
   ...BaseNode,
@@ -381,5 +382,11 @@ type InternalBrUnless = {
 type InternalGoto = {
   ...BaseNode,
   type: "InternalGoto",
+  target: number
+};
+
+type InternalCallExtern = {
+  ...BaseNode,
+  type: "InternalCallExtern",
   target: number
 };

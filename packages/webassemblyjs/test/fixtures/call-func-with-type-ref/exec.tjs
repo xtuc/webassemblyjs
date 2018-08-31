@@ -1,11 +1,13 @@
-const m = WebAssembly.instantiateFromSource(watmodule);
-
-it("should call a function that has its type defined by a named type definition", () => {
-  const result = m.exports.callWithNamedType();
-  assert.equal(result, 1);
+it.only("should call a function that has its type defined by a named type definition", () => {
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    const result = m.instance.exports.callWithNamedType();
+    assert.equal(result, 1);
+  });
 });
 
-it("should call a function that has its type defined by an indexed type definition", () => {
-  const result = m.exports.callWithIndexedType();
-  assert.equal(result, 2);
+it.only("should call a function that has its type defined by an indexed type definition", () => {
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    const result = m.instance.exports.callWithIndexedType();
+    assert.equal(result, 2);
+  });
 });

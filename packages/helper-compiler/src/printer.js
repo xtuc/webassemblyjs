@@ -13,6 +13,11 @@ function printInstruction(instruction: Instruction): string {
     out += " " + instruction.target;
   }
 
+  if (instruction.type === "InternalCallExtern") {
+    out += "_extern_call";
+    out += " " + instruction.target;
+  }
+
   if (typeof instruction.object === "string") {
     out += instruction.object;
     out += ".";
