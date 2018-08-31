@@ -324,7 +324,10 @@ export function executeStackFrame(
         }
 
         case "InternalGoto": {
-          throw new Error("InternalGoto");
+          const { target } = instruction;
+
+          GOTO(target);
+
           break;
         }
 
