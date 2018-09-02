@@ -1,5 +1,5 @@
 (module
-  (func (export "test") (result i32)
+  (func $test (export "test") (result i32)
     (local $inc i32)
 
     (loop $loop

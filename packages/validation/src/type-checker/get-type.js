@@ -147,6 +147,7 @@ export default function getType(moduleContext, stack, instruction) {
      *
      * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-nop
      */
+    case "end":
     case "nop": {
       args = [];
       result = [];
@@ -389,11 +390,11 @@ export default function getType(moduleContext, stack, instruction) {
       result = [];
       break;
     }
+
     /**
      * return
      */
-    case "return":
-    case "end": {
+    case "return": {
       args = moduleContext.return;
       result = [POLYMORPHIC];
       stack.return = true;
