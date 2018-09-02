@@ -1,7 +1,7 @@
 /**
  * Original file is testsuite/br.wast
  */
-it.only("should branch correctly", () => {
+it("should branch correctly", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const { exports } = m.instance;
 

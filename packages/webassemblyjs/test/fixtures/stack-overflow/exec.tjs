@@ -1,4 +1,4 @@
-it.only("should throw an RuntimeError due to a stack overflow", () => {
+it("should throw an RuntimeError due to a stack overflow", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const fn = m.instance.exports.main;
     assert.throws(fn, "Maximum call stack depth reached");

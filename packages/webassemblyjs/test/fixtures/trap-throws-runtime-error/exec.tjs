@@ -1,4 +1,4 @@
-it.only("should throw a runetimeError when trapped", () => {
+it("should throw a runetimeError when trapped", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     assert.throws(
       m.instance.exports.trap,

@@ -29,6 +29,9 @@ function stripMetadata(ast) {
       delete node.raw;
       delete node.metadata;
       delete node.loc;
+
+      // TODO(sven): needs refactor for https://github.com/xtuc/webassemblyjs/issues/405
+      delete node.numeric;
     },
 
     BlockComment(path) {

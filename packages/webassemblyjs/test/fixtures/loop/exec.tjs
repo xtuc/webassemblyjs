@@ -1,4 +1,4 @@
-it.only("should return the correct results", () => {
+it("should return the correct results", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     assert.equal(m.instance.exports.singular(), 7);
   });

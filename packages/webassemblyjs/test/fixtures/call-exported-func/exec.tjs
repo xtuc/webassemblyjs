@@ -1,4 +1,4 @@
-it.only("should compute the correct value", () => {
+it("should compute the correct value", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const res = m.instance.exports.add(1, 1);
 

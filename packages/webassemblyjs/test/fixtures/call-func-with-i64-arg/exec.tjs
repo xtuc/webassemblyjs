@@ -1,4 +1,4 @@
-it.only("should throw when calling the exported function", () => {
+it("should throw when calling the exported function", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const fn = m.instance.exports.test;
 

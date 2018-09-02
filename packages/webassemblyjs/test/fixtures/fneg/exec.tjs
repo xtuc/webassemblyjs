@@ -1,4 +1,4 @@
-it.only("should negate positive input", () => {
+it("should negate positive input", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const res = m.instance.exports.neg(0.5);
 
@@ -7,7 +7,7 @@ it.only("should negate positive input", () => {
   });
 });
 
-it.only("should negate negative input", () => {
+it("should negate negative input", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const res = m.instance.exports.neg(-12341234);
 
@@ -16,7 +16,7 @@ it.only("should negate negative input", () => {
   });
 });
 
-it.only("should negate negative zero", () => {
+it("should negate negative zero", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const res = m.instance.exports.neg(-0);
 
@@ -25,7 +25,7 @@ it.only("should negate negative zero", () => {
   });
 });
 
-it.only("should negate NaN", () => {
+it("should negate NaN", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const res = m.instance.exports.neg(NaN);
 
@@ -34,7 +34,7 @@ it.only("should negate NaN", () => {
   });
 });
 
-it.only("should negate Infinity", () => {
+it("should negate Infinity", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const res = m.instance.exports.neg(Infinity);
 

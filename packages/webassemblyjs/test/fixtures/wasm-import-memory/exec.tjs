@@ -1,4 +1,4 @@
-it.only("should import the memory", () => {
+it("should import the memory", () => {
   const mem = new WebAssembly.Memory({ initial: 100 });
 
   // Fill memory

@@ -1,4 +1,4 @@
-it.only("should have entries in the table", () => {
+it("should have entries in the table", () => {
   const tbl = new WebAssembly.Table({ initial: 1, element: "anyfunc" });
 
   const importObj = {

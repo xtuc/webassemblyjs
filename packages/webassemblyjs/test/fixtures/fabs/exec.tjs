@@ -1,4 +1,4 @@
-it.only("should not change positive input", () => {
+it("should not change positive input", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const res = m.instance.exports.abs(0.5);
 
@@ -7,7 +7,7 @@ it.only("should not change positive input", () => {
   });
 });
 
-it.only("should flip negative input", () => {
+it("should flip negative input", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const res = m.instance.exports.abs(-12341234);
 
@@ -16,7 +16,7 @@ it.only("should flip negative input", () => {
   });
 });
 
-it.only("should flip negative zero", () => {
+it("should flip negative zero", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     const res = m.instance.exports.abs(-0);
 

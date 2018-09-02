@@ -10,7 +10,7 @@ const importObject = {
   }
 };
 
-it.only("should import the function", () => {
+it("should import the function", () => {
   return WebAssembly.instantiate(wasmmodule, importObject).then(m => {
     m.instance.exports.main();
     assert.isTrue(called);

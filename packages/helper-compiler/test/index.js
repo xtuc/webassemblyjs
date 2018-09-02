@@ -15,7 +15,7 @@ function wast2Wasm(suite, txt) {
 }
 
 // FIXME(sven): remove only here
-describe.only("compiler", () => {
+describe("compiler", () => {
   const testSuites = getFixtures(__dirname, "fixtures", "**/actual.wast");
   const pre = (f, suite) => dumpIR(toIR(decode(wast2Wasm(suite, f))));
 

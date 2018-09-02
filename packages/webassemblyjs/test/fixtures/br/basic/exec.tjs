@@ -1,4 +1,4 @@
-it.only("should branch correctly", () => {
+it("should branch correctly", () => {
   return WebAssembly.instantiate(wasmmodule).then((m) => {
     const { test } = m.instance.exports;
 

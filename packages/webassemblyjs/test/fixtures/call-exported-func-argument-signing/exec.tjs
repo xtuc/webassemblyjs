@@ -1,4 +1,4 @@
-it.only("should treat integers as signed", () => {
+it("should treat integers as signed", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     // for numbers < 2^31 the input is the same as the output
     let res = m.instance.exports.get(1234);
