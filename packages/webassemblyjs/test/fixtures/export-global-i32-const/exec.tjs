@@ -1,6 +1,6 @@
-it("should export the global value", () => {
-  const m = WebAssembly.instantiateFromSource(watmodule);
-
-  assert.typeOf(m.exports.a, "number");
-  assert.equal(m.exports.a, 1);
+it.only("should export the global value", () => {
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    assert.typeOf(m.exports.a, "number");
+    assert.equal(m.exports.a, 1);
+  });
 });

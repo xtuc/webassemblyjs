@@ -1,6 +1,6 @@
 // @flow
 
-import { traverse } from "@webassemblyjs/ast";
+import { traverse, identifier, func, program as tProgram } from "@webassemblyjs/ast";
 import { flatten } from "@webassemblyjs/helper-flatten-ast";
 
 import { Module } from "./module";
@@ -35,6 +35,31 @@ export function toIR(ast: Program): IR {
         program[instruction.offset] = instruction.node;
       });
     }
+  });
+
+  return {
+    funcTable,
+    program
+  };
+}
+
+export function listOfInstructionsToIr(instrs: Array<Instruction>): IR {
+  const program = {};
+  const funcTable = [];
+
+  const module = new Module(tProgram([]));
+  const fakeFunc = func(identifier("main"), [], instrs);
+
+  module.beginFuncBody(fakeFunc);
+
+  instrs.forEach(i => module.onFuncInstruction(i));
+
+  const { name, instructions, startAt } = module.finalizeFunc(fakeFunc);
+
+  funcTable.push({ name, startAt });
+
+  instructions.forEach(instruction => {
+    program[instruction.offset] = instruction.node;
   });
 
   return {

@@ -207,7 +207,7 @@ export class Module {
     this._currentFunc = null;
 
     return {
-      name: func.name.value,
+      name: func.name ? func.name.value : null,
       startAt: getFunctionBeginingByteOffset(func),
       instructions: this._program
     };

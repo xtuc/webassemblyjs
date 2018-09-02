@@ -18,6 +18,11 @@ function walk(context: NodePathContext<Node>, callback: TraverseCallback) {
 
     const node = context.node;
 
+    if (node === undefined) {
+      console.warn("traversing with an empty context");
+      return;
+    }
+
     if (node._deleted === true) {
       return;
     }
