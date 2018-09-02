@@ -8,4 +8,4 @@ func_0 at 35
 41 | end
 42 | i32.const 1
 44 | i32.add
-45 | return
+45 | _end_and_return

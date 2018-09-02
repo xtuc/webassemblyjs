@@ -17,6 +17,7 @@ import {
   isIdentifier,
   isIfInstruction,
   isNumberLiteral,
+  internalEndAndReturn,
   traverse
 } from "@webassemblyjs/ast";
 
@@ -116,6 +117,7 @@ export class Module {
       assert(funcIndex !== null);
 
       const funcInContext = this._context.funcs[funcIndex];
+      assert(typeof funcInContext === "object");
 
       if (funcInContext.isImplemented === true) {
         const func = funcInContext.node;
@@ -193,8 +195,15 @@ export class Module {
     LABEL_POP();
 
     // transform the function body `end` into a return
-    this._program[this._program.length - 1].node.id = "return";
+    const lastInstruction = this._program[this._program.length - 1];
 
+    const internalEndAndReturnNode = internalEndAndReturn();
+    internalEndAndReturnNode.loc = lastInstruction.node.loc;
+
+    // will be emited at the same location, basically replacing the lastInstruction
+    this._emit(internalEndAndReturnNode);
+
+    // clear current function from context
     this._currentFunc = null;
 
     return {

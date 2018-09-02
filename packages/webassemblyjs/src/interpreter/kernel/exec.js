@@ -9,8 +9,10 @@ const t = require("@webassemblyjs/ast");
 
 declare function trace(msg?: string): void;
 declare function GOTO(l: number): void;
+declare function RETURN(): void;
 declare function PUSH_NEW_STACK_FRAME(): void;
 declare function POP_STACK_FRAME(): void;
+declare function POP_LABEL(): void;
 declare function assertNItemsOnStack(n: number): void;
 
 define(
@@ -32,9 +34,44 @@ define(
 );
 
 define(
+  POP_LABEL,
+  () => `
+    // 3. Assert: due to validation, the label L is now on the top of the stack.
+    // 4. Pop the label from the stack.
+    let found = false;
+
+    frame.values = frame.values.filter(value => {
+      if (found === true) {
+        return true;
+      }
+
+      if (value.type === "label") {
+        found = true;
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    // assertRuntimeError(found, "POP_LABEL: label not found")
+  `
+);
+
+define(
   GOTO,
   labelOffset => `
     pc = offsets.indexOf(String(${labelOffset}));
+  `
+);
+
+define(
+  RETURN,
+  () => `
+    if (frame.values.length > 0) {
+      return pop1(frame);
+    } else {
+      return;
+    }
   `
 );
 
@@ -56,13 +93,20 @@ define(
 define(
   POP_STACK_FRAME,
   () => `
-    const res = pop1(frame);
+    // pass the result of the previous call into the new active fame
+    let res;
+
+    if (frame.values.length > 0) {
+      res = pop1(frame);
+    }
 
     // Pop active frame from the stack
     callStack.pop();
     framepointer--;
 
-    pushResult(frame, res);
+    if (res !== undefined) {
+      pushResult(frame, res);
+    }
   `
 );
 
@@ -192,49 +236,6 @@ export function executeStackFrame(
     return [c1, c2];
   }
 
-  function getLabel(frame: StackFrame, index: Index): any {
-    let code;
-
-    if (index.type === "NumberLiteral") {
-      const label: NumberLiteral = index;
-
-      // WASM
-      code = frame.labels.find(l => l.value.value === label.value);
-    } else if (index.type === "Identifier") {
-      const label: Identifier = index;
-
-      // WAST
-      code = frame.labels.find(l => {
-        if (l.id == null) {
-          return false;
-        }
-
-        return l.id.value === label.value;
-      });
-    }
-
-    if (typeof code !== "undefined") {
-      return code.value;
-    }
-  }
-
-  function br(frame: StackFrame, label: Index) {
-    const code = getLabel(frame, label);
-
-    if (typeof code === "undefined") {
-      throw newRuntimeError(`Label ${label.value} doesn't exist`);
-    }
-
-    // FIXME(sven): find a more generic way to handle label and its code
-    // Currently func body and block instr*.
-    const childStackFrame = stackframe.createChildStackFrame(
-      frame,
-      code.body || code.instr
-    );
-
-    return executeStackFrame(childStackFrame, depth + 1);
-  }
-
   function getMemoryOffset(frame: StackFrame, instruction) {
     if (instruction.namedArgs && instruction.namedArgs.offset) {
       const offset = instruction.namedArgs.offset.value;
@@ -345,6 +346,12 @@ export function executeStackFrame(
         }
 
         break;
+      }
+
+      case "InternalEndAndReturn": {
+        POP_LABEL();
+        POP_STACK_FRAME();
+        RETURN();
       }
 
       case "InternalGoto": {
@@ -541,85 +548,91 @@ export function executeStackFrame(
       //   break;
       // }
 
-      // case "block": {
-      //   // https://webassembly.github.io/spec/core/exec/instructions.html#blocks
+      case "end": {
+        POP_LABEL();
 
-      //   const block = instruction;
+        break;
+      }
 
-      //   /**
-      //    * Used to keep track of the number of values added on top of the stack
-      //    * because we need to remove the label after the execution of this block.
-      //    */
-      //   let numberOfValuesAddedOnTopOfTheStack = 0;
+      case "block": {
+        // https://webassembly.github.io/spec/core/exec/instructions.html#blocks
 
-      //   // 2. Enter the block instr∗ with label
-      //   frame.labels.push({
-      //     value: block,
-      //     arity: 0,
-      //     id: block.label
-      //   });
+        const block = instruction;
 
-      //   trace("entering block " + block.label.value);
+        // /**
+        //  * Used to keep track of the number of values added on top of the stack
+        //  * because we need to remove the label after the execution of this block.
+        //  */
+        // let numberOfValuesAddedOnTopOfTheStack = 0;
 
-      //   if (block.label.type === "Identifier") {
-      //     pushResult(frame, label.createValue(block.label.value));
-      //   } else {
-      //     throw newRuntimeError("Block has no id");
-      //   }
+        // 2. Enter the block instr∗ with label
+        frame.labels.push({
+          value: block,
+          arity: 0,
+          id: block.label
+        });
 
-      //   assertRuntimeError(
-      //     typeof block.instr === "object" &&
-      //       typeof block.instr.length !== "undefined"
-      //   );
+        trace("entering block " + block.label.value);
 
-      //   if (block.instr.length > 0) {
-      //     const oldStackSize = frame.values.length;
+        // if (block.label.type === "Identifier") {
+        //   pushResult(frame, label.createValue(block.label.value));
+        // } else {
+        //   throw newRuntimeError("Block has no id");
+        // }
 
-      //     createAndExecuteChildStackFrame(block.instr, {
-      //       passCurrentContext: true
-      //     });
+        // assertRuntimeError(
+        //   typeof block.instr === "object" &&
+        //     typeof block.instr.length !== "undefined"
+        // );
 
-      //     numberOfValuesAddedOnTopOfTheStack =
-      //       frame.values.length - oldStackSize;
-      //   }
+        // if (block.instr.length > 0) {
+        //   const oldStackSize = frame.values.length;
 
-      //   /**
-      //    * Wen exiting the block
-      //    *
-      //    * > Let m be the number of values on the top of the stack
-      //    *
-      //    * The Stack (values) are seperated by StackFrames and we are running on
-      //    * one single thread, there's no need to check if values were added.
-      //    *
-      //    * We tracked it in numberOfValuesAddedOnTopOfTheStack anyway.
-      //    */
-      //   const topOfTheStack = frame.values.slice(
-      //     frame.values.length - numberOfValuesAddedOnTopOfTheStack
-      //   );
+        //   createAndExecuteChildStackFrame(block.instr, {
+        //     passCurrentContext: true
+        //   });
 
-      //   frame.values.splice(
-      //     frame.values.length - numberOfValuesAddedOnTopOfTheStack
-      //   );
+        //   numberOfValuesAddedOnTopOfTheStack =
+        //     frame.values.length - oldStackSize;
+        // }
 
-      //   // 3. Assert: due to validation, the label LL is now on the top of the stack.
-      //   // 4. Pop the label from the stack.
-      //   pop1OfType(frame, "label");
+        // /**
+        //  * Wen exiting the block
+        //  *
+        //  * > Let m be the number of values on the top of the stack
+        //  *
+        //  * The Stack (values) are seperated by StackFrames and we are running on
+        //  * one single thread, there's no need to check if values were added.
+        //  *
+        //  * We tracked it in numberOfValuesAddedOnTopOfTheStack anyway.
+        //  */
+        // const topOfTheStack = frame.values.slice(
+        //   frame.values.length - numberOfValuesAddedOnTopOfTheStack
+        // );
 
-      //   frame.values = [...frame.values, ...topOfTheStack];
+        // frame.values.splice(
+        //   frame.values.length - numberOfValuesAddedOnTopOfTheStack
+        // );
 
-      //   // Remove label
-      //   frame.labels = frame.labels.filter(x => {
-      //     if (x.id == null) {
-      //       return true;
-      //     }
+        // // 3. Assert: due to validation, the label L is now on the top of the stack.
+        // // 4. Pop the label from the stack.
+        // pop1OfType(frame, "label");
 
-      //     return x.id.value !== block.label.value;
-      //   });
+        // frame.values = [...frame.values, ...topOfTheStack];
 
-      //   trace("exiting block " + block.label.value);
+        // // Remove label
+        // frame.labels = frame.labels.filter(x => {
+        //   if (x.id == null) {
+        //     return true;
+        //   }
 
-      //   break;
-      // }
+        //   return x.id.value !== block.label.value;
+        // });
+
+        // trace("exiting block " + block.label.value);
+
+        break;
+      }
 
       case "br": {
         const label = instruction.args[0];
@@ -944,12 +957,6 @@ export function executeStackFrame(
         break;
       }
 
-      // case "return": {
-      //   // Abort execution and return the first item on the stack
-      //   returnRegister = [pop1(frame)];
-      //   return;
-      // }
-
       /**
        * Memory operations
        */
@@ -1216,15 +1223,7 @@ export function executeStackFrame(
 
       case "return": {
         POP_STACK_FRAME();
-
-        const res = pop1(frame);
-
-        // TODO(sven): add intrinsic in IR
-        if (res.type !== "label") {
-          return res;
-        }
-
-        return;
+        RETURN();
       }
     }
   }

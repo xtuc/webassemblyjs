@@ -847,6 +847,14 @@ export function internalCallExtern(target: number): InternalCallExtern {
   return node;
 }
 
+export function internalEndAndReturn(): InternalEndAndReturn {
+  const node: InternalEndAndReturn = {
+    type: "InternalEndAndReturn"
+  };
+
+  return node;
+}
+
 export const isModule = isTypeOf("Module");
 
 export const isModuleMetadata = isTypeOf("ModuleMetadata");
@@ -933,6 +941,8 @@ export const isInternalGoto = isTypeOf("InternalGoto");
 
 export const isInternalCallExtern = isTypeOf("InternalCallExtern");
 
+export const isInternalEndAndReturn = isTypeOf("InternalEndAndReturn");
+
 export const isNode = (node: Node) =>
   isModule(node) ||
   isModuleMetadata(node) ||
@@ -976,7 +986,8 @@ export const isNode = (node: Node) =>
   isFunc(node) ||
   isInternalBrUnless(node) ||
   isInternalGoto(node) ||
-  isInternalCallExtern(node);
+  isInternalCallExtern(node) ||
+  isInternalEndAndReturn(node);
 
 export const isBlock = (node: Node) =>
   isLoopInstruction(node) || isBlockInstruction(node) || isFunc(node);
@@ -1011,7 +1022,8 @@ export const isImportDescr = (node: Node) =>
 export const isIntrinsic = (node: Node) =>
   isInternalBrUnless(node) ||
   isInternalGoto(node) ||
-  isInternalCallExtern(node);
+  isInternalCallExtern(node) ||
+  isInternalEndAndReturn(node);
 
 export const assertModule = assertTypeOf("Module");
 
@@ -1101,6 +1113,8 @@ export const assertInternalGoto = assertTypeOf("InternalGoto");
 
 export const assertInternalCallExtern = assertTypeOf("InternalCallExtern");
 
+export const assertInternalEndAndReturn = assertTypeOf("InternalEndAndReturn");
+
 export const unionTypesMap = {
   Module: ["Node"],
   ModuleMetadata: ["Node"],
@@ -1144,7 +1158,8 @@ export const unionTypesMap = {
   Func: ["Node", "Block"],
   InternalBrUnless: ["Node", "Intrinsic"],
   InternalGoto: ["Node", "Intrinsic"],
-  InternalCallExtern: ["Node", "Intrinsic"]
+  InternalCallExtern: ["Node", "Intrinsic"],
+  InternalEndAndReturn: ["Node", "Intrinsic"]
 };
 
 export const nodeAndUnionTypes = [
@@ -1191,6 +1206,7 @@ export const nodeAndUnionTypes = [
   "InternalBrUnless",
   "InternalGoto",
   "InternalCallExtern",
+  "InternalEndAndReturn",
   "Node",
   "Block",
   "Instruction",

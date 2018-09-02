@@ -650,4 +650,13 @@ defineType("InternalCallExtern", {
   }
 });
 
+// function bodies are terminated by an `end` instruction but are missing a
+// return instruction
+//
+// Since we can't inject a new instruction we are injecting a new instruction.
+defineType("InternalEndAndReturn", {
+  unionType: ["Node", "Intrinsic"],
+  fields: {}
+});
+
 module.exports = definitions;

@@ -13,4 +13,4 @@ func_0 at 34
 50 | br_if 38
 52 | end
 53 | get_local 0
-55 | return
+55 | _end_and_return

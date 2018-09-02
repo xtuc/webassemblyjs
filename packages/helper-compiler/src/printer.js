@@ -3,6 +3,10 @@
 function printInstruction(instruction: Instruction): string {
   let out = "";
 
+  if (instruction.type === "InternalEndAndReturn") {
+    out += "_end_and_return";
+  }
+
   if (instruction.type === "InternalBrUnless") {
     out += "_br_unless";
     out += " " + instruction.target;

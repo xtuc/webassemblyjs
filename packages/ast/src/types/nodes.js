@@ -46,7 +46,8 @@ type Node =
   | Func
   | InternalBrUnless
   | InternalGoto
-  | InternalCallExtern;
+  | InternalCallExtern
+  | InternalEndAndReturn;
 
 type Block = LoopInstruction | BlockInstruction | Func;
 
@@ -72,7 +73,11 @@ type NumericLiteral = NumberLiteral | LongNumberLiteral | FloatLiteral;
 
 type ImportDescr = GlobalType | Table | Memory | FuncImportDescr;
 
-type Intrinsic = InternalBrUnless | InternalGoto | InternalCallExtern;
+type Intrinsic =
+  | InternalBrUnless
+  | InternalGoto
+  | InternalCallExtern
+  | InternalEndAndReturn;
 
 type Module = {
   ...BaseNode,
@@ -389,4 +394,9 @@ type InternalCallExtern = {
   ...BaseNode,
   type: "InternalCallExtern",
   target: number
+};
+
+type InternalEndAndReturn = {
+  ...BaseNode,
+  type: "InternalEndAndReturn"
 };
