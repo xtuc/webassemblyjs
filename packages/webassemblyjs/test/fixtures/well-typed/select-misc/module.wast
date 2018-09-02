@@ -1,4 +1,5 @@
 (module
+  (;TODO: move to validation package;)
   (func (param $lhs i32) (param $rhs i32) (param $cond i32) (result i32)
     (select (get_local $lhs) (get_local $rhs) (get_local $cond))
   )

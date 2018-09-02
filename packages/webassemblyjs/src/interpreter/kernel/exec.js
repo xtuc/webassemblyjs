@@ -717,12 +717,10 @@ export function executeStackFrame(
         // 2. Pop the value ci32.const c from the stack.
         const c = pop1OfType(frame, "i32");
 
-        if (!c.value.eqz().isTrue()) {
+        if (c.value.eqz().isTrue() === false) {
           // 3. If c is non-zero, then
           // 3. a. Execute the instruction (br l).
-          const res = br(frame, label);
-
-          pushResult(frame, res);
+          GOTO(label.value);
         } else {
           // 4. Else:
           // 4. a. Do nothing.

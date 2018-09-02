@@ -1,4 +1,4 @@
-it("should instantiate and use wasm module", () => {
+it.only("should instantiate and use wasm module", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
     assert.typeOf(m, "object");
     assert.typeOf(m.module, "object");

@@ -5,11 +5,13 @@ import {
   getEndBlockByteOffset,
   getEndByteOffset,
   getFunctionBeginingByteOffset,
+  getStartBlockByteOffset,
   getStartByteOffset,
   internalBrUnless,
   internalGoto,
   internalCallExtern,
   isBlock,
+  isLoopInstruction,
   isCallInstruction,
   isFuncImportDescr,
   isIdentifier,
@@ -136,13 +138,20 @@ export class Module {
       LABEL_PUSH(node);
     }
 
-    if (node.id === "br") {
+    if (isLoopInstruction(node)) {
+      LABEL_PUSH(node);
+    }
+
+    if (node.id === "br" || node.id === "br_if") {
       const depth = node.args[0].value;
       const target = this._labels[this._labels.length - depth - 1];
-      assert(target !== null);
+      assert(typeof target === "object");
 
-      // targets the end instruction
-      node.args[0].value = getEndBlockByteOffset(target);
+      if (isLoopInstruction(target)) {
+        node.args[0].value = getStartBlockByteOffset(target);
+      } else {
+        node.args[0].value = getEndBlockByteOffset(target);
+      }
     }
 
     if (isIfInstruction(node)) {

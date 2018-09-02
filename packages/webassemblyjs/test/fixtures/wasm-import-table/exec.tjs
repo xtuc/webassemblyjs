@@ -1,4 +1,4 @@
-it("should import the memory", () => {
+it.only("should import the memory", () => {
   const tbl = new WebAssembly.Table({ initial: 1, element: "anyfunc" });
 
   const importObject = {

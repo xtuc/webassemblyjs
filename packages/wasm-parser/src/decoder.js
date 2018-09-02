@@ -668,6 +668,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const locals = [];
 
       for (let i = 0; i < funcLocalNum; i++) {
+        const startLoc = getPosition();
+
         const localCountU32 = readU32();
         const localCount = localCountU32.value;
         eatBytes(localCountU32.nextIndex);
@@ -678,7 +680,12 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         eatBytes(1);
 
         const type = constants.valtypes[valtypeByte];
-        locals.push(type);
+        const localNode = WITH_LOC(
+          t.instruction("local", [t.valtypeLiteral(type)]),
+          startLoc
+        );
+
+        locals.push(localNode);
 
         dump([valtypeByte], type);
 
@@ -687,12 +694,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         }
       }
 
+      code.push(...locals);
+
       // Decode instructions until the end
       parseInstructionBlock(code);
-
-      code.unshift(
-        ...locals.map(l => t.instruction("local", [t.valtypeLiteral(l)]))
-      );
 
       const endLoc = getPosition();
 
@@ -748,6 +753,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const args = [];
 
       if (instruction.name === "loop") {
+        const startLoc = getPosition();
+
         const blocktypeByte = readByte();
         eatBytes(1);
 
@@ -767,7 +774,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         // preserve anonymous
         const label = t.withRaw(t.identifier(getUniqueName("loop")), "");
-        const loopNode = t.loopInstruction(label, blocktype, instr);
+        const loopNode = WITH_LOC(
+          t.loopInstruction(label, blocktype, instr),
+          startLoc
+        );
 
         code.push(loopNode);
         instructionAlreadyCreated = true;

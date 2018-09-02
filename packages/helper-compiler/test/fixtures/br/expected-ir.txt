@@ -1,10 +1,11 @@
 Func table:
-dummy at 24
-func_1 at 28
+func_0 at 35
 
-24 | return
-28 | block
-29 | br 33
-31 | call @24
-33 | end
-34 | return
+35 | block
+36 | i32.const 1
+38 | br 41
+40 | unreachable
+41 | end
+42 | i32.const 1
+44 | i32.add
+45 | return

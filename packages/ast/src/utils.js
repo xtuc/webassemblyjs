@@ -234,3 +234,21 @@ export function getEndBlockByteOffset(n: Block): number {
 
   return getStartByteOffset(lastInstruction);
 }
+
+export function getStartBlockByteOffset(n: Block): number {
+  assert(n.instr.length > 0 || n.body.length > 0);
+
+  let fistInstruction;
+
+  if (n.instr) {
+    [fistInstruction] = n.instr;
+  }
+
+  if (n.body) {
+    [fistInstruction] = n.body;
+  }
+
+  assert(typeof fistInstruction === "object");
+
+  return getStartByteOffset(fistInstruction);
+}

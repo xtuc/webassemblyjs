@@ -12,7 +12,7 @@ export default function validateAST(ast: Program) {
   if (errors.length !== 0) {
     const errorMessage = "Validation errors:\n" + errors.join("\n");
 
-    throw new Error(errorMessage);
+    // throw new Error(errorMessage);
   }
 }
 
