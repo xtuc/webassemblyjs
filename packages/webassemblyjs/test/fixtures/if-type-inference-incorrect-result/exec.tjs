@@ -1,3 +1,4 @@
+// TODO(sven): move to validation
 it.skip("should throw a type error", () => {
   const fn = () => WebAssembly.instantiateFromSource(watmodule);
 

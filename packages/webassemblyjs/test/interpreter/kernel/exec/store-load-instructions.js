@@ -13,6 +13,7 @@ const {
 const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
+const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
 describe("kernel exec - store / load instructions", () => {
   let linearMemory;
@@ -45,15 +46,11 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
-    executeStackFrame(stackFrame);
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
+    executeStackFrame(ir, 0, stackFrame);
 
     const i32Array = new Uint32Array(linearMemory.buffer);
     assert.equal(i32Array[3], 1879048192);
@@ -68,14 +65,10 @@ describe("kernel exec - store / load instructions", () => {
     ];
 
     const args = [];
+    const ir = compileASTNodes(code);
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
-    executeStackFrame(stackFrame);
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
+    executeStackFrame(ir, 0, stackFrame);
 
     const f32Array = new Float32Array(linearMemory.buffer);
     assert.equal(f32Array[3], 123.45600128173828);
@@ -89,15 +82,11 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
-    executeStackFrame(stackFrame);
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
+    executeStackFrame(ir, 0, stackFrame);
 
     const f32Array = new Float64Array(linearMemory.buffer);
     assert.equal(f32Array[2], 123.456);
@@ -111,15 +100,11 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
-    executeStackFrame(stackFrame);
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
+    executeStackFrame(ir, 0, stackFrame);
 
     const i32Array = new Uint32Array(linearMemory.buffer);
     assert.equal(i32Array[3], 0x78);
@@ -136,16 +121,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
 
     assert.equal(res.value, 0x01020304);
   });
@@ -163,16 +144,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
 
     assert.equal(res.value, -0x0304);
   });
@@ -190,16 +167,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
 
     assert.equal(res.value, 0xfcfc);
   });
@@ -217,16 +190,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
     const expected = new i64(Long.fromString("-0x0708", false, 16));
     assert.isTrue(res.value.equals(expected));
   });
@@ -244,16 +213,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
     const expected = new i64(Long.fromString("-0x08", false, 16));
     assert.isTrue(res.value.equals(expected));
   });
@@ -271,16 +236,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
     const expected = new i64(Long.fromString("-0x05060708", false, 16));
     assert.isTrue(res.value.equals(expected));
   });
@@ -298,16 +259,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
 
     assert.equal(res.value, 0xfc);
   });
@@ -325,16 +282,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
 
     assert.equal(res.value, -0x04);
   });
@@ -352,16 +305,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
 
     assert.isTrue(
       res.value.equals(new i64(Long.fromString("0102030405060708", false, 16)))
@@ -379,16 +328,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
 
     assert.equal(res.value._value, 123.45600128173828);
   });
@@ -406,16 +351,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, 0, stackFrame);
 
     assert.equal(res.value._value, 123.456);
   });
@@ -434,15 +375,11 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
-    executeStackFrame(stackFrame);
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
+    executeStackFrame(ir, 0, stackFrame);
 
     const i32Array = new Uint32Array(linearMemory.buffer);
     assert.equal(i32Array[3], 0x01020304);
@@ -458,16 +395,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    executeStackFrame(stackFrame);
+    executeStackFrame(ir, 0, stackFrame);
 
     const i8Array = new Uint8Array(linearMemory.buffer);
     assert.equal(i8Array[8], 8);
@@ -488,18 +421,14 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
     originatingModule.memaddrs = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    assert.throws(() => executeStackFrame(stackFrame), "unknown memory");
+    assert.throws(() => executeStackFrame(ir, 0, stackFrame), "unknown memory");
   });
 
   it("should throw if memory accessed out of bounds", () => {
@@ -512,17 +441,13 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
     assert.throws(
-      () => executeStackFrame(stackFrame),
+      () => executeStackFrame(ir, 0, stackFrame),
       "memory access out of bounds"
     );
   });
@@ -537,16 +462,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    executeStackFrame(stackFrame);
+    executeStackFrame(ir, 0, stackFrame);
   });
 
   it("should allow an offset to be specified", () => {
@@ -559,16 +480,12 @@ describe("kernel exec - store / load instructions", () => {
       t.instruction("end")
     ];
 
+    const ir = compileASTNodes(code);
     const args = [];
 
-    const stackFrame = createStackFrame(
-      code,
-      args,
-      originatingModule,
-      allocator
-    );
+    const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-    executeStackFrame(stackFrame);
+    executeStackFrame(ir, 0, stackFrame);
 
     const i32Array = new Uint32Array(linearMemory.buffer);
     assert.equal(i32Array[2], 25);
@@ -585,16 +502,12 @@ describe("kernel exec - store / load instructions", () => {
         t.instruction("end")
       ];
 
+      const ir = compileASTNodes(code);
       const args = [];
 
-      const stackFrame = createStackFrame(
-        code,
-        args,
-        originatingModule,
-        allocator
-      );
+      const stackFrame = createStackFrame(args, originatingModule, allocator);
 
-      executeStackFrame(stackFrame);
+      executeStackFrame(ir, 0, stackFrame);
     };
 
     assert.doesNotThrow(() => execueteStoreWithOffset(0));

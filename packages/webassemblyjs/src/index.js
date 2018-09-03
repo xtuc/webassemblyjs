@@ -35,9 +35,10 @@ const WebAssembly = {
 
       const ast = decode(buff);
       const module = createCompiledModule(ast);
+      const instance = new Instance(module, importObject);
 
       resolve({
-        instance: new Instance(module, importObject),
+        instance,
         module
       });
     });
@@ -51,6 +52,7 @@ const WebAssembly = {
     });
   },
 
+  // FIXME(sven): remove this
   instantiateFromSource(
     content: string,
     importObject: ImportObject = {}

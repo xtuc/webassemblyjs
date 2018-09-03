@@ -4,6 +4,7 @@ const t = require("@webassemblyjs/ast");
 
 const Long = require("@xtuc/long").default;
 const { assert } = require("chai");
+const { listOfInstructionsToIr } = require("@webassemblyjs/helper-compiler");
 
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
 const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
@@ -21,6 +22,7 @@ const {
 const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
+const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
 /*::
 type TestCase = {
@@ -887,17 +889,22 @@ describe("kernel exec - numeric instructions", () => {
           castIntoStackLocalOfType(type, value, nan)
         );
 
-        op.code.push(t.instruction("end"));
+        const stackFrame = createStackFrame(args, {});
+        const ir = compileASTNodes(op.code);
 
-        const stackFrame = createStackFrame(op.code, args);
-        const res = executeStackFrame(stackFrame);
+        const offset = 0;
+        const res = executeStackFrame(ir, offset, stackFrame);
 
         assert.isTrue(res.value.equals(op.resEqual));
       });
 
       it("should assert validations - 1 missing arg", () => {
-        const stackFrame = createStackFrame(op.code, op.args.slice(-1));
-        const fn = () => executeStackFrame(stackFrame);
+        const stackFrame = createStackFrame(op.args.slice(-1), {});
+
+        const ir = compileASTNodes(op.code);
+
+        const offset = 0;
+        const fn = () => executeStackFrame(ir, offset, stackFrame);
 
         assert.throws(fn, /Assertion error/);
       });

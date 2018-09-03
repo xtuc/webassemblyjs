@@ -10,6 +10,7 @@ const {
 const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
+const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
 describe("kernel exec - control instruction", () => {
   it("should execute nop", () => {
@@ -22,10 +23,12 @@ describe("kernel exec - control instruction", () => {
       t.instruction("end")
     ];
 
-    const stackFrame = createStackFrame(code, []);
+    const ir = compileASTNodes(code);
+
+    const stackFrame = createStackFrame([]);
     stackFrame.trace = (_, x) => (pc = x);
 
-    executeStackFrame(stackFrame);
+    executeStackFrame(ir, 0, stackFrame);
 
     assert.equal(code.length, pc + 1);
   });
@@ -45,12 +48,14 @@ describe("kernel exec - control instruction", () => {
         t.instruction("end")
       ];
 
-      const stackFrame = createStackFrame(loop, []);
+      const ir = compileASTNodes(loop);
+
+      const stackFrame = createStackFrame([]);
       stackFrame.trace = () => {
         instructionExecuted++;
       };
 
-      executeStackFrame(stackFrame);
+      executeStackFrame(ir, 0, stackFrame);
 
       assert.equal(instructionExecuted, 5);
     });
@@ -63,8 +68,10 @@ describe("kernel exec - control instruction", () => {
         t.instruction("end")
       ];
 
-      const stackFrame = createStackFrame(code, []);
-      executeStackFrame(stackFrame);
+      const ir = compileASTNodes(code);
+
+      const stackFrame = createStackFrame([]);
+      executeStackFrame(ir, 0, stackFrame);
     });
 
     it("should enter a block and execute instructions", () => {
@@ -80,13 +87,15 @@ describe("kernel exec - control instruction", () => {
         t.instruction("end")
       ];
 
-      const stackFrame = createStackFrame(code, []);
+      const ir = compileASTNodes(code);
+
+      const stackFrame = createStackFrame([]);
 
       stackFrame.trace = () => {
         instructionExecuted++;
       };
 
-      executeStackFrame(stackFrame);
+      executeStackFrame(ir, 0, stackFrame);
 
       assert.equal(instructionExecuted, 6);
     });
@@ -100,8 +109,10 @@ describe("kernel exec - control instruction", () => {
         t.instruction("end")
       ];
 
-      const stackFrame = createStackFrame(code, []);
-      const res = executeStackFrame(stackFrame);
+      const ir = compileASTNodes(code);
+
+      const stackFrame = createStackFrame([]);
+      const res = executeStackFrame(ir, 0, stackFrame);
 
       assert.equal(res.value.toNumber(), 10);
     });
@@ -120,8 +131,10 @@ describe("kernel exec - control instruction", () => {
         t.instruction("end")
       ];
 
-      const stackFrame = createStackFrame(code, []);
-      const res = executeStackFrame(stackFrame);
+      const ir = compileASTNodes(code);
+
+      const stackFrame = createStackFrame([]);
+      const res = executeStackFrame(ir, 0, stackFrame);
 
       assert.typeOf(res, "object");
       assert.equal(res.value.toNumber(), 2);
@@ -141,15 +154,17 @@ describe("kernel exec - control instruction", () => {
         t.instruction("end")
       ];
 
-      const stackFrame = createStackFrame(code, []);
-      const res = executeStackFrame(stackFrame);
+      const ir = compileASTNodes(code);
+
+      const stackFrame = createStackFrame([]);
+      const res = executeStackFrame(ir, 0, stackFrame);
 
       assert.notEqual(res.value.toNumber(), 20);
       assert.equal(res.value.toNumber(), 1);
     });
   });
 
-  describe.skip("if", () => {
+  describe("if", () => {
     it("should NOT execute consequent when test is zero", () => {
       const code = [
         t.func(
@@ -172,8 +187,10 @@ describe("kernel exec - control instruction", () => {
         )
       ];
 
-      const stackFrame = createStackFrame(code, []);
-      const res = executeStackFrame(stackFrame);
+      const ir = compileASTNodes(code);
+
+      const stackFrame = createStackFrame([]);
+      const res = executeStackFrame(ir, 0, stackFrame);
 
       assert.typeOf(res, "undefined");
     });
@@ -196,8 +213,10 @@ describe("kernel exec - control instruction", () => {
         )
       ];
 
-      const stackFrame = createStackFrame(code, []);
-      const res = executeStackFrame(stackFrame);
+      const ir = compileASTNodes(code);
+
+      const stackFrame = createStackFrame([]);
+      const res = executeStackFrame(ir, 0, stackFrame);
 
       assert.typeOf(res, "undefined");
     });
@@ -220,8 +239,10 @@ describe("kernel exec - control instruction", () => {
         )
       ];
 
-      const stackFrame = createStackFrame(code, []);
-      const res = executeStackFrame(stackFrame);
+      const ir = compileASTNodes(code);
+
+      const stackFrame = createStackFrame([]);
+      const res = executeStackFrame(ir, 0, stackFrame);
 
       assert.equal(res.value.toNumber(), 10);
     });

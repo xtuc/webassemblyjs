@@ -90,6 +90,8 @@ export class Instance {
           this._allocator,
           internalInstanceOptions
         );
+
+        return;
       }
 
       if (exportinst.value.type === "Global") {
@@ -104,9 +106,11 @@ export class Instance {
         } else {
           this.exports[exportinst.name] = globalinst.value.toNumber();
         }
+
+        return;
       }
 
-      if (exportinst.value.type === "Memory") {
+      if (exportinst.value.type === "Mem") {
         const memoryinst = this._allocator.get(exportinst.value.addr);
 
         if (memoryinst == null) {
@@ -114,7 +118,11 @@ export class Instance {
         }
 
         this.exports[exportinst.name] = memoryinst;
+
+        return;
       }
+
+      throw new Error("Unknown export type: " + exportinst.value.type);
     });
 
     this._moduleInstance = moduleInstance;

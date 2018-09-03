@@ -1,6 +1,7 @@
 // @flow
 
 import { traverse } from "@webassemblyjs/ast";
+import { assert } from "mamacro";
 import { isIdentifier, isNumberLiteral } from "@webassemblyjs/ast/lib/nodes";
 import * as WebAssemblyMemory from "./memory";
 
@@ -244,12 +245,7 @@ function instantiateInternals(
 
       moduleInstance.memaddrs.push(addr);
 
-      if (node.id != null) {
-        if (node.id.type === "Identifier") {
-          // $FlowIgnore
-          internals.instantiatedMemories[node.id.value] = { addr };
-        }
-      }
+      internals.instantiatedMemories.push({ addr });
     },
 
     Global({ node }: NodePath<Global>) {
@@ -260,14 +256,10 @@ function instantiateInternals(
 
       moduleInstance.globaladdrs.push(addr);
 
-      if (node.name != null) {
-        if (node.name.type === "Identifier") {
-          internals.instantiatedGlobals[node.name.value] = {
-            addr,
-            type: node.globalType
-          };
-        }
-      }
+      internals.instantiatedGlobals.push({
+        addr,
+        type: node.globalType
+      });
     }
   });
 }
@@ -283,6 +275,7 @@ function instantiateExports(
   internals: Object,
   moduleInstance: ModuleInstance
 ) {
+  // FIXME(sven): move to validation error
   function assertNotAlreadyExported(str) {
     const moduleInstanceExport = moduleInstance.exports.find(
       ({ name }) => name === str
@@ -344,21 +337,24 @@ function instantiateExports(
             node,
             internals.instantiatedFuncs,
             instantiatedFunc => {
-              if (typeof instantiatedFunc === "undefined") {
-                throw new Error("unknown function");
-              }
+              assert(typeof instantiatedFunc !== "undefined", "unknown Func");
             }
           );
           break;
         }
+
         case "Global": {
           createModuleExport(
             node,
             internals.instantiatedGlobals,
             instantiatedGlobal => {
-              if (typeof instantiatedGlobal === "undefined") {
-                throw new Error("unknown global");
-              } else if (instantiatedGlobal.type.mutability === "var") {
+              assert(
+                typeof instantiatedGlobal !== "undefined",
+                "unknown Gloal"
+              );
+
+              // TODO(sven): move to validation error?
+              if (instantiatedGlobal.type.mutability === "var") {
                 throw new CompileError("Mutable globals cannot be exported");
               } else if (instantiatedGlobal.type.valtype === "i64") {
                 throw new LinkError(
@@ -369,29 +365,34 @@ function instantiateExports(
           );
           break;
         }
+
         case "Table": {
           createModuleExport(
             node,
             internals.instantiatedTables,
             instantiatedTable => {
-              if (typeof instantiatedTable === "undefined") {
-                throw new Error("unknown table");
-              }
+              assert(typeof instantiatedTable !== "undefined", "unknown Table");
             }
           );
           break;
         }
-        case "Memory": {
+
+        case "Mem": {
           createModuleExport(
             node,
             internals.instantiatedMemories,
             instantiatedMemory => {
-              if (typeof instantiatedMemory === "undefined") {
-                throw new Error("unknown memory");
-              }
+              assert(
+                typeof instantiatedMemory !== "undefined",
+                "unknown Memory"
+              );
             }
           );
           break;
+        }
+
+        default: {
+          throw new CompileError("unknown export: " + node.descr.exportType);
         }
       }
     }
@@ -420,9 +421,9 @@ export function createInstance(
    */
   const instantiatedInternals = {
     instantiatedFuncs: {},
-    instantiatedGlobals: {},
+    instantiatedGlobals: [],
     instantiatedTables: {},
-    instantiatedMemories: {}
+    instantiatedMemories: []
   };
 
   instantiateImports(
@@ -433,7 +434,13 @@ export function createInstance(
     moduleInstance
   );
 
-  instantiateInternals(funcTable, n, allocator, instantiatedInternals, moduleInstance);
+  instantiateInternals(
+    funcTable,
+    n,
+    allocator,
+    instantiatedInternals,
+    moduleInstance
+  );
 
   instantiateDataSections(n, allocator, moduleInstance);
 

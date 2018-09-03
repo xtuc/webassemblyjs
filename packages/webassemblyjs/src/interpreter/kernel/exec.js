@@ -143,14 +143,15 @@ type createChildStackFrameOptions = {
 export function executeStackFrame(
   { program }: IR,
   offset: number,
-  firstFrame: StackFrame,
-  depth: number = 0
+  firstFrame: StackFrame
 ): ?StackLocal {
-  const callStack: Array<StackFrame> = [firstFrame];
-  let framepointer = 0;
+  assertRuntimeError(typeof program === "object");
 
-  // eax
-  let returnRegister = null;
+  const callStack: Array<StackFrame> = [firstFrame];
+
+  // because it's used a macros
+  // eslint-disable-next-line prefer-const
+  let framepointer = 0;
 
   function getLocalByIndex(frame: StackFrame, index: number) {
     const local = frame.locals[index];
@@ -164,7 +165,11 @@ export function executeStackFrame(
     frame.values.push(local);
   }
 
-  function setLocalByIndex(frame: StackFrame, index: number, value: StackLocal) {
+  function setLocalByIndex(
+    frame: StackFrame,
+    index: number,
+    value: StackLocal
+  ) {
     assertRuntimeError(typeof index === "number");
 
     frame.locals[index] = value;
@@ -265,34 +270,6 @@ export function executeStackFrame(
   function newRuntimeError(msg) {
     return new RuntimeError(msg);
   }
-
-  // function createAndExecuteChildStackFrame(
-  //   instrs: Array<Instruction>,
-  //   { passCurrentContext }: createChildStackFrameOptions = {}
-  // ): ?StackLocal {
-  //   // FIXME(sven): that's wrong
-  //   const frame = callStack[framepointer - 1];
-
-  //   assertRuntimeError(frame !== undefined, "no active frame");
-
-  //   const nextStackFrame = stackframe.createChildStackFrame(frame, instrs);
-
-  //   if (passCurrentContext === true) {
-  //     nextStackFrame.values = frame.values;
-  //     nextStackFrame.labels = frame.labels;
-  //   }
-
-  //   // Push the frame on top of the stack
-  //   stack[framepointer] = nextStackFrame;
-
-  //   // Jump and execute the next frame
-  //   run();
-
-  //   if (returnRegister !== null) {
-  //     frame.values.push(...returnRegister);
-  //     returnRegister = null;
-  //   }
-  // }
 
   const offsets = Object.keys(program);
   let pc = offsets.indexOf(String(offset));
@@ -418,12 +395,13 @@ export function executeStackFrame(
           n.type !== "LongNumberLiteral" &&
           n.type !== "FloatLiteral"
         ) {
-          throw newRuntimeError(
-            "const: unsupported value of type: " + n.type
-          );
+          throw newRuntimeError("const: unsupported value of type: " + n.type);
         }
 
-        pushResult(frame, castIntoStackLocalOfType(instruction.object, n.value));
+        pushResult(
+          frame,
+          castIntoStackLocalOfType(instruction.object, n.value)
+        );
 
         break;
       }
@@ -803,9 +781,7 @@ export function executeStackFrame(
         const index = instruction.args[0];
 
         if (typeof index === "undefined") {
-          throw newRuntimeError(
-            "get_local requires one argument, none given."
-          );
+          throw newRuntimeError("get_local requires one argument, none given.");
         }
 
         if (index.type === "NumberLiteral" || index.type === "FloatLiteral") {
@@ -830,9 +806,12 @@ export function executeStackFrame(
           const code = [init];
           code.push(t.instruction("end"));
 
-          createAndExecuteChildStackFrame(code, {
-            passCurrentContext: true
-          });
+          // TODO(sven): handle this
+          throw new RuntimeError("should hit this; no wat semantics anymore");
+
+          // createAndExecuteChildStackFrame(code, {
+          //   passCurrentContext: true
+          // });
 
           const res = pop1(frame);
           setLocalByIndex(frame, index.value, res);
@@ -864,9 +843,12 @@ export function executeStackFrame(
           const code = [init];
           code.push(t.instruction("end"));
 
-          createAndExecuteChildStackFrame(code, {
-            passCurrentContext: true
-          });
+          // TODO(sven): handle this
+          throw new RuntimeError("should hit this; no wat semantics anymore");
+
+          // createAndExecuteChildStackFrame(code, {
+          //   passCurrentContext: true
+          // });
 
           const res = pop1(frame);
           setLocalByIndex(frame, index.value, res);
@@ -915,9 +897,7 @@ export function executeStackFrame(
         const globalinst = frame.allocator.get(globaladdr);
 
         if (typeof globalinst !== "object") {
-          throw newRuntimeError(
-            `Unexpected data for global at ${globaladdr}`
-          );
+          throw newRuntimeError(`Unexpected data for global at ${globaladdr}`);
         }
 
         // 7. Pop the value val from the stack.
@@ -946,9 +926,7 @@ export function executeStackFrame(
         const globalinst = frame.allocator.get(globaladdr);
 
         if (typeof globalinst !== "object") {
-          throw newRuntimeError(
-            `Unexpected data for global at ${globaladdr}`
-          );
+          throw newRuntimeError(`Unexpected data for global at ${globaladdr}`);
         }
 
         // 7. Pop the value val from the stack.
@@ -1012,7 +990,8 @@ export function executeStackFrame(
         const memory = getMemory(frame);
 
         const ptr =
-          pop1OfType(frame, "i32").value.toNumber() + getMemoryOffset(frame, instruction);
+          pop1OfType(frame, "i32").value.toNumber() +
+          getMemoryOffset(frame, instruction);
 
         // for i32 / i64 ops, handle extended load
         let extend = 0;
@@ -1067,30 +1046,26 @@ export function executeStackFrame(
           case "u32":
             pushResult(
               frame,
-              i32.createValueFromArrayBuffer(
-                memory.buffer,
-                ptr,
-                extend,
-                signed
-              )
+              i32.createValueFromArrayBuffer(memory.buffer, ptr, extend, signed)
             );
             break;
           case "i64":
             pushResult(
               frame,
-              i64.createValueFromArrayBuffer(
-                memory.buffer,
-                ptr,
-                extend,
-                signed
-              )
+              i64.createValueFromArrayBuffer(memory.buffer, ptr, extend, signed)
             );
             break;
           case "f32":
-            pushResult(frame, f32.createValueFromArrayBuffer(memory.buffer, ptr));
+            pushResult(
+              frame,
+              f32.createValueFromArrayBuffer(memory.buffer, ptr)
+            );
             break;
           case "f64":
-            pushResult(frame, f64.createValueFromArrayBuffer(memory.buffer, ptr));
+            pushResult(
+              frame,
+              f64.createValueFromArrayBuffer(memory.buffer, ptr)
+            );
             break;
 
           default:

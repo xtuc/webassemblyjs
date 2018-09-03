@@ -16,6 +16,7 @@ const {
 const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
+const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
 /*::
 type TestCase = {
@@ -281,10 +282,10 @@ describe("kernel exec - conversion instructions", () => {
           castIntoStackLocalOfType(type, value, nan, inf)
         );
 
-        op.code.push(t.instruction("end"));
+        const ir = compileASTNodes(op.code);
 
-        const stackFrame = createStackFrame(op.code, args);
-        const res = executeStackFrame(stackFrame);
+        const stackFrame = createStackFrame(args);
+        const res = executeStackFrame(ir, 0, stackFrame);
 
         assert.isTrue(
           res.value.equals(op.resEqual),

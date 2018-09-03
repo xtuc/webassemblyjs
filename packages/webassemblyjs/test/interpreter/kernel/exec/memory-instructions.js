@@ -16,6 +16,7 @@ const {
 const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
+const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
 describe("kernel exec - memory instructions", () => {
   const operations = [
@@ -101,10 +102,10 @@ describe("kernel exec - memory instructions", () => {
 
   operations.forEach(op => {
     it(op.name + " should result in a correct state", () => {
-      op.code.push(t.instruction("end"));
+      const ir = compileASTNodes(op.code);
 
-      const stackFrame = createStackFrame(op.code, op.args);
-      const res = executeStackFrame(stackFrame);
+      const stackFrame = createStackFrame(op.args);
+      const res = executeStackFrame(ir, 0, stackFrame);
 
       if (typeof res === "undefined") {
         throw new Error("No result");
