@@ -7,10 +7,8 @@ import { toIR } from "@webassemblyjs/helper-compiler";
 const t = require("@webassemblyjs/ast");
 
 import validateAST from "@webassemblyjs/validation";
-const { CompileError } = require("../../errors");
 
 export class Module {
-  _start: ?Funcidx;
   _ast: Program;
   _ir: IR;
 
@@ -21,12 +19,10 @@ export class Module {
     ir: IR,
     ast: Program,
     exports: Array<CompiledModuleExportDescr>,
-    imports: Array<CompiledModuleImportDescr>,
-    start?: Funcidx
+    imports: Array<CompiledModuleImportDescr>
   ) {
     this._ir = ir;
     this._ast = ast;
-    this._start = start;
 
     this.exports = exports;
     this.imports = imports;
@@ -36,8 +32,6 @@ export class Module {
 export function createCompiledModule(ast: Program): CompiledModule {
   const exports: Array<CompiledModuleExportDescr> = [];
   const imports = [];
-
-  let start;
 
   // Do compile-time ast manipulation in order to remove WAST
   // semantics during execution
@@ -54,14 +48,6 @@ export function createCompiledModule(ast: Program): CompiledModule {
           kind: "function"
         });
       }
-    },
-
-    Start({ node }: NodePath<Start>) {
-      if (typeof start !== "undefined") {
-        throw new CompileError("Multiple start functions is not allowed");
-      }
-
-      start = node.index;
     }
   });
 
@@ -70,5 +56,5 @@ export function createCompiledModule(ast: Program): CompiledModule {
    */
   const ir = toIR(ast);
 
-  return new Module(ir, ast, exports, imports, start);
+  return new Module(ir, ast, exports, imports);
 }

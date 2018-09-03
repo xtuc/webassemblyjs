@@ -1,9 +1,16 @@
 // @flow
 
-import { traverse, identifier, func, program as tProgram } from "@webassemblyjs/ast";
+import {
+  traverse,
+  identifier,
+  func,
+  program as tProgram
+} from "@webassemblyjs/ast";
 import { flatten } from "@webassemblyjs/helper-flatten-ast";
 
 import { Module } from "./module";
+
+export { kStart } from "./module";
 
 export function toIR(ast: Program): IR {
   const program = {};
@@ -16,6 +23,12 @@ export function toIR(ast: Program): IR {
   const module = new Module(ast);
 
   traverse(ast, {
+    Start({ node }: NodePath<Start>) {
+      const { name, startAt } = module.emitStartFunc(node.index.value);
+
+      funcTable.push({ name, startAt });
+    },
+
     Func(funcPath: NodePath<Func>) {
       module.beginFuncBody(funcPath.node);
 

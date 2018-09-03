@@ -9,7 +9,7 @@ it("should run the start func", () => {
     }
   };
 
-  WebAssembly.instantiateFromSource(watmodule, importObject);
-
-  assert.isTrue(called, "Callback not called");
+  return WebAssembly.instantiate(wasmmodule, importObject).then(m => {
+    assert.isTrue(called, "Callback not called");
+  });
 });

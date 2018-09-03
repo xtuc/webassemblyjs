@@ -9,6 +9,7 @@ const { createAllocator } = require("./kernel/memory");
 const importObjectUtils = require("./import-object");
 import { createHostfunc, executeStackFrameAndGetResult } from "./host-func";
 const { createStackFrame } = require("./kernel/stackframe");
+import { kStart } from "@webassemblyjs/helper-compiler";
 
 export class Instance {
   exports: any;
@@ -118,39 +119,30 @@ export class Instance {
 
     this._moduleInstance = moduleInstance;
 
-    if (module._start != null && module._start.type === "NumberLiteral") {
-      // $FlowIgnore: the NumberLiteral type ensure that the value is present
-      const value = module._start.value;
-      this.executeStartFunc(value);
+    const startFunc = module._ir.funcTable.find(x => x.name === kStart);
+
+    if (startFunc != null) {
+      this.executeStartFunc(module._ir, startFunc.startAt);
     }
   }
 
-  executeStartFunc(value: number) {
-    const funcinstAddr = this._moduleInstance.funcaddrs[value];
-
-    if (typeof funcinstAddr === "undefined") {
-      throw new RuntimeError("Start function not found, index: " + value);
-    }
-
-    const funcinst = this._allocator.get(funcinstAddr);
-
-    // The type of C.funcs[x] must be []→[].
-    const [params, results] = funcinst.type;
-
-    if (params.length !== 0 || results.length !== 0) {
-      throw new RuntimeError(
-        "Start function can not have arguments or results"
-      );
-    }
+  executeStartFunc(ir: IR, offset: number) {
+    // FIXME(sven): func params? do we need this here? it's a validation.
+    const params = [];
 
     const stackFrame = createStackFrame(
       params,
-      funcinst.module,
+      this._moduleInstance,
       this._allocator
     );
 
     // Ignore the result
-    executeStackFrameAndGetResult(stackFrame, /* returnStackLocal */ true);
+    executeStackFrameAndGetResult(
+      ir,
+      offset,
+      stackFrame,
+      /* returnStackLocal */ true
+    );
   }
 }
 

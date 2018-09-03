@@ -21,6 +21,8 @@ import {
   traverse
 } from "@webassemblyjs/ast";
 
+export const kStart = Symbol("_start");
+
 declare function LABEL_POP(): void;
 declare function LABEL_PUSH(n: Node): void;
 
@@ -189,6 +191,19 @@ export class Module {
     }
 
     this._emit(node);
+  }
+
+  emitStartFunc(index: number) {
+    const funcInContext = this._context.funcs[index];
+    assert(typeof funcInContext === "object");
+    assert(funcInContext.isImplemented);
+
+    const func = funcInContext.node;
+
+    return {
+      name: kStart,
+      startAt: getFunctionBeginingByteOffset(func)
+    };
   }
 
   finalizeFunc(func: Func) {

@@ -1,5 +1,7 @@
 // @flow
 
+import { kStart } from "./index";
+
 function printInstruction(instruction: Instruction): string {
   let out = "";
 
@@ -51,6 +53,11 @@ export function dumpIR(ir: IR): string {
   out += "Func table:\n";
 
   ir.funcTable.forEach(func => {
+    if (func.name === kStart) {
+      out += "__start" + " at " + func.startAt + "\n";
+      return;
+    }
+
     out += func.name + " at " + func.startAt + "\n";
   });
 
