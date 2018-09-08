@@ -377,7 +377,8 @@ function instantiateExports(
           break;
         }
 
-        case "Mem": {
+        case "Mem":
+        case "Memory": {
           createModuleExport(
             node,
             internals.instantiatedMemories,

@@ -49,7 +49,8 @@ function ASTToString(ast) {
 
 function makeGlobalNode(n) {
   return t.global(t.globalType("i32", "const"), [
-    t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(n)])
+    t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(n)]),
+    t.instruction("end")
   ]);
 }
 

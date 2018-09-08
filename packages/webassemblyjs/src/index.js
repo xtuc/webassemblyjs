@@ -60,6 +60,8 @@ const WebAssembly = {
     const ast = parse(content);
     const module = createCompiledModule(ast);
 
+    console.warn("using deprecated instantiateFromSource");
+
     return new Instance(module, importObject);
   },
 

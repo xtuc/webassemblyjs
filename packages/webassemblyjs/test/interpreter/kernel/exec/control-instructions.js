@@ -19,8 +19,7 @@ describe("kernel exec - control instruction", () => {
     const code = [
       t.instruction("nop"),
       t.instruction("nop"),
-      t.instruction("nop"),
-      t.instruction("end")
+      t.instruction("nop")
     ];
 
     const ir = compileASTNodes(code);
@@ -37,15 +36,10 @@ describe("kernel exec - control instruction", () => {
     it("should execute the body of loop in a child stack frame", () => {
       let instructionExecuted = 0;
 
-      const loopCode = [
-        t.instruction("nop"),
-        t.instruction("nop"),
-        t.instruction("end")
-      ];
+      const loopCode = [t.instruction("nop"), t.instruction("nop")];
 
       const loop = [
-        t.loopInstruction(t.identifier("loop"), undefined, loopCode),
-        t.instruction("end")
+        t.loopInstruction(t.identifier("loop"), undefined, loopCode)
       ];
 
       const ir = compileASTNodes(loop);
@@ -63,10 +57,7 @@ describe("kernel exec - control instruction", () => {
 
   describe("block", () => {
     it("should enter and execute an empty block", () => {
-      const code = [
-        t.blockInstruction(t.identifier("label"), []),
-        t.instruction("end")
-      ];
+      const code = [t.blockInstruction(t.identifier("label"), [])];
 
       const ir = compileASTNodes(code);
 
@@ -81,10 +72,8 @@ describe("kernel exec - control instruction", () => {
         t.blockInstruction(t.identifier("label"), [
           t.instruction("nop"),
           t.instruction("nop"),
-          t.instruction("nop"),
-          t.instruction("end")
-        ]),
-        t.instruction("end")
+          t.instruction("nop")
+        ])
       ];
 
       const ir = compileASTNodes(code);
@@ -103,10 +92,8 @@ describe("kernel exec - control instruction", () => {
     it("should remove the label when existing the block", () => {
       const code = [
         t.blockInstruction(t.identifier("label"), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
-          t.instruction("end")
-        ]),
-        t.instruction("end")
+          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])
+        ])
       ];
 
       const ir = compileASTNodes(code);
@@ -122,13 +109,11 @@ describe("kernel exec - control instruction", () => {
     it("should break if non-zero", () => {
       const code = [
         t.func(t.identifier("label"), t.signature([], []), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)]),
-          t.instruction("end")
+          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)])
         ]),
 
         t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
-        t.instruction("br_if", [t.identifier("label")]),
-        t.instruction("end")
+        t.instruction("br_if", [t.identifier("label")])
       ];
 
       const ir = compileASTNodes(code);
@@ -143,15 +128,13 @@ describe("kernel exec - control instruction", () => {
     it("should not break if zero", () => {
       const code = [
         t.func(t.identifier("label"), t.signature([], []), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(20)]),
-          t.instruction("end")
+          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(20)])
         ]),
 
         t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
         t.instruction("br_if", [t.identifier("label")]),
 
-        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
-        t.instruction("end")
+        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
       ];
 
       const ir = compileASTNodes(code);
@@ -167,23 +150,15 @@ describe("kernel exec - control instruction", () => {
   describe("if", () => {
     it("should NOT execute consequent when test is zero", () => {
       const code = [
-        t.func(
-          t.identifier("test"),
-          t.signature([t.instruction("end")], [t.instruction("end")]),
-          [
-            t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
-            t.instruction("end")
-          ]
-        ),
+        t.func(t.identifier("test"), t.signature([], []), [
+          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)])
+        ]),
 
         t.ifInstruction(
           t.identifier("test"),
-          [t.instruction("end")],
-          [
-            t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
-            t.instruction("end")
-          ],
-          [t.instruction("end")]
+          [],
+          [t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])],
+          []
         )
       ];
 
@@ -198,18 +173,14 @@ describe("kernel exec - control instruction", () => {
     it("should NOT execute consequent but alternate when test is zero", () => {
       const code = [
         t.func(t.identifier("test"), t.signature([], []), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
-          t.instruction("end")
+          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)])
         ]),
 
         t.ifInstruction(
           t.identifier("test"),
-          [t.instruction("end")],
-          [t.instruction("end")],
-          [
-            t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
-            t.instruction("end")
-          ]
+          [],
+          [],
+          [t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])]
         )
       ];
 
@@ -224,18 +195,14 @@ describe("kernel exec - control instruction", () => {
     it("should execute consequent when test is non-zero", () => {
       const code = [
         t.func(t.identifier("test"), t.signature([], []), [
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
-          t.instruction("end")
+          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
         ]),
 
         t.ifInstruction(
           t.identifier("test"),
-          [t.instruction("end")],
-          [t.instruction("end")],
-          [
-            t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
-            t.instruction("end")
-          ]
+          [],
+          [],
+          [t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])]
         )
       ];
 

@@ -74,10 +74,8 @@ describe("kernel exec - memory instructions", () => {
       args: [],
 
       code: [
-        t.instruction("set_local", [
-          t.numberLiteralFromRaw(0),
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])
-        ]),
+        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
+        t.instruction("set_local", [t.numberLiteralFromRaw(0)]),
         t.instruction("get_local", [t.numberLiteralFromRaw(0)])
       ],
 
@@ -90,10 +88,8 @@ describe("kernel exec - memory instructions", () => {
       args: [],
 
       code: [
-        t.instruction("tee_local", [
-          t.numberLiteralFromRaw(0),
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)])
-        ])
+        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)]),
+        t.instruction("tee_local", [t.numberLiteralFromRaw(0)])
       ],
 
       resEqual: new i32(2)
