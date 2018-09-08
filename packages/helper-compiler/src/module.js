@@ -149,7 +149,7 @@ export class Module {
     if (node.id === "br" || node.id === "br_if") {
       const depth = node.args[0].value;
       const target = this._labels[this._labels.length - depth - 1];
-      assert(typeof target === "object");
+      assert(typeof target === "object", `Label ${depth} not found`);
 
       if (isLoopInstruction(target)) {
         node.args[0].value = getStartBlockByteOffset(target);
