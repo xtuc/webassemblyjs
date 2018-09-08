@@ -1,5 +1,7 @@
 it("should export the memory instance by index", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
-    assert.containsAllKeys(m.exports.memory, ["buffer"]);
+    const { memory } = m.instance.exports;
+
+    assert.containsAllKeys(memory, ["buffer"]);
   });
 });

@@ -1411,7 +1411,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const instrs: Array<Instruction> = [];
       parseInstructionBlock(instrs);
 
-      if (instrs.length !== 1) {
+      const hasExtraInstrs = instrs.filter(i => i.id !== "end").length !== 1;
+
+      if (hasExtraInstrs) {
         throw new CompileError(
           "data section offset must be a single instruction"
         );

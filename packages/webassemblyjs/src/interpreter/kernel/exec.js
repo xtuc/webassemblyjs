@@ -191,12 +191,25 @@ export function executeStackFrame(
     });
   }
 
+  function valueTypeEq(l: string, r: string): boolean {
+    // compatibility with our parser
+    if (l === "u32") {
+      l = "i32";
+    }
+
+    if (r === "u32") {
+      r = "i32";
+    }
+
+    return l === r;
+  }
+
   function pop1OfType(frame: StackFrame, type: Valtype): any {
     assertNItemsOnStack(1);
 
     const v = frame.values.pop();
 
-    if (typeof type === "string" && v.type !== type) {
+    if (typeof type === "string" && valueTypeEq(v.type, type) === false) {
       throw newRuntimeError(
         "Internal failure: expected value of type " +
           type +
@@ -220,7 +233,7 @@ export function executeStackFrame(
     const c2 = frame.values.pop();
     const c1 = frame.values.pop();
 
-    if (c2.type !== type2) {
+    if (valueTypeEq(c2.type, type2) === false) {
       throw newRuntimeError(
         "Internal failure: expected c2 value of type " +
           type2 +
@@ -229,7 +242,7 @@ export function executeStackFrame(
       );
     }
 
-    if (c1.type !== type1) {
+    if (valueTypeEq(c1.type, type1) === false) {
       throw newRuntimeError(
         "Internal failure: expected c1 value of type " +
           type1 +

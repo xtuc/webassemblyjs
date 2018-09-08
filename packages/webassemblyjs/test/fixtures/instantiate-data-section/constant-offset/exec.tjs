@@ -1,6 +1,8 @@
-it.skip("should instantiate the data section", () => {
+it("should instantiate the data section", () => {
   return WebAssembly.instantiate(wasmmodule).then(m => {
-    const i32 = new Uint8Array(m.exports.memory.buffer);
+    const { memory } = m.instance.exports;
+
+    const i32 = new Uint8Array(memory.buffer);
 
     // store a number
     assert.equal(i32[2], 97 /* a */);
