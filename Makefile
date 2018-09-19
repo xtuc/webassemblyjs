@@ -23,7 +23,6 @@ clean-all:
 
 bootstrap: clean-all
 	yarn install
-	$(LERNA) bootstrap
 
 build:
 	WITH_TRACE=$(TRACE) ./scripts/build.sh
@@ -60,7 +59,7 @@ lint:
 	$(ESLINT) packages
 
 publish: build
-	lerna publish --force-publish --exact
+	$(LERNA) publish --force-publish --exact
 
 repl: build
 	$(NODE) $(NODE_OPTS) ./lib/repl

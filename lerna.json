@@ -1,7 +1,6 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
   "registry": "https://registry.npmjs.org",
   "version": "1.7.7"
 }

@@ -6,6 +6,14 @@
   },
   "author": "Sven Sauleau",
   "license": "MIT",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "engines": {
+    "yarn": "^1.5.0"
+  },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.34",
     "@babel/core": "7.0.0-beta.34",
