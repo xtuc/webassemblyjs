@@ -24,11 +24,11 @@
     "@webassemblyjs/validation": "1.7.7",
     "@webassemblyjs/wasm-parser": "1.7.7",
     "@webassemblyjs/wast-parser": "1.7.7",
-    "@xtuc/long": "4.2.1",
-    "mamacro": "^0.0.3"
+    "@xtuc/long": "4.2.1"
   },
   "devDependencies": {
     "@webassemblyjs/floating-point-hex-parser": "1.7.7",
+    "mamacro": "^0.0.3",
     "wabt": "^1.0.0"
   },
   "repository": {
