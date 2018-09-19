@@ -1,6 +1,6 @@
 {
   "name": "webassemblyjs",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "keywords": [
     "webassembly",
     "interpreter",
@@ -19,16 +19,16 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.7.6",
-    "@webassemblyjs/helper-flaten-ast": "1.7.6",
-    "@webassemblyjs/validation": "1.7.6",
-    "@webassemblyjs/wasm-parser": "1.7.6",
-    "@webassemblyjs/wast-parser": "1.7.6",
+    "@webassemblyjs/ast": "1.7.7",
+    "@webassemblyjs/helper-flaten-ast": "1.7.7",
+    "@webassemblyjs/validation": "1.7.7",
+    "@webassemblyjs/wasm-parser": "1.7.7",
+    "@webassemblyjs/wast-parser": "1.7.7",
     "@xtuc/long": "4.2.1",
     "mamacro": "^0.0.3"
   },
   "devDependencies": {
-    "@webassemblyjs/floating-point-hex-parser": "1.7.6",
+    "@webassemblyjs/floating-point-hex-parser": "1.7.7",
     "wabt": "^1.0.0"
   },
   "repository": {
