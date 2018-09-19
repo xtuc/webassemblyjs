@@ -29,7 +29,7 @@
     "glob": "7.1.2",
     "http-server": "0.10.0",
     "jest-diff": "21.2.1",
-    "lerna": "2.9.0",
+    "lerna": "3.4.0",
     "markdown-to-html": "0.0.13",
     "mocha": "4.0.1",
     "performance-now": "2.1.0",
