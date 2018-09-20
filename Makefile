@@ -22,7 +22,7 @@ clean-all:
 	rm -rf ./node_modules ./packages/*/node_modules ./packages/*/{lib,esm}
 
 bootstrap: clean-all
-	yarn install
+	$(LERNA) bootstrap
 
 build:
 	WITH_TRACE=$(TRACE) ./scripts/build.sh
