@@ -23,11 +23,11 @@
     "@webassemblyjs/helper-api-error": "1.7.7",
     "@webassemblyjs/helper-code-frame": "1.7.7",
     "@webassemblyjs/helper-fsm": "1.7.7",
-    "@xtuc/long": "4.2.1",
-    "mamacro": "^0.0.3"
+    "@xtuc/long": "4.2.1"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-test-framework": "1.7.7"
+    "@webassemblyjs/helper-test-framework": "1.7.7",
+    "mamacro": "^0.0.3"
   },
   "repository": {
     "type": "git",
