@@ -14,8 +14,7 @@
   "dependencies": {
     "@webassemblyjs/helper-module-context": "1.7.7",
     "@webassemblyjs/helper-wasm-bytecode": "1.7.7",
-    "@webassemblyjs/wast-parser": "1.7.7",
-    "mamacro": "^0.0.3"
+    "@webassemblyjs/wast-parser": "1.7.7"
   },
   "repository": {
     "type": "git",
@@ -27,6 +26,7 @@
   "devDependencies": {
     "@webassemblyjs/helper-test-framework": "1.7.7",
     "array.prototype.flatmap": "^1.2.1",
-    "dump-exports": "^0.1.0"
+    "dump-exports": "^0.1.0",
+    "mamacro": "^0.0.3"
   }
 }
