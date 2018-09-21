@@ -6477,9 +6477,9 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-wabt@^1.0.0:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/wabt/-/wabt-1.0.5.tgz#9e72d65043d4c525f07895acc3cf2dacdaf8aeee"
+wabt@1.0.0-nightly.20180421:
+  version "1.0.0-nightly.20180421"
+  resolved "https://registry.yarnpkg.com/wabt/-/wabt-1.0.0-nightly.20180421.tgz#db3565bff0d5023c9576270aa5369f2cec45b878"
 
 wcwidth@^1.0.0:
   version "1.0.1"

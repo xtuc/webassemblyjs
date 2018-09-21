@@ -29,7 +29,7 @@
   "devDependencies": {
     "@webassemblyjs/floating-point-hex-parser": "1.7.7",
     "mamacro": "^0.0.3",
-    "wabt": "^1.0.0"
+    "wabt": "1.0.0-nightly.20180421"
   },
   "repository": {
     "type": "git",
