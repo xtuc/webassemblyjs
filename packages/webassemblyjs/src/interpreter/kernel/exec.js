@@ -67,8 +67,10 @@ define(
 define(
   RETURN,
   () => `
-    if (frame.values.length > 0) {
-      return pop1(frame);
+    const activeFrame = getActiveStackFrame();
+
+    if (activeFrame.values.length > 0) {
+      return pop1(activeFrame);
     } else {
       return;
     }
@@ -78,7 +80,8 @@ define(
 define(
   PUSH_NEW_STACK_FRAME,
   pc => `
-    const newStackFrame = stackframe.createChildStackFrame(frame, ${pc});
+    const activeFrame = getActiveStackFrame();
+    const newStackFrame = stackframe.createChildStackFrame(activeFrame, ${pc});
 
     // move active frame
     framepointer++;
@@ -93,19 +96,25 @@ define(
 define(
   POP_STACK_FRAME,
   () => `
+    const activeFrame = getActiveStackFrame();
+
     // pass the result of the previous call into the new active fame
     let res;
 
-    if (frame.values.length > 0) {
-      res = pop1(frame);
+    if (activeFrame.values.length > 0) {
+      res = pop1(activeFrame);
     }
 
     // Pop active frame from the stack
     callStack.pop();
     framepointer--;
 
-    if (res !== undefined) {
-      pushResult(frame, res);
+    assertRuntimeError(framepointer > -1, "call stack underflow");
+
+    const newStackFrame = getActiveStackFrame();
+
+    if (res !== undefined && newStackFrame !== undefined) {
+      pushResult(newStackFrame, res);
     }
   `
 );
@@ -284,11 +293,15 @@ export function executeStackFrame(
     return new RuntimeError(msg);
   }
 
+  function getActiveStackFrame(): ?StackFrame {
+    return callStack[framepointer];
+  }
+
   const offsets = Object.keys(program);
   let pc = offsets.indexOf(String(offset));
 
   while (true) {
-    const frame = callStack[framepointer];
+    const frame = getActiveStackFrame();
     assertRuntimeError(frame !== undefined, "no frame at " + framepointer);
 
     const instruction = program[offsets[pc]];
@@ -299,7 +312,7 @@ export function executeStackFrame(
     );
 
     // $FlowIgnore
-    trace("exec " + instruction.id);
+    trace(`exec ${instruction.type}(${instruction.id || ""})`);
 
     if (typeof frame.trace === "function") {
       frame.trace(framepointer, pc, instruction, frame);
@@ -340,14 +353,13 @@ export function executeStackFrame(
 
       case "InternalEndAndReturn": {
         POP_LABEL();
-        pc = frame.returnAddress; // raw goto
-        POP_STACK_FRAME();
 
-        if (framepointer < 0) {
-          RETURN();
+        if (frame.returnAddress !== -1) {
+          pc = frame.returnAddress; // raw goto
+          POP_STACK_FRAME();
         }
 
-        break;
+        RETURN();
       }
 
       case "InternalGoto": {
@@ -1216,7 +1228,11 @@ export function executeStackFrame(
       }
 
       case "return": {
-        POP_STACK_FRAME();
+        if (frame.returnAddress !== -1) {
+          pc = frame.returnAddress; // raw goto
+          POP_STACK_FRAME();
+        }
+
         RETURN();
       }
     }
