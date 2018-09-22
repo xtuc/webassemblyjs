@@ -151,7 +151,7 @@ export class Module {
       const target = this._labels[this._labels.length - depth - 1];
       assert(typeof target === "object", `Label ${depth} not found`);
 
-      if (isLoopInstruction(target)) {
+      if (isLoopInstruction(target) && depth === 0) {
         node.args[0].value = getStartBlockByteOffset(target);
       } else {
         node.args[0].value = getEndBlockByteOffset(target);
