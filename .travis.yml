@@ -1,6 +1,10 @@
 language: node_js
 
-before_script: make bootstrap
+cache:
+  yarn: true
+
+before_install: npm i -g yarn
+install: make bootstrap
 
 script: make $JOB
 
