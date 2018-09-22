@@ -70,11 +70,13 @@ describe("module create interface", () => {
   });
 
   describe("function instance", () => {
+    const atOffset = 0;
+
     it("return an instance", () => {
       const node = t.func(t.identifier("test"), t.signature([], []), []);
       const fromModule = t.module(undefined, []);
 
-      const instance = funcvalue.createInstance(node, fromModule);
+      const instance = funcvalue.createInstance(atOffset, node, fromModule);
 
       assert.typeOf(instance.type, "array");
       assert.lengthOf(instance.type, 2);
@@ -95,7 +97,7 @@ describe("module create interface", () => {
       const node = t.func(t.identifier("test"), t.signature(args, result), []);
       const fromModule = t.module(undefined, []);
 
-      const instance = funcvalue.createInstance(node, fromModule);
+      const instance = funcvalue.createInstance(atOffset, node, fromModule);
 
       assert.deepEqual(instance.type[0], ["i32", "i32"]);
       assert.deepEqual(instance.type[1], ["i32"]);
@@ -272,7 +274,10 @@ describe("module create interface", () => {
       )
     ]);
 
+    const funcTable = {};
+
     const instance = modulevalue.createInstance(
+      funcTable,
       allocator,
       node,
       externalFunctions

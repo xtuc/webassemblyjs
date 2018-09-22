@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-compiler",
-  "version": "1.7.5",
+  "version": "1.7.8",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -13,13 +13,13 @@
   },
   "dependencies": {
     "mamacro": "^0.0.3",
-    "@webassemblyjs/helper-flatten-ast": "1.7.5",
-    "@webassemblyjs/ast": "1.7.5"
+    "@webassemblyjs/helper-flatten-ast": "1.7.8",
+    "@webassemblyjs/ast": "1.7.8"
   },
   "devDependencies": {
-    "@webassemblyjs/wasm-parser": "1.7.5",
-    "@webassemblyjs/helper-test-framework": "1.7.5",
-    "wabt": "^1.0.0"
+    "@webassemblyjs/wasm-parser": "1.7.8",
+    "@webassemblyjs/helper-test-framework": "1.7.8",
+    "wabt": "1.0.0-nightly.20180421"
   },
   "publishConfig": {
     "access": "public"

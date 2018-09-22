@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@webassemblyjs/floating-point-hex-parser": "1.7.8",
-    "@webassemblyjs/helper-test-framework": "1.7.5",
+    "@webassemblyjs/helper-test-framework": "1.7.8",
     "mamacro": "^0.0.3",
     "wabt": "1.0.0-nightly.20180421"
   },
