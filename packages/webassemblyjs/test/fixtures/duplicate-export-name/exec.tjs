@@ -1,5 +1,0 @@
-// TODO(sven): move to validation
-it.skip("should catch the duplciated export", () => {
-  const fn = () => WebAssembly.instantiate(wasmmodule);
-  assert.throws(fn, "Duplicate export name");
-});

@@ -1,6 +1,0 @@
-// TODO(sven): move to validation
-it.skip("should throw a type error", () => {
-  const fn = () => WebAssembly.instantiateFromSource(watmodule);
-
-  assert.throws(fn, "Expected type i32 but got i64");
-});

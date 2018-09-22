@@ -1,5 +1,0 @@
-// TODO(sven): move to validation
-it.skip("should throw type mismatch", () => {
-  const fn = () => WebAssembly.instantiate(wasmmodule);
-  assert.throws(fn, "type mismatch");
-});

@@ -1,4 +1,4 @@
-(module 
+(module
   (func $ff (result i32)
     (i64.const 1)
   )
