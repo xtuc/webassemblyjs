@@ -109,8 +109,6 @@ define(
     callStack.pop();
     framepointer--;
 
-    assertRuntimeError(framepointer > -1, "call stack underflow");
-
     const newStackFrame = getActiveStackFrame();
 
     if (res !== undefined && newStackFrame !== undefined) {
@@ -293,8 +291,13 @@ export function executeStackFrame(
     return new RuntimeError(msg);
   }
 
-  function getActiveStackFrame(): ?StackFrame {
-    return callStack[framepointer];
+  function getActiveStackFrame(): StackFrame {
+    assertRuntimeError(framepointer > -1, "call stack underflow");
+
+    const frame = callStack[framepointer];
+    assertRuntimeError(frame !== undefined, "no frame at " + framepointer);
+
+    return frame;
   }
 
   const offsets = Object.keys(program);
@@ -302,8 +305,6 @@ export function executeStackFrame(
 
   while (true) {
     const frame = getActiveStackFrame();
-    assertRuntimeError(frame !== undefined, "no frame at " + framepointer);
-
     const instruction = program[offsets[pc]];
 
     assertRuntimeError(
@@ -1005,6 +1006,7 @@ export function executeStackFrame(
         for (let ptrOffset = 0; ptrOffset < valueBuffer.length; ptrOffset++) {
           memoryBuffer[ptr + ptrOffset] = valueBuffer[ptrOffset];
         }
+
         break;
       }
 
