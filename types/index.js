@@ -75,7 +75,7 @@ type StackFrame = {
 
   trace?: (number, number, Instruction, StackFrame) => void,
 
-  _pc: number
+  returnAddress: number
 };
 
 type StackLocal = {

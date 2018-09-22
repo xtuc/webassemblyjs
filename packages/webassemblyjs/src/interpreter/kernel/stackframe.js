@@ -35,15 +35,24 @@ export function createStackFrame(
     /**
      * For shared memory operations
      */
-    allocator
+    allocator,
+
+    /**
+     * The callee address
+     */
+    returnAddress: -1
   };
 }
 
-export function createChildStackFrame(parent: StackFrame): StackFrame {
+export function createChildStackFrame(
+  parent: StackFrame,
+  pc: number
+): StackFrame {
   const { locals, originatingModule, allocator, trace } = parent;
 
   const frame = createStackFrame(locals, originatingModule, allocator);
   frame.trace = trace;
+  frame.returnAddress = pc;
 
   return frame;
 }

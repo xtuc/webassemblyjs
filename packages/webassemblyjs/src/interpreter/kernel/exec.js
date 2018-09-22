@@ -10,7 +10,7 @@ const t = require("@webassemblyjs/ast");
 declare function trace(msg?: string): void;
 declare function GOTO(l: number): void;
 declare function RETURN(): void;
-declare function PUSH_NEW_STACK_FRAME(): void;
+declare function PUSH_NEW_STACK_FRAME(pc: number): void;
 declare function POP_STACK_FRAME(): void;
 declare function POP_LABEL(): void;
 declare function assertNItemsOnStack(n: number): void;
@@ -77,8 +77,8 @@ define(
 
 define(
   PUSH_NEW_STACK_FRAME,
-  () => `
-    const newStackFrame = stackframe.createChildStackFrame(frame);
+  pc => `
+    const newStackFrame = stackframe.createChildStackFrame(frame, ${pc});
 
     // move active frame
     framepointer++;
@@ -340,8 +340,14 @@ export function executeStackFrame(
 
       case "InternalEndAndReturn": {
         POP_LABEL();
+        pc = frame.returnAddress; // raw goto
         POP_STACK_FRAME();
-        RETURN();
+
+        if (framepointer < 0) {
+          RETURN();
+        }
+
+        break;
       }
 
       case "InternalGoto": {
@@ -473,7 +479,7 @@ export function executeStackFrame(
       case "call": {
         const index = instruction.index.value;
 
-        PUSH_NEW_STACK_FRAME();
+        PUSH_NEW_STACK_FRAME(pc);
         GOTO(index);
 
         break;
