@@ -1,5 +1,9 @@
 // @flow
 
+declare function trace(msg?: string): void;
+
+import { assert, define } from "mamacro";
+
 const t = require("@webassemblyjs/ast");
 
 import { RuntimeError } from "../errors";
@@ -10,6 +14,13 @@ const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");
 const label = require("./runtime/values/label");
 const { ExecutionHasBeenTrapped } = require("./kernel/signals");
+
+define(
+  trace,
+  msg => `
+    console.log("host " + ${msg});
+  `
+);
 
 export function createHostfunc(
   ir: IR,
@@ -91,13 +102,15 @@ export function createHostfunc(
     stackFrame.locals.push(...argsWithType);
 
     // 2. Enter the block instr∗ with label
-    stackFrame.values.push(label.createValue(exportinst.name));
+    // stackFrame.values.push(label.createValue(exportinst.name));
 
     stackFrame.labels.push({
       value: funcinst,
       arity: funcinstArgs.length,
       id: t.identifier(exportinst.name)
     });
+
+    trace("invoking " + exportinst.name);
 
     return executeStackFrameAndGetResult(
       ir,
@@ -122,6 +135,8 @@ export function executeStackFrameAndGetResult(
     }
 
     if (res != null && res.value != null) {
+      assert(res.type !== "label");
+
       return res.value.toNumber();
     }
   } catch (e) {

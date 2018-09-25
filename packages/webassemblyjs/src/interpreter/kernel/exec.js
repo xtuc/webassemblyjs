@@ -40,20 +40,18 @@ define(
     // 4. Pop the label from the stack.
     let found = false;
 
-    frame.values = frame.values.filter(value => {
-      if (found === true) {
-        return true;
-      }
+    const index = frame.values.slice(0).reverse().findIndex(({type}) => type === "label");
+    // some expression like inittializer don't have labels currently, so this is
+    // guarantee to fail
+    // assertRuntimeError(index !== -1, "POP_LABEL: label not found")
 
-      if (value.type === "label") {
-        found = true;
-        return false;
-      } else {
-        return true;
-      }
-    });
+    if (index !== -1) {
+      const initialOrderIndex = frame.values.length - 1 - index;
 
-    // assertRuntimeError(found, "POP_LABEL: label not found")
+      trace("exiting block " + frame.values[initialOrderIndex].value);
+
+      frame.values.splice(initialOrderIndex, 1);
+    }
   `
 );
 
@@ -329,6 +327,7 @@ export function executeStackFrame(
        * instruction.
        */
       case "Func": {
+        throw new Error("unreachable");
         const func = instruction;
 
         /**
@@ -353,14 +352,14 @@ export function executeStackFrame(
       }
 
       case "InternalEndAndReturn": {
-        POP_LABEL();
-
         if (frame.returnAddress !== -1) {
           pc = frame.returnAddress; // raw goto
           POP_STACK_FRAME();
-        }
 
-        RETURN();
+          break;
+        } else {
+          RETURN();
+        }
       }
 
       case "InternalGoto": {
@@ -449,33 +448,35 @@ export function executeStackFrame(
         break;
       }
 
-      case "loop": {
-        // https://webassembly.github.io/spec/core/exec/instructions.html#exec-loop
-        const loop = instruction;
+      // case "loop": {
+      //   // https://webassembly.github.io/spec/core/exec/instructions.html#exec-loop
+      //   const loop = instruction;
 
-        assertRuntimeError(
-          typeof loop.instr === "object" &&
-            typeof loop.instr.length !== "undefined"
-        );
+      //   assertRuntimeError(
+      //     typeof loop.instr === "object" &&
+      //       typeof loop.instr.length !== "undefined"
+      //   );
 
-        // 2. Enter the block instr∗ with label
-        frame.labels.push({
-          value: loop,
-          arity: 0,
-          id: loop.label
-        });
+      //   // 2. Enter the block instr∗ with label
+      //   frame.labels.push({
+      //     value: loop,
+      //     arity: 0,
+      //     id: loop.label
+      //   });
 
-        pushResult(frame, label.createValue(loop.label.value));
+      //   pushResult(frame, label.createValue(loop.label.value));
 
-        // FIXME(sven): unroll/flatten loop anyway
-        // if (loop.instr.length > 0) {
-        //   createAndExecuteChildStackFrame(loop.instr, {
-        //     passCurrentContext: true
-        //   });
-        // }
+      //   trace("entering block " + loop.label.value);
 
-        break;
-      }
+      //   // FIXME(sven): unroll/flatten loop anyway
+      //   // if (loop.instr.length > 0) {
+      //   //   createAndExecuteChildStackFrame(loop.instr, {
+      //   //     passCurrentContext: true
+      //   //   });
+      //   // }
+
+      //   break;
+      // }
 
       case "drop": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop
@@ -564,6 +565,7 @@ export function executeStackFrame(
         break;
       }
 
+      case "loop":
       case "block": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#blocks
 
@@ -581,6 +583,8 @@ export function executeStackFrame(
           arity: 0,
           id: block.label
         });
+
+        pushResult(frame, label.createValue(block.label.value));
 
         trace("entering block " + block.label.value);
 
