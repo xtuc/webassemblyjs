@@ -1064,18 +1064,21 @@ export function executeStackFrame(
 
         // check for memory access out of bounds
         switch (object) {
+          case "u32":
           case "i32":
-          case "f32":
+          case "f32": {
             if (ptr + 4 > memory.buffer.byteLength) {
               throw newRuntimeError("memory access out of bounds");
             }
             break;
+          }
           case "i64":
-          case "f64":
+          case "f64": {
             if (ptr + 8 > memory.buffer.byteLength) {
               throw newRuntimeError("memory access out of bounds");
             }
             break;
+          }
         }
 
         switch (object) {
