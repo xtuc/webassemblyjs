@@ -989,6 +989,9 @@ export function executeStackFrame(
         let valueBuffer = c2.value.toByteArray();
 
         switch (id) {
+          case "store":
+            valueBuffer = valueBuffer;
+            break
           case "store8":
             valueBuffer = valueBuffer.slice(0, 1);
             break;
@@ -998,6 +1001,9 @@ export function executeStackFrame(
           case "store32":
             valueBuffer = valueBuffer.slice(0, 4);
             break;
+
+          default:
+            throw newRuntimeError("illegal operation: " + id);
         }
 
         if (ptr + valueBuffer.length > memory.buffer.byteLength) {
@@ -1079,6 +1085,9 @@ export function executeStackFrame(
             }
             break;
           }
+
+          default:
+            throw new RuntimeError("Unsupported " + object + " load");
         }
 
         switch (object) {
