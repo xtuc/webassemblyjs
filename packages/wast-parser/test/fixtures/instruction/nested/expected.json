@@ -32,7 +32,8 @@
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 9
+                  "column": 9,
+                  "byteOffset": 5
                 },
                 "end": {
                   "line": 2,
@@ -44,7 +45,8 @@
           "loc": {
             "start": {
               "line": 2,
-              "column": 3
+              "column": 3,
+              "byteOffset": 3
             },
             "end": {
               "line": 2,
@@ -65,7 +67,8 @@
                 "loc": {
                   "start": {
                     "line": 3,
-                    "column": 15
+                    "column": 15,
+                    "byteOffset": 15
                   },
                   "end": {
                     "line": 3,
@@ -97,7 +100,8 @@
                       "loc": {
                         "start": {
                           "line": 3,
-                          "column": 25
+                          "column": 25,
+                          "byteOffset": 20
                         },
                         "end": {
                           "line": 3,
@@ -109,7 +113,8 @@
                   "loc": {
                     "start": {
                       "line": 3,
-                      "column": 19
+                      "column": 19,
+                      "byteOffset": 17
                     },
                     "end": {
                       "line": 3,
@@ -131,7 +136,8 @@
                   "loc": {
                     "start": {
                       "line": 3,
-                      "column": 40
+                      "column": 40,
+                      "byteOffset": 27
                     },
                     "end": {
                       "line": 3,
@@ -140,13 +146,26 @@
                   }
                 }
               ],
-              "result": null
+              "result": null,
+              "loc": {
+                "start": {
+                  "line": 3,
+                  "column": 15,
+                  "byteOffset": 15
+                },
+                "end": {
+                  "line": 3,
+                  "column": 51,
+                  "byteOffset": 32
+                }
+              }
             }
           ],
           "loc": {
             "start": {
               "line": 3,
-              "column": 3
+              "column": 3,
+              "byteOffset": 12
             },
             "end": {
               "line": 3,
@@ -185,7 +204,8 @@
                       "loc": {
                         "start": {
                           "line": 7,
-                          "column": 13
+                          "column": 13,
+                          "byteOffset": 45
                         },
                         "end": {
                           "line": 7,
@@ -197,7 +217,8 @@
                   "loc": {
                     "start": {
                       "line": 7,
-                      "column": 7
+                      "column": 7,
+                      "byteOffset": 43
                     },
                     "end": {
                       "line": 7,
@@ -218,7 +239,8 @@
                         "loc": {
                           "start": {
                             "line": 8,
-                            "column": 19
+                            "column": 19,
+                            "byteOffset": 55
                           },
                           "end": {
                             "line": 8,
@@ -250,7 +272,8 @@
                               "loc": {
                                 "start": {
                                   "line": 8,
-                                  "column": 29
+                                  "column": 29,
+                                  "byteOffset": 60
                                 },
                                 "end": {
                                   "line": 8,
@@ -262,7 +285,8 @@
                           "loc": {
                             "start": {
                               "line": 8,
-                              "column": 23
+                              "column": 23,
+                              "byteOffset": 57
                             },
                             "end": {
                               "line": 8,
@@ -284,7 +308,8 @@
                           "loc": {
                             "start": {
                               "line": 8,
-                              "column": 44
+                              "column": 44,
+                              "byteOffset": 67
                             },
                             "end": {
                               "line": 8,
@@ -293,13 +318,26 @@
                           }
                         }
                       ],
-                      "result": null
+                      "result": null,
+                      "loc": {
+                        "start": {
+                          "line": 8,
+                          "column": 19,
+                          "byteOffset": 55
+                        },
+                        "end": {
+                          "line": 8,
+                          "column": 55,
+                          "byteOffset": 72
+                        }
+                      }
                     }
                   ],
                   "loc": {
                     "start": {
                       "line": 8,
-                      "column": 7
+                      "column": 7,
+                      "byteOffset": 52
                     },
                     "end": {
                       "line": 8,
@@ -321,7 +359,8 @@
                   "loc": {
                     "start": {
                       "line": 9,
-                      "column": 7
+                      "column": 7,
+                      "byteOffset": 75
                     },
                     "end": {
                       "line": 9,
@@ -330,13 +369,26 @@
                   }
                 }
               ],
-              "result": "i32"
+              "result": "i32",
+              "loc": {
+                "start": {
+                  "line": 6,
+                  "column": 10,
+                  "byteOffset": 38
+                },
+                "end": {
+                  "line": 10,
+                  "column": 3,
+                  "byteOffset": 80
+                }
+              }
             }
           ],
           "loc": {
             "start": {
               "line": 5,
-              "column": 3
+              "column": 3,
+              "byteOffset": 35
             },
             "end": {
               "line": 11,
@@ -367,7 +419,8 @@
               "loc": {
                 "start": {
                   "line": 13,
-                  "column": 12
+                  "column": 12,
+                  "byteOffset": 86
                 },
                 "end": {
                   "line": 13,
@@ -388,7 +441,8 @@
               "loc": {
                 "start": {
                   "line": 13,
-                  "column": 27
+                  "column": 27,
+                  "byteOffset": 92
                 },
                 "end": {
                   "line": 13,
@@ -400,7 +454,8 @@
           "loc": {
             "start": {
               "line": 13,
-              "column": 3
+              "column": 3,
+              "byteOffset": 83
             },
             "end": {
               "line": 13,
@@ -453,7 +508,8 @@
                           "loc": {
                             "start": {
                               "line": 17,
-                              "column": 22
+                              "column": 22,
+                              "byteOffset": 111
                             },
                             "end": {
                               "line": 17,
@@ -474,7 +530,8 @@
                           "loc": {
                             "start": {
                               "line": 17,
-                              "column": 36
+                              "column": 36,
+                              "byteOffset": 117
                             },
                             "end": {
                               "line": 17,
@@ -486,7 +543,8 @@
                       "loc": {
                         "start": {
                           "line": 17,
-                          "column": 13
+                          "column": 13,
+                          "byteOffset": 108
                         },
                         "end": {
                           "line": 17,
@@ -498,7 +556,8 @@
                   "loc": {
                     "start": {
                       "line": 17,
-                      "column": 7
+                      "column": 7,
+                      "byteOffset": 106
                     },
                     "end": {
                       "line": 17,
@@ -520,7 +579,8 @@
                   "loc": {
                     "start": {
                       "line": 17,
-                      "column": 52
+                      "column": 52,
+                      "byteOffset": 123
                     },
                     "end": {
                       "line": 17,
@@ -529,7 +589,19 @@
                   }
                 }
               ],
-              "result": "i32"
+              "result": "i32",
+              "loc": {
+                "start": {
+                  "line": 16,
+                  "column": 10,
+                  "byteOffset": 101
+                },
+                "end": {
+                  "line": 18,
+                  "column": 3,
+                  "byteOffset": 128
+                }
+              }
             },
             {
               "type": "Instr",
@@ -545,7 +617,8 @@
               "loc": {
                 "start": {
                   "line": 19,
-                  "column": 5
+                  "column": 5,
+                  "byteOffset": 130
                 },
                 "end": {
                   "line": 19,
@@ -557,7 +630,8 @@
           "loc": {
             "start": {
               "line": 15,
-              "column": 3
+              "column": 3,
+              "byteOffset": 97
             },
             "end": {
               "line": 20,
@@ -569,11 +643,13 @@
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 21,
-          "column": -1
+          "column": -1,
+          "byteOffset": 136
         }
       }
     }

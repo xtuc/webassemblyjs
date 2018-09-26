@@ -1,0 +1,9 @@
+Func table:
+func_0 at 14
+
+14 | block
+19 | i32.const 1
+25 | br 29
+29 | unreachable
+33 | i32.const 1
+39 | _end_and_return

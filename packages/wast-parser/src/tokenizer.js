@@ -189,6 +189,7 @@ export function tokenize(input: string) {
   // Used by SourceLocation
   let column = 1;
   let line = 1;
+  let byteOffset = 0; // char offset
 
   const tokens = [];
 
@@ -203,8 +204,17 @@ export function tokenize(input: string) {
       const endColumn = opts.endColumn || startColumn + String(v).length - 1;
       delete opts.endColumn;
 
+      const startByteOffset = opts.startByteOffset || byteOffset - String(v).length;
+      delete opts.startByteOffset;
+
+      const endByteOffset = opts.endByteOffset || startByteOffset + String(v).length -1;
+      delete opts.endByteOffset;
+
       const start = { line, column: startColumn };
       const end = { line, column: endColumn };
+
+      // const start = { line, column: startColumn, byteOffset: startByteOffset };
+      // const end = { line, column: endColumn, byteOffset };
 
       tokens.push(Token(type, v, start, end, opts));
     };
@@ -247,6 +257,7 @@ export function tokenize(input: string) {
    * @param {number} amount How many characters to consume. Default = 1
    */
   function eatCharacter(amount: number = 1): void {
+    byteOffset += amount;
     column += amount;
     current += amount;
     char = input[current];

@@ -26,11 +26,13 @@
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 1,
-          "column": 11
+          "column": 11,
+          "byteOffset": 3
         }
       }
     },
@@ -59,11 +61,13 @@
       "loc": {
         "start": {
           "line": 2,
-          "column": 1
+          "column": 1,
+          "byteOffset": 5
         },
         "end": {
           "line": 2,
-          "column": 10
+          "column": 10,
+          "byteOffset": 7
         }
       }
     },
@@ -92,11 +96,13 @@
       "loc": {
         "start": {
           "line": 3,
-          "column": 1
+          "column": 1,
+          "byteOffset": 9
         },
         "end": {
           "line": 3,
-          "column": 7
+          "column": 7,
+          "byteOffset": 11
         }
       }
     },
@@ -125,11 +131,13 @@
       "loc": {
         "start": {
           "line": 4,
-          "column": 1
+          "column": 1,
+          "byteOffset": 13
         },
         "end": {
           "line": 4,
-          "column": 7
+          "column": 7,
+          "byteOffset": 15
         }
       }
     }

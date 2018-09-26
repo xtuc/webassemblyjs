@@ -23,17 +23,31 @@
             "type": "NumberLiteral",
             "value": 0,
             "raw": "0"
+          },
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 8,
+              "byteOffset": 12
+            },
+            "end": {
+              "line": 2,
+              "column": 8,
+              "byteOffset": 13
+            }
           }
         }
       ],
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 3,
-          "column": -1
+          "column": -1,
+          "byteOffset": 14
         }
       }
     },
@@ -53,11 +67,13 @@
       "loc": {
         "start": {
           "line": 5,
-          "column": 1
+          "column": 1,
+          "byteOffset": 16
         },
         "end": {
           "line": 5,
-          "column": 18
+          "column": 18,
+          "byteOffset": 21
         }
       }
     }

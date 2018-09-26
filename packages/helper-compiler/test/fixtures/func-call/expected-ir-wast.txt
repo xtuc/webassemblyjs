@@ -1,0 +1,11 @@
+Func table:
+a at 6
+b at 17
+c at 27
+
+6 | nop
+10 | _end_and_return
+17 | nop
+20 | _end_and_return
+27 | nop
+30 | _end_and_return

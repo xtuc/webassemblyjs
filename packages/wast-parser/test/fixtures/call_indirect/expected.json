@@ -24,7 +24,8 @@
           "loc": {
             "start": {
               "line": 1,
-              "column": 26
+              "column": 26,
+              "byteOffset": 7
             },
             "end": {
               "line": 1,
@@ -36,11 +37,13 @@
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 1,
-          "column": 37
+          "column": 37,
+          "byteOffset": 12
         }
       }
     },
@@ -76,7 +79,8 @@
           "loc": {
             "start": {
               "line": 2,
-              "column": 28
+              "column": 28,
+              "byteOffset": 20
             },
             "end": {
               "line": 2,
@@ -88,11 +92,13 @@
       "loc": {
         "start": {
           "line": 2,
-          "column": 1
+          "column": 1,
+          "byteOffset": 14
         },
         "end": {
           "line": 2,
-          "column": 39
+          "column": 39,
+          "byteOffset": 25
         }
       }
     },
@@ -119,7 +125,8 @@
           "loc": {
             "start": {
               "line": 4,
-              "column": 16
+              "column": 16,
+              "byteOffset": 29
             },
             "end": {
               "line": 4,
@@ -131,11 +138,13 @@
       "loc": {
         "start": {
           "line": 4,
-          "column": 1
+          "column": 1,
+          "byteOffset": 27
         },
         "end": {
           "line": 4,
-          "column": 27
+          "column": 27,
+          "byteOffset": 34
         }
       }
     },
@@ -169,7 +178,8 @@
           "loc": {
             "start": {
               "line": 5,
-              "column": 28
+              "column": 28,
+              "byteOffset": 42
             },
             "end": {
               "line": 5,
@@ -191,7 +201,8 @@
           "loc": {
             "start": {
               "line": 5,
-              "column": 42
+              "column": 42,
+              "byteOffset": 48
             },
             "end": {
               "line": 5,
@@ -203,11 +214,13 @@
       "loc": {
         "start": {
           "line": 5,
-          "column": 1
+          "column": 1,
+          "byteOffset": 36
         },
         "end": {
           "line": 5,
-          "column": 53
+          "column": 53,
+          "byteOffset": 53
         }
       }
     },
@@ -250,7 +263,8 @@
           "loc": {
             "start": {
               "line": 7,
-              "column": 3
+              "column": 3,
+              "byteOffset": 70
             },
             "end": {
               "line": 7,
@@ -272,7 +286,8 @@
           "loc": {
             "start": {
               "line": 7,
-              "column": 17
+              "column": 17,
+              "byteOffset": 76
             },
             "end": {
               "line": 7,
@@ -294,7 +309,8 @@
           "loc": {
             "start": {
               "line": 7,
-              "column": 31
+              "column": 31,
+              "byteOffset": 82
             },
             "end": {
               "line": 7,
@@ -319,7 +335,8 @@
           "loc": {
             "start": {
               "line": 7,
-              "column": 45
+              "column": 45,
+              "byteOffset": 88
             },
             "end": {
               "line": 7,
@@ -341,7 +358,8 @@
           "loc": {
             "start": {
               "line": 7,
-              "column": 59
+              "column": 59,
+              "byteOffset": 94
             },
             "end": {
               "line": 7,
@@ -353,11 +371,13 @@
       "loc": {
         "start": {
           "line": 6,
-          "column": 1
+          "column": 1,
+          "byteOffset": 55
         },
         "end": {
           "line": 8,
-          "column": -1
+          "column": -1,
+          "byteOffset": 99
         }
       }
     },
@@ -384,7 +404,8 @@
           "loc": {
             "start": {
               "line": 9,
-              "column": 25
+              "column": 25,
+              "byteOffset": 106
             },
             "end": {
               "line": 9,
@@ -396,11 +417,13 @@
       "loc": {
         "start": {
           "line": 9,
-          "column": 1
+          "column": 1,
+          "byteOffset": 101
         },
         "end": {
           "line": 9,
-          "column": 36
+          "column": 36,
+          "byteOffset": 111
         }
       }
     },
@@ -437,7 +460,8 @@
                   "loc": {
                     "start": {
                       "line": 11,
-                      "column": 44
+                      "column": 44,
+                      "byteOffset": 125
                     },
                     "end": {
                       "line": 11,
@@ -452,7 +476,8 @@
           "loc": {
             "start": {
               "line": 11,
-              "column": 7
+              "column": 7,
+              "byteOffset": 115
             },
             "end": {
               "line": 11,
@@ -464,11 +489,13 @@
       "loc": {
         "start": {
           "line": 11,
-          "column": 1
+          "column": 1,
+          "byteOffset": 113
         },
         "end": {
           "line": 11,
-          "column": 57
+          "column": 57,
+          "byteOffset": 132
         }
       }
     },
@@ -505,7 +532,8 @@
                   "loc": {
                     "start": {
                       "line": 12,
-                      "column": 53
+                      "column": 53,
+                      "byteOffset": 149
                     },
                     "end": {
                       "line": 12,
@@ -520,7 +548,8 @@
           "loc": {
             "start": {
               "line": 12,
-              "column": 7
+              "column": 7,
+              "byteOffset": 136
             },
             "end": {
               "line": 12,
@@ -532,11 +561,13 @@
       "loc": {
         "start": {
           "line": 12,
-          "column": 1
+          "column": 1,
+          "byteOffset": 134
         },
         "end": {
           "line": 12,
-          "column": 66
+          "column": 66,
+          "byteOffset": 156
         }
       }
     },
@@ -580,7 +611,8 @@
                   "loc": {
                     "start": {
                       "line": 15,
-                      "column": 43
+                      "column": 43,
+                      "byteOffset": 174
                     },
                     "end": {
                       "line": 15,
@@ -602,7 +634,8 @@
                   "loc": {
                     "start": {
                       "line": 15,
-                      "column": 57
+                      "column": 57,
+                      "byteOffset": 180
                     },
                     "end": {
                       "line": 15,
@@ -617,7 +650,8 @@
           "loc": {
             "start": {
               "line": 14,
-              "column": 7
+              "column": 7,
+              "byteOffset": 160
             },
             "end": {
               "line": 16,
@@ -629,11 +663,13 @@
       "loc": {
         "start": {
           "line": 14,
-          "column": 1
+          "column": 1,
+          "byteOffset": 158
         },
         "end": {
           "line": 16,
-          "column": 0
+          "column": 0,
+          "byteOffset": 187
         }
       }
     },
@@ -686,7 +722,8 @@
                   "loc": {
                     "start": {
                       "line": 22,
-                      "column": 5
+                      "column": 5,
+                      "byteOffset": 232
                     },
                     "end": {
                       "line": 22,
@@ -708,7 +745,8 @@
                   "loc": {
                     "start": {
                       "line": 22,
-                      "column": 19
+                      "column": 19,
+                      "byteOffset": 238
                     },
                     "end": {
                       "line": 22,
@@ -730,7 +768,8 @@
                   "loc": {
                     "start": {
                       "line": 22,
-                      "column": 33
+                      "column": 33,
+                      "byteOffset": 244
                     },
                     "end": {
                       "line": 22,
@@ -755,7 +794,8 @@
                   "loc": {
                     "start": {
                       "line": 22,
-                      "column": 47
+                      "column": 47,
+                      "byteOffset": 250
                     },
                     "end": {
                       "line": 22,
@@ -777,7 +817,8 @@
                   "loc": {
                     "start": {
                       "line": 22,
-                      "column": 61
+                      "column": 61,
+                      "byteOffset": 256
                     },
                     "end": {
                       "line": 22,
@@ -792,7 +833,8 @@
           "loc": {
             "start": {
               "line": 18,
-              "column": 7
+              "column": 7,
+              "byteOffset": 191
             },
             "end": {
               "line": 24,
@@ -804,11 +846,13 @@
       "loc": {
         "start": {
           "line": 18,
-          "column": 1
+          "column": 1,
+          "byteOffset": 189
         },
         "end": {
           "line": 24,
-          "column": 0
+          "column": 0,
+          "byteOffset": 263
         }
       }
     },
@@ -855,7 +899,8 @@
                   "loc": {
                     "start": {
                       "line": 28,
-                      "column": 5
+                      "column": 5,
+                      "byteOffset": 285
                     },
                     "end": {
                       "line": 28,
@@ -877,7 +922,8 @@
                   "loc": {
                     "start": {
                       "line": 28,
-                      "column": 19
+                      "column": 19,
+                      "byteOffset": 291
                     },
                     "end": {
                       "line": 28,
@@ -892,7 +938,8 @@
           "loc": {
             "start": {
               "line": 26,
-              "column": 7
+              "column": 7,
+              "byteOffset": 267
             },
             "end": {
               "line": 30,
@@ -904,11 +951,13 @@
       "loc": {
         "start": {
           "line": 26,
-          "column": 1
+          "column": 1,
+          "byteOffset": 265
         },
         "end": {
           "line": 30,
-          "column": 0
+          "column": 0,
+          "byteOffset": 298
         }
       }
     }

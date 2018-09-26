@@ -27,7 +27,8 @@
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 15
+                  "column": 15,
+                  "byteOffset": 6
                 },
                 "end": {
                   "line": 2,
@@ -44,11 +45,13 @@
           "loc": {
             "start": {
               "line": 2,
-              "column": 3
+              "column": 3,
+              "byteOffset": 3
             },
             "end": {
               "line": 2,
-              "column": 26
+              "column": 26,
+              "byteOffset": 11
             }
           }
         },
@@ -66,22 +69,26 @@
             "loc": {
               "start": {
                 "line": 3,
-                "column": 13
+                "column": 13,
+                "byteOffset": 15
               },
               "end": {
                 "line": 3,
-                "column": 23
+                "column": 23,
+                "byteOffset": 19
               }
             }
           },
           "loc": {
             "start": {
               "line": 3,
-              "column": 3
+              "column": 3,
+              "byteOffset": 13
             },
             "end": {
               "line": 5,
-              "column": 1
+              "column": 1,
+              "byteOffset": 20
             }
           }
         },
@@ -107,7 +114,8 @@
               "loc": {
                 "start": {
                   "line": 5,
-                  "column": 19
+                  "column": 19,
+                  "byteOffset": 25
                 },
                 "end": {
                   "line": 5,
@@ -133,11 +141,13 @@
           "loc": {
             "start": {
               "line": 5,
-              "column": 3
+              "column": 3,
+              "byteOffset": 21
             },
             "end": {
               "line": 5,
-              "column": 30
+              "column": 30,
+              "byteOffset": 30
             }
           }
         },
@@ -164,22 +174,26 @@
             "loc": {
               "start": {
                 "line": 6,
-                "column": 13
+                "column": 13,
+                "byteOffset": 34
               },
               "end": {
                 "line": 6,
-                "column": 25
+                "column": 25,
+                "byteOffset": 38
               }
             }
           },
           "loc": {
             "start": {
               "line": 6,
-              "column": 3
+              "column": 3,
+              "byteOffset": 32
             },
             "end": {
               "line": 7,
-              "column": -1
+              "column": -1,
+              "byteOffset": 40
             }
           }
         }
@@ -187,11 +201,13 @@
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 7,
-          "column": -1
+          "column": -1,
+          "byteOffset": 40
         }
       }
     }

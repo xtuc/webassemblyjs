@@ -212,6 +212,7 @@ export class Module {
 
     // transform the function body `end` into a return
     const lastInstruction = this._program[this._program.length - 1];
+    assert(lastInstruction !== undefined, "no last instruction (missing end?)");
 
     const internalEndAndReturnNode = internalEndAndReturn();
     internalEndAndReturnNode.loc = lastInstruction.node.loc;

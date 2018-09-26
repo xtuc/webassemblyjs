@@ -1,4 +1,5 @@
 const { decode } = require("@webassemblyjs/wasm-parser");
+const { parse } = require("@webassemblyjs/wast-parser");
 const wabt = require("wabt");
 const {
   getFixtures,
@@ -14,9 +15,16 @@ function wast2Wasm(suite, txt) {
   return buffer;
 }
 
-describe("compiler", () => {
+describe("wasm compiler", () => {
   const testSuites = getFixtures(__dirname, "fixtures", "**/actual.wast");
   const pre = (f, suite) => dumpIR(toIR(decode(wast2Wasm(suite, f))));
 
   compareWithExpected(testSuites, pre, "expected-ir.txt");
+});
+
+describe("wast compiler", () => {
+  const testSuites = getFixtures(__dirname, "fixtures", "**/actual.wast");
+  const pre = f => dumpIR(toIR(parse(f)));
+
+  compareWithExpected(testSuites, pre, "expected-ir-wast.txt");
 });

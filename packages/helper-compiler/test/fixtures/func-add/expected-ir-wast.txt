@@ -1,0 +1,6 @@
+Func table:
+func_0 at 9
+
+5 | _end_and_return
+9 | i32.const 1
+15 | i32.const 1

@@ -80,10 +80,14 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         currentToken = lastToken;
       }
 
+      currentToken.loc.end.byteOffset = current;
+
       return currentToken.loc.end;
     }
 
     function getStartLoc(): Position {
+      token.loc.start.byteOffset = current;
+
       return token.loc.start;
     }
 
@@ -494,6 +498,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseBlock(): BlockInstruction {
+      const startLoc = getStartLoc();
+
       let label = t.identifier(getUniqueName("block"));
       let blockResult = null;
       const instr = [];
@@ -529,7 +535,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
       }
 
-      return t.blockInstruction(label, instr, blockResult);
+      const blockNode = t.blockInstruction(label, instr, blockResult)
+      const endLoc = getEndLoc();
+
+      return t.withLoc(blockNode, endLoc, startLoc);
     }
 
     /**
@@ -682,6 +691,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
      *
      */
     function parseLoop(): LoopInstruction {
+      const startLoc = getStartLoc();
+
       let label = t.identifier(getUniqueName("loop"));
       let blockResult;
       const instr = [];
@@ -715,7 +726,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
       }
 
-      return t.loopInstruction(label, blockResult, instr);
+      const endLoc = getEndLoc();
+
+      const loopNode = t.loopInstruction(label, blockResult, instr);
+      return t.withLoc(loopNode, endLoc, startLoc);
     }
 
     function parseCallIndirect(): CallIndirectInstruction {
@@ -1165,6 +1179,8 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       } else if (isKeyword(token, keywords.call)) {
         eatToken(); // keyword
 
+        const startLoc = getStartLoc();
+
         let index;
 
         if (token.type === tokens.identifier) {
@@ -1189,11 +1205,17 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           throw new Error("Missing argument in call instruciton");
         }
 
+        let node;
+
         if (instrArgs.length > 0) {
-          return t.callInstruction(index, instrArgs);
+          node = t.callInstruction(index, instrArgs);
         } else {
-          return t.callInstruction(index);
+          node = t.callInstruction(index);
         }
+
+        const endLoc = getEndLoc();
+
+        return t.withLoc(node, endLoc, startLoc);
       } else if (isKeyword(token, keywords.if)) {
         eatToken(); // Keyword
 

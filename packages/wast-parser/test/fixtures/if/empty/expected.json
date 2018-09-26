@@ -23,7 +23,8 @@
           "loc": {
             "start": {
               "line": 1,
-              "column": 6
+              "column": 6,
+              "byteOffset": 3
             },
             "end": {
               "line": 1,
@@ -38,11 +39,13 @@
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 1,
-          "column": 24
+          "column": 24,
+          "byteOffset": 9
         }
       }
     },
@@ -68,7 +71,8 @@
           "loc": {
             "start": {
               "line": 2,
-              "column": 5
+              "column": 5,
+              "byteOffset": 13
             },
             "end": {
               "line": 2,
@@ -83,11 +87,13 @@
       "loc": {
         "start": {
           "line": 2,
-          "column": 1
+          "column": 1,
+          "byteOffset": 11
         },
         "end": {
           "line": 2,
-          "column": 30
+          "column": 30,
+          "byteOffset": 22
         }
       }
     },
@@ -122,7 +128,8 @@
           "loc": {
             "start": {
               "line": 3,
-              "column": 8
+              "column": 8,
+              "byteOffset": 27
             },
             "end": {
               "line": 3,
@@ -137,11 +144,13 @@
       "loc": {
         "start": {
           "line": 3,
-          "column": 1
+          "column": 1,
+          "byteOffset": 24
         },
         "end": {
           "line": 3,
-          "column": 26
+          "column": 26,
+          "byteOffset": 33
         }
       }
     },
@@ -176,7 +185,8 @@
           "loc": {
             "start": {
               "line": 4,
-              "column": 8
+              "column": 8,
+              "byteOffset": 38
             },
             "end": {
               "line": 4,
@@ -191,11 +201,13 @@
       "loc": {
         "start": {
           "line": 4,
-          "column": 1
+          "column": 1,
+          "byteOffset": 35
         },
         "end": {
           "line": 4,
-          "column": 33
+          "column": 33,
+          "byteOffset": 47
         }
       }
     }
