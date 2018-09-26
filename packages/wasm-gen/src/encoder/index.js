@@ -306,8 +306,6 @@ function encodeExpr(instrs: Array<Instruction>): Array<Byte> {
     out.push(...n);
   });
 
-  out.push(0x0b); // end
-
   return out;
 }
 

@@ -3,6 +3,9 @@
 import { encodeNode } from "@webassemblyjs/wasm-gen";
 import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
 import {
+  isFunc,
+  isGlobal,
+  instruction,
   assertHasLoc,
   orderedInsertNode,
   getSectionMetadata,
@@ -17,6 +20,18 @@ import {
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
+import { define } from "mamacro";
+
+define(
+  CHECK_END,
+  (body) => `
+    const body = ${body};
+
+    if (body.length === 0 || body[body.length - 1].id !== "end") {
+      throw new Error("expressions must be ended");
+    }
+  `
+);
 
 type State = {
   uint8Buffer: Uint8Array,
@@ -178,6 +193,17 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
 
     uint8Buffer = res.uint8Buffer;
     sectionMetadata = res.sectionMetadata;
+  }
+
+  /**
+   * check that the expressions were ended
+   */
+  if (isFunc(node)) {
+    CHECK_END(node.body);
+  }
+
+  if (isGlobal(node)) {
+    CHECK_END(node.init);
   }
 
   /**
