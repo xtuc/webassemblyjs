@@ -1,0 +1,5 @@
+Func table:
+func_0 at 4
+__start at 4
+
+4 | _end_and_return

@@ -1,4 +1,4 @@
 (module
-  (func $start)
-  (start $start)
+  (func)
+  (start 0)
 )

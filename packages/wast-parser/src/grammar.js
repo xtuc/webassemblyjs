@@ -1312,6 +1312,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         eatTokenOfType(tokens.closeParen);
       }
 
+      // FIXME(sven): insert end instruction? we need to make sure that it won't
+      // collide with the last instruction in the body
+
       return t.func(
         fnName,
         typeRef !== undefined ? typeRef : t.signature(fnParams, fnResult),
@@ -1551,6 +1554,9 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         init.push(parseFuncInstr());
         eatTokenOfType(tokens.closeParen);
       }
+
+      // FIXME(sven): insert end instruction? we need to make sure that it won't
+      // collide with the last instruction in the init
 
       return t.global(type, init, name);
     }
