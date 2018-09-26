@@ -991,7 +991,7 @@ export function executeStackFrame(
         switch (id) {
           case "store":
             valueBuffer = valueBuffer;
-            break
+            break;
           case "store8":
             valueBuffer = valueBuffer.slice(0, 1);
             break;

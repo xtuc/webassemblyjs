@@ -11,9 +11,7 @@ const {
 const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
-const {
-  compileASTNodes,
-} = require("@webassemblyjs/helper-test-framework");
+const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
 describe("kernel exec - parametric instructions", () => {
   const operations = [

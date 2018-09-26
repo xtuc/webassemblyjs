@@ -50,7 +50,7 @@ function ASTToString(ast) {
 function makeGlobalNode(n) {
   return t.global(t.globalType("i32", "const"), [
     t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(n)]),
-    t.instruction("end"),
+    t.instruction("end")
   ]);
 }
 
@@ -67,10 +67,7 @@ function makeTypeNode() {
 }
 
 function makeFuncNodes(i, params = [], results = []) {
-  const body =[
-    t.instruction("nop"),
-    t.instruction("end"),
-  ];
+  const body = [t.instruction("nop"), t.instruction("end")];
 
   const id = t.identifier(`func_${i}`);
   const func = t.func(id, t.signature(params, results), body);

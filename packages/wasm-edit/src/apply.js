@@ -24,7 +24,7 @@ import { define } from "mamacro";
 
 define(
   CHECK_END,
-  (body) => `
+  body => `
     const body = ${body};
 
     if (body.length === 0 || body[body.length - 1].id !== "end") {
