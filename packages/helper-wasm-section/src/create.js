@@ -64,14 +64,22 @@ export function createEmptySection(
   // section id
   start += 1;
 
-  const sizeStartLoc = { line: -1, column: start };
-  const sizeEndLoc = { line: -1, column: start + 1 };
+  const sizeStartLoc = { line: -1, column: -1, byteOffset: start };
+  const sizeEndLoc = { line: -1, column: -1, byteOffset: start + 1 };
 
   // 1 byte for the empty vector
   const size = t.withLoc(t.numberLiteralFromRaw(1), sizeEndLoc, sizeStartLoc);
 
-  const vectorOfSizeStartLoc = { line: -1, column: sizeEndLoc.column };
-  const vectorOfSizeEndLoc = { line: -1, column: sizeEndLoc.column + 1 };
+  const vectorOfSizeStartLoc = {
+    line: -1,
+    column: -1,
+    byteOffset: sizeEndLoc.byteOffset
+  };
+  const vectorOfSizeEndLoc = {
+    line: -1,
+    column: -1,
+    byteOffset: sizeEndLoc.byteOffset + 1
+  };
 
   const vectorOfSize = t.withLoc(
     t.numberLiteralFromRaw(0),

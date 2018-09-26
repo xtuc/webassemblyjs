@@ -44,9 +44,9 @@ function shiftLocNodeByDelta(node: Node, delta: number) {
   assertHasLoc(node);
 
   // $FlowIgnore: assertHasLoc ensures that
-  node.loc.start.column += delta;
+  node.loc.start.byteOffset += delta;
   // $FlowIgnore: assertHasLoc ensures that
-  node.loc.end.column += delta;
+  node.loc.end.byteOffset += delta;
 }
 
 function applyUpdate(
@@ -67,9 +67,9 @@ function applyUpdate(
   uint8Buffer = overrideBytesInBuffer(
     uint8Buffer,
     // $FlowIgnore: assertHasLoc ensures that
-    oldNode.loc.start.column,
+    oldNode.loc.start.byteOffset,
     // $FlowIgnore: assertHasLoc ensures that
-    oldNode.loc.end.column,
+    oldNode.loc.end.byteOffset,
     replacementByteArray
   );
 
@@ -97,7 +97,7 @@ function applyUpdate(
 
             // function body size byte
             // FIXME(sven): only handles one byte u32
-            const start = node.loc.start.column;
+            const start = node.loc.start.byteOffset;
             const end = start + 1;
 
             uint8Buffer = overrideBytesInBuffer(
@@ -118,21 +118,21 @@ function applyUpdate(
   const deltaBytes =
     replacementByteArray.length -
     // $FlowIgnore: assertHasLoc ensures that
-    (oldNode.loc.end.column - oldNode.loc.start.column);
+    (oldNode.loc.end.byteOffset - oldNode.loc.start.byteOffset);
 
   // Init location informations
   newNode.loc = {
-    start: { line: -1, column: -1 },
-    end: { line: -1, column: -1 }
+    start: { line: -1, column: -1, byteOffset: -1 },
+    end: { line: -1, column: -1, byteOffset: -1 }
   };
 
   // Update new node end position
   // $FlowIgnore: assertHasLoc ensures that
-  newNode.loc.start.column = oldNode.loc.start.column;
+  newNode.loc.start.byteOffset = oldNode.loc.start.byteOffset;
   // $FlowIgnore: assertHasLoc ensures that
-  newNode.loc.end.column =
+  newNode.loc.end.byteOffset =
     // $FlowIgnore: assertHasLoc ensures that
-    oldNode.loc.start.column + replacementByteArray.length;
+    oldNode.loc.start.byteOffset + replacementByteArray.length;
 
   return { uint8Buffer, deltaBytes, deltaElements };
 }
@@ -164,9 +164,9 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
   uint8Buffer = overrideBytesInBuffer(
     uint8Buffer,
     // $FlowIgnore: assertHasLoc ensures that
-    node.loc.start.column,
+    node.loc.start.byteOffset,
     // $FlowIgnore: assertHasLoc ensures that
-    node.loc.end.column,
+    node.loc.end.byteOffset,
     replacement
   );
 
@@ -175,7 +175,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    */
 
   // $FlowIgnore: assertHasLoc ensures that
-  const deltaBytes = -(node.loc.end.column - node.loc.start.column);
+  const deltaBytes = -(node.loc.end.byteOffset - node.loc.start.byteOffset);
 
   return { uint8Buffer, deltaBytes, deltaElements };
 }
@@ -225,8 +225,8 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
   uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
 
   node.loc = {
-    start: { line: -1, column: start },
-    end: { line: -1, column: start + deltaBytes }
+    start: { line: -1, column: -1, byteOffset: start },
+    end: { line: -1, column: -1, byteOffset: start + deltaBytes }
   };
 
   // for func add the additional metadata in the AST

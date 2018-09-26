@@ -1,10 +1,10 @@
 const t = require("../lib/index");
 const { assert } = require("chai");
 
-function locOnCol(n) {
+function locOnByteOffset(n) {
   return {
-    start: { line: -1, column: n },
-    end: { line: -1, column: n + 1 }
+    start: { line: -1, column: -1, byteOffset: n },
+    end: { line: -1, column: -1, byteOffset: n + 1 }
   };
 }
 
@@ -35,13 +35,13 @@ describe("AST utils", () => {
 
   describe("ordered insert", () => {
     const firstType = t.typeInstruction(undefined, t.signature([], []));
-    firstType.loc = locOnCol(10);
+    firstType.loc = locOnByteOffset(10);
 
     it("should insert the node in an empty module", () => {
       const m = t.module(null, []);
       const n = t.typeInstruction(undefined, t.signature([], []));
 
-      n.loc = locOnCol(1);
+      n.loc = locOnByteOffset(1);
 
       t.orderedInsertNode(m, n);
 
@@ -54,7 +54,7 @@ describe("AST utils", () => {
       const m = t.module(null, [firstType]);
 
       const n = t.blockComment("");
-      n.loc = locOnCol(1);
+      n.loc = locOnByteOffset(1);
 
       t.orderedInsertNode(m, n);
 
@@ -67,7 +67,7 @@ describe("AST utils", () => {
       const m = t.module(null, [firstType]);
 
       const n = t.blockComment("");
-      n.loc = locOnCol(100);
+      n.loc = locOnByteOffset(100);
 
       t.orderedInsertNode(m, n);
 
@@ -81,7 +81,7 @@ describe("AST utils", () => {
 
       const exportNode = t.moduleExport("f", t.moduleExportDescr("Func", 1));
 
-      exportNode.loc = locOnCol(1);
+      exportNode.loc = locOnByteOffset(1);
 
       t.orderedInsertNode(m, exportNode);
 
@@ -107,7 +107,7 @@ describe("AST utils", () => {
 
     it("should NOT throw when no location", () => {
       const n = t.blockComment("");
-      n.loc = locOnCol(100);
+      n.loc = locOnByteOffset(100);
 
       t.assertHasLoc(n);
     });
@@ -117,10 +117,10 @@ describe("AST utils", () => {
     it("should get the end of the section", () => {
       const startOffset = 0;
       const size = t.numberLiteralFromRaw(10);
-      size.loc = locOnCol(10);
+      size.loc = locOnByteOffset(10);
 
       const vectorOfSize = t.numberLiteralFromRaw(1);
-      vectorOfSize.loc = locOnCol(10);
+      vectorOfSize.loc = locOnByteOffset(10);
 
       const section = t.sectionMetadata(
         "code",
@@ -140,22 +140,22 @@ describe("AST utils", () => {
     describe("node", () => {
       it("should shift by position delta", () => {
         const n = t.numberLiteralFromRaw(10);
-        n.loc = locOnCol(10);
+        n.loc = locOnByteOffset(10);
 
         t.shiftLoc(n, +10);
 
-        assert.equal(n.loc.start.column, 20);
-        assert.equal(n.loc.end.column, 21);
+        assert.equal(n.loc.start.byteOffset, 20);
+        assert.equal(n.loc.end.byteOffset, 21);
       });
 
       it("should shift by negative delta", () => {
         const n = t.numberLiteralFromRaw(10);
-        n.loc = locOnCol(10);
+        n.loc = locOnByteOffset(10);
 
         t.shiftLoc(n, -10);
 
-        assert.equal(n.loc.start.column, 0);
-        assert.equal(n.loc.end.column, 1);
+        assert.equal(n.loc.start.byteOffset, 0);
+        assert.equal(n.loc.end.byteOffset, 1);
       });
     });
 
@@ -166,10 +166,10 @@ describe("AST utils", () => {
         const startOffset = 0;
 
         const size = t.numberLiteralFromRaw(10);
-        size.loc = locOnCol(10);
+        size.loc = locOnByteOffset(10);
 
         const vectorOfSize = t.numberLiteralFromRaw(1);
-        vectorOfSize.loc = locOnCol(10);
+        vectorOfSize.loc = locOnByteOffset(10);
 
         const section = t.sectionMetadata(
           "code",
@@ -185,17 +185,17 @@ describe("AST utils", () => {
 
       it("should shift section and correspondign nodes", () => {
         const type = t.typeInstruction(undefined, t.signature([], []));
-        type.loc = locOnCol(10);
+        type.loc = locOnByteOffset(10);
 
         const program = t.program([t.module(null, [type])]);
 
         const startOffset = 0;
 
         const size = t.numberLiteralFromRaw(10);
-        size.loc = locOnCol(10);
+        size.loc = locOnByteOffset(10);
 
         const vectorOfSize = t.numberLiteralFromRaw(1);
-        vectorOfSize.loc = locOnCol(10);
+        vectorOfSize.loc = locOnByteOffset(10);
 
         const section = t.sectionMetadata(
           "type",
@@ -206,7 +206,7 @@ describe("AST utils", () => {
 
         t.shiftSection(program, section, +10);
 
-        assert.equal(type.loc.start.column, 20);
+        assert.equal(type.loc.start.byteOffset, 20);
       });
     });
   });

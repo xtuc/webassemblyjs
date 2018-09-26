@@ -59,7 +59,8 @@ type LongNumber = {
 
 type Position = {
   line: number,
-  column: number
+  column: number,
+  byteOffset?: number
 };
 
 type SourceLocation = {

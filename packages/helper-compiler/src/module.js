@@ -179,7 +179,8 @@ export class Module {
       internalGotoNode.loc = {
         start: {
           line: -1,
-          column: node.alternate[0].loc.start.column - 1
+          column: -1,
+          byteOffset: node.alternate[0].loc.start.byteOffset - 1
         }
       };
 
