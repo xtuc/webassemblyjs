@@ -77,11 +77,11 @@ export function orderedInsertNode(m: Module, n: Node) {
 
     if (field.loc != null) {
       // $FlowIgnore
-      fieldEndCol = field.loc.end.column;
+      fieldEndCol = field.loc.end.byteOffset;
     }
 
     // $FlowIgnore: assertHasLoc ensures that
-    if (didInsert === false && n.loc.start.column < fieldEndCol) {
+    if (didInsert === false && n.loc.start.byteOffset < fieldEndCol) {
       didInsert = true;
       acc.push(n);
     }
@@ -114,15 +114,15 @@ export function getEndOfSection(s: SectionMetadata): number {
     s.startOffset +
     s.size.value +
     // $FlowIgnore
-    (s.size.loc.end.column - s.size.loc.start.column)
+    (s.size.loc.end.byteOffset - s.size.loc.start.byteOffset)
   );
 }
 
 export function shiftLoc(node: Node, delta: number) {
   // $FlowIgnore
-  node.loc.start.column += delta;
+  node.loc.start.byteOffset += delta;
   // $FlowIgnore
-  node.loc.end.column += delta;
+  node.loc.end.byteOffset += delta;
 }
 
 export function shiftSection(
@@ -196,7 +196,7 @@ export function getStartByteOffset(n: Node): number {
     );
   }
 
-  return n.loc.start.column;
+  return n.loc.start.byteOffset;
 }
 
 export function getEndByteOffset(n: Node): number {
@@ -206,7 +206,7 @@ export function getEndByteOffset(n: Node): number {
     );
   }
 
-  return n.loc.end.column;
+  return n.loc.end.byteOffset;
 }
 
 export function getFunctionBeginingByteOffset(n: Func): number {

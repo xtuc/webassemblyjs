@@ -35,8 +35,8 @@ export function shrinkPaddedLEB128(
         const newu32Encoded = encodeU32(node.size.value);
         const newu32EncodedLen = newu32Encoded.length;
 
-        const start = node.size.loc.start.column;
-        const end = node.size.loc.end.column;
+        const start = node.size.loc.start.byteOffset;
+        const end = node.size.loc.end.byteOffset;
 
         const oldu32EncodedLen = end - start;
 

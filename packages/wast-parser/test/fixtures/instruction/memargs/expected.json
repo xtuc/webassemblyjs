@@ -19,7 +19,8 @@
           "loc": {
             "start": {
               "line": 1,
-              "column": 33
+              "column": 33,
+              "byteOffset": 11
             },
             "end": {
               "line": 1,
@@ -44,11 +45,13 @@
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 1,
-          "column": 44
+          "column": 44,
+          "byteOffset": 16
         }
       }
     }

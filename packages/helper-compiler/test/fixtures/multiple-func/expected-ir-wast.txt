@@ -1,0 +1,6 @@
+Func table:
+a at 6
+b at 16
+
+6 | _end_and_return
+16 | _end_and_return

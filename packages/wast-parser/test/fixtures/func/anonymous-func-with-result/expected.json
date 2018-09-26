@@ -19,11 +19,13 @@
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 1,
-          "column": 18
+          "column": 18,
+          "byteOffset": 6
         }
       }
     }

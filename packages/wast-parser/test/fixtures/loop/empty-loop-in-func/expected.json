@@ -22,7 +22,19 @@
             "value": "loop_0",
             "raw": ""
           },
-          "instr": []
+          "instr": [],
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 5,
+              "byteOffset": 4
+            },
+            "end": {
+              "line": 2,
+              "column": 5,
+              "byteOffset": 4
+            }
+          }
         },
         {
           "type": "LoopInstruction",
@@ -33,7 +45,8 @@
             "loc": {
               "start": {
                 "line": 3,
-                "column": 7
+                "column": 7,
+                "byteOffset": 7
               },
               "end": {
                 "line": 3,
@@ -41,17 +54,31 @@
               }
             }
           },
-          "instr": []
+          "instr": [],
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 7,
+              "byteOffset": 7
+            },
+            "end": {
+              "line": 3,
+              "column": 8,
+              "byteOffset": 8
+            }
+          }
         }
       ],
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 4,
-          "column": -1
+          "column": -1,
+          "byteOffset": 9
         }
       }
     }

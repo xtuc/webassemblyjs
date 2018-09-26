@@ -26,7 +26,8 @@
           "loc": {
             "start": {
               "line": 2,
-              "column": 3
+              "column": 3,
+              "byteOffset": 3
             },
             "end": {
               "line": 2,
@@ -46,7 +47,8 @@
           "loc": {
             "start": {
               "line": 3,
-              "column": 3
+              "column": 3,
+              "byteOffset": 7
             },
             "end": {
               "line": 3,
@@ -66,7 +68,8 @@
           "loc": {
             "start": {
               "line": 4,
-              "column": 3
+              "column": 3,
+              "byteOffset": 11
             },
             "end": {
               "line": 4,
@@ -86,7 +89,8 @@
           "loc": {
             "start": {
               "line": 5,
-              "column": 3
+              "column": 3,
+              "byteOffset": 15
             },
             "end": {
               "line": 5,
@@ -110,7 +114,8 @@
           "loc": {
             "start": {
               "line": 7,
-              "column": 3
+              "column": 3,
+              "byteOffset": 19
             },
             "end": {
               "line": 7,
@@ -134,7 +139,8 @@
           "loc": {
             "start": {
               "line": 8,
-              "column": 3
+              "column": 3,
+              "byteOffset": 24
             },
             "end": {
               "line": 8,
@@ -146,11 +152,13 @@
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 9,
-          "column": -1
+          "column": -1,
+          "byteOffset": 28
         }
       }
     }

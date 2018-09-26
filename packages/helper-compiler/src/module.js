@@ -179,7 +179,8 @@ export class Module {
       internalGotoNode.loc = {
         start: {
           line: -1,
-          column: node.alternate[0].loc.start.column - 1
+          column: -1,
+          byteOffset: node.alternate[0].loc.start.byteOffset - 1
         }
       };
 
@@ -211,6 +212,7 @@ export class Module {
 
     // transform the function body `end` into a return
     const lastInstruction = this._program[this._program.length - 1];
+    assert(lastInstruction !== undefined, "no last instruction (missing end?)");
 
     const internalEndAndReturnNode = internalEndAndReturn();
     internalEndAndReturnNode.loc = lastInstruction.node.loc;

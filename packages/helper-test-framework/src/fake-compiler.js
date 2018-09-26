@@ -6,11 +6,13 @@ import { listOfInstructionsToIr } from "@webassemblyjs/helper-compiler";
 export function addFakeLocsListOfInstructions(instrs) {
   const loc = x => ({
     start: {
-      column: x,
+      byteOffset: x,
+      column: -1,
       line: -1
     },
     end: {
-      column: x + 1,
+      byteOffset: x + 1,
+      column: -1,
       line: -1
     }
   });

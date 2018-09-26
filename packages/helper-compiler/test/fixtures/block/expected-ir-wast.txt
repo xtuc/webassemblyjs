@@ -1,0 +1,5 @@
+Func table:
+func_0 at 10
+
+10 | block
+15 | _end_and_return

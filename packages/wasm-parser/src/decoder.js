@@ -60,7 +60,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   let offset = 0;
 
   function getPosition(): Position {
-    return { line: -1, column: offset };
+    return { line: -1, column: -1, byteOffset: offset };
   }
 
   function dump(b: Array<Byte>, msg: any) {

@@ -47,13 +47,13 @@ describe("create", () => {
 
     // section byte size
     assert.equal(res.sectionMetadata.size.value, 1);
-    assert.equal(res.sectionMetadata.size.loc.start.column, 9);
-    assert.equal(res.sectionMetadata.size.loc.end.column, 10);
+    assert.equal(res.sectionMetadata.size.loc.start.byteOffset, 9);
+    assert.equal(res.sectionMetadata.size.loc.end.byteOffset, 10);
 
     // section vector size
     assert.equal(res.sectionMetadata.vectorOfSize.value, 0);
-    assert.equal(res.sectionMetadata.vectorOfSize.loc.start.column, 10);
-    assert.equal(res.sectionMetadata.vectorOfSize.loc.end.column, 11);
+    assert.equal(res.sectionMetadata.vectorOfSize.loc.start.byteOffset, 10);
+    assert.equal(res.sectionMetadata.vectorOfSize.loc.end.byteOffset, 11);
   });
 
   it("should create an section and preserve section order", () => {
@@ -183,8 +183,8 @@ describe("resize", () => {
     const globalSection = getSectionMetadata(ast, "global");
 
     assert.equal(12 + 4, globalSection.startOffset);
-    assert.equal(12 + 4, globalSection.size.loc.start.column);
-    assert.equal(13 + 4, globalSection.vectorOfSize.loc.start.column);
+    assert.equal(12 + 4, globalSection.size.loc.start.byteOffset);
+    assert.equal(13 + 4, globalSection.vectorOfSize.loc.start.byteOffset);
   });
 });
 
@@ -220,8 +220,8 @@ describe("remove", () => {
     const code = getSectionMetadata(ast, "code");
 
     assert.equal(19, code.startOffset);
-    assert.equal(19, code.size.loc.start.column);
-    assert.equal(20, code.vectorOfSize.loc.start.column);
+    assert.equal(19, code.size.loc.start.byteOffset);
+    assert.equal(20, code.vectorOfSize.loc.start.byteOffset);
 
     assert.deepEqual(newBin, expected);
   });

@@ -21,11 +21,13 @@
       "loc": {
         "start": {
           "line": 1,
-          "column": 2
+          "column": 2,
+          "byteOffset": 1
         },
         "end": {
           "line": 1,
-          "column": 33
+          "column": 33,
+          "byteOffset": 9
         }
       }
     },
@@ -50,11 +52,13 @@
       "loc": {
         "start": {
           "line": 2,
-          "column": 1
+          "column": 1,
+          "byteOffset": 11
         },
         "end": {
           "line": 2,
-          "column": 35
+          "column": 35,
+          "byteOffset": 20
         }
       }
     }

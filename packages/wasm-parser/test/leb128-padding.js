@@ -52,11 +52,13 @@ it("should decode a binary with LEB128 padding", () => {
                   loc: {
                     start: {
                       line: -1,
-                      column: 9
+                      column: -1,
+                      byteOffset: 9
                     },
                     end: {
                       line: -1,
-                      column: 14
+                      column: -1,
+                      byteOffset: 14
                     }
                   }
                 },
@@ -67,11 +69,13 @@ it("should decode a binary with LEB128 padding", () => {
                   loc: {
                     start: {
                       line: -1,
-                      column: 14
+                      column: -1,
+                      byteOffset: 14
                     },
                     end: {
                       line: -1,
-                      column: 19
+                      column: -1,
+                      byteOffset: 19
                     }
                   }
                 }

@@ -21,8 +21,8 @@ export function resizeSectionByteSize(
   }
 
   // keep old node location to be overriden
-  const start = sectionMetadata.size.loc.start.column;
-  const end = sectionMetadata.size.loc.end.column;
+  const start = sectionMetadata.size.loc.start.byteOffset;
+  const end = sectionMetadata.size.loc.end.byteOffset;
 
   const newSectionSize = sectionMetadata.size.value + deltaBytes;
   const newBytes = encodeU32(newSectionSize);
@@ -39,13 +39,13 @@ export function resizeSectionByteSize(
   if (newu32EncodedLen !== oldu32EncodedLen) {
     const deltaInSizeEncoding = newu32EncodedLen - oldu32EncodedLen;
 
-    sectionMetadata.size.loc.end.column = start + newu32EncodedLen;
+    sectionMetadata.size.loc.end.byteOffset = start + newu32EncodedLen;
 
     deltaBytes += deltaInSizeEncoding;
 
     // move the vec size pointer size the section size is now smaller
-    sectionMetadata.vectorOfSize.loc.start.column += deltaInSizeEncoding;
-    sectionMetadata.vectorOfSize.loc.end.column += deltaInSizeEncoding;
+    sectionMetadata.vectorOfSize.loc.start.byteOffset += deltaInSizeEncoding;
+    sectionMetadata.vectorOfSize.loc.end.byteOffset += deltaInSizeEncoding;
   }
 
   // Once we hit our section every that is after needs to be shifted by the delta
@@ -89,15 +89,15 @@ export function resizeSectionVecSize(
   }
 
   // keep old node location to be overriden
-  const start = sectionMetadata.vectorOfSize.loc.start.column;
-  const end = sectionMetadata.vectorOfSize.loc.end.column;
+  const start = sectionMetadata.vectorOfSize.loc.start.byteOffset;
+  const end = sectionMetadata.vectorOfSize.loc.end.byteOffset;
 
   const newValue = sectionMetadata.vectorOfSize.value + deltaElements;
   const newBytes = encodeU32(newValue);
 
   // Update AST
   sectionMetadata.vectorOfSize.value = newValue;
-  sectionMetadata.vectorOfSize.loc.end.column = start + newBytes.length;
+  sectionMetadata.vectorOfSize.loc.end.byteOffset = start + newBytes.length;
 
   return overrideBytesInBuffer(uint8Buffer, start, end, newBytes);
 }
