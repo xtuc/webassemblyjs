@@ -9,7 +9,7 @@ import { parse } from "@webassemblyjs/wast-parser";
 import { createCompiledModule } from "webassemblyjs/lib/compiler/compile/module";
 import { Instance } from "webassemblyjs/lib/interpreter";
 
-import { assert_return } from "./asserts";
+import { assert_return, assert_malformed, assert_invalid } from "./asserts";
 
 const WASM_TEST_DIR = "./wasm_test_dir";
 
@@ -43,7 +43,7 @@ export default function run(filename: string) {
   const out = basename(filename);
   const manifestOut = join(WASM_TEST_DIR, out + ".json");
 
-  execSync(`wast2json ${filename} -o ${manifestOut}`);
+  execSync(`wast2json --debug-names ${filename} -o ${manifestOut}`);
 
   // run tests
 
@@ -52,8 +52,6 @@ export default function run(filename: string) {
   const instances = {};
 
   manifest.commands.forEach(command => {
-    console.log(command);
-
     switch (command.type) {
       case "module": {
         // $FlowIgnore
@@ -75,9 +73,28 @@ export default function run(filename: string) {
         break;
       }
 
+      case "assert_malformed": {
+        assert_malformed(
+          () => loadModule(command.module_type, command.filename),
+          command.text,
+        );
+        break;
+      }
+
+      case "assert_invalid": {
+        console.log(command);
+        assert_invalid(
+          () => loadModule(command.module_type, command.filename),
+          command.text,
+        );
+        break;
+      }
+
       default:
         throw new Error("unknown command: " + command.type);
     }
+
+    console.log("PASS " + command.type);
   });
 }
 
