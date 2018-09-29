@@ -356,10 +356,6 @@ function instantiateExports(
               // TODO(sven): move to validation error?
               if (instantiatedGlobal.type.mutability === "var") {
                 throw new CompileError("Mutable globals cannot be exported");
-              } else if (instantiatedGlobal.type.valtype === "i64") {
-                throw new LinkError(
-                  "Export of globals of type i64 is not allowed"
-                );
               }
             }
           );

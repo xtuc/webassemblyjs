@@ -4,28 +4,57 @@ import { assert } from "mamacro";
 import Long from "@xtuc/long";
 
 function eq(actual: StackLocal, expected: Object) {
-  const { type, value } = expected;
-
   // check type
-  assert(actual.type === type);
+  assert(actual.type === expected.type);
 
   // check value
   switch (expected.type) {
-    case "i32":
-      assert(
-        actual.value.toString() === (value | 0).toString(),
-        `${actual.value.toString()} doesn't match expected value ${value | 0}`
-      );
-      break;
-
-    case "i64":
-      const i64Value = Long.fromString(value, false).toString();
+    case "i32": {
+      const i32Value = Long.fromString(expected.value).toInt();
 
       assert(
-        actual.value.toString() === i64Value,
-        `${actual.value.toString()} doesn't match expected value ${i64Value}`
+        actual.value.toString() === i32Value.toString(),
+        `Expected value ${i32Value}, got ${actual.value.toString()}`
       );
       break;
+    }
+
+    case "f32": {
+      const actuali32 = actual.value.reinterpret();
+      const expectedi32 = Long.fromString(expected.value).toInt();
+
+      assert(
+        actuali32.toNumber() === expectedi32,
+        `Expected value ${expectedi32}, got ${actuali32.toString()}`
+      );
+
+      break;
+    }
+
+    case "f64": {
+      const actuali32 = actual.value.reinterpret();
+      const expectedi32 = Long.fromString(expected.value).toNumber();
+
+      assert(
+        actuali32.toNumber() === expectedi32,
+        `Expected value ${expectedi32}, got ${actuali32.toString()}`
+      );
+
+      break;
+    }
+
+    case "i64": {
+      const actuali64 = actual.value.toString();
+      const expectedi64 = Long.fromString(expected.value)
+        .toSigned()
+        .toString();
+
+      assert(
+        actuali64 === expectedi64,
+        `Expected value ${expectedi64}, got ${actuali64}`
+      );
+      break;
+    }
 
     default:
       throw new Error("Unsupport eq with type: " + expected.type);
