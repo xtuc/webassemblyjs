@@ -282,7 +282,7 @@ function instantiateExports(
     );
 
     if (moduleInstanceExport !== undefined) {
-      throw new CompileError("Duplicate export name");
+      throw new CompileError("duplicate export name");
     }
   }
 

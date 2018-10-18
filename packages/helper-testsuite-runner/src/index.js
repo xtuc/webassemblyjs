@@ -31,6 +31,9 @@ type Manifest = {
   commands: Array<Command>
 };
 
+let lastInstance;
+const namedInstances = {};
+
 export default function run(filename: string) {
   assert(typeof filename === "string", "please specify a filename");
 
@@ -49,13 +52,11 @@ export default function run(filename: string) {
 
   const manifest: Manifest = JSON.parse(readFileSync(manifestOut, "utf8"));
 
-  const instances = {};
-
   manifest.commands.forEach(command => {
     switch (command.type) {
       case "module": {
         // $FlowIgnore
-        instances[getModuleName(command)] = loadModule(
+        lastInstance = namedInstances[getModuleName(command)] = loadModule(
           "binary",
           command.filename
         );
@@ -63,29 +64,26 @@ export default function run(filename: string) {
       }
 
       case "assert_return": {
-        assert(instances[getModuleName(command)] !== undefined);
+        assert(namedInstances[getModuleName(command)] !== undefined);
 
-        assert_return(
-          instances[getModuleName(command)],
-          command.action,
-          command.expected
-        );
+        const fn = getExportedElement(command.action.field, command.action.module);
+
+        assert_return(fn, command.action, command.expected);
         break;
       }
 
       case "assert_malformed": {
         assert_malformed(
           () => loadModule(command.module_type, command.filename),
-          command.text,
+          command.text
         );
         break;
       }
 
       case "assert_invalid": {
-        console.log(command);
         assert_invalid(
           () => loadModule(command.module_type, command.filename),
-          command.text,
+          command.text
         );
         break;
       }
@@ -96,6 +94,27 @@ export default function run(filename: string) {
 
     console.log("PASS " + command.type);
   });
+}
+
+function getExportedElement(name: string, moduleName: ?string): Object {
+  if (lastInstance.exports[name] !== undefined) {
+    return lastInstance.exports[name];
+  }
+
+  assert(moduleName !== undefined, "no named module for " + name);
+
+  // $FlowIgnore: asserted above
+  const instance = namedInstances[moduleName];
+  assert(
+    instance !== undefined,
+    `module instance ${String(moduleName)} not found`
+  );
+
+  // $FlowIgnore: asserted above
+  const fn = instance.exports[name];
+  assert(typeof fn === "function", `function ${name} not found`);
+
+  return fn;
 }
 
 function loadModule(type: string, filename: string): Instance {

@@ -65,21 +65,26 @@ function eq(actual: StackLocal, expected: Object) {
 // ( assert_return <action> <expr>* )
 //
 export function assert_return(
-  instance: Instance,
+  element: any,
   action: Object,
   expected: Object
 ) {
-  const { type, field, args } = action;
+  const { type, args } = action;
 
-  assert(type === "invoke");
+  assert(type === "invoke" || type === "get", `unsupported type "${type}"`);
 
-  const fn = instance.exports[field];
-  assert(typeof fn === "function", `function ${field} not found`);
+  if (type === "get") {
+    if (expected.length > 0) {
+      eq(element, expected[0]);
+    }
+  }
 
-  const res = fn(...args.map(x => x.value));
+  if (type === "invoke") {
+    const res = element(...args.map(x => x.value));
 
-  if (expected.length > 0) {
-    eq(res, expected[0]);
+    if (expected.length > 0) {
+      eq(res, expected[0]);
+    }
   }
 }
 
@@ -109,8 +114,8 @@ export function assert_invalid(getInstance: () => Instance, expected: string) {
     assert(false, "did not throw any error");
   } catch (e) {
     assert(
-      e.message === expected,
-      `Expected error ${expected}, got ${e.message}`
+      e.message.match(new RegExp(expected)),
+      `Expected error "${expected}", got "${e.message}"`
     );
   }
 }

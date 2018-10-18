@@ -574,7 +574,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         if (typeof func === "undefined") {
           throw new CompileError(
-            `entry not found at index ${index} in function section`
+            `unknown function (${index})`
           );
         }
 
