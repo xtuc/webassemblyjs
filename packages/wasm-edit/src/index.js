@@ -30,7 +30,6 @@ function sortBySectionOrder(nodes: Array<Node>) {
       throw new Error("Section id not found");
     }
 
-    // $FlowIgnore ensured above
     return aId - bId;
   });
 }
