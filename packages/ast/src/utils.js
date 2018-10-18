@@ -57,7 +57,7 @@ export function sortSectionMetadata(m: Module) {
       throw new Error("Section id not found");
     }
 
-    return aId > bId;
+    return aId - bId;
   });
 }
 

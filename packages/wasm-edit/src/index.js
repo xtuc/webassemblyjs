@@ -31,7 +31,7 @@ function sortBySectionOrder(nodes: Array<Node>) {
     }
 
     // $FlowIgnore ensured above
-    return aId > bId;
+    return aId - bId;
   });
 }
 
