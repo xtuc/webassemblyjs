@@ -4,7 +4,7 @@ cache:
   yarn: true
 
 before_install: npm i -g yarn
-install: make YARN_EXTRA_ARGS="$YARN_EXTRA_ARGS" bootstrap
+install: make bootstrap
 
 script: make $JOB
 
@@ -20,7 +20,6 @@ matrix:
     - node_js: "10"
       env:
         - NODEJS_VERSION=v11.0.0-nightly201810139f7e3a4040
-        - YARN_EXTRA_ARGS="--ignore-engines"
 
   allow_failures:
     - node_js: "node"
