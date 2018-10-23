@@ -17,6 +17,19 @@ matrix:
     - node_js: "node"
       env: JOB=test-pnpm
       if: branch = master
+    - node_js: "10"
+      env:
+        - NODEJS_VERSION=v11.0.0-nightly201810139f7e3a4040
 
   allow_failures:
     - node_js: "node"
+
+before_install:
+  - |
+      if [ "$NODEJS_VERSION" != "" ];
+      then
+        mkdir /opt/node
+        curl --silent "https://nodejs.org/download/nightly/$NODEJS_VERSION/node-$NODEJS_VERSION-linux-x64.tar.gz" | tar -zxf - --directory /opt/node
+        export PATH="/opt/node/node-$NODEJS_VERSION-linux-x64/bin:$PATH"
+        node --version
+      fi
