@@ -19,6 +19,10 @@ function preprocess(ab: ArrayBuffer): ArrayBuffer {
 }
 
 function sortBySectionOrder(nodes: Array<Node>) {
+  const originalOrder: Map<Node, number> = new Map();
+  for (const node of nodes) {
+    originalOrder.set(node, originalOrder.size);
+  }
   nodes.sort((a, b) => {
     const sectionA = getSectionForNode(a);
     const sectionB = getSectionForNode(b);
@@ -28,6 +32,11 @@ function sortBySectionOrder(nodes: Array<Node>) {
 
     if (typeof aId !== "number" || typeof bId !== "number") {
       throw new Error("Section id not found");
+    }
+
+    if (aId === bId) {
+      // $FlowIgnore originalOrder is filled for all nodes
+      return originalOrder.get(a) - originalOrder.get(b);
     }
 
     return aId - bId;
