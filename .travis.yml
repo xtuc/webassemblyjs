@@ -3,7 +3,6 @@ language: node_js
 cache:
   yarn: true
 
-before_install: npm i -g yarn
 install: make YARN_EXTRA_ARGS="$YARN_EXTRA_ARGS" bootstrap
 
 script: make $JOB
@@ -26,11 +25,12 @@ matrix:
     - node_js: "node"
 
 before_install:
+  - npm i -g yarn
   - |
-      # if [ "$NODEJS_VERSION" != "" ];
-      # then
-      #   mkdir /opt/node
-      #   curl --silent "https://nodejs.org/download/nightly/$NODEJS_VERSION/node-$NODEJS_VERSION-linux-x64.tar.gz" | tar -zxf - --directory /opt/node
-      #   export PATH="/opt/node/node-$NODEJS_VERSION-linux-x64/bin:$PATH"
-      #   node --version
-      # fi
+      if [ "$NODEJS_VERSION" != "" ];
+      then
+        mkdir /opt/node
+        curl --silent "https://nodejs.org/download/nightly/$NODEJS_VERSION/node-$NODEJS_VERSION-linux-x64.tar.gz" | tar -zxf - --directory /opt/node
+        export PATH="/opt/node/node-$NODEJS_VERSION-linux-x64/bin:$PATH"
+        node --version
+      fi
