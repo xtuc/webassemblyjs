@@ -20,6 +20,7 @@ matrix:
       env:
         - NODEJS_VERSION=v12.0.0-nightly20181024bb79e768e5
         - YARN_EXTRA_ARGS="--ignore-engines"
+        - JOB=test-ci
 
   allow_failures:
     - node_js: "node"
