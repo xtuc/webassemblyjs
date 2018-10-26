@@ -27,10 +27,10 @@ matrix:
 
 before_install:
   - |
-      if [ "$NODEJS_VERSION" != "" ];
-      then
-        mkdir /opt/node
-        curl --silent "https://nodejs.org/download/nightly/$NODEJS_VERSION/node-$NODEJS_VERSION-linux-x64.tar.gz" | tar -zxf - --directory /opt/node
-        export PATH="/opt/node/node-$NODEJS_VERSION-linux-x64/bin:$PATH"
-        node --version
-      fi
+      # if [ "$NODEJS_VERSION" != "" ];
+      # then
+      #   mkdir /opt/node
+      #   curl --silent "https://nodejs.org/download/nightly/$NODEJS_VERSION/node-$NODEJS_VERSION-linux-x64.tar.gz" | tar -zxf - --directory /opt/node
+      #   export PATH="/opt/node/node-$NODEJS_VERSION-linux-x64/bin:$PATH"
+      #   node --version
+      # fi
