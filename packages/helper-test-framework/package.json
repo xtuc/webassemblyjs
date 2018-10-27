@@ -6,7 +6,7 @@
   "module": "esm/index.js",
   "license": "MIT",
   "devDependencies": {
-    "@webassemblyjs/ast": "1.7.8",
-    "@webassemblyjs/helper-compiler": "1.7.8"
+    "@webassemblyjs/ast": "1.7.10",
+    "@webassemblyjs/helper-compiler": "1.7.10"
   }
 }
