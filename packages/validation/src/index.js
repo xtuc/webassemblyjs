@@ -4,6 +4,7 @@ import importOrderValidate from "./import-order";
 import isConst from "./is-const";
 import typeChecker from "./type-checker";
 import imports from "./imports";
+import duplicatedExports from "./duplicated-exports";
 import { moduleContextFromModuleAST } from "@webassemblyjs/helper-module-context";
 
 export default function validateAST(ast: Program) {
@@ -39,6 +40,7 @@ export function getValidationErrors(ast: Program): Array<string> {
     errors.push(...isConst(ast, moduleContext));
     errors.push(...importOrderValidate(ast));
     errors.push(...typeChecker(ast, moduleContext));
+    errors.push(...duplicatedExports(ast));
   });
 
   return errors;

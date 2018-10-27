@@ -241,6 +241,10 @@ function createTypeChecker() {
       return errors;
     },
 
+    addError(msg) {
+      errors.push(msg);
+    },
+
     setStopFuncCheck(state) {
       stopFuncCheck = state;
     },

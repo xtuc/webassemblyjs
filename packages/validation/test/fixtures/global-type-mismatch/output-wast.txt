@@ -1,1 +1,1 @@
-type mismatch
+type mismatch in global initializer

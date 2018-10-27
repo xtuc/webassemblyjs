@@ -30,7 +30,7 @@
     (i32.add (get_local 1) (i32.const 14))
   )
 
-  (func (export "as-if-else") (param i32 i32) (result i32)
+  (func (export "as-if-else2") (param i32 i32) (result i32)
     (block (result i32)
       (if (result i32)
         (get_local 0)
