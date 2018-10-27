@@ -44,10 +44,10 @@ function eq(actual: StackLocal, expected: Object) {
     }
 
     case "i64": {
-      const actuali64 = actual.value.toString();
-      const expectedi64 = Long.fromString(expected.value)
-        .toSigned()
-        .toString();
+      // const actuali64 = actual.value.toString();
+      // const expectedi64 = Long.fromString(expected.value)
+      //   .toSigned()
+      //   .toString();
 
       // FIXME(sven): fix this
       // assert(

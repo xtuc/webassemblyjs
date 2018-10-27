@@ -5,8 +5,6 @@ import { assertRuntimeError, define } from "mamacro";
 import { Memory } from "../runtime/values/memory";
 import { RuntimeError } from "../../errors";
 
-const t = require("@webassemblyjs/ast");
-
 declare function trace(msg?: string): void;
 declare function GOTO(l: number): void;
 declare function RETURN(): void;
@@ -78,13 +76,17 @@ define(
 define(
   PUSH_NEW_STACK_FRAME,
   pc => `
+    const stackframe = require("./stackframe");
+
     const activeFrame = getActiveStackFrame();
     const newStackFrame = stackframe.createChildStackFrame(activeFrame, ${pc});
 
     // move active frame
     framepointer++;
 
-    assertStackDepth(framepointer);
+    if (framepointer >= 300) {
+      throw new RuntimeError("Maximum call stack depth reached");
+    }
 
     // Push the frame on top of the stack
     callStack[framepointer] = newStackFrame;
@@ -130,20 +132,8 @@ const i64 = require("../runtime/values/i64");
 const f32 = require("../runtime/values/f32");
 const f64 = require("../runtime/values/f64");
 const label = require("../runtime/values/label");
-const stackframe = require("./stackframe");
 const { createTrap } = require("./signals");
 const { compare } = require("./instruction/comparison");
-
-function assertStackDepth(depth: number) {
-  if (depth >= 300) {
-    throw new RuntimeError(`Maximum call stack depth reached (${depth})`);
-  }
-}
-
-type createChildStackFrameOptions = {
-  // Pass the current stack to the child frame
-  passCurrentContext?: boolean
-};
 
 export function executeStackFrame(
   { program }: IR,
@@ -320,37 +310,6 @@ export function executeStackFrame(
     pc++;
 
     switch (instruction.type) {
-      /**
-       * Function declaration
-       *
-       * FIXME(sven): seems unspecified in the spec but it's required for the `call`
-       * instruction.
-       */
-      case "Func": {
-        throw new Error("unreachable");
-        const func = instruction;
-
-        /**
-         * Register the function into the stack frame labels
-         */
-        if (typeof func.name === "object") {
-          if (func.name.type === "Identifier") {
-            if (func.signature.type !== "Signature") {
-              throw newRuntimeError(
-                "Function signatures must be denormalised before execution"
-              );
-            }
-            frame.labels.push({
-              value: func,
-              arity: func.signature.params.length,
-              id: func.name
-            });
-          }
-        }
-
-        break;
-      }
-
       case "InternalEndAndReturn": {
         if (frame.returnAddress !== -1) {
           pc = frame.returnAddress; // raw goto
@@ -834,24 +793,8 @@ export function executeStackFrame(
       case "set_local": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-set-local
         const index = instruction.args[0];
-        const init = instruction.args[1];
 
-        if (typeof init !== "undefined" && init.type === "Instr") {
-          // WAST
-
-          const code = [init];
-          code.push(t.instruction("end"));
-
-          // TODO(sven): handle this
-          throw new RuntimeError("should hit this; no wat semantics anymore");
-
-          // createAndExecuteChildStackFrame(code, {
-          //   passCurrentContext: true
-          // });
-
-          const res = pop1(frame);
-          setLocalByIndex(frame, index.value, res);
-        } else if (index.type === "NumberLiteral") {
+        if (index.type === "NumberLiteral") {
           // WASM
 
           // 4. Pop the value val from the stack
@@ -871,28 +814,8 @@ export function executeStackFrame(
       case "tee_local": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-tee-local
         const index = instruction.args[0];
-        const init = instruction.args[1];
 
-        if (typeof init !== "undefined" && init.type === "Instr") {
-          // WAST
-
-          const code = [init];
-          code.push(t.instruction("end"));
-
-          // TODO(sven): handle this
-          throw new RuntimeError("should hit this; no wat semantics anymore");
-
-          // createAndExecuteChildStackFrame(code, {
-          //   passCurrentContext: true
-          // });
-
-          const res = pop1(frame);
-          setLocalByIndex(frame, index.value, res);
-
-          pushResult(frame, res);
-        } else if (index.type === "NumberLiteral") {
-          // WASM
-
+        if (index.type === "NumberLiteral") {
           // 1. Assert: due to validation, a value is on the top of the stack.
           // 2. Pop the value val from the stack.
           const val = pop1(frame);
@@ -990,7 +913,6 @@ export function executeStackFrame(
 
         switch (id) {
           case "store":
-            valueBuffer = valueBuffer;
             break;
           case "store8":
             valueBuffer = valueBuffer.slice(0, 1);

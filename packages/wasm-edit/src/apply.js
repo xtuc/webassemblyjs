@@ -5,7 +5,6 @@ import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
 import {
   isFunc,
   isGlobal,
-  instruction,
   assertHasLoc,
   orderedInsertNode,
   getSectionMetadata,
@@ -21,6 +20,8 @@ import {
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
 import { define } from "mamacro";
+
+declare function CHECK_END(body: Array<Object>): void;
 
 define(
   CHECK_END,
@@ -199,10 +200,12 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    * check that the expressions were ended
    */
   if (isFunc(node)) {
+    // $FlowIgnore
     CHECK_END(node.body);
   }
 
   if (isGlobal(node)) {
+    // $FlowIgnore
     CHECK_END(node.init);
   }
 

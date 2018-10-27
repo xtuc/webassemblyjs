@@ -26,12 +26,13 @@ const decoderOpts = {};
 
 type Command = {
   line: number,
-  name?: string,
-  filename?: string,
+  name: string,
+  filename: string,
   type: string,
   module_type: "text" | "binary",
-  action?: Object,
-  expected?: Object
+  text: string,
+  action: Object,
+  expected: Object
 };
 
 type Manifest = {

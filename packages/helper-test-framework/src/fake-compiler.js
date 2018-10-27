@@ -3,7 +3,7 @@
 import { instruction } from "@webassemblyjs/ast";
 import { listOfInstructionsToIr } from "@webassemblyjs/helper-compiler";
 
-export function addFakeLocsListOfInstructions(instrs) {
+export function addFakeLocsListOfInstructions(instrs: Array<Object>) {
   const loc = x => ({
     start: {
       column: x,
