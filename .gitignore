@@ -61,3 +61,5 @@ lib/
 esm/
 
 package-lock.json
+
+wasm_test_dir

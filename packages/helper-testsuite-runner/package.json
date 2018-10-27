@@ -1,0 +1,21 @@
+{
+  "name": "@webassemblyjs/helper-testsuite-runner",
+  "version": "1.7.8",
+  "description": "",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "mamacro": "^0.0.3"
+  },
+  "dependencies": {
+    "webassemblyjs": "1.7.8",
+    "@xtuc/long": "4.2.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "webassemblyjs-testsuite-runner": "lib/cli.js"
+  }
+}
