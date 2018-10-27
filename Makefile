@@ -11,6 +11,8 @@ BABEL = ./node_modules/.bin/babel --ignore src/types/npm
 ESLINT = ./node_modules/.bin/eslint
 HTTP_SERVER = ./node_modules/.bin/http-server -d-1
 MARKDOWN_TO_HTML = ./node_modules/.bin/markdown
+YARN_EXTRA_ARGS =
+YARN = yarn $(YARN_EXTRA_ARGS)
 
 SPEC_TEST_DIR = testsuite
 
@@ -23,7 +25,7 @@ clean-all:
 	rm -rf ./node_modules ./packages/*/node_modules ./packages/*/{lib,esm}
 
 bootstrap: clean-all
-	yarn install
+	$(YARN) install
 
 build:
 	WITH_TRACE=$(TRACE) ./scripts/build.sh
@@ -35,7 +37,7 @@ test-ci: test test-whitelisted-spec lint
 test-ci-windows: test test-whitelisted-spec
 
 test-pnpm: clean-all
-	yarn install
+	$(YARN) install
 	npm i -g pnpm
 	$(LERNA) exec pnpm install
 	make build lint
