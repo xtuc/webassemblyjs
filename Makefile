@@ -45,6 +45,7 @@ test: build
 
 test-whitelisted-spec:
 	$(SPECTEST_RUNNER) $(SPEC_TEST_DIR)/exports.wast
+	# FIXME(sven): issue with number binary encoding/decoding used in wast2json
 	# $(SPECTEST_RUNNER) $(SPEC_TEST_DIR)/globals.wast
 	$(SPECTEST_RUNNER) $(SPEC_TEST_DIR)/i32.wast
 	$(SPECTEST_RUNNER) $(SPEC_TEST_DIR)/binary.wast
