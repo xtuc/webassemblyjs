@@ -9,7 +9,12 @@ import { parse } from "@webassemblyjs/wast-parser";
 import { createCompiledModule } from "webassemblyjs/lib/compiler/compile/module";
 import { Instance } from "webassemblyjs/lib/interpreter";
 
-import { assert_return, assert_malformed, assert_invalid } from "./asserts";
+import {
+  assert_return,
+  assert_malformed,
+  assert_invalid,
+  assert_trap
+} from "./asserts";
 
 const WASM_TEST_DIR = "./wasm_test_dir";
 
@@ -17,7 +22,10 @@ function getModuleName(command: Command): string {
   return command.name || "__default";
 }
 
+const decoderOpts = {};
+
 type Command = {
+  line: number,
   name?: string,
   filename?: string,
   type: string,
@@ -66,7 +74,10 @@ export default function run(filename: string) {
       case "assert_return": {
         assert(namedInstances[getModuleName(command)] !== undefined);
 
-        const fn = getExportedElement(command.action.field, command.action.module);
+        const fn = getExportedElement(
+          command.action.field,
+          command.action.module
+        );
 
         assert_return(fn, command.action, command.expected);
         break;
@@ -88,12 +99,36 @@ export default function run(filename: string) {
         break;
       }
 
+      case "assert_trap": {
+        const fn = getExportedElement(
+          command.action.field,
+          command.action.module
+        );
+
+        assert_trap(fn, command.action, command.text);
+        break;
+      }
+
       default:
         throw new Error("unknown command: " + command.type);
     }
 
-    console.log("PASS " + command.type);
+    console.log("PASS " + commandToString(command));
   });
+}
+
+function commandToString(command: Command): string {
+  let out = "";
+
+  out += command.type;
+
+  if (command.text !== undefined) {
+    out += " " + command.text;
+  }
+
+  out += " at line " + command.line;
+
+  return out;
 }
 
 function getExportedElement(name: string, moduleName: ?string): Object {
@@ -112,7 +147,10 @@ function getExportedElement(name: string, moduleName: ?string): Object {
 
   // $FlowIgnore: asserted above
   const fn = instance.exports[name];
-  assert(typeof fn === "function", `function ${name} not found`);
+  assert(
+    fn !== undefined,
+    `function ${name} not found in ${String(moduleName)}`
+  );
 
   return fn;
 }
@@ -141,7 +179,7 @@ function loadModule(type: string, filename: string): Instance {
     // $FlowIgnore
     const buff = readFileSync(join(WASM_TEST_DIR, filename), null);
 
-    const ast = decode(buff);
+    const ast = decode(buff, decoderOpts);
     const module = createCompiledModule(ast);
     return new Instance(module, importObject);
   } else {

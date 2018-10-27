@@ -122,6 +122,18 @@ export class Instance {
         return;
       }
 
+      if (exportinst.value.type === "Table") {
+        const tableinst = this._allocator.get(exportinst.value.addr);
+
+        if (tableinst == null) {
+          throw new RuntimeError("Table instance has not been instantiated");
+        }
+
+        this.exports[exportinst.name] = tableinst;
+
+        return;
+      }
+
       throw new Error("Unknown export type: " + exportinst.value.type);
     });
 

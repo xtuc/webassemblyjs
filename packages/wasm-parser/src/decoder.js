@@ -573,9 +573,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const func = state.functionsInModule[index];
 
         if (typeof func === "undefined") {
-          throw new CompileError(
-            `unknown function (${index})`
-          );
+          throw new CompileError(`unknown function (${index})`);
         }
 
         id = t.numberLiteralFromRaw(index, String(index));
@@ -585,9 +583,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const table = state.tablesInModule[index];
 
         if (typeof table === "undefined") {
-          throw new CompileError(
-            `entry not found at index ${index} in table section`
-          );
+          throw new CompileError(`unknown table ${index}`);
         }
 
         id = t.numberLiteralFromRaw(index, String(index));
@@ -597,9 +593,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const memNode = state.memoriesInModule[index];
 
         if (typeof memNode === "undefined") {
-          throw new CompileError(
-            `entry not found at index ${index} in memory section`
-          );
+          throw new CompileError(`unknown memory ${index}`);
         }
 
         id = t.numberLiteralFromRaw(index, String(index));
@@ -609,9 +603,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const global = state.globalsInModule[index];
 
         if (typeof global === "undefined") {
-          throw new CompileError(
-            `entry not found at index ${index} in global section`
-          );
+          throw new CompileError(`unknown global ${index}`);
         }
 
         id = t.numberLiteralFromRaw(index, String(index));
@@ -978,7 +970,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const value = value64.value;
           eatBytes(value64.nextIndex);
 
-          dump([Number(value.toString())], "i64 value");
+          dump([Number(value.toString())], `i64 value`);
 
           const { high, low } = value;
 
