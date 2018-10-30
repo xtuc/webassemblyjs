@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/validation",
-  "version": "1.7.10",
+  "version": "1.7.11",
   "description": "Module AST validations",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -17,13 +17,13 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.7.10",
-    "@webassemblyjs/helper-module-context": "1.7.10"
+    "@webassemblyjs/ast": "1.7.11",
+    "@webassemblyjs/helper-module-context": "1.7.11"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-test-framework": "1.7.10",
-    "@webassemblyjs/wasm-parser": "1.7.10",
-    "@webassemblyjs/wast-parser": "1.7.10",
+    "@webassemblyjs/helper-test-framework": "1.7.11",
+    "@webassemblyjs/wasm-parser": "1.7.11",
+    "@webassemblyjs/wast-parser": "1.7.11",
     "wabt": "1.0.0-nightly.20180421"
   }
 }
