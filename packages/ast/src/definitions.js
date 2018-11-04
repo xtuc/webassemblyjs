@@ -561,6 +561,10 @@ defineType("CallInstruction", {
       array: true,
       optional: true,
       type: "Expression"
+    },
+    numeric: {
+      type: "Index",
+      optional: true
     }
   }
 });

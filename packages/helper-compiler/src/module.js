@@ -76,7 +76,7 @@ function createContext(ast: Program): Context {
 
 export class Module {
   _labels: Array<Node>;
-  _program: Array<Node>;
+  _program: Array<{ offset: number, node: Node }>;
   _currentFunc: ?Func;
   _context: Context;
 
@@ -104,20 +104,25 @@ export class Module {
 
   onFuncInstruction(node: Instruction) {
     if (isCallInstruction(node)) {
+      // $FlowIgnore: it's ensured by the node matcher
       assert(node.numeric !== null);
 
       let funcIndex = null;
 
+      // $FlowIgnore: it's ensured by the node matcher
       if (isNumberLiteral(node.index)) {
-        funcIndex = node.index.value;
+        funcIndex = parseInt(node.index.value);
       }
 
+      // $FlowIgnore: it's ensured by the node matcher
       if (isIdentifier(node.index)) {
-        funcIndex = node.numeric.value;
+        // $FlowIgnore: it's ensured by the node matcher
+        funcIndex = parseInt(node.numeric.value);
       }
 
       assert(funcIndex !== null);
 
+      // $FlowIgnore: ensured by the assertion
       const funcInContext = this._context.funcs[funcIndex];
       assert(typeof funcInContext === "object");
 
@@ -125,6 +130,7 @@ export class Module {
         const func = funcInContext.node;
 
         // transform module index into byte offset
+        // $FlowIgnore
         node.index.value = getFunctionBeginingByteOffset(func);
 
         this._emit(node);
@@ -147,24 +153,30 @@ export class Module {
     }
 
     if (node.id === "br" || node.id === "br_if") {
+      // $FlowIgnore
       const depth = node.args[0].value;
+      // $FlowIgnore
       const target = this._labels[this._labels.length - depth - 1];
-      assert(typeof target === "object", `Label ${depth} not found`);
+      assert(typeof target === "object", `Label ${String(depth)} not found`);
 
       if (isLoopInstruction(target) && depth === 0) {
+        // $FlowIgnore
         node.args[0].value = getStartBlockByteOffset(target);
       } else {
+        // $FlowIgnore
         node.args[0].value = getEndBlockByteOffset(target);
       }
     }
 
     if (isIfInstruction(node)) {
+      // $FlowIgnore
       const alternateOffset = getStartByteOffset(node.alternate[0]);
       const internalBrUnlessNode = internalBrUnless(alternateOffset);
       internalBrUnlessNode.loc = node.loc;
 
       this._emit(internalBrUnlessNode);
 
+      // $FlowIgnore
       node.consequent.forEach(n => this._emit(n));
 
       // Skipping the alternate once the consequent block has been executed.
@@ -173,18 +185,21 @@ export class Module {
       // TODO(sven): properly replace the else instruction instead, keep it in
       // the ast.
       const internalGotoNode = internalGoto(
+        // $FlowIgnore
         getEndByteOffset(node.alternate[node.alternate.length - 1])
       );
 
       internalGotoNode.loc = {
         start: {
           line: -1,
+          // $FlowIgnore
           column: node.alternate[0].loc.start.column - 1
         }
       };
 
       this._emit(internalGotoNode);
 
+      // $FlowIgnore
       node.alternate.forEach(n => this._emit(n));
 
       return;

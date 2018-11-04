@@ -293,7 +293,7 @@ export function executeStackFrame(
 
   while (true) {
     const frame = getActiveStackFrame();
-    const instruction = program[offsets[pc]];
+    const instruction = program[parseInt(offsets[pc])];
 
     assertRuntimeError(
       instruction !== undefined,

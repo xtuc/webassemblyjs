@@ -718,7 +718,8 @@ export function blockInstruction(
 
 export function callInstruction(
   index: Index,
-  instrArgs?: Array<Expression>
+  instrArgs?: Array<Expression>,
+  numeric?: Index
 ): CallInstruction {
   if (instrArgs !== null && instrArgs !== undefined) {
     assert(
@@ -734,6 +735,10 @@ export function callInstruction(
 
   if (typeof instrArgs !== "undefined" && instrArgs.length > 0) {
     node.instrArgs = instrArgs;
+  }
+
+  if (typeof numeric !== "undefined") {
+    node.numeric = numeric;
   }
 
   return node;

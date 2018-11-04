@@ -4,7 +4,6 @@ const t = require("@webassemblyjs/ast");
 
 const Long = require("@xtuc/long").default;
 const { assert } = require("chai");
-const { listOfInstructionsToIr } = require("@webassemblyjs/helper-compiler");
 
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
 const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");

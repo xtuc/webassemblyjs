@@ -24,7 +24,9 @@ export function toIR(ast: Program): IR {
 
   traverse(ast, {
     Start({ node }: NodePath<Start>) {
-      const { name, startAt } = module.emitStartFunc(node.index.value);
+      const { name, startAt } = module.emitStartFunc(
+        parseInt(node.index.value)
+      );
 
       funcTable.push({ name, startAt });
     },
@@ -51,6 +53,7 @@ export function toIR(ast: Program): IR {
   });
 
   return {
+    // $FlowIgnore
     funcTable,
     program
   };
@@ -76,6 +79,7 @@ export function listOfInstructionsToIr(instrs: Array<Instruction>): IR {
   });
 
   return {
+    // $FlowIgnore
     funcTable,
     program
   };

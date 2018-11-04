@@ -12,7 +12,6 @@ const {
 } = require("./runtime/castIntoStackLocalOfType");
 const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");
-const label = require("./runtime/values/label");
 const { ExecutionHasBeenTrapped } = require("./kernel/signals");
 
 define(

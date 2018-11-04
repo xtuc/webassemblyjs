@@ -5,6 +5,7 @@ import { type Instance } from "webassemblyjs/lib/interpreter";
 
 type CompiledModule = {
   _ir: IR,
+  _ast: Program, // FIXME(sven): do we still need the AST here?
 
   exports: Array<CompiledModuleExportDescr>,
   imports: Array<CompiledModuleImportDescr>

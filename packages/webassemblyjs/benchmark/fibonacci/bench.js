@@ -6,7 +6,8 @@ function test({
   NBINTERATION,
   formatNumber,
   output,
-  random
+
+  _random
 }) {
   return WebAssembly.instantiate(wasmbin).then(m => {
     showHeader();

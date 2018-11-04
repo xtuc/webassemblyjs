@@ -5,7 +5,7 @@ import { assert } from "mamacro";
 import { isIdentifier, isNumberLiteral } from "@webassemblyjs/ast/lib/nodes";
 import * as WebAssemblyMemory from "./memory";
 
-const { RuntimeError, LinkError, CompileError } = require("../../../errors");
+const { RuntimeError, CompileError } = require("../../../errors");
 const WebAssemblyTable = require("./table");
 const func = require("./func");
 const externvalue = require("./extern");

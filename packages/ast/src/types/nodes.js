@@ -351,7 +351,8 @@ type CallInstruction = {
   type: "CallInstruction",
   id: string,
   index: Index,
-  instrArgs?: Array<Expression>
+  instrArgs?: Array<Expression>,
+  numeric?: Index
 };
 
 type CallIndirectInstruction = {

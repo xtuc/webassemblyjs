@@ -5,23 +5,29 @@ import { kStart } from "./index";
 function printInstruction(instruction: Instruction): string {
   let out = "";
 
-  if (instruction.type === "InternalEndAndReturn") {
-    out += "_end_and_return";
-  }
+  if (typeof instruction.type === "string") {
+    // $FlowIgnore
+    if (instruction.type === "InternalEndAndReturn") {
+      out += "_end_and_return";
+    }
 
-  if (instruction.type === "InternalBrUnless") {
-    out += "_br_unless";
-    out += " " + instruction.target;
-  }
+    // $FlowIgnore
+    if (instruction.type === "InternalBrUnless") {
+      out += "_br_unless";
+      out += " " + instruction.target;
+    }
 
-  if (instruction.type === "InternalGoto") {
-    out += "_goto";
-    out += " " + instruction.target;
-  }
+    // $FlowIgnore
+    if (instruction.type === "InternalGoto") {
+      out += "_goto";
+      out += " " + instruction.target;
+    }
 
-  if (instruction.type === "InternalCallExtern") {
-    out += "_extern_call";
-    out += " " + instruction.target;
+    // $FlowIgnore
+    if (instruction.type === "InternalCallExtern") {
+      out += "_extern_call";
+      out += " " + instruction.target;
+    }
   }
 
   if (typeof instruction.object === "string") {
@@ -33,15 +39,18 @@ function printInstruction(instruction: Instruction): string {
     out += instruction.id;
   }
 
-  if (typeof instruction.args === "object") {
+  if (instruction.args !== undefined) {
+    // $FlowIgnore
     instruction.args.forEach(arg => {
       out += " ";
+      // $FlowIgnore
       out += arg.value;
     });
   }
 
   if (typeof instruction.index === "object") {
-    out += " @" + instruction.index.value;
+    // $FlowIgnore
+    out += " @" + String(instruction.index.value);
   }
 
   return out;
@@ -65,7 +74,7 @@ export function dumpIR(ir: IR): string {
 
   for (const offset in ir.program) {
     out += offset + " | ";
-    out += printInstruction(ir.program[offset]);
+    out += printInstruction(ir.program[parseInt(offset)]);
     out += "\n";
   }
 
