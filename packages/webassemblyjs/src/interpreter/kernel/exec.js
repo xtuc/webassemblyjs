@@ -407,36 +407,6 @@ export function executeStackFrame(
         break;
       }
 
-      // case "loop": {
-      //   // https://webassembly.github.io/spec/core/exec/instructions.html#exec-loop
-      //   const loop = instruction;
-
-      //   assertRuntimeError(
-      //     typeof loop.instr === "object" &&
-      //       typeof loop.instr.length !== "undefined"
-      //   );
-
-      //   // 2. Enter the block instr∗ with label
-      //   frame.labels.push({
-      //     value: loop,
-      //     arity: 0,
-      //     id: loop.label
-      //   });
-
-      //   pushResult(frame, label.createValue(loop.label.value));
-
-      //   trace("entering block " + loop.label.value);
-
-      //   // FIXME(sven): unroll/flatten loop anyway
-      //   // if (loop.instr.length > 0) {
-      //   //   createAndExecuteChildStackFrame(loop.instr, {
-      //   //     passCurrentContext: true
-      //   //   });
-      //   // }
-
-      //   break;
-      // }
-
       case "drop": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop
 
@@ -450,6 +420,8 @@ export function executeStackFrame(
       }
 
       case "call": {
+        // FIXME(sven): check spec compliancy
+
         const index = instruction.index.value;
 
         PUSH_NEW_STACK_FRAME(pc);
@@ -457,66 +429,6 @@ export function executeStackFrame(
 
         break;
       }
-
-      // case "call": {
-      //   // According to the spec call doesn't support an Identifier as argument
-      //   // but the Script syntax supports it.
-      //   // https://webassembly.github.io/spec/core/exec/instructions.html#exec-call
-
-      //   const call = instruction;
-
-      //   if (call.index.type === "Identifier") {
-      //     throw newRuntimeError(
-      //       "Internal compiler error: Identifier argument in call must be " +
-      //         "transformed to a NumberLiteral node"
-      //     );
-      //   }
-
-      //   // WASM
-      //   if (call.index.type === "NumberLiteral") {
-      //     const index = call.index.value;
-
-      //     assertRuntimeError(typeof frame.originatingModule !== "undefined");
-
-      //     // 2. Assert: due to validation, F.module.funcaddrs[x] exists.
-      //     const funcaddr = frame.originatingModule.funcaddrs[index];
-
-      //     if (typeof funcaddr === "undefined") {
-      //       throw newRuntimeError(
-      //         `No function was found in module at address ${index}`
-      //       );
-      //     }
-
-      //     // 3. Let a be the function address F.module.funcaddrs[x]
-
-      //     const subroutine = frame.allocator.get(funcaddr);
-
-      //     if (typeof subroutine !== "object") {
-      //       throw newRuntimeError(
-      //         `Cannot call function at address ${funcaddr}: not a function`
-      //       );
-      //     }
-
-      //     // 4. Invoke the function instance at address a
-
-      //     // FIXME(sven): assert that res has type of resultType
-      //     const [argTypes, resultType] = subroutine.type;
-
-      //     const args = popArrayOfValTypes(frame, argTypes);
-
-      //     if (subroutine.isExternal === false) {
-      //       createAndExecuteChildStackFrame(subroutine.code);
-      //     } else {
-      //       const res = subroutine.code(args.map(arg => arg.value));
-
-      //       if (typeof res !== "undefined") {
-      //         pushResult(frame, castIntoStackLocalOfType(resultType, res));
-      //       }
-      //     }
-      //   }
-
-      //   break;
-      // }
 
       case "end": {
         POP_LABEL();
@@ -527,14 +439,9 @@ export function executeStackFrame(
       case "loop":
       case "block": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#blocks
+        // FIXME(sven): check spec compliancy
 
         const block = instruction;
-
-        // /**
-        //  * Used to keep track of the number of values added on top of the stack
-        //  * because we need to remove the label after the execution of this block.
-        //  */
-        // let numberOfValuesAddedOnTopOfTheStack = 0;
 
         // 2. Enter the block instr∗ with label
         frame.labels.push({
@@ -547,154 +454,16 @@ export function executeStackFrame(
 
         trace("entering block " + block.label.value);
 
-        // if (block.label.type === "Identifier") {
-        //   pushResult(frame, label.createValue(block.label.value));
-        // } else {
-        //   throw newRuntimeError("Block has no id");
-        // }
-
-        // assertRuntimeError(
-        //   typeof block.instr === "object" &&
-        //     typeof block.instr.length !== "undefined"
-        // );
-
-        // if (block.instr.length > 0) {
-        //   const oldStackSize = frame.values.length;
-
-        //   createAndExecuteChildStackFrame(block.instr, {
-        //     passCurrentContext: true
-        //   });
-
-        //   numberOfValuesAddedOnTopOfTheStack =
-        //     frame.values.length - oldStackSize;
-        // }
-
-        // /**
-        //  * Wen exiting the block
-        //  *
-        //  * > Let m be the number of values on the top of the stack
-        //  *
-        //  * The Stack (values) are seperated by StackFrames and we are running on
-        //  * one single thread, there's no need to check if values were added.
-        //  *
-        //  * We tracked it in numberOfValuesAddedOnTopOfTheStack anyway.
-        //  */
-        // const topOfTheStack = frame.values.slice(
-        //   frame.values.length - numberOfValuesAddedOnTopOfTheStack
-        // );
-
-        // frame.values.splice(
-        //   frame.values.length - numberOfValuesAddedOnTopOfTheStack
-        // );
-
-        // // 3. Assert: due to validation, the label L is now on the top of the stack.
-        // // 4. Pop the label from the stack.
-        // pop1OfType(frame, "label");
-
-        // frame.values = [...frame.values, ...topOfTheStack];
-
-        // // Remove label
-        // frame.labels = frame.labels.filter(x => {
-        //   if (x.id == null) {
-        //     return true;
-        //   }
-
-        //   return x.id.value !== block.label.value;
-        // });
-
-        // trace("exiting block " + block.label.value);
-
         break;
       }
 
       case "br": {
+        // FIXME(sven): check spec compliancy
         const label = instruction.args[0];
         GOTO(label.value);
 
         break;
       }
-
-      // case "br": {
-      //   // https://webassembly.github.io/spec/core/exec/instructions.html#exec-br
-
-      //   const label = instruction.args[0];
-
-      //   if (label.type === "Identifier") {
-      //     throw newRuntimeError(
-      //       "Internal compiler error: Identifier argument in br must be " +
-      //         "transformed to a NumberLiteral node"
-      //     );
-      //   }
-
-      //   const l = label.value;
-
-      //   // 1. Assert: due to validation, the stack contains at least l+1 labels.
-      //   assertNItemsOnStack(l + 1);
-
-      //   // 2. Let L be the l-th label appearing on the stack, starting from the top and counting from zero.
-      //   let seenLabels = 0;
-      //   let labelidx = { value: "unknown" };
-      //   // for (var i = 0, len = frame.values.length; i < len; i++) {
-      //   for (let i = frame.values.length; i--; ) {
-      //     if (frame.values[i].type === "label") {
-      //       if (seenLabels === l) {
-      //         labelidx = frame.values[i];
-      //         break;
-      //       }
-
-      //       seenLabels++;
-      //     }
-      //   }
-
-      //   // $FlowIgnore
-      //   const L = frame.labels.find(x => x.id.value === labelidx.value);
-
-      //   if (typeof L === "undefined") {
-      //     throw newRuntimeError(`br: unknown label ${labelidx.value}`);
-      //   }
-
-      //   // 3. Let n be the arity of L.
-      //   const n = L.arity;
-
-      //   // 4. Assert: due to validation, there are at least nn values on the top of the stack.
-      //   assertNItemsOnStack(n);
-
-      //   // 5. Pop the values valn from the stack
-      //   const val = frame.values[n];
-
-      //   const bottomOfTheStack = frame.values.slice(0, n);
-      //   const topOfTheStack = frame.values.slice(n + 1);
-
-      //   frame.values = [...bottomOfTheStack, ...topOfTheStack];
-
-      //   // 6. Repeat l+1 times:
-      //   for (let i = 0; i < l + 1; i++) {
-      //     // a. While the top of the stack is a value, do:
-      //     // i. Pop the value from the stack
-      //     const value = frame.values[frame.values.length - 1];
-
-      //     if (typeof value === "undefined") {
-      //       break;
-      //     }
-
-      //     if (value.type !== "label") {
-      //       pop1(frame);
-      //     }
-      //   }
-
-      //   // b. Assert: due to validation, the top of the stack now is a label.
-      //   // c. Pop the label from the stack.
-      //   pop1OfType(frame, "label");
-
-      //   // 7. Push the values valn to the stack.
-      //   pushResult(frame, val);
-
-      //   // 0 is the current frame, 1 is it's parent.
-      //   stack = stack.slice(0, -(l + 1));
-      //   framepointer -= l + 1;
-
-      //   return;
-      // }
 
       case "br_if": {
         const label = instruction.args[0];
@@ -714,33 +483,6 @@ export function executeStackFrame(
 
         break;
       }
-
-      // case "if": {
-      //   if (instruction.test.length > 0) {
-      //     createAndExecuteChildStackFrame(instruction.test);
-      //   }
-
-      //   // 1. Assert: due to validation, a value of value type i32 is on the top of the stack.
-      //   // 2. Pop the value i32.const from the stack.
-      //   const c = pop1OfType(frame, "i32");
-
-      //   if (c.value.eqz().isTrue() === false) {
-      //     /**
-      //      * Execute consequent
-      //      */
-      //     createAndExecuteChildStackFrame(instruction.consequent);
-      //   } else if (
-      //     typeof instruction.alternate !== "undefined" &&
-      //     instruction.alternate.length > 0
-      //   ) {
-      //     /**
-      //      * Execute alternate
-      //      */
-      //     createAndExecuteChildStackFrame(instruction.alternate);
-      //   }
-
-      //   break;
-      // }
 
       /**
        * Administrative Instructions
