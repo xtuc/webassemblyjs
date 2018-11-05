@@ -16,6 +16,7 @@ const {
 const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
+const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
 describe("kernel exec - memory instructions", () => {
   const operations = [
@@ -73,10 +74,8 @@ describe("kernel exec - memory instructions", () => {
       args: [],
 
       code: [
-        t.instruction("set_local", [
-          t.numberLiteralFromRaw(0),
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)])
-        ]),
+        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
+        t.instruction("set_local", [t.numberLiteralFromRaw(0)]),
         t.instruction("get_local", [t.numberLiteralFromRaw(0)])
       ],
 
@@ -89,10 +88,8 @@ describe("kernel exec - memory instructions", () => {
       args: [],
 
       code: [
-        t.instruction("tee_local", [
-          t.numberLiteralFromRaw(0),
-          t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)])
-        ])
+        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)]),
+        t.instruction("tee_local", [t.numberLiteralFromRaw(0)])
       ],
 
       resEqual: new i32(2)
@@ -101,10 +98,10 @@ describe("kernel exec - memory instructions", () => {
 
   operations.forEach(op => {
     it(op.name + " should result in a correct state", () => {
-      op.code.push(t.instruction("end"));
+      const ir = compileASTNodes(op.code);
 
-      const stackFrame = createStackFrame(op.code, op.args);
-      const res = executeStackFrame(stackFrame);
+      const stackFrame = createStackFrame(op.args);
+      const res = executeStackFrame(ir, 0, stackFrame);
 
       if (typeof res === "undefined") {
         throw new Error("No result");

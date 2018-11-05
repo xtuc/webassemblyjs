@@ -1,5 +1,5 @@
 {
-  "name": "@webassemblyjs/helper-flaten-ast",
+  "name": "@webassemblyjs/helper-flatten-ast",
   "version": "1.7.11",
   "description": "Flatten an AST helper",
   "main": "lib/index.js",

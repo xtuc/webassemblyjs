@@ -473,16 +473,24 @@ function printFunc(n: Func, depth: number): string {
   }
 
   if (n.body.length > 0) {
+    // func is empty since we ignore the default end instruction
+    if (n.body.length === 1 && n.body[0].id === "end") {
+      out += ")";
+      return out;
+    }
+
     if (compact === false) {
       out += "\n";
     }
 
     n.body.forEach(i => {
-      out += indent(depth);
-      out += printInstruction(i, depth);
+      if (i.id !== "end") {
+        out += indent(depth);
+        out += printInstruction(i, depth);
 
-      if (compact === false) {
-        out += "\n";
+        if (compact === false) {
+          out += "\n";
+        }
       }
     });
 

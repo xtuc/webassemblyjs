@@ -16,6 +16,10 @@ const f64 = require("../../../lib/interpreter/runtime/values/f64");
 const label = require("../../../lib/interpreter/runtime/values/label");
 const { Memory } = require("../../../lib/interpreter/runtime/values/memory");
 const { createAllocator } = require("../../../lib/interpreter/kernel/memory");
+const {
+  compileASTNodes,
+  addFakeLocsListOfInstructions
+} = require("@webassemblyjs/helper-test-framework");
 
 describe("module create interface", () => {
   const memory = new Memory({ initial: 100 });
@@ -24,7 +28,13 @@ describe("module create interface", () => {
   describe("module exports", () => {
     it("should handle no export", () => {
       const node = t.module(undefined, []);
-      const instance = modulevalue.createInstance(allocator, node);
+      const ir = compileASTNodes([]);
+
+      const instance = modulevalue.createInstance(
+        ir.funcTable,
+        allocator,
+        node
+      );
 
       assert.typeOf(instance.exports, "array");
       assert.lengthOf(instance.exports, 0);
@@ -32,16 +42,22 @@ describe("module create interface", () => {
 
     it("should handle a func export", () => {
       const exportName = "foo";
-
-      const node = t.module(null, [
+      const nodes = [
         t.func(t.identifier(exportName), t.signature([], []), []),
         t.moduleExport(
           exportName,
           t.moduleExportDescr("Func", t.identifier(exportName))
         )
-      ]);
+      ];
 
-      const instance = modulevalue.createInstance(allocator, node);
+      const ir = compileASTNodes(nodes);
+      const node = t.module(null, nodes);
+
+      const instance = modulevalue.createInstance(
+        ir.funcTable,
+        allocator,
+        node
+      );
 
       assert.typeOf(instance.exports, "array");
       assert.lengthOf(instance.exports, 1);
@@ -54,11 +70,13 @@ describe("module create interface", () => {
   });
 
   describe("function instance", () => {
+    const atOffset = 0;
+
     it("return an instance", () => {
       const node = t.func(t.identifier("test"), t.signature([], []), []);
       const fromModule = t.module(undefined, []);
 
-      const instance = funcvalue.createInstance(node, fromModule);
+      const instance = funcvalue.createInstance(atOffset, node, fromModule);
 
       assert.typeOf(instance.type, "array");
       assert.lengthOf(instance.type, 2);
@@ -79,7 +97,7 @@ describe("module create interface", () => {
       const node = t.func(t.identifier("test"), t.signature(args, result), []);
       const fromModule = t.module(undefined, []);
 
-      const instance = funcvalue.createInstance(node, fromModule);
+      const instance = funcvalue.createInstance(atOffset, node, fromModule);
 
       assert.deepEqual(instance.type[0], ["i32", "i32"]);
       assert.deepEqual(instance.type[1], ["i32"]);
@@ -227,6 +245,8 @@ describe("module create interface", () => {
         t.instruction("end")
       ];
 
+      addFakeLocsListOfInstructions(initNode);
+
       const node = t.global(t.globalType("i32", "const"), initNode);
 
       const instance = globalvalue.createInstance(allocator, node);
@@ -254,7 +274,10 @@ describe("module create interface", () => {
       )
     ]);
 
+    const funcTable = {};
+
     const instance = modulevalue.createInstance(
+      funcTable,
       allocator,
       node,
       externalFunctions

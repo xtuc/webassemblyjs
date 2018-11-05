@@ -147,6 +147,7 @@ export default function getType(moduleContext, stack, instruction) {
      *
      * @see https://webassembly.github.io/spec/core/valid/instructions.html#valid-nop
      */
+    case "end":
     case "nop": {
       args = [];
       result = [];
@@ -389,6 +390,7 @@ export default function getType(moduleContext, stack, instruction) {
       result = [];
       break;
     }
+
     /**
      * return
      */
@@ -483,6 +485,7 @@ export default function getType(moduleContext, stack, instruction) {
       result = [POLYMORPHIC];
       break;
     }
+
     /**
      * call_indirect
      */
@@ -492,6 +495,7 @@ export default function getType(moduleContext, stack, instruction) {
       result = instruction.signature.results.map(p => p.valtype);
       break;
     }
+
     /**
      * Skip type checking
      */

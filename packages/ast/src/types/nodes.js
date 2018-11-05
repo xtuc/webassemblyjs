@@ -43,7 +43,11 @@ type Node =
   | CallInstruction
   | CallIndirectInstruction
   | ByteArray
-  | Func;
+  | Func
+  | InternalBrUnless
+  | InternalGoto
+  | InternalCallExtern
+  | InternalEndAndReturn;
 
 type Block = LoopInstruction | BlockInstruction | Func;
 
@@ -68,6 +72,12 @@ type Expression =
 type NumericLiteral = NumberLiteral | LongNumberLiteral | FloatLiteral;
 
 type ImportDescr = GlobalType | Table | Memory | FuncImportDescr;
+
+type Intrinsic =
+  | InternalBrUnless
+  | InternalGoto
+  | InternalCallExtern
+  | InternalEndAndReturn;
 
 type Module = {
   ...BaseNode,
@@ -341,7 +351,8 @@ type CallInstruction = {
   type: "CallInstruction",
   id: string,
   index: Index,
-  instrArgs?: Array<Expression>
+  instrArgs?: Array<Expression>,
+  numeric?: Index
 };
 
 type CallIndirectInstruction = {
@@ -366,4 +377,27 @@ type Func = {
   body: Array<Instruction>,
   isExternal?: boolean,
   metadata?: FuncMetadata
+};
+
+type InternalBrUnless = {
+  ...BaseNode,
+  type: "InternalBrUnless",
+  target: number
+};
+
+type InternalGoto = {
+  ...BaseNode,
+  type: "InternalGoto",
+  target: number
+};
+
+type InternalCallExtern = {
+  ...BaseNode,
+  type: "InternalCallExtern",
+  target: number
+};
+
+type InternalEndAndReturn = {
+  ...BaseNode,
+  type: "InternalEndAndReturn"
 };

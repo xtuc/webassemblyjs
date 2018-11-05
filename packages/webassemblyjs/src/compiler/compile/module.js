@@ -2,28 +2,27 @@
 
 import { transform as wastIdentifierToIndex } from "@webassemblyjs/ast/lib/transform/wast-identifier-to-index";
 import { transform as denormalizeTypeReferences } from "@webassemblyjs/ast/lib/transform/denormalize-type-references";
-import { flatten } from "@webassemblyjs/helper-flaten-ast";
+import { toIR } from "@webassemblyjs/helper-compiler";
 
 const t = require("@webassemblyjs/ast");
 
 import validateAST from "@webassemblyjs/validation";
-const { CompileError } = require("../../errors");
 
 export class Module {
-  _start: ?Funcidx;
   _ast: Program;
+  _ir: IR;
 
   exports: Array<CompiledModuleExportDescr>;
   imports: Array<CompiledModuleImportDescr>;
 
   constructor(
+    ir: IR,
     ast: Program,
     exports: Array<CompiledModuleExportDescr>,
-    imports: Array<CompiledModuleImportDescr>,
-    start?: Funcidx
+    imports: Array<CompiledModuleImportDescr>
   ) {
+    this._ir = ir;
     this._ast = ast;
-    this._start = start;
 
     this.exports = exports;
     this.imports = imports;
@@ -33,8 +32,6 @@ export class Module {
 export function createCompiledModule(ast: Program): CompiledModule {
   const exports: Array<CompiledModuleExportDescr> = [];
   const imports = [];
-
-  let start;
 
   // Do compile-time ast manipulation in order to remove WAST
   // semantics during execution
@@ -51,48 +48,13 @@ export function createCompiledModule(ast: Program): CompiledModule {
           kind: "function"
         });
       }
-    },
-
-    Start({ node }: NodePath<Start>) {
-      if (typeof start !== "undefined") {
-        throw new CompileError("Multiple start functions is not allowed");
-      }
-
-      start = node.index;
     }
   });
 
   /**
-   * Adds missing end instructions
+   * Compile
    */
-  t.traverse(ast, {
-    Func({ node }: NodePath<Func>) {
-      node.body.push(t.instruction("end"));
-    },
+  const ir = toIR(ast);
 
-    Global({ node }: NodePath<Global>) {
-      node.init.push(t.instruction("end"));
-    },
-
-    IfInstruction({ node }: NodePath<IfInstruction>) {
-      node.test.push(t.instruction("end"));
-      node.consequent.push(t.instruction("end"));
-      node.alternate.push(t.instruction("end"));
-    },
-
-    BlockInstruction({ node }: NodePath<BlockInstruction>) {
-      node.instr.push(t.instruction("end"));
-    },
-
-    LoopInstruction({ node }: NodePath<LoopInstruction>) {
-      node.instr.push(t.instruction("end"));
-    }
-  });
-
-  /**
-   * Flatten AST
-   */
-  flatten(ast);
-
-  return new Module(ast, exports, imports, start);
+  return new Module(ir, ast, exports, imports);
 }

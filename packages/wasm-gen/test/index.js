@@ -141,7 +141,8 @@ const fixtures = [
   {
     name: "(global (mut i32) (i32.const 0))",
     node: t.global(t.globalType("i32", "var"), [
-      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+      t.instruction("end")
     ]),
     expected: [0x7f, 0x01, 0x41, 0x01, 0x0b]
   },
@@ -149,28 +150,33 @@ const fixtures = [
   {
     name: "(global i32 (i32.const 0))",
     node: t.global(t.globalType("i32", "const"), [
-      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+      t.instruction("end")
     ]),
     expected: [0x7f, 0x00, 0x41, 0x01, 0x0b]
   },
 
   {
     name: "(func)",
-    node: t.func(null, t.signature([], []), []),
+    node: t.func(null, t.signature([], []), [t.instruction("end")]),
     expected: [0x02, 0x00, 0x0b]
   },
 
   {
     name: "(func (i32.const 1))",
     node: t.func(null, t.signature([], []), [
-      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+      t.instruction("end")
     ]),
     expected: [0x04, 0x00, 0x41, 0x01, 0x0b]
   },
 
   {
     name: "(func (unreachable))",
-    node: t.func(null, t.signature([], []), [t.instruction("unreachable")]),
+    node: t.func(null, t.signature([], []), [
+      t.instruction("unreachable"),
+      t.instruction("end")
+    ]),
     expected: [0x03, 0x00, 0x00, 0x0b]
   },
 
@@ -209,7 +215,10 @@ const fixtures = [
     name: "(elem 1 (i32.const 2) 3 4)",
     node: t.elem(
       t.numberLiteralFromRaw(1),
-      [t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)])],
+      [
+        t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)]),
+        t.instruction("end")
+      ],
       [t.numberLiteralFromRaw(3), t.numberLiteralFromRaw(4)]
     ),
     expected: [0x01, 0x41, 0x02, 0x0b, 0x02, 0x03, 0x04]

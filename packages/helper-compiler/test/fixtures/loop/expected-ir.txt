@@ -1,0 +1,7 @@
+Func table:
+func_0 at 25
+
+25 | loop
+26 | i32.const 7
+28 | end
+29 | _end_and_return

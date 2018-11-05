@@ -1,8 +1,10 @@
 // @flow
+
 import { signatures } from "./signatures";
 import { traverse } from "./traverse";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
+import { assert } from "mamacro";
 
 export function isAnonymous(ident: Identifier): boolean {
   return ident.raw === "";
@@ -186,4 +188,79 @@ export function getUniqueNameGenerator(): string => string {
     }
     return prefix + "_" + inc[prefix];
   };
+}
+
+export function getStartByteOffset(n: Node): number {
+  // $FlowIgnore
+  if (typeof n.loc === "undefined" || typeof n.loc.start === "undefined") {
+    throw new Error(
+      // $FlowIgnore
+      "Can not get byte offset without loc informations, node: " + String(n.id)
+    );
+  }
+
+  return n.loc.start.column;
+}
+
+export function getEndByteOffset(n: Node): number {
+  // $FlowIgnore
+  if (typeof n.loc === "undefined" || typeof n.loc.end === "undefined") {
+    throw new Error(
+      "Can not get byte offset without loc informations, node: " + n.type
+    );
+  }
+
+  return n.loc.end.column;
+}
+
+export function getFunctionBeginingByteOffset(n: Func): number {
+  assert(n.body.length > 0);
+
+  const [firstInstruction] = n.body;
+
+  return getStartByteOffset(firstInstruction);
+}
+
+export function getEndBlockByteOffset(n: Block): number {
+  // $FlowIgnore
+  assert(n.instr.length > 0 || n.body.length > 0);
+
+  let lastInstruction;
+
+  if (n.instr) {
+    // $FlowIgnore
+    lastInstruction = n.instr[n.instr.length - 1];
+  }
+
+  if (n.body) {
+    // $FlowIgnore
+    lastInstruction = n.body[n.body.length - 1];
+  }
+
+  assert(typeof lastInstruction === "object");
+
+  // $FlowIgnore
+  return getStartByteOffset(lastInstruction);
+}
+
+export function getStartBlockByteOffset(n: Block): number {
+  // $FlowIgnore
+  assert(n.instr.length > 0 || n.body.length > 0);
+
+  let fistInstruction;
+
+  if (n.instr) {
+    // $FlowIgnore
+    [fistInstruction] = n.instr;
+  }
+
+  if (n.body) {
+    // $FlowIgnore
+    [fistInstruction] = n.body;
+  }
+
+  assert(typeof fistInstruction === "object");
+
+  // $FlowIgnore
+  return getStartByteOffset(fistInstruction);
 }

@@ -7,8 +7,8 @@ it("should have entries in the table", () => {
     }
   };
 
-  WebAssembly.instantiateFromSource(watmodule, importObj);
-
-  assert.lengthOf(tbl, 1);
-  assert.typeOf(tbl.get(0), "function");
+  return WebAssembly.instantiate(wasmmodule, importObj).then(m => {
+    assert.lengthOf(tbl, 1);
+    assert.typeOf(tbl.get(0), "function");
+  });
 });

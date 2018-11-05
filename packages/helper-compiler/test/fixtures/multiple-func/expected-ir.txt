@@ -1,0 +1,8 @@
+Func table:
+a at 24
+b at 29
+
+24 | i32.const 1
+26 | _end_and_return
+29 | i32.const 1
+31 | _end_and_return

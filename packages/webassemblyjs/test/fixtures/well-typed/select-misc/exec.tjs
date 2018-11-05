@@ -1,3 +1,0 @@
-it("should not throw any errors", () => {
-  WebAssembly.instantiateFromSource(watmodule);
-});

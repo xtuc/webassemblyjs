@@ -1,6 +1,6 @@
 it("should export the global value by index", () => {
-  const m = WebAssembly.instantiateFromSource(watmodule);
-
-  assert.typeOf(m.exports.a, "number");
-  assert.equal(m.exports.a, 10);
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    assert.typeOf(m.instance.exports.a, "number");
+    assert.equal(m.instance.exports.a, 10);
+  });
 });

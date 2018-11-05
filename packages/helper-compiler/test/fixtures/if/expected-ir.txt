@@ -1,0 +1,10 @@
+Func table:
+func_0 at 25
+
+25 | get_local 0
+28 | _br_unless 32
+29 | i32.const 1
+31 | _goto 35
+32 | i32.const 0
+34 | end
+35 | _end_and_return

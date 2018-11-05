@@ -1,0 +1,16 @@
+Func table:
+func_0 at 34
+
+34 | local undefined
+37 | loop
+38 | i32.const 1
+40 | get_local 0
+42 | i32.add
+43 | set_local 0
+45 | get_local 0
+47 | i32.const 3
+49 | i32.ne
+50 | br_if 38
+52 | end
+53 | get_local 0
+55 | _end_and_return

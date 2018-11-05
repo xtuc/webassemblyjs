@@ -2,6 +2,12 @@ install:
   - cmd: git submodule -q update --init
   # Get the latest stable version of Node.js
   - ps: Install-Product node $env:NODEJS_VERSION
+
+  - |
+      curl -L -o wabt.zip "https://github.com/WebAssembly/wabt/releases/download/1.0.6/wabt-1.0.6-win64.zip"
+      7z e wabt.zip
+      set PATH=./wabt-1.0.6;%PATH%
+
   - choco install make
   - make bootstrap
 

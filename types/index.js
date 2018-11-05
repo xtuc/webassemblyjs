@@ -69,14 +69,13 @@ type StackFrame = {
   globals: Array<any>,
   locals: Array<StackLocal>,
   labels: Array<Label>,
-  code: Array<Instruction>,
 
   originatingModule: ModuleInstance,
   allocator: Allocator,
 
   trace?: (number, number, Instruction, StackFrame) => void,
 
-  _pc: number
+  returnAddress: number
 };
 
 type StackLocal = {
@@ -159,3 +158,15 @@ interface TableInstance {
 }
 
 type SignatureMap = { [string]: string } | [string, string];
+
+type IRFuncTable = {
+  name: string,
+  startAt: number
+};
+
+type IR = {
+  funcTable: Array<IRFuncTable>,
+  program: {
+    [number]: Instruction
+  }
+};

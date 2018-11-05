@@ -1,0 +1,3 @@
+Expected type i32 but got i64 at ff.
+Expected type i64 but got i32 at b.
+Expected type i32 but got none at c:0.

@@ -1,0 +1,5 @@
+Func table:
+main at 48
+
+48 | _extern_call 0
+50 | _end_and_return

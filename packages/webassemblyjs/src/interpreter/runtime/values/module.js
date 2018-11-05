@@ -1,10 +1,11 @@
 // @flow
 
 import { traverse } from "@webassemblyjs/ast";
+import { assert } from "mamacro";
 import { isIdentifier, isNumberLiteral } from "@webassemblyjs/ast/lib/nodes";
 import * as WebAssemblyMemory from "./memory";
 
-const { RuntimeError, LinkError, CompileError } = require("../../../errors");
+const { RuntimeError, CompileError } = require("../../../errors");
 const WebAssemblyTable = require("./table");
 const func = require("./func");
 const externvalue = require("./extern");
@@ -152,11 +153,14 @@ function instantiateDataSections(
  * Create Module's internal elements instances
  */
 function instantiateInternals(
+  funcTable: Array<IRFuncTable>,
   n: Module,
   allocator: Allocator,
   internals: Object,
   moduleInstance: ModuleInstance
 ) {
+  let funcIndex = 0;
+
   traverse(n, {
     Func({ node }: NodePath<Func>) {
       // Only instantiate/allocate our own functions
@@ -164,7 +168,9 @@ function instantiateInternals(
         return;
       }
 
-      const funcinstance = func.createInstance(node, moduleInstance);
+      const atOffset = funcTable[funcIndex].startAt;
+
+      const funcinstance = func.createInstance(atOffset, node, moduleInstance);
 
       const addr = allocator.malloc(1 /* size of the funcinstance struct */);
       allocator.set(addr, funcinstance);
@@ -176,6 +182,8 @@ function instantiateInternals(
           internals.instantiatedFuncs[node.name.value] = { addr };
         }
       }
+
+      funcIndex++;
     },
 
     Table({ node }: NodePath<Table>) {
@@ -237,12 +245,7 @@ function instantiateInternals(
 
       moduleInstance.memaddrs.push(addr);
 
-      if (node.id != null) {
-        if (node.id.type === "Identifier") {
-          // $FlowIgnore
-          internals.instantiatedMemories[node.id.value] = { addr };
-        }
-      }
+      internals.instantiatedMemories.push({ addr });
     },
 
     Global({ node }: NodePath<Global>) {
@@ -253,14 +256,10 @@ function instantiateInternals(
 
       moduleInstance.globaladdrs.push(addr);
 
-      if (node.name != null) {
-        if (node.name.type === "Identifier") {
-          internals.instantiatedGlobals[node.name.value] = {
-            addr,
-            type: node.globalType
-          };
-        }
-      }
+      internals.instantiatedGlobals.push({
+        addr,
+        type: node.globalType
+      });
     }
   });
 }
@@ -276,13 +275,14 @@ function instantiateExports(
   internals: Object,
   moduleInstance: ModuleInstance
 ) {
+  // FIXME(sven): move to validation error
   function assertNotAlreadyExported(str) {
     const moduleInstanceExport = moduleInstance.exports.find(
       ({ name }) => name === str
     );
 
     if (moduleInstanceExport !== undefined) {
-      throw new CompileError("Duplicate export name");
+      throw new CompileError("duplicate export name");
     }
   }
 
@@ -337,54 +337,59 @@ function instantiateExports(
             node,
             internals.instantiatedFuncs,
             instantiatedFunc => {
-              if (typeof instantiatedFunc === "undefined") {
-                throw new Error("unknown function");
-              }
+              assert(typeof instantiatedFunc !== "undefined", "unknown Func");
             }
           );
           break;
         }
+
         case "Global": {
           createModuleExport(
             node,
             internals.instantiatedGlobals,
             instantiatedGlobal => {
-              if (typeof instantiatedGlobal === "undefined") {
-                throw new Error("unknown global");
-              } else if (instantiatedGlobal.type.mutability === "var") {
+              assert(
+                typeof instantiatedGlobal !== "undefined",
+                "unknown Gloal"
+              );
+
+              // TODO(sven): move to validation error?
+              if (instantiatedGlobal.type.mutability === "var") {
                 throw new CompileError("Mutable globals cannot be exported");
-              } else if (instantiatedGlobal.type.valtype === "i64") {
-                throw new LinkError(
-                  "Export of globals of type i64 is not allowed"
-                );
               }
             }
           );
           break;
         }
+
         case "Table": {
           createModuleExport(
             node,
             internals.instantiatedTables,
             instantiatedTable => {
-              if (typeof instantiatedTable === "undefined") {
-                throw new Error("unknown table");
-              }
+              assert(typeof instantiatedTable !== "undefined", "unknown Table");
             }
           );
           break;
         }
+
+        case "Mem":
         case "Memory": {
           createModuleExport(
             node,
             internals.instantiatedMemories,
             instantiatedMemory => {
-              if (typeof instantiatedMemory === "undefined") {
-                throw new Error("unknown memory");
-              }
+              assert(
+                typeof instantiatedMemory !== "undefined",
+                "unknown Memory"
+              );
             }
           );
           break;
+        }
+
+        default: {
+          throw new CompileError("unknown export: " + node.descr.exportType);
         }
       }
     }
@@ -392,6 +397,7 @@ function instantiateExports(
 }
 
 export function createInstance(
+  funcTable: Array<IRFuncTable>,
   allocator: Allocator,
   n: Module,
   externalElements: any = {}
@@ -412,9 +418,9 @@ export function createInstance(
    */
   const instantiatedInternals = {
     instantiatedFuncs: {},
-    instantiatedGlobals: {},
+    instantiatedGlobals: [],
     instantiatedTables: {},
-    instantiatedMemories: {}
+    instantiatedMemories: []
   };
 
   instantiateImports(
@@ -425,7 +431,13 @@ export function createInstance(
     moduleInstance
   );
 
-  instantiateInternals(n, allocator, instantiatedInternals, moduleInstance);
+  instantiateInternals(
+    funcTable,
+    n,
+    allocator,
+    instantiatedInternals,
+    moduleInstance
+  );
 
   instantiateDataSections(n, allocator, moduleInstance);
 

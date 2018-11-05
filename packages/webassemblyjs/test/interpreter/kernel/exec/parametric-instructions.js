@@ -11,6 +11,7 @@ const {
 const {
   createStackFrame
 } = require("../../../../lib/interpreter/kernel/stackframe");
+const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
 describe("kernel exec - parametric instructions", () => {
   const operations = [
@@ -31,10 +32,10 @@ describe("kernel exec - parametric instructions", () => {
 
   operations.forEach(op => {
     it(op.name + " should result in a correct state", () => {
-      op.code.push(t.instruction("end"));
+      const ir = compileASTNodes(op.code);
 
-      const stackFrame = createStackFrame(op.code, op.args);
-      const res = executeStackFrame(stackFrame);
+      const stackFrame = createStackFrame(op.args);
+      const res = executeStackFrame(ir, 0, stackFrame);
 
       if (typeof res === "undefined") {
         throw new Error("No result");
@@ -47,8 +48,10 @@ describe("kernel exec - parametric instructions", () => {
   it("should drop if no values is on the stack", () => {
     const code = [t.instruction("drop", []), t.instruction("end")];
 
-    const stackFrame = createStackFrame(code, []);
-    const fn = () => executeStackFrame(stackFrame);
+    const ir = compileASTNodes(code);
+
+    const stackFrame = createStackFrame([]);
+    const fn = () => executeStackFrame(ir, 0, stackFrame);
 
     assert.throws(fn, /Assertion error: expected 1 on the stack, found 0/);
   });

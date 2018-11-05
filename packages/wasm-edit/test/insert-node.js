@@ -149,7 +149,8 @@ describe("insert a node", () => {
     ]);
 
     const global = t.global(t.globalType("i32", "var"), [
-      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+      t.instruction("end")
     ]);
 
     it("should insert the node in existing section", () => {
@@ -188,7 +189,8 @@ describe("insert a node", () => {
     );
 
     const func = t.func(null, t.signature([], ["i32"]), [
-      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+      t.instruction("end")
     ]);
 
     const functype = t.typeInstruction(
@@ -248,7 +250,8 @@ describe("insert a node", () => {
     const index = t.numberLiteralFromRaw(0);
 
     const global = t.global(t.globalType("i32", "const"), [
-      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)])
+      t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
+      t.instruction("end")
     ]);
 
     const functype = t.typeInstruction(undefined, t.signature([], []));
@@ -259,7 +262,9 @@ describe("insert a node", () => {
       t.moduleExportDescr("Func", index)
     );
 
-    const func = t.func(t.identifier("foo"), t.signature([], []), []);
+    const func = t.func(t.identifier("foo"), t.signature([], []), [
+      t.instruction("end")
+    ]);
 
     // (module)
     bin = makeBuffer(encodeHeader(), encodeVersion(1));

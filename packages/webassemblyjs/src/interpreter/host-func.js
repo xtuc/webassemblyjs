@@ -1,5 +1,9 @@
 // @flow
 
+declare function trace(msg?: string): void;
+
+import { assert, define } from "mamacro";
+
 const t = require("@webassemblyjs/ast");
 
 import { RuntimeError } from "../errors";
@@ -8,10 +12,17 @@ const {
 } = require("./runtime/castIntoStackLocalOfType");
 const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");
-const label = require("./runtime/values/label");
 const { ExecutionHasBeenTrapped } = require("./kernel/signals");
 
+define(
+  trace,
+  msg => `
+    console.log("host " + ${msg});
+  `
+);
+
 export function createHostfunc(
+  ir: IR,
   moduleinst: ModuleInstance,
   exportinst: ExportInstance,
   allocator: Allocator,
@@ -81,7 +92,6 @@ export function createHostfunc(
     );
 
     const stackFrame = createStackFrame(
-      funcinst.code,
       argsWithType,
       funcinst.module,
       allocator
@@ -91,7 +101,7 @@ export function createHostfunc(
     stackFrame.locals.push(...argsWithType);
 
     // 2. Enter the block instr∗ with label
-    stackFrame.values.push(label.createValue(exportinst.name));
+    // stackFrame.values.push(label.createValue(exportinst.name));
 
     stackFrame.labels.push({
       value: funcinst,
@@ -99,76 +109,33 @@ export function createHostfunc(
       id: t.identifier(exportinst.name)
     });
 
-    // function trace(depth, pc, i, frame) {
-    //   function ident() {
-    //     let out = "";
+    trace("invoking " + exportinst.name);
 
-    //     for (let i = 0; i < depth; i++) {
-    //       out += "\t|";
-    //     }
-
-    //     return out;
-    //   }
-
-    //   console.log(
-    //     ident(),
-    //     `-------------- pc: ${pc} - depth: ${depth} --------------`
-    //   );
-
-    //   console.log(ident(), "instruction:", i.id);
-
-    //   console.log(ident(), "locals:");
-    //   frame.locals.forEach((stackLocal: StackLocal) => {
-    //     console.log(
-    //       ident(),
-    //       `\t- type: ${stackLocal.type}, value: ${stackLocal.value}`
-    //     );
-    //   });
-
-    //   console.log(ident(), "values:");
-    //   frame.values.forEach((stackLocal: StackLocal) => {
-    //     console.log(
-    //       ident(),
-    //       `\t- type: ${stackLocal.type}, value: ${stackLocal.value}`
-    //     );
-    //   });
-
-    //   console.log(ident(), "");
-
-    //   console.log(ident(), "labels:");
-    //   frame.labels.forEach((label, k) => {
-    //     let value = "unknown";
-
-    //     if (label.id != null) {
-    //       value = label.id.value;
-    //     }
-    //     console.log(ident(), `\t- ${k} id: ${value}`);
-    //   });
-
-    //   console.log(
-    //     ident(),
-    //     "--------------------------------------------------\n"
-    //   );
-    // }
-
-    // stackFrame.trace = trace;
-
-    return executeStackFrameAndGetResult(stackFrame, returnStackLocal);
+    return executeStackFrameAndGetResult(
+      ir,
+      funcinst.atOffset,
+      stackFrame,
+      returnStackLocal
+    );
   };
 }
 
 export function executeStackFrameAndGetResult(
+  ir: IR,
+  offset: number,
   stackFrame: StackFrame,
   returnStackLocal: boolean
 ): any {
   try {
-    const res = executeStackFrame(stackFrame);
+    const res = executeStackFrame(ir, offset, stackFrame);
 
     if (returnStackLocal === true) {
       return res;
     }
 
     if (res != null && res.value != null) {
+      assert(res.type !== "label");
+
       return res.value.toNumber();
     }
   } catch (e) {

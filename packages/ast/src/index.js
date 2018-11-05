@@ -17,18 +17,6 @@ export { traverse } from "./traverse";
 
 export { signatures } from "./signatures";
 
-export {
-  getSectionMetadata,
-  getSectionMetadatas,
-  sortSectionMetadata,
-  orderedInsertNode,
-  assertHasLoc,
-  getEndOfSection,
-  shiftSection,
-  shiftLoc,
-  isAnonymous,
-  getUniqueNameGenerator,
-  signatureForOpcode
-} from "./utils";
+export * from "./utils";
 
 export { cloneNode } from "./clone";

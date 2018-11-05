@@ -1,13 +1,11 @@
 // @flow
 
 export function createStackFrame(
-  code: Array<Instruction>,
   locals: Array<StackLocal>,
   originatingModule: ModuleInstance,
   allocator: Allocator
 ): StackFrame {
   return {
-    code,
     locals,
 
     globals: [],
@@ -40,20 +38,21 @@ export function createStackFrame(
     allocator,
 
     /**
-     * Program counter, used to track the execution of the code
+     * The callee address
      */
-    _pc: 0
+    returnAddress: -1
   };
 }
 
 export function createChildStackFrame(
   parent: StackFrame,
-  code: Array<Instruction>
+  pc: number
 ): StackFrame {
   const { locals, originatingModule, allocator, trace } = parent;
 
-  const frame = createStackFrame(code, locals, originatingModule, allocator);
+  const frame = createStackFrame(locals, originatingModule, allocator);
   frame.trace = trace;
+  frame.returnAddress = pc;
 
   return frame;
 }

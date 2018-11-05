@@ -1,0 +1,5 @@
+it("should return the correct results", () => {
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    assert.equal(m.instance.exports.test(), 3);
+  });
+});

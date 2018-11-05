@@ -1,5 +1,8 @@
 // @flow
 
+import { listOfInstructionsToIr } from "@webassemblyjs/helper-compiler";
+import { assert } from "mamacro";
+
 const t = require("@webassemblyjs/ast");
 
 const { executeStackFrame } = require("./kernel/exec");
@@ -10,15 +13,19 @@ export function evaluate(
   allocator: Allocator,
   code: Array<Instruction>
 ): ?StackLocal {
+  const ir = listOfInstructionsToIr(code);
+
   // Create an empty module instance for the context
   const moduleInstance = modulevalue.createInstance(
+    ir,
     allocator,
     t.module(undefined, [])
   );
 
-  const stackFrame = createStackFrame(code, [], moduleInstance, allocator);
+  const stackFrame = createStackFrame([], moduleInstance, allocator);
 
-  const res = executeStackFrame(stackFrame);
+  const main = ir.funcTable.find(f => f.name === "main");
+  assert(typeof main === "object");
 
-  return res;
+  return executeStackFrame(ir, main.startAt, stackFrame);
 }

@@ -1,10 +1,11 @@
-const m = WebAssembly.instantiateFromSource(watmodule);
-
 it("should call a function by its index", () => {
-  const result = m.exports.callByIndex();
-  assert.equal(result, 1);
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    assert.equal(m.instance.exports.callByIndex(), 1);
+  });
 });
 
 it("should call a function by its name", () => {
-  assert.equal(m.exports.callByName(), 1);
+  return WebAssembly.instantiate(wasmmodule).then(m => {
+    assert.equal(m.instance.exports.callByName(), 1);
+  });
 });

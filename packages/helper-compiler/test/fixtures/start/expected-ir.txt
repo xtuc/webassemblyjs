@@ -1,0 +1,5 @@
+Func table:
+__start at 26
+start at 26
+
+26 | _end_and_return

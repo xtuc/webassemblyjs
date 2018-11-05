@@ -561,6 +561,10 @@ defineType("CallInstruction", {
       array: true,
       optional: true,
       type: "Expression"
+    },
+    numeric: {
+      type: "Index",
+      optional: true
     }
   }
 });
@@ -618,6 +622,45 @@ defineType("Func", {
       type: "FuncMetadata"
     }
   }
+});
+
+/**
+ * Intrinsics
+ */
+defineType("InternalBrUnless", {
+  unionType: ["Node", "Intrinsic"],
+  fields: {
+    target: {
+      type: "number"
+    }
+  }
+});
+
+defineType("InternalGoto", {
+  unionType: ["Node", "Intrinsic"],
+  fields: {
+    target: {
+      type: "number"
+    }
+  }
+});
+
+defineType("InternalCallExtern", {
+  unionType: ["Node", "Intrinsic"],
+  fields: {
+    target: {
+      type: "number"
+    }
+  }
+});
+
+// function bodies are terminated by an `end` instruction but are missing a
+// return instruction
+//
+// Since we can't inject a new instruction we are injecting a new instruction.
+defineType("InternalEndAndReturn", {
+  unionType: ["Node", "Intrinsic"],
+  fields: {}
 });
 
 module.exports = definitions;

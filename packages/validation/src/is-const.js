@@ -21,8 +21,6 @@ export default function isConst(
       return !moduleContext.isMutableGlobal(index);
     }
 
-    // FIXME(sven): this shoudln't be needed, we need to inject our end
-    // instructions after the validations
     if (instr.id === "end") {
       return true;
     }
@@ -38,10 +36,23 @@ export default function isConst(
         (acc, instr) => acc && isConstInstruction(instr),
         true
       );
+
       if (!isValid) {
         errors.push(
           "constant expression required: initializer expression cannot reference mutable global"
         );
+      }
+
+      // check type
+      // FIXME(sven): this is a quick fix but should ideally go through our
+      // stacky type checker
+      if (path.node.init.length > 0) {
+        const type = path.node.globalType.valtype;
+        const initType = path.node.init[0].object;
+
+        if (initType && type !== initType) {
+          errors.push("type mismatch in global initializer");
+        }
       }
     }
   });

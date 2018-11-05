@@ -112,3 +112,5 @@ function writeExpectedFile(expectedFile, content) {
   writeFileSync(expectedFile, content);
   console.log("Write expected file", expectedFile);
 }
+
+export * from "./fake-compiler";

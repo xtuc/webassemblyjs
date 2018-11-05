@@ -1,0 +1,14 @@
+Func table:
+a at 25
+b at 31
+c at 36
+
+25 | nop
+26 | call @36
+28 | _end_and_return
+31 | nop
+32 | nop
+33 | _end_and_return
+36 | nop
+37 | i32.const 1
+39 | _end_and_return

@@ -1,7 +1,15 @@
 // @flow
-import { RuntimeError } from "../../../errors";
 
-function createInstance(n: Func, fromModule: ModuleInstance): FuncInstance {
+import { RuntimeError } from "../../../errors";
+import { assert } from "mamacro";
+
+function createInstance(
+  atOffset: number,
+  n: Func,
+  fromModule: ModuleInstance
+): FuncInstance {
+  assert(typeof atOffset === "number");
+
   //       [param*, result*]
   const type = [[], []];
 
@@ -23,6 +31,7 @@ function createInstance(n: Func, fromModule: ModuleInstance): FuncInstance {
   const code = n.body;
 
   return {
+    atOffset,
     type,
     code,
     module: fromModule,

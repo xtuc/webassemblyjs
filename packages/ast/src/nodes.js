@@ -718,7 +718,8 @@ export function blockInstruction(
 
 export function callInstruction(
   index: Index,
-  instrArgs?: Array<Expression>
+  instrArgs?: Array<Expression>,
+  numeric?: Index
 ): CallInstruction {
   if (instrArgs !== null && instrArgs !== undefined) {
     assert(
@@ -734,6 +735,10 @@ export function callInstruction(
 
   if (typeof instrArgs !== "undefined" && instrArgs.length > 0) {
     node.instrArgs = instrArgs;
+  }
+
+  if (typeof numeric !== "undefined") {
+    node.numeric = numeric;
   }
 
   return node;
@@ -801,6 +806,56 @@ export function func(
   if (typeof metadata !== "undefined") {
     node.metadata = metadata;
   }
+
+  return node;
+}
+
+export function internalBrUnless(target: number): InternalBrUnless {
+  assert(
+    typeof target === "number",
+    "Argument target must be of type number, given: " + typeof target
+  );
+
+  const node: InternalBrUnless = {
+    type: "InternalBrUnless",
+    target
+  };
+
+  return node;
+}
+
+export function internalGoto(target: number): InternalGoto {
+  assert(
+    typeof target === "number",
+    "Argument target must be of type number, given: " + typeof target
+  );
+
+  const node: InternalGoto = {
+    type: "InternalGoto",
+    target
+  };
+
+  return node;
+}
+
+export function internalCallExtern(target: number): InternalCallExtern {
+  assert(
+    typeof target === "number",
+    "Argument target must be of type number, given: " + typeof target
+  );
+
+  const node: InternalCallExtern = {
+    type: "InternalCallExtern",
+    target
+  };
+
+  return node;
+}
+
+export function internalEndAndReturn(): InternalEndAndReturn {
+  const node: InternalEndAndReturn = {
+    type: "InternalEndAndReturn"
+  };
 
   return node;
 }
@@ -885,6 +940,14 @@ export const isByteArray = isTypeOf("ByteArray");
 
 export const isFunc = isTypeOf("Func");
 
+export const isInternalBrUnless = isTypeOf("InternalBrUnless");
+
+export const isInternalGoto = isTypeOf("InternalGoto");
+
+export const isInternalCallExtern = isTypeOf("InternalCallExtern");
+
+export const isInternalEndAndReturn = isTypeOf("InternalEndAndReturn");
+
 export const isNode = (node: Node) =>
   isModule(node) ||
   isModuleMetadata(node) ||
@@ -925,7 +988,11 @@ export const isNode = (node: Node) =>
   isCallInstruction(node) ||
   isCallIndirectInstruction(node) ||
   isByteArray(node) ||
-  isFunc(node);
+  isFunc(node) ||
+  isInternalBrUnless(node) ||
+  isInternalGoto(node) ||
+  isInternalCallExtern(node) ||
+  isInternalEndAndReturn(node);
 
 export const isBlock = (node: Node) =>
   isLoopInstruction(node) || isBlockInstruction(node) || isFunc(node);
@@ -956,6 +1023,12 @@ export const isImportDescr = (node: Node) =>
   isTable(node) ||
   isMemory(node) ||
   isFuncImportDescr(node);
+
+export const isIntrinsic = (node: Node) =>
+  isInternalBrUnless(node) ||
+  isInternalGoto(node) ||
+  isInternalCallExtern(node) ||
+  isInternalEndAndReturn(node);
 
 export const assertModule = assertTypeOf("Module");
 
@@ -1039,6 +1112,14 @@ export const assertByteArray = assertTypeOf("ByteArray");
 
 export const assertFunc = assertTypeOf("Func");
 
+export const assertInternalBrUnless = assertTypeOf("InternalBrUnless");
+
+export const assertInternalGoto = assertTypeOf("InternalGoto");
+
+export const assertInternalCallExtern = assertTypeOf("InternalCallExtern");
+
+export const assertInternalEndAndReturn = assertTypeOf("InternalEndAndReturn");
+
 export const unionTypesMap = {
   Module: ["Node"],
   ModuleMetadata: ["Node"],
@@ -1079,7 +1160,11 @@ export const unionTypesMap = {
   CallInstruction: ["Node", "Instruction"],
   CallIndirectInstruction: ["Node", "Instruction"],
   ByteArray: ["Node"],
-  Func: ["Node", "Block"]
+  Func: ["Node", "Block"],
+  InternalBrUnless: ["Node", "Intrinsic"],
+  InternalGoto: ["Node", "Intrinsic"],
+  InternalCallExtern: ["Node", "Intrinsic"],
+  InternalEndAndReturn: ["Node", "Intrinsic"]
 };
 
 export const nodeAndUnionTypes = [
@@ -1123,10 +1208,15 @@ export const nodeAndUnionTypes = [
   "CallIndirectInstruction",
   "ByteArray",
   "Func",
+  "InternalBrUnless",
+  "InternalGoto",
+  "InternalCallExtern",
+  "InternalEndAndReturn",
   "Node",
   "Block",
   "Instruction",
   "Expression",
   "NumericLiteral",
-  "ImportDescr"
+  "ImportDescr",
+  "Intrinsic"
 ];
