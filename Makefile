@@ -58,6 +58,7 @@ test-whitelisted-spec:
 	$(SPECTEST_RUNNER) $(SPEC_TEST_DIR)/utf8-custom-section-id.wast
 	$(SPECTEST_RUNNER) $(SPEC_TEST_DIR)/utf8-import-field.wast
 	$(SPECTEST_RUNNER) $(SPEC_TEST_DIR)/utf8-import-module.wast
+	$(SPECTEST_RUNNER) $(SPEC_TEST_DIR)/break-drop.wast
 
 lint:
 	$(ESLINT) packages

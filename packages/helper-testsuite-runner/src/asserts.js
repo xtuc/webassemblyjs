@@ -105,7 +105,10 @@ export function assert_malformed(
 
     assert(false, "did not throw any error");
   } catch (e) {
-    assert(e.message === expected);
+    assert(
+      e.message.match(new RegExp(expected, "gm")),
+      `Expected error "${expected}", got "${e.message}"`
+    );
   }
 }
 
