@@ -3,7 +3,7 @@
 import { traverse } from "@webassemblyjs/ast";
 
 function duplicatedExports(name: string): string {
-  return `duplicated export "${name}"`;
+  return `duplicate export name "${name}"`;
 }
 
 export default function validate(ast: Program): Array<string> {

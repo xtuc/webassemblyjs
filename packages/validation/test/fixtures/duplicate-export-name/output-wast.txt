@@ -1,1 +1,1 @@
-duplicated export "a"
+duplicate export name "a"

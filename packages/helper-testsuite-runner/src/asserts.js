@@ -123,7 +123,7 @@ export function assert_invalid(getInstance: () => Instance, expected: string) {
     assert(false, "did not throw any error");
   } catch (e) {
     assert(
-      e.message.match(new RegExp(expected)),
+      e.message.match(new RegExp(expected, "gm")),
       `Expected error "${expected}", got "${e.message}"`
     );
   }
@@ -150,7 +150,7 @@ export function assert_trap(element: any, action: Object, expected: string) {
       element(...compatibleArgs);
     } catch (e) {
       assert(
-        e.message.match(new RegExp(expected)),
+        e.message.match(new RegExp(expected, "gm")),
         `Expected error "${expected}", got "${e.message}"`
       );
     }
