@@ -1,5 +1,8 @@
 // @flow
 
+const {
+  getFixtures,
+} = require("@webassemblyjs/helper-test-framework");
 const glob = require("glob");
 const vm = require("vm");
 const { readFileSync } = require("fs");
@@ -14,9 +17,7 @@ function toArrayBuffer(buf) {
 
 describe("compiler", () => {
   describe("compile", () => {
-    const testSuites = glob.sync(
-      "test/compiler/compile/fixtures/**/module.wasm"
-    );
+    const testSuites = getFixtures(__dirname, "fixtures", "**/module.wasm");
 
     testSuites.forEach(suite => {
       describe(suite, () => {
