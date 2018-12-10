@@ -1,0 +1,11 @@
+it("should return return true on WebAssembly.validate", () => {
+  return WebAssembly.validate(wasmmodule).then(m => {
+    assert.isTrue(m);
+  });
+});
+
+it("should return return false on WebAssembly.validate", () => {
+  return WebAssembly.validate(new ArrayBuffer(0)).then(m => {
+    assert.notIsTrue(m);
+  });
+});
