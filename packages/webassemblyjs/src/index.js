@@ -52,6 +52,15 @@ const WebAssembly = {
     });
   },
 
+  validate(buff: ArrayBuffer): boolean {
+    try {
+      createCompiledModule(decode(buff));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
   // FIXME(sven): remove this
   instantiateFromSource(
     content: string,

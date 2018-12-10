@@ -44,6 +44,12 @@ describe("WebAssembly JavaScript API", () => {
     });
   });
 
+  describe("WebAssembly.validate", () => {
+    it("should be a function", () => {
+      assert.typeOf(WebAssembly.validate, "function");
+    });
+  });
+
   describe("WebAssembly.Memory", () => {
     it("should have a constructor", () => {
       assert.typeOf(WebAssembly.Memory, "function");
