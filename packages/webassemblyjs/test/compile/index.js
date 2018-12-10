@@ -1,7 +1,6 @@
 // @flow
 
 const { getFixtures } = require("@webassemblyjs/helper-test-framework");
-const glob = require("glob");
 const vm = require("vm");
 const { readFileSync } = require("fs");
 const path = require("path");
