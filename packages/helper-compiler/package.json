@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-compiler",
-  "version": "1.7.11",
+  "version": "1.8.0",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -12,13 +12,13 @@
     "url": "https://github.com/xtuc/webassemblyjs.git"
   },
   "dependencies": {
-    "mamacro": "^0.0.3",
-    "@webassemblyjs/helper-flatten-ast": "1.7.11",
-    "@webassemblyjs/ast": "1.7.11"
+    "@webassemblyjs/ast": "1.8.0",
+    "@webassemblyjs/helper-flatten-ast": "1.8.0",
+    "mamacro": "^0.0.3"
   },
   "devDependencies": {
-    "@webassemblyjs/wasm-parser": "1.7.11",
-    "@webassemblyjs/helper-test-framework": "1.7.11",
+    "@webassemblyjs/helper-test-framework": "1.8.0",
+    "@webassemblyjs/wasm-parser": "1.8.0",
     "wabt": "1.0.0-nightly.20180421"
   },
   "publishConfig": {
