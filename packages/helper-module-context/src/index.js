@@ -11,6 +11,11 @@ export function moduleContextFromModuleAST(m) {
     switch (field.type) {
       case "Start": {
         moduleContext.setStart(field.index);
+        break;
+      }
+      case "TypeInstruction": {
+        moduleContext.addType(field);
+        break;
       }
       case "Func": {
         moduleContext.addFunction(field);
@@ -71,6 +76,8 @@ export class ModuleContext {
   constructor() {
     this.funcs = [];
     this.funcsOffsetByIdentifier = [];
+
+    this.types = [];
 
     this.globals = [];
     this.globalsOffsetByIdentifier = [];
@@ -190,6 +197,22 @@ export class ModuleContext {
 
   addLocal(type) {
     this.locals.push(type);
+  }
+
+  /**
+   * Types
+   */
+  addType(type) {
+    assert(type.functype.type === "Signature");
+    this.types.push(type.functype);
+  }
+
+  hasType(index) {
+    return this.types[index] !== undefined;
+  }
+
+  getType(index) {
+    return this.types[index];
   }
 
   /**

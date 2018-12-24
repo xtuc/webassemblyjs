@@ -400,14 +400,14 @@ export default function getType(moduleContext, stack, instruction) {
       stack.return = true;
       break;
     }
+
     /**
      * unreachable, trap
      */
     case "unreachable":
     case "trap": {
-      // TODO: These should be polymorphic
       args = [];
-      result = [];
+      result = [POLYMORPHIC];
       break;
     }
     /**
@@ -490,9 +490,22 @@ export default function getType(moduleContext, stack, instruction) {
      * call_indirect
      */
     case "call_indirect": {
+      // resolve signature
+      let signature;
+      {
+        // signature might be a reference to a type
+        if (instruction.signature.type === "Signature") {
+          signature = instruction.signature;
+        } else {
+          const typeId = instruction.signature.value;
+          // TODO(sven): check if signature exists
+          signature = moduleContext.getType(typeId);
+        }
+      }
+
       // TODO: There are more things to be checked here
-      args = [...instruction.signature.params.map(p => p.valtype), "i32"];
-      result = instruction.signature.results.map(p => p.valtype);
+      args = signature.params.map(p => p.valtype);
+      result = signature.results;
       break;
     }
 

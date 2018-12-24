@@ -1,5 +1,10 @@
-import { traverse, isInstruction } from "@webassemblyjs/ast";
-
+import {
+  traverse,
+  isInstruction,
+  isSignature,
+  isNumberLiteral
+} from "@webassemblyjs/ast";
+import { assert } from "mamacro";
 import { moduleContextFromModuleAST } from "@webassemblyjs/helper-module-context";
 import getType from "./type-checker/get-type.js";
 import { ANY, POLYMORPHIC } from "./type-checker/types.js";
@@ -52,6 +57,9 @@ function createTypeChecker() {
   }
 
   function checkStacks(expectedStack, actualStack) {
+    assert(expectedStack !== undefined);
+    assert(actualStack !== undefined);
+
     if (actualStack !== false) {
       let j = actualStack.length - 1;
       for (let i = 0; i < expectedStack.length; ++i) {
@@ -269,7 +277,6 @@ export default function validate(ast) {
 
   // Module context
   const moduleContext = moduleContextFromModuleAST(ast.body[0]);
-
   const typeChecker = createTypeChecker();
 
   // Simulate stack types throughout all function bodies
@@ -279,12 +286,28 @@ export default function validate(ast) {
       typeChecker.setStopFuncCheck(false);
       typeChecker.setCurrentFuncName(node.name.value);
 
-      const expectedResult = node.signature.results;
+      // resolve signature
+      let signature;
+      {
+        // signature might be a reference to a type
+        if (isSignature(node.signature)) {
+          signature = node.signature;
+        } else {
+          assert(isNumberLiteral(node.signature));
+
+          const typeId = node.signature.value;
+          assert(moduleContext.hasType(typeId));
+
+          signature = moduleContext.getType(typeId);
+        }
+      }
+
+      const expectedResult = signature.results;
 
       moduleContext.newContext(node.name.value, expectedResult);
 
       // Parameters are local variables
-      node.signature.params.forEach(p => moduleContext.addLocal(p.valtype));
+      signature.params.forEach(p => moduleContext.addLocal(p.valtype));
 
       const resultingStack = node.body.reduce(
         typeChecker.applyInstruction.bind(null, moduleContext),
@@ -295,7 +318,7 @@ export default function validate(ast) {
         return typeChecker.getErrors();
       }
 
-      // Compare the two
+      // Compare the two stacks
       typeChecker.checkStacks(expectedResult, resultingStack);
     }
   });
