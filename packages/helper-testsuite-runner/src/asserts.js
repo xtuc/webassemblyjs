@@ -117,7 +117,7 @@ export function assert_malformed(
 //
 export function assert_invalid(getInstance: () => Instance, expected: string) {
   if (expected === "type mismatch") {
-    expected = "Expected type";
+    expected = "Expected type|Stack contains additional type";
   }
 
   try {
