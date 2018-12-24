@@ -1,0 +1,4 @@
+Expected type i32 but got f32 at i32-mismatch:2.
+Expected type i64 but got f32 at i64-mismatch:2.
+Expected type f32 but got i32 at f32-mismatch:2.
+Expected type f64 but got i32 at f64-mismatch:2.

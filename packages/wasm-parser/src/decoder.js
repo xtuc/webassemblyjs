@@ -672,10 +672,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         eatBytes(1);
 
         const type = constants.valtypes[valtypeByte];
-        const localNode = WITH_LOC(
-          t.instruction("local", [t.valtypeLiteral(type)]),
-          startLoc
-        );
+        const args = [];
+
+        for (let i = 0; i < localCount; i++) {
+          args.push(t.valtypeLiteral(type));
+        }
+
+        const localNode = WITH_LOC(t.instruction("local", args), startLoc);
 
         locals.push(localNode);
 
