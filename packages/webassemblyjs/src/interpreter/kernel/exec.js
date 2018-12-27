@@ -511,7 +511,6 @@ export function executeStackFrame(
           const init = castIntoStackLocalOfType(valtype.name, new Long(0, 0));
           frame.locals.push(init);
         } else {
-          console.log(valtype.name);
           const init = castIntoStackLocalOfType(valtype.name, 0);
           frame.locals.push(init);
         }
