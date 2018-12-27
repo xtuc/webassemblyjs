@@ -2,6 +2,7 @@
 
 import { assertRuntimeError, define } from "mamacro";
 
+import Long from "@xtuc/long";
 import { Memory } from "../runtime/values/memory";
 import { RuntimeError } from "../../errors";
 
@@ -191,9 +192,15 @@ export function executeStackFrame(
     if (l === "u32") {
       l = "i32";
     }
+    if (l === "u64") {
+      l = "i64";
+    }
 
     if (r === "u32") {
       r = "i32";
+    }
+    if (r === "u64") {
+      r = "i64";
     }
 
     return l === r;
@@ -232,7 +239,7 @@ export function executeStackFrame(
       throw newRuntimeError(
         "Internal failure: expected c2 value of type " +
           type2 +
-          " on top of the stack, give type: " +
+          " on top of the stack, given type: " +
           c2.type
       );
     }
@@ -241,7 +248,7 @@ export function executeStackFrame(
       throw newRuntimeError(
         "Internal failure: expected c1 value of type " +
           type1 +
-          " on top of the stack, give type: " +
+          " on top of the stack, given type: " +
           c1.type
       );
     }
@@ -500,8 +507,14 @@ export function executeStackFrame(
       case "local": {
         const [valtype] = instruction.args;
 
-        const init = castIntoStackLocalOfType(valtype.name, 0);
-        frame.locals.push(init);
+        if (valtype.name === "i64") {
+          const init = castIntoStackLocalOfType(valtype.name, new Long(0, 0));
+          frame.locals.push(init);
+        } else {
+          console.log(valtype.name);
+          const init = castIntoStackLocalOfType(valtype.name, 0);
+          frame.locals.push(init);
+        }
 
         trace("new local " + valtype.name);
 

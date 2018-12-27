@@ -504,7 +504,7 @@ export default function getType(moduleContext, stack, instruction) {
       }
 
       // TODO: There are more things to be checked here
-      args = signature.params.map(p => p.valtype);
+      args = ["i32", ...signature.params.reverse().map(p => p.valtype)];
       result = signature.results;
       break;
     }
