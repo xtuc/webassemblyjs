@@ -288,7 +288,10 @@ function instantiateExports(
 
   function createModuleExport(
     node: ModuleExport,
+    // FIXME(sven): instantiatedItemArray should be removed in favor of
+    // instantiatedItemInFromModule which avoid the duplicated array
     instantiatedItemArray,
+    instantiatedItemInFromModule,
     validate: Object => void
   ) {
     if (isIdentifier(node.descr.id) === true) {
@@ -306,10 +309,10 @@ function instantiateExports(
         }
       });
     } else if (isNumberLiteral(node.descr.id) === true) {
-      const keys = Object.keys(instantiatedItemArray);
-
-      // $FlowIgnore
-      const instantiatedItem = instantiatedItemArray[keys[node.descr.id.value]];
+      const instantiatedItem = {
+        addr: instantiatedItemInFromModule[parseInt(node.descr.id.value)]
+      };
+      assert(instantiatedItem !== undefined);
 
       validate(instantiatedItem);
 
@@ -336,8 +339,14 @@ function instantiateExports(
           createModuleExport(
             node,
             internals.instantiatedFuncs,
+            moduleInstance.funcaddrs,
             instantiatedFunc => {
-              assert(typeof instantiatedFunc !== "undefined", "unknown Func");
+              assert(
+                instantiatedFunc !== undefined,
+                `Function ${
+                  node.name
+                } has been exported but was not instantiated`
+              );
             }
           );
           break;
@@ -347,14 +356,18 @@ function instantiateExports(
           createModuleExport(
             node,
             internals.instantiatedGlobals,
+            moduleInstance.globaladdrs,
             instantiatedGlobal => {
               assert(
-                typeof instantiatedGlobal !== "undefined",
-                "unknown Gloal"
+                instantiatedGlobal !== undefined,
+                `Global ${node.name} has been exported but was not instantiated`
               );
 
+              const global = allocator.get(instantiatedGlobal.addr);
+              assert(global !== undefined);
+
               // TODO(sven): move to validation error?
-              if (instantiatedGlobal.type.mutability === "var") {
+              if (global.mutability === "var") {
                 throw new CompileError("Mutable globals cannot be exported");
               }
             }
@@ -366,8 +379,12 @@ function instantiateExports(
           createModuleExport(
             node,
             internals.instantiatedTables,
+            moduleInstance.tableaddrs,
             instantiatedTable => {
-              assert(typeof instantiatedTable !== "undefined", "unknown Table");
+              assert(
+                instantiatedTable !== undefined,
+                `Table ${node.name} has been exported but was not instantiated`
+              );
             }
           );
           break;
@@ -378,10 +395,11 @@ function instantiateExports(
           createModuleExport(
             node,
             internals.instantiatedMemories,
+            moduleInstance.memaddrs,
             instantiatedMemory => {
               assert(
-                typeof instantiatedMemory !== "undefined",
-                "unknown Memory"
+                instantiatedMemory !== undefined,
+                `Memory ${node.name} has been exported but was not instantiated`
               );
             }
           );

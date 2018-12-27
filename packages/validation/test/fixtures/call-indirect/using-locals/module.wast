@@ -4,6 +4,9 @@
 
   (func
     (local i32)
-    (get_local 0) (call_indirect (type 0))
+    (i32.const 1)
+
+    (get_local 0)
+    (call_indirect (type 0))
   )
 )

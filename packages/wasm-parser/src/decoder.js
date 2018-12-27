@@ -868,6 +868,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         code.push(callNode);
         instructionAlreadyCreated = true;
       } else if (instruction.name === "call_indirect") {
+        const startLoc = getPosition();
+
         const indexU32 = readU32();
         const typeindex = indexU32.value;
         eatBytes(indexU32.nextIndex);
@@ -895,7 +897,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           throw new CompileError("zero flag expected");
         }
 
-        code.push(callNode);
+        code.push(WITH_LOC(callNode, startLoc));
         instructionAlreadyCreated = true;
       } else if (instruction.name === "br_table") {
         const indicesu32 = readU32();
