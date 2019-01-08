@@ -10,7 +10,7 @@
 
 "use strict";
 
-import Long from "@xtuc/long";
+import Long from "long";
 import * as bits from "./bits";
 import * as bufs from "./bufs";
 
