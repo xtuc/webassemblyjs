@@ -416,6 +416,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         const fnParams = [];
         const fnResult = [];
+        let typeRef;
 
         let fnName = t.identifier(getUniqueName("func"));
 
@@ -427,7 +428,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         while (token.type === tokens.openParen) {
           eatToken();
 
-          if (lookaheadAndCheck(keywords.param) === true) {
+          if (lookaheadAndCheck(keywords.type) === true) {
+            eatToken();
+
+            typeRef = parseTypeReference();
+          } else if (lookaheadAndCheck(keywords.param) === true) {
             eatToken();
 
             fnParams.push(...parseFuncParam());
@@ -446,7 +451,10 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           throw new Error("Imported function must have a name");
         }
 
-        descr = t.funcImportDescr(fnName, t.signature(fnParams, fnResult));
+        descr = t.funcImportDescr(
+          fnName,
+          typeRef !== undefined ? typeRef : t.signature(fnParams, fnResult)
+        );
       } else if (isKeyword(token, keywords.global)) {
         eatToken(); // keyword
 
