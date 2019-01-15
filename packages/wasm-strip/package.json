@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-strip",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -20,7 +20,7 @@
     "wasm-strip": "./lib/cli.js"
   },
   "dependencies": {
-    "@webassemblyjs/helper-wasm-section": "1.8.0",
-    "@webassemblyjs/wasm-parser": "1.8.0"
+    "@webassemblyjs/helper-wasm-section": "1.8.1",
+    "@webassemblyjs/wasm-parser": "1.8.1"
   }
 }
