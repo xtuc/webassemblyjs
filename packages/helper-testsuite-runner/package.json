@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-testsuite-runner",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "long": "git://github.com/dcodeIO/long.js.git#8181a6b50a2a230f0b2a1e4c4093f9b9d19c8b69",
-    "webassemblyjs": "1.8.0"
+    "webassemblyjs": "1.8.1"
   },
   "publishConfig": {
     "access": "public"
