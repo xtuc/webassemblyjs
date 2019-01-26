@@ -5,7 +5,9 @@ import Long from "long";
 
 function eq(actual: StackLocal, expected: Object) {
   // check type
-  assert(actual.type === expected.type);
+  assert(
+    actual.type === expected.type,
+    `type mismatch; expected ${expected.type}, given ${actual.type}`);
 
   // check value
   switch (expected.type) {

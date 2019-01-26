@@ -3,11 +3,10 @@
 import Long from "long";
 
 const { RuntimeError } = require("../../../errors");
-import { i32 } from "./i32";
+import { i32, createTrue, createFalse } from "./i32";
 import { define, assert } from "mamacro";
 
 declare function ASSERT_NOT_ZERO(x: any): void;
-
 define(
   ASSERT_NOT_ZERO,
   x => `{
@@ -17,9 +16,10 @@ define(
   }`
 );
 
+declare function TO_BOOLEAN(cond: any): i32;
+define(TO_BOOLEAN, cond => `(${cond}) ? createTrue() : createFalse()`);
+
 const type = "i64";
-const longZero = new Long(0);
-const longOne = new Long(1);
 
 export class i64 implements IntegerValue<i64> {
   _value: Long;
@@ -76,55 +76,68 @@ export class i64 implements IntegerValue<i64> {
   }
 
   abs(): i64 {
-    throw new RuntimeError("Unsupported operation: abs");
+    if (this._value.isNegative()) {
+      // make it positive
+      return this._value.mul(-1);
+    }
+
+    return this;
   }
 
   copysign(/*operand: i64*/): i64 {
     throw new RuntimeError("Unsupported operation: copysign");
   }
 
-  max(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation: max");
+  max(operand: i64): i64 {
+    if (this._value.lessThan(operand) === true) {
+      return operand;
+    } else {
+      return this;
+    }
   }
 
-  min(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation: min");
+  min(operand: i64): i64 {
+    if (this._value.lessThan(operand) === true) {
+      return this;
+    } else {
+      return operand;
+    }
   }
 
   neg(): i64 {
-    throw new RuntimeError("Unsupported operation: neg");
+    return this._value.neg();
   }
 
-  lt_s(/*operand: i64*/): i32 {
-    throw new RuntimeError("Unsupported operation: lt_s");
+  lt_s(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toSigned().lt(operand._value.toSigned()));
   }
 
-  lt_u(/*operand: i64*/): i32 {
-    throw new RuntimeError("Unsupported operation: lt_u");
+  lt_u(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toUnsigned().lt(operand._value.toUnsigned()));
   }
 
-  le_s(/*operand: i64*/): i32 {
-    throw new RuntimeError("Unsupported operation: le_s");
+  le_s(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toSigned().lte(operand._value.toSigned()));
   }
 
-  le_u(/*operand: i64*/): i32 {
-    throw new RuntimeError("Unsupported operation: le_u");
+  le_u(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toUnsigned().lte(operand._value.toUnsigned()));
   }
 
   gt_s(operand: i64): i32 {
-    return new i32(this._value.greaterThan(operand._value) ? 1 : 0);
+    return TO_BOOLEAN(this._value.toSigned().gt(operand._value.toSigned()));
   }
 
-  gt_u(operand: i64): i64 {
-    return new i64(this._value.greaterThan(operand._value) ? longOne : longZero);
+  gt_u(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toUnsigned().gt(operand._value.toUnsigned()));
   }
 
-  ge_s(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation: ge_s");
+  ge_s(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toSigned().gte(operand._value.toSigned()));
   }
 
-  ge_u(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation: ge_u");
+  ge_u(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toUnsigned().gte(operand._value.toUnsigned()));
   }
 
   rem_s(operand: i64): i64 {
@@ -188,19 +201,28 @@ export class i64 implements IntegerValue<i64> {
   }
 
   popcnt(): i64 {
-    throw new RuntimeError("Unsupported operation: popcnt");
+    let count = 0;
+    const str = this._value.toUnsigned().toString(2);
+
+    for (let i = str.length; i <= 0; i--) {
+      if (str[i] !== "0") {
+        count++;
+      }
+    }
+
+    return new i64(new Long(count));
   }
 
-  eqz(): i64 {
-    return new i64(this._value.isZero() ? longOne : longZero);
+  eqz(): i32 {
+    return TO_BOOLEAN(this._value.isZero());
   }
 
-  eq(/* operand: i64 */): i64 {
-    throw new RuntimeError("Unsupported operation: eq");
+  eq(operand: i64): i32 {
+    return TO_BOOLEAN(this.equals(operand));
   }
 
-  ne(/* operand: i64 */): i64 {
-    throw new RuntimeError("Unsupported operation: ne");
+  ne(operand: i64): i32 {
+    return new i32(this.equals(operand) ? 0 : 1);
   }
 
   toString(): string {
