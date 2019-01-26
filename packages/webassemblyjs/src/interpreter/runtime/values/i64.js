@@ -1,9 +1,24 @@
 // @flow
 
-import Long from "@xtuc/long";
+import Long from "long";
 
 const { RuntimeError } = require("../../../errors");
-import { type i32 } from "./i32";
+// eslint-disable-next-line no-unused-vars
+import { i32, createTrue, createFalse } from "./i32";
+import { define, assert } from "mamacro";
+
+declare function ASSERT_NOT_ZERO(x: any): void;
+define(
+  ASSERT_NOT_ZERO,
+  x => `{
+    if (${x}._value.isZero()) {
+      throw new RuntimeError("integer divide by zero");
+    }
+  }`
+);
+
+declare function TO_BOOLEAN(cond: any): i32;
+define(TO_BOOLEAN, cond => `(${cond}) ? createTrue() : createFalse()`);
 
 const type = "i64";
 
@@ -11,6 +26,7 @@ export class i64 implements IntegerValue<i64> {
   _value: Long;
 
   constructor(value: Long) {
+    assert(value instanceof Long);
     this._value = value;
   }
 
@@ -27,10 +43,12 @@ export class i64 implements IntegerValue<i64> {
   }
 
   div_s(operand: i64): i64 {
+    ASSERT_NOT_ZERO(operand);
     return new i64(this._value.div(operand._value));
   }
 
   div_u(operand: i64): i64 {
+    ASSERT_NOT_ZERO(operand);
     return new i64(this._value.div(operand._value));
   }
 
@@ -59,107 +77,157 @@ export class i64 implements IntegerValue<i64> {
   }
 
   abs(): i64 {
-    throw new RuntimeError("Unsupported operation");
+    if (this._value.isNegative()) {
+      // make it positive
+      return this._value.mul(-1);
+    }
+
+    return this;
   }
 
   copysign(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+    throw new RuntimeError("Unsupported operation: copysign");
   }
 
-  max(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  max(operand: i64): i64 {
+    if (this._value.lessThan(operand) === true) {
+      return operand;
+    } else {
+      return this;
+    }
   }
 
-  min(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  min(operand: i64): i64 {
+    if (this._value.lessThan(operand) === true) {
+      return this;
+    } else {
+      return operand;
+    }
   }
 
   neg(): i64 {
-    throw new RuntimeError("Unsupported operation");
+    return this._value.neg();
   }
 
-  lt_s(/*operand: i64*/): i32 {
-    throw new RuntimeError("Unsupported operation");
+  lt_s(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toSigned().lt(operand._value.toSigned()));
   }
 
-  lt_u(/*operand: i64*/): i32 {
-    throw new RuntimeError("Unsupported operation");
+  lt_u(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toUnsigned().lt(operand._value.toUnsigned()));
   }
 
-  le_s(/*operand: i64*/): i32 {
-    throw new RuntimeError("Unsupported operation");
+  le_s(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toSigned().lte(operand._value.toSigned()));
   }
 
-  le_u(/*operand: i64*/): i32 {
-    throw new RuntimeError("Unsupported operation");
+  le_u(operand: i64): i32 {
+    return TO_BOOLEAN(
+      this._value.toUnsigned().lte(operand._value.toUnsigned())
+    );
   }
 
-  gt_s(/*operand: i64*/): i32 {
-    throw new RuntimeError("Unsupported operation");
+  gt_s(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toSigned().gt(operand._value.toSigned()));
   }
 
-  gt_u(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  gt_u(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toUnsigned().gt(operand._value.toUnsigned()));
   }
 
-  ge_s(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  ge_s(operand: i64): i32 {
+    return TO_BOOLEAN(this._value.toSigned().gte(operand._value.toSigned()));
   }
 
-  ge_u(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  ge_u(operand: i64): i32 {
+    return TO_BOOLEAN(
+      this._value.toUnsigned().gte(operand._value.toUnsigned())
+    );
   }
 
-  rem_s(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  rem_s(operand: i64): i64 {
+    ASSERT_NOT_ZERO(operand);
+    return new i64(this._value.rem(operand._value));
   }
 
-  rem_u(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  rem_u(operand: i64): i64 {
+    ASSERT_NOT_ZERO(operand);
+    return new i64(this._value.rem(operand._value));
   }
 
-  shl(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  shl(operand: i64): i64 {
+    return new i64(this._value.shiftLeft(operand._value));
   }
 
-  shr_s(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  shr_s(operand: i64): i64 {
+    return new i64(this._value.shiftRight(operand._value));
   }
 
-  shr_u(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  shr_u(operand: i64): i64 {
+    return new i64(this._value.shiftRight(operand._value));
   }
 
-  rotl(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  rotl(rotation: i64): i64 {
+    return new i64(this._value.rotateLeft(rotation._value));
   }
 
-  rotr(/*operand: i64*/): i64 {
-    throw new RuntimeError("Unsupported operation");
+  rotr(rotation: i64): i64 {
+    return new i64(this._value.rotateRight(rotation._value));
   }
 
   clz(): i64 {
-    throw new RuntimeError("Unsupported operation");
+    let lead = 0;
+    const str = this._value.toUnsigned().toString(2);
+
+    for (let i = 0, len = str.length; i < len; i++) {
+      if (str[i] !== "0") {
+        break;
+      }
+
+      lead++;
+    }
+
+    return new i64(new Long(lead));
   }
 
   ctz(): i64 {
-    throw new RuntimeError("Unsupported operation");
+    let count = 0;
+    const str = this._value.toUnsigned().toString(2);
+
+    for (let i = str.length; i <= 0; i--) {
+      if (str[i] !== "0") {
+        break;
+      }
+
+      count++;
+    }
+
+    return new i64(new Long(count));
   }
 
   popcnt(): i64 {
-    throw new RuntimeError("Unsupported operation");
+    let count = 0;
+    const str = this._value.toUnsigned().toString(2);
+
+    for (let i = str.length; i <= 0; i--) {
+      if (str[i] !== "0") {
+        count++;
+      }
+    }
+
+    return new i64(new Long(count));
   }
 
-  eqz(): i64 {
-    throw new RuntimeError("Unsupported operation");
+  eqz(): i32 {
+    return TO_BOOLEAN(this._value.isZero());
   }
 
-  eq(/* operand: i64 */): i64 {
-    throw new RuntimeError("Unsupported operation");
+  eq(operand: i64): i32 {
+    return TO_BOOLEAN(this.equals(operand));
   }
 
-  ne(/* operand: i64 */): i64 {
-    throw new RuntimeError("Unsupported operation");
+  ne(operand: i64): i32 {
+    return new i32(this.equals(operand) ? 0 : 1);
   }
 
   toString(): string {

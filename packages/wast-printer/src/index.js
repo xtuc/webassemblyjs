@@ -1,7 +1,7 @@
 // @flow
 
 import { isAnonymous, isInstruction } from "@webassemblyjs/ast";
-import Long from "@xtuc/long";
+import Long from "long";
 
 const compact = false;
 const space = " ";

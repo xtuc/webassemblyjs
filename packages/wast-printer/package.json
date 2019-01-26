@@ -20,7 +20,7 @@
   "dependencies": {
     "@webassemblyjs/ast": "1.8.1",
     "@webassemblyjs/wast-parser": "1.8.1",
-    "@xtuc/long": "4.2.1"
+    "long": "git://github.com/dcodeIO/long.js.git#8181a6b50a2a230f0b2a1e4c4093f9b9d19c8b69"
   },
   "devDependencies": {
     "@webassemblyjs/helper-test-framework": "1.8.1"

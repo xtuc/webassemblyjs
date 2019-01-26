@@ -1,6 +1,6 @@
 // @flow
 
-import Long from "@xtuc/long";
+import Long from "long";
 
 import { Float, typedArrayToArray } from "./number";
 import { i64 } from "./i64";

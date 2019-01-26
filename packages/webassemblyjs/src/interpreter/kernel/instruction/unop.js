@@ -38,7 +38,7 @@ function unop(
       return createValue(value.popcnt());
 
     case "eqz":
-      return createValue(value.eqz());
+      return i32.createValue(value.eqz());
 
     case "reinterpret/f32":
       return i32.createValue(value.reinterpret());

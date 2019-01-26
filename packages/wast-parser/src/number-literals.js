@@ -1,6 +1,6 @@
 // @flow
 
-import Long from "@xtuc/long";
+import Long from "long";
 import parseHexFloat from "@webassemblyjs/floating-point-hex-parser";
 import { CompileError } from "@webassemblyjs/helper-api-error";
 

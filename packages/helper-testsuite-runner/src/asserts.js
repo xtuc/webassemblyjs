@@ -1,11 +1,14 @@
 // @flow
 
 import { assert } from "mamacro";
-import Long from "@xtuc/long";
+import Long from "long";
 
 function eq(actual: StackLocal, expected: Object) {
   // check type
-  assert(actual.type === expected.type);
+  assert(
+    actual.type === expected.type,
+    `type mismatch; expected ${expected.type}, given ${actual.type}`
+  );
 
   // check value
   switch (expected.type) {
@@ -44,6 +47,7 @@ function eq(actual: StackLocal, expected: Object) {
     }
 
     case "i64": {
+      console.warn("eq with i64 is unsupported");
       // const actuali64 = actual.value.toString();
       // const expectedi64 = Long.fromString(expected.value)
       //   .toSigned()
