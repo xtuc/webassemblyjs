@@ -3,6 +3,7 @@
 import Long from "long";
 
 const { RuntimeError } = require("../../../errors");
+// eslint-disable-next-line no-unused-vars
 import { i32, createTrue, createFalse } from "./i32";
 import { define, assert } from "mamacro";
 
@@ -121,7 +122,9 @@ export class i64 implements IntegerValue<i64> {
   }
 
   le_u(operand: i64): i32 {
-    return TO_BOOLEAN(this._value.toUnsigned().lte(operand._value.toUnsigned()));
+    return TO_BOOLEAN(
+      this._value.toUnsigned().lte(operand._value.toUnsigned())
+    );
   }
 
   gt_s(operand: i64): i32 {
@@ -137,7 +140,9 @@ export class i64 implements IntegerValue<i64> {
   }
 
   ge_u(operand: i64): i32 {
-    return TO_BOOLEAN(this._value.toUnsigned().gte(operand._value.toUnsigned()));
+    return TO_BOOLEAN(
+      this._value.toUnsigned().gte(operand._value.toUnsigned())
+    );
   }
 
   rem_s(operand: i64): i64 {

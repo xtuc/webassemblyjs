@@ -98,8 +98,8 @@ interface IntegerValue<T> extends NumericOperations<T> {
   and(operand: T): T;
   or(operand: T): T;
   xor(operand: T): T;
-  eq(operand: T): T;
-  ne(operand: T): T;
+  eq(operand: T): i32;
+  ne(operand: T): i32;
   lt_s(operand: T): i32;
   lt_u(operand: T): i32;
   le_s(operand: T): i32;
@@ -110,7 +110,7 @@ interface IntegerValue<T> extends NumericOperations<T> {
   ge_u(operand: T): i32;
   clz(): T;
   popcnt(): T;
-  eqz(): T;
+  eqz(): i32;
 }
 
 interface FloatingPointValue<T, U> extends NumericOperations<T> {
