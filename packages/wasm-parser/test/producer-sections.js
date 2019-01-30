@@ -13,7 +13,7 @@ describe("Binary decoder", () => {
   it("should decode the producers section", () => {
     const buff = toArrayBuffer(
       readFileSync(
-        join(__dirname, "./fixtures/producers-section/actual.wasm"),
+        join(__dirname, "fixtures", "producers-section", "actual.wasm"),
         null
       )
     );
