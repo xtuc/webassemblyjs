@@ -1262,6 +1262,58 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return nameMetadata;
   }
 
+  // this is a custom setion used for information about the producers
+  // https://github.com/WebAssembly/tool-conventions/blob/master/ProducersSection.md
+  function parseProducersSection(remainingBytes: number) {
+    const metadata = t.producersSectionMetadata([]);
+    const initialOffset = offset;
+
+    while (offset - initialOffset < remainingBytes) {
+      // field_count
+      const sectionTypeByte = readVaruint32();
+      eatBytes(sectionTypeByte.nextIndex);
+
+      dump([sectionTypeByte.value], "num of producers");
+
+      const fields = {
+        language: [],
+        "processed-by": [],
+        sdk: []
+      };
+
+      // fields
+      for (let fieldI = 0; fieldI < sectionTypeByte.value; fieldI++) {
+        // field_name
+        const fieldName = readUTF8String();
+        eatBytes(fieldName.nextIndex);
+
+        // field_value_count
+        const valueCount = readVaruint32();
+        eatBytes(valueCount.nextIndex);
+
+        // field_values
+        for (let producerI = 0; producerI < valueCount.value; producerI++) {
+          const producerName = readUTF8String();
+          eatBytes(producerName.nextIndex);
+
+          const producerVersion = readUTF8String();
+          eatBytes(producerVersion.nextIndex);
+
+          fields[fieldName.value].push(
+            t.producerMetadataVersionedName(
+              producerName.value,
+              producerVersion.value
+            )
+          );
+        }
+
+        metadata.producers.push(fields[fieldName.value]);
+      }
+    }
+
+    return metadata;
+  }
+
   function parseGlobalSection(numberOfGlobals: number) {
     const globals = [];
 
@@ -1769,16 +1821,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
             eatBytes(remainingBytes);
           }
         } else if (sectionName.value === "producers") {
-          // We don't parse the custom section
-          eatBytes(remainingBytes);
+          try {
+            metadata.push(parseProducersSection(remainingBytes));
+          } catch (e) {
+            console.warn(
+              `Failed to decode custom "producers" section @${offset}; ignoring (${
+                e.message
+              }).`
+            );
 
-          dumpSep(
-            "ignore producers section " +
-              JSON.stringify(sectionName.value) +
-              " section (" +
-              remainingBytes +
-              " bytes)"
-          );
+            eatBytes(remainingBytes);
+          }
         } else {
           // We don't parse the custom section
           eatBytes(remainingBytes);
@@ -1807,7 +1860,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   const moduleMetadata = {
     sections: [],
     functionNames: [],
-    localNames: []
+    localNames: [],
+    producers: []
   };
 
   /**
@@ -1824,6 +1878,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         moduleMetadata.functionNames.push(metadataItem);
       } else if (metadataItem.type === "LocalNameMetadata") {
         moduleMetadata.localNames.push(metadataItem);
+      } else if (metadataItem.type === "ProducersSectionMetadata") {
+        moduleMetadata.producers.push(metadataItem);
       } else {
         moduleMetadata.sections.push(metadataItem);
       }
@@ -1907,7 +1963,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     t.moduleMetadata(
       moduleMetadata.sections,
       moduleMetadata.functionNames,
-      moduleMetadata.localNames
+      moduleMetadata.localNames,
+      moduleMetadata.producers
     )
   );
   return t.program([module]);
