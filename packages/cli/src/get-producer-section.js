@@ -26,8 +26,13 @@ const ast = decode(buff, decoderOpts);
 let found = false;
 
 traverse(ast, {
-  ProducerSectionMetadata(n) {
-    console.log(n);
+  ProducersSectionMetadata({ node }) {
+    node.producers.forEach(entry => {
+      entry.forEach(producer => {
+        console.log(producer.name, producer.version);
+      });
+    });
+
     found = true;
   }
 });

@@ -12,7 +12,9 @@ type Node =
   | BinaryModule
   | QuoteModule
   | SectionMetadata
-  | ProducerSectionMetadata
+  | ProducersSectionMetadata
+  | ProducerMetadata
+  | ProducerMetadataVersionedName
   | LoopInstruction
   | Instr
   | IfInstruction
@@ -93,7 +95,8 @@ type ModuleMetadata = {
   type: "ModuleMetadata",
   sections: Array<SectionMetadata>,
   functionNames?: Array<FunctionNameMetadata>,
-  localNames?: Array<ModuleMetadata>
+  localNames?: Array<ModuleMetadata>,
+  producers?: Array<ProducersSectionMetadata>
 };
 
 type ModuleNameMetadata = {
@@ -140,12 +143,25 @@ type SectionMetadata = {
   vectorOfSize: NumberLiteral
 };
 
-type ProducerSectionMetadata = {
+type ProducersSectionMetadata = {
   ...BaseNode,
-  type: "ProducerSectionMetadata",
-  language: string,
-  processedBy: string,
-  sdk: string
+  type: "ProducersSectionMetadata",
+  producers: Array<ProducerMetadata>
+};
+
+type ProducerMetadata = {
+  ...BaseNode,
+  type: "ProducerMetadata",
+  language: Array<ProducerMetadataVersionedName>,
+  processedBy: Array<ProducerMetadataVersionedName>,
+  sdk: Array<ProducerMetadataVersionedName>
+};
+
+type ProducerMetadataVersionedName = {
+  ...BaseNode,
+  type: "ProducerMetadataVersionedName",
+  name: string,
+  version: string
 };
 
 type LoopInstruction = {

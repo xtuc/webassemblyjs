@@ -45,6 +45,11 @@ defineType("ModuleMetadata", {
       optional: true,
       array: true,
       type: "ModuleMetadata"
+    },
+    producers: {
+      optional: true,
+      array: true,
+      type: "ProducersSectionMetadata"
     }
   }
 });
@@ -132,16 +137,41 @@ defineType("SectionMetadata", {
   }
 });
 
-defineType("ProducerSectionMetadata", {
+defineType("ProducersSectionMetadata", {
+  unionType: ["Node"],
+  fields: {
+    producers: {
+      array: true,
+      type: "ProducerMetadata"
+    }
+  }
+});
+
+defineType("ProducerMetadata", {
   unionType: ["Node"],
   fields: {
     language: {
-      type: "string"
+      type: "ProducerMetadataVersionedName",
+      array: true
     },
     processedBy: {
-      type: "string"
+      type: "ProducerMetadataVersionedName",
+      array: true
     },
     sdk: {
+      type: "ProducerMetadataVersionedName",
+      array: true
+    }
+  }
+});
+
+defineType("ProducerMetadataVersionedName", {
+  unionType: ["Node"],
+  fields: {
+    name: {
+      type: "string"
+    },
+    version: {
       type: "string"
     }
   }
