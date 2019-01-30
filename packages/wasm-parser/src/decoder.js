@@ -1768,6 +1768,17 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
             eatBytes(remainingBytes);
           }
+        } else if (sectionName.value === "producers") {
+          // We don't parse the custom section
+          eatBytes(remainingBytes);
+
+          dumpSep(
+            "ignore producers section " +
+              JSON.stringify(sectionName.value) +
+              " section (" +
+              remainingBytes +
+              " bytes)"
+          );
         } else {
           // We don't parse the custom section
           eatBytes(remainingBytes);

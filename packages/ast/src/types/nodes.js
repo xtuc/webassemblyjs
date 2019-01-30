@@ -12,6 +12,7 @@ type Node =
   | BinaryModule
   | QuoteModule
   | SectionMetadata
+  | ProducerSectionMetadata
   | LoopInstruction
   | Instr
   | IfInstruction
@@ -137,6 +138,14 @@ type SectionMetadata = {
   startOffset: number,
   size: NumberLiteral,
   vectorOfSize: NumberLiteral
+};
+
+type ProducerSectionMetadata = {
+  ...BaseNode,
+  type: "ProducerSectionMetadata",
+  language: string,
+  processedBy: string,
+  sdk: string
 };
 
 type LoopInstruction = {

@@ -203,6 +203,34 @@ export function sectionMetadata(
   return node;
 }
 
+export function producerSectionMetadata(
+  language: string,
+  processedBy: string,
+  sdk: string
+): ProducerSectionMetadata {
+  assert(
+    typeof language === "string",
+    "Argument language must be of type string, given: " + typeof language
+  );
+  assert(
+    typeof processedBy === "string",
+    "Argument processedBy must be of type string, given: " + typeof processedBy
+  );
+  assert(
+    typeof sdk === "string",
+    "Argument sdk must be of type string, given: " + typeof sdk
+  );
+
+  const node: ProducerSectionMetadata = {
+    type: "ProducerSectionMetadata",
+    language,
+    processedBy,
+    sdk
+  };
+
+  return node;
+}
+
 export function loopInstruction(
   label: ?Identifier,
   resulttype: ?Valtype,
@@ -876,6 +904,8 @@ export const isQuoteModule = isTypeOf("QuoteModule");
 
 export const isSectionMetadata = isTypeOf("SectionMetadata");
 
+export const isProducerSectionMetadata = isTypeOf("ProducerSectionMetadata");
+
 export const isLoopInstruction = isTypeOf("LoopInstruction");
 
 export const isInstr = isTypeOf("Instr");
@@ -957,6 +987,7 @@ export const isNode = (node: Node) =>
   isBinaryModule(node) ||
   isQuoteModule(node) ||
   isSectionMetadata(node) ||
+  isProducerSectionMetadata(node) ||
   isLoopInstruction(node) ||
   isInstr(node) ||
   isIfInstruction(node) ||
@@ -1046,6 +1077,10 @@ export const assertQuoteModule = assertTypeOf("QuoteModule");
 
 export const assertSectionMetadata = assertTypeOf("SectionMetadata");
 
+export const assertProducerSectionMetadata = assertTypeOf(
+  "ProducerSectionMetadata"
+);
+
 export const assertLoopInstruction = assertTypeOf("LoopInstruction");
 
 export const assertInstr = assertTypeOf("Instr");
@@ -1129,6 +1164,7 @@ export const unionTypesMap = {
   BinaryModule: ["Node"],
   QuoteModule: ["Node"],
   SectionMetadata: ["Node"],
+  ProducerSectionMetadata: ["Node"],
   LoopInstruction: ["Node", "Block", "Instruction"],
   Instr: ["Node", "Expression", "Instruction"],
   IfInstruction: ["Node", "Instruction"],
@@ -1176,6 +1212,7 @@ export const nodeAndUnionTypes = [
   "BinaryModule",
   "QuoteModule",
   "SectionMetadata",
+  "ProducerSectionMetadata",
   "LoopInstruction",
   "Instr",
   "IfInstruction",
