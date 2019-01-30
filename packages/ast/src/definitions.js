@@ -132,6 +132,21 @@ defineType("SectionMetadata", {
   }
 });
 
+defineType("ProducerSectionMetadata", {
+  unionType: ["Node"],
+  fields: {
+    language: {
+      type: "string"
+    },
+    processedBy: {
+      type: "string"
+    },
+    sdk: {
+      type: "string"
+    }
+  }
+});
+
 /*
 Instructions
 */

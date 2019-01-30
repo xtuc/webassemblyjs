@@ -31,6 +31,7 @@
     "wasmrun": "lib/wasmrun.js",
     "wasm2wast": "lib/wasm2wast.js",
     "wastast": "lib/wastast.js",
+    "get-producer-section": "lib/get-producer-section.js",
     "wast-to-wasm-semantics": "lib/wast-to-wasm-semantics.js"
   },
   "repository": {
