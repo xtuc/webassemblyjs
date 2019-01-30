@@ -24,7 +24,7 @@ See [WebAssembly.js.org](https://webassembly.js.org) for more information.
 - [wasm-gen](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-gen) - WebAssembly binary format printer
 - [wasm-opt](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-opt) - WASM optimizer
 - [wasm-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-parser) - WebAssembly binary format parser
-- [wasm-strip](https://github.com/xtuc/webassemblyjs/tree/master/packages/wasm-strip) - Strips custom sections
+- wasm-strip - Strips custom sections (deprecated, use wabt instead)
 - [wast-loader](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-loader) - Webpack loader for WebAssembly text format
 - [wast-parser](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-parser) - WebAssembly text format parser
 - [wast-printer](https://github.com/xtuc/webassemblyjs/tree/master/packages/wast-printer) - WebAssembly text format printer
