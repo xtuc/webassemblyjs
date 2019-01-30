@@ -1964,7 +1964,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       moduleMetadata.sections,
       moduleMetadata.functionNames,
       moduleMetadata.localNames,
-      moduleMetadata.producers,
+      moduleMetadata.producers
     )
   );
   return t.program([module]);
