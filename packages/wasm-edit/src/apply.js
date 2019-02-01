@@ -189,7 +189,7 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
   let sectionMetadata = getSectionMetadata(ast, sectionName);
 
   // Section doesn't exists, we create an empty one
-  if (typeof sectionMetadata === "undefined") {
+  if (sectionMetadata === undefined) {
     const res = createEmptySection(ast, uint8Buffer, sectionName);
 
     uint8Buffer = res.uint8Buffer;
@@ -224,6 +224,12 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
    * Update section
    */
   const deltaBytes = newByteArray.length;
+
+  console.log("__________________________________________");
+  require("@webassemblyjs/wasm-parser").decode(uint8Buffer, { dump: true });
+  console.log("__________________________________________");
+
+  console.log(start, end, JSON.stringify(newByteArray));
 
   uint8Buffer = overrideBytesInBuffer(uint8Buffer, start, end, newByteArray);
 

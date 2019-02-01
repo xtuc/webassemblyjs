@@ -13,6 +13,10 @@ const { fromHexdump } = require("@webassemblyjs/helper-buffer");
 
 const { add } = require("../lib");
 
+function nameFromStr(str) {
+  return [str.length].concat(str.split("").map(s => s.charCodeAt(0)));
+}
+
 describe("insert a node", () => {
   describe("ModuleImport", () => {
     // (module
@@ -306,10 +310,8 @@ describe("insert a node", () => {
   it("should insert type instructions with LEB128 padded type section size", () => {
     const functype = t.typeInstruction(undefined, t.signature([], []));
 
-    let bin;
-
     // (module)
-    bin = fromHexdump(`
+    let bin = fromHexdump(`
       00000000  00 61 73 6d 01 00 00 00  01 81 80 80 80 00 00
       00000010  06 81 80 80 80 00
     `);
@@ -330,5 +332,34 @@ describe("insert a node", () => {
     );
 
     compareArrayBuffers(bin, expected);
+  });
+
+  describe("producers section", () => {
+    it("should insert a new entry and create section", () => {
+      const producer = t.producerMetadata(
+        [t.producerMetadataVersionedName("n1", "v1")], // language
+        [t.producerMetadataVersionedName("n2", "")], // processed-by
+        [] // sdk
+      );
+
+      // (module)
+      let bin = makeBuffer(encodeHeader(), encodeVersion(1));
+      console.log("before");
+      require("@webassemblyjs/wasm-parser").decode(bin, { dump: true });
+      bin = add(bin, [producer]);
+      console.log("after");
+      require("@webassemblyjs/wasm-parser").decode(bin, { dump: true });
+      return;
+
+      // (module)
+      const expected = makeBuffer(
+        encodeHeader(),
+        encodeVersion(1),
+        [constants.sections.custom, 0x01, ...nameFromStr("producers")],
+        [0]
+      );
+
+      compareArrayBuffers(bin, expected);
+    });
   });
 });

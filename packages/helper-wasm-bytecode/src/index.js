@@ -87,6 +87,8 @@ const importTypes = {
 
 const sections = {
   custom: 0,
+  "custom:name": 0,
+  "custom:producers": 0,
   type: 1,
   import: 2,
   func: 3,

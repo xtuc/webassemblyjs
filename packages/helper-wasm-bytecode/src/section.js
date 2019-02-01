@@ -26,6 +26,9 @@ export function getSectionForNode(n: Node): ?SectionName {
     case "Global":
       return "global";
 
+    case "ProducerMetadata":
+      return "custom:producers";
+
     // No section
     default:
       return;
