@@ -1,5 +1,6 @@
 // TODO(sven): add flow in here
 
+import { isSignature, isNumberLiteral } from "@webassemblyjs/ast";
 import { assert } from "mamacro";
 
 export function moduleContextFromModuleAST(m) {
@@ -135,11 +136,24 @@ export class ModuleContext {
   }
 
   importFunction(funcimport) {
-    // eslint-disable-next-line prefer-const
-    let { params: args, results: result } = funcimport.signature;
-    args = args.map(arg => arg.valtype);
+    if (isSignature(funcimport.signature)) {
+      // eslint-disable-next-line prefer-const
+      let { params: args, results: result } = funcimport.signature;
+      args = args.map(arg => arg.valtype);
 
-    this.funcs.push({ args, result });
+      this.funcs.push({ args, result });
+    } else {
+      assert(isNumberLiteral(funcimport.signature));
+
+      const typeId = funcimport.signature.value;
+      assert(this.hasType(typeId));
+
+      const signature = this.getType(typeId);
+      this.funcs.push({
+        args: signature.params.map(arg => arg.valtype),
+        result: signature.results
+      });
+    }
 
     if (typeof funcimport.id !== "undefined") {
       // imports are first, we can assume their index in the array
