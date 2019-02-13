@@ -83,9 +83,16 @@ describe("Binary decoder", () => {
 
     const getActual = buffer => {
       let dump = "";
-      const oldconsole = console.log;
+      const oldconsoleLog = console.log;
+      const oldconsoleWarn = console.warn;
+      const oldconsoleError = console.error;
 
+      // $FlowIgnore
       console.log = (...d) => (dump += d.join(" ") + "\n");
+      // $FlowIgnore
+      console.warn = (...d) => (dump += d.join(" ") + "\n");
+      // $FlowIgnore
+      console.error = (...d) => (dump += d.join(" ") + "\n");
 
       try {
         decode(new Buffer(buffer), { dump: true });
@@ -93,7 +100,12 @@ describe("Binary decoder", () => {
         dump += e.message;
       }
 
-      console.log = oldconsole;
+      // $FlowIgnore
+      console.log = oldconsoleLog;
+      // $FlowIgnore
+      console.warn = oldconsoleWarn;
+      // $FlowIgnore
+      console.error = oldconsoleError;
 
       return dump;
     };
