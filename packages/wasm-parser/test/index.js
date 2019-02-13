@@ -85,15 +85,15 @@ describe("Binary decoder", () => {
       let dump = "";
       const oldconsole = console.log;
 
-      console.log = (...d) => (dump += d.join("") + "\n");
+      console.log = (...d) => (dump += d.join(" ") + "\n");
 
       try {
         decode(new Buffer(buffer), { dump: true });
       } catch (e) {
-        return e.toString();
-      } finally {
-        console.log = oldconsole;
+        dump += e.message;
       }
+
+      console.log = oldconsole;
 
       return dump;
     };
