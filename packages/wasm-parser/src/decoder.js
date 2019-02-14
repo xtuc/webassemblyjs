@@ -4,7 +4,7 @@ import { CompileError } from "@webassemblyjs/helper-api-error";
 import * as ieee754 from "@webassemblyjs/ieee754";
 import * as utf8 from "@webassemblyjs/utf8";
 import * as t from "@webassemblyjs/ast";
-import { define, assert } from "mamacro";
+import { define } from "mamacro";
 
 declare function WITH_LOC<T>(n: T, startLoc: Position): T;
 
@@ -1264,7 +1264,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // this is a custom setion used for information about the producers
   // https://github.com/WebAssembly/tool-conventions/blob/master/ProducersSection.md
-  function parseProducersSection(remainingBytes: number) {
+  function parseProducersSection() {
     const metadata = t.producersSectionMetadata([]);
 
     // field_count
@@ -1823,7 +1823,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           const initialOffset = offset;
 
           try {
-            metadata.push(parseProducersSection(remainingBytes));
+            metadata.push(parseProducersSection());
           } catch (e) {
             console.warn(
               `Failed to decode custom "producers" section @${offset}; ignoring (${
