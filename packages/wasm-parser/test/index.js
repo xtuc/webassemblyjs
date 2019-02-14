@@ -3,7 +3,8 @@
 const { assert } = require("chai");
 const {
   getFixtures,
-  compare
+  compare,
+  compareWithExpected
 } = require("@webassemblyjs/helper-test-framework");
 
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
@@ -51,29 +52,66 @@ function stripMetadata(ast) {
 // - Expected is wast-parser
 // + Received is wasm-parser
 describe("Binary decoder", () => {
-  const testSuites = getFixtures(__dirname, "fixtures", "**/actual.wat");
+  describe("from wast", () => {
+    const testSuites = getFixtures(__dirname, "fixtures", "**", "actual.wat");
 
-  // convert the WAT fixture to WASM
-  const getActual = (f, suite) => {
-    const module = wabt.parseWat(suite, f);
-    const { buffer } = module.toBinary({ write_debug_names: true });
+    // convert the WAT fixture to WASM
+    const getActual = (f, suite) => {
+      const module = wabt.parseWat(suite, f);
+      const { buffer } = module.toBinary({ write_debug_names: true });
 
-    // read the WASM file and strip custom metadata
-    const ast = stripMetadata(decode(buffer));
-    const actual = JSON.stringify(ast, null, 2);
+      // read the WASM file and strip custom metadata
+      const ast = stripMetadata(decode(buffer));
+      const actual = JSON.stringify(ast, null, 2);
 
-    return actual;
-  };
+      return actual;
+    };
 
-  // parse the wat file to create the expected AST
-  const getExpected = f => {
-    const ast = stripMetadata(parse(f));
-    const expected = JSON.stringify(ast, null, 2);
+    // parse the wat file to create the expected AST
+    const getExpected = f => {
+      const ast = stripMetadata(parse(f));
+      const expected = JSON.stringify(ast, null, 2);
 
-    return expected;
-  };
+      return expected;
+    };
 
-  compare(testSuites, getActual, getExpected);
+    compare(testSuites, getActual, getExpected);
+  });
+
+  describe("from wasm", () => {
+    const testSuites = getFixtures(__dirname, "fixtures", "**", "actual.wasm");
+
+    const getActual = buffer => {
+      let dump = "";
+      const oldconsoleLog = console.log;
+      const oldconsoleWarn = console.warn;
+      const oldconsoleError = console.error;
+
+      // $FlowIgnore
+      console.log = (...d) => (dump += d.join(" ") + "\n");
+      // $FlowIgnore
+      console.warn = (...d) => (dump += d.join(" ") + "\n");
+      // $FlowIgnore
+      console.error = (...d) => (dump += d.join(" ") + "\n");
+
+      try {
+        decode(new Buffer(buffer), { dump: true });
+      } catch (e) {
+        dump += e.message;
+      }
+
+      // $FlowIgnore
+      console.log = oldconsoleLog;
+      // $FlowIgnore
+      console.warn = oldconsoleWarn;
+      // $FlowIgnore
+      console.error = oldconsoleError;
+
+      return dump;
+    };
+
+    compareWithExpected(testSuites, getActual, "expected");
+  });
 
   describe("section ordering", () => {
     it("should throw when the section are in the wrong order", () => {

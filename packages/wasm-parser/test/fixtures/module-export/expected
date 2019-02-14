@@ -1,0 +1,37 @@
+0x0:	 0x0 0x61 0x73 0x6d 										 ; wasm magic header
+0x4:	 0x1 0x0 0x0 0x0 										 ; wasm version
+; section Type
+0xa:	 0x1 										 ; section code
+0xa:	 0x4 										 ; section size
+0xb:	 0x1 										 ; num types
+; type 0
+0xc:	 0x60 										 ; func
+0xd:	 0x0 										 ; number
+0xe:	 0x0 										 ; number
+; section Function
+0x10:	 0x3 										 ; section code
+0x10:	 0x2 										 ; section size
+0x11:	 0x1 										 ; num funcs
+0x12:	 0x0 										 ; type index
+; section Export
+0x14:	 0x7 										 ; section code
+0x14:	 0x8 										 ; section size
+0x15:	 0x1 										 ; num exports
+0x15:	 0x4 										 ; string length
+0x1a:	  										 ; export name (test)
+0x1b:	 0x0 										 ; export kind
+0x1c:	 0x0 										 ; export index
+; section Code
+0x1e:	 0xa 										 ; section code
+0x1e:	 0x4 										 ; section size
+0x1f:	 0x1 										 ; number functions
+; function body 0
+0x20:	 0x2 										 ; function body size
+0x21:	 0x0 										 ; num locals
+0x22:	 0xb 										 ; end
+; section Custom
+0x24:	 0x0 										 ; section code
+0x24:	 0xa 										 ; section size
+0x24:	 0x4 										 ; string length
+0x29:	  										 ; section name (name)
+; end of program
