@@ -47,6 +47,12 @@ export function encodeNode(n: Node): Array<Byte> {
     case "Elem":
       return encoder.encodeElem(n);
 
+    case "ProducerMetadataVersionedName":
+      return encoder.encodeProducerMetadataVersionedName(n);
+
+    case "ProducerMetadata":
+      return encoder.encodeProducerMetadata(n);
+
     default:
       throw new Error(
         "Unsupported encoding for node of type: " + JSON.stringify(n.type)
@@ -55,3 +61,4 @@ export function encodeNode(n: Node): Array<Byte> {
 }
 
 export const encodeU32 = encoder.encodeU32;
+export const encodeUTF8Vec = encoder.encodeUTF8Vec;

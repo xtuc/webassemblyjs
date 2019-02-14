@@ -165,7 +165,21 @@ export function encodeSectionMetadata(n: SectionMetadata): Array<Byte> {
 
   out.push(sectionId);
   out.push(...encodeU32(n.size.value));
-  out.push(...encodeU32(n.vectorOfSize.value));
+
+  /**
+   * If it's a custom section emit the name
+   * If it's a regular section emit the size of the vector of elements
+   */
+  switch (n.section) {
+    case "custom:name":
+      out.push(...encodeUTF8Vec("name"));
+      break;
+    case "custom:producers":
+      out.push(...encodeUTF8Vec("producers"));
+      break;
+    default:
+      out.push(...encodeU32(n.vectorOfSize.value));
+  }
 
   return out;
 }
@@ -363,6 +377,36 @@ export function encodeElem(n: Elem): Array<Byte> {
   const funcs = n.funcs.reduce((acc, x) => [...acc, ...encodeU32(x.value)], []);
 
   out.push(...encodeVec(funcs));
+
+  return out;
+}
+
+export function encodeProducerMetadataVersionedName(
+  n: ProducerMetadataVersionedName
+): Array<Byte> {
+  return [...encodeUTF8Vec(n.name), ...encodeUTF8Vec(n.version)];
+}
+
+export function encodeProducerMetadata(n: ProducerMetadata): Array<Byte> {
+  const out = [];
+
+  out.push(...encodeUTF8Vec("language"));
+  out.push(...encodeU32(n.language.length));
+  n.language.forEach(l => {
+    out.push(...encodeProducerMetadataVersionedName(l));
+  });
+
+  out.push(...encodeUTF8Vec("processed-by"));
+  out.push(...encodeU32(n.processedBy.length));
+  n.processedBy.forEach(l => {
+    out.push(...encodeProducerMetadataVersionedName(l));
+  });
+
+  out.push(...encodeUTF8Vec("sdk"));
+  out.push(...encodeU32(n.sdk.length));
+  n.sdk.forEach(l => {
+    out.push(...encodeProducerMetadataVersionedName(l));
+  });
 
   return out;
 }

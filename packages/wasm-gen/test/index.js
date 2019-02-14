@@ -4,6 +4,9 @@ const t = require("@webassemblyjs/ast");
 const { encodeNode } = require("../lib");
 const encoder = require("../lib/encoder");
 
+function nameFromStr(str) {
+  return [str.length].concat(str.split("").map(s => s.charCodeAt(0)));
+}
 function callIndirectInstructionIndex(index) {
   return {
     type: "CallIndirectInstruction",
@@ -80,13 +83,13 @@ const fixtures = [
   },
 
   {
+    name: "an empty ImportSection",
     node: t.sectionMetadata(
       "import",
       0,
       t.numberLiteralFromRaw(1),
       t.numberLiteralFromRaw(0)
     ),
-    name: "an empty ImportSection",
     expected: [0x02, 0x01, 0x00]
   },
 
@@ -263,7 +266,7 @@ const fixtures = [
         0x39
       ])
     )
-  }
+  },
 
   // TODO(sven): utf8 encoder fails here
   // {
@@ -271,6 +274,53 @@ const fixtures = [
   //   node: t.stringLiteral("🤣见見"),
   //   expected: [10, 0xf0, 0x9f, 0xa4, 0xa3, 0xe8, 0xa7, 0x81, 0xe8, 0xa6, 0x8b]
   // }
+
+  {
+    name: "producerMetadata",
+    node: t.producerMetadata(
+      [t.producerMetadataVersionedName("n1", "v1")],
+      [t.producerMetadataVersionedName("n2", "")],
+      []
+    ),
+    expected: [].concat([
+      ...nameFromStr("language"), // field_name
+      1, // field_value_count
+
+      // field_values
+      ...nameFromStr("n1"), // name
+      ...nameFromStr("v1"), // version
+
+      ...nameFromStr("processed-by"), // field_name
+      1, // field_value_count
+
+      // field_values
+      ...nameFromStr("n2"), // name
+      ...nameFromStr(""), // version
+
+      ...nameFromStr("sdk"), // field_name
+      0 // field_value_count
+    ])
+  },
+
+  {
+    name: "producerMetadataVersionedName",
+    node: t.producerMetadataVersionedName("a", "b"),
+    expected: [].concat.apply(
+      [0x01, 97], // name
+      [0x01, 98] // version
+    )
+  },
+
+  {
+    name: "Producers empty section",
+    node: t.sectionMetadata(
+      "custom:producers",
+      0, // start
+      t.numberLiteralFromRaw(9), // size
+      t.numberLiteralFromRaw(0) // vectorOfSize
+    ),
+    expected: [0x0, 9, ...nameFromStr("producers")]
+  }
 ];
 
 describe("wasm gen", () => {

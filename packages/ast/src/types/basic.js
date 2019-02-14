@@ -5,6 +5,8 @@ type Byte = Number;
 
 type SectionName =
   | "custom"
+  | "custom:name"
+  | "custom:producers"
   | "type"
   | "import"
   | "func"

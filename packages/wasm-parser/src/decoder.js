@@ -1797,9 +1797,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionId], "section code");
         dump([sectionSizeInBytes], "section size");
 
-        const metadata = [
-          t.sectionMetadata("custom", startOffset, sectionSizeInBytesNode)
-        ];
+        const metadata = [];
 
         const sectionName = readUTF8String();
         eatBytes(sectionName.nextIndex);
@@ -1810,6 +1808,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         if (sectionName.value === "name") {
           try {
+            metadata.push(
+              t.sectionMetadata(
+                "custom:name",
+                startOffset,
+                sectionSizeInBytesNode
+              )
+            );
             metadata.push(...parseNameSection(remainingBytes));
           } catch (e) {
             console.warn(
@@ -1822,6 +1827,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           }
         } else if (sectionName.value === "producers") {
           try {
+            metadata.push(
+              t.sectionMetadata(
+                "custom:producers",
+                startOffset,
+                sectionSizeInBytesNode
+              )
+            );
             metadata.push(parseProducersSection(remainingBytes));
           } catch (e) {
             console.warn(
@@ -1833,6 +1845,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
             eatBytes(remainingBytes);
           }
         } else {
+          metadata.push(
+            t.sectionMetadata("custom", startOffset, sectionSizeInBytesNode)
+          );
+
           // We don't parse the custom section
           eatBytes(remainingBytes);
 

@@ -1,6 +1,7 @@
 // @flow
 
-import { encodeNode } from "@webassemblyjs/wasm-gen";
+import { encodeNode, encodeUTF8Vec } from "@webassemblyjs/wasm-gen";
+import { assert } from "mamacro";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import constants from "@webassemblyjs/helper-wasm-bytecode";
 import * as t from "@webassemblyjs/ast";
@@ -61,14 +62,19 @@ export function createEmptySection(
     end = start;
   }
 
-  // section id
-  start += 1;
+  // 1 byte for the empty vector
+  let size = 1;
+
+  if (section === "custom:producers") {
+    size += encodeUTF8Vec("producers").length;
+  }
+  assert(section !== "custom:name", "not implemented");
+
+  // the section starts after its header
+  start += size;
 
   const sizeStartLoc = { line: -1, column: start };
   const sizeEndLoc = { line: -1, column: start + 1 };
-
-  // 1 byte for the empty vector
-  const size = t.withLoc(t.numberLiteralFromRaw(1), sizeEndLoc, sizeStartLoc);
 
   const vectorOfSizeStartLoc = { line: -1, column: sizeEndLoc.column };
   const vectorOfSizeEndLoc = { line: -1, column: sizeEndLoc.column + 1 };
@@ -79,7 +85,12 @@ export function createEmptySection(
     vectorOfSizeStartLoc
   );
 
-  const sectionMetadata = t.sectionMetadata(section, start, size, vectorOfSize);
+  const sectionMetadata = t.sectionMetadata(
+    section,
+    start,
+    t.withLoc(t.numberLiteralFromRaw(size), sizeEndLoc, sizeStartLoc),
+    vectorOfSize
+  );
 
   const sectionBytes = encodeNode(sectionMetadata);
 

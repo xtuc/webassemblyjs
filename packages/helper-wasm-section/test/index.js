@@ -54,6 +54,8 @@ describe("create", () => {
     assert.equal(res.sectionMetadata.vectorOfSize.value, 0);
     assert.equal(res.sectionMetadata.vectorOfSize.loc.start.column, 10);
     assert.equal(res.sectionMetadata.vectorOfSize.loc.end.column, 11);
+
+    assert.isUndefined(res.uint8Buffer[res.startOffset]);
   });
 
   it("should create an section and preserve section order", () => {
@@ -101,6 +103,27 @@ describe("create", () => {
     // should have updated ast
     assert.equal(12, getSectionMetadata(ast, "global").startOffset);
     assert.equal(9, getSectionMetadata(ast, "type").startOffset);
+  });
+
+  it("should create a producers custom section", () => {
+    const sectionName = "custom:producers";
+
+    const actual = new Uint8Array(makeBuffer(encodeHeader(), encodeVersion(1)));
+    const ast = decode(actual);
+    const res = createEmptySection(ast, actual, sectionName);
+
+    const data = getSectionMetadata(ast, sectionName);
+
+    assert.isNotNull(data);
+    assert.equal(19, data.startOffset);
+    assert.equal(0, data.vectorOfSize.value);
+    assert.equal(11, data.size.value);
+
+    assert.isUndefined(res.uint8Buffer[res.startOffset]);
+  });
+
+  it.skip("should create a producers custom section after the name custom section", () => {
+    // FIXME(sven): implement it
   });
 });
 
