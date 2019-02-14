@@ -132,7 +132,8 @@ function encodedLength(encodedBuffer, index) {
   result++; // to account for the last byte
 
   if (index + result > encodedBuffer.length) {
-    throw new Error("integer representation too long");
+    // FIXME(sven): seems to cause false positives
+    // throw new Error("integer representation too long");
   }
 
   return result;
