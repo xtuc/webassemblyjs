@@ -1,6 +1,8 @@
 // @flow
 
 const { assert } = require("chai");
+const { join } = require("path");
+const { spawnSync } = require("child_process");
 const {
   getFixtures,
   compare,
@@ -81,33 +83,19 @@ describe("Binary decoder", () => {
   describe("from wasm", () => {
     const testSuites = getFixtures(__dirname, "fixtures", "**", "actual.wasm");
 
-    const getActual = buffer => {
-      let dump = "";
-      const oldconsoleLog = console.log;
-      const oldconsoleWarn = console.warn;
-      const oldconsoleError = console.error;
+    const getActual = (buffer, file) => {
+      const ret = spawnSync("node", [
+        join("packages", "cli", "lib", "wasmdump.js"),
+        file
+      ]);
+      const stderr = ret.output[2].toString();
+      const stdout = ret.output[1].toString();
 
-      // $FlowIgnore
-      console.log = (...d) => (dump += d.join(" ") + "\n");
-      // $FlowIgnore
-      console.warn = (...d) => (dump += d.join(" ") + "\n");
-      // $FlowIgnore
-      console.error = (...d) => (dump += d.join(" ") + "\n");
-
-      try {
-        decode(new Buffer(buffer), { dump: true });
-      } catch (e) {
-        dump += e.message;
+      if (ret.status === 1) {
+        return stderr;
+      } else {
+        return stdout;
       }
-
-      // $FlowIgnore
-      console.log = oldconsoleLog;
-      // $FlowIgnore
-      console.warn = oldconsoleWarn;
-      // $FlowIgnore
-      console.error = oldconsoleError;
-
-      return dump;
     };
 
     compareWithExpected(testSuites, getActual, "expected");
