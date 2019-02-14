@@ -1264,51 +1264,48 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
   // this is a custom setion used for information about the producers
   // https://github.com/WebAssembly/tool-conventions/blob/master/ProducersSection.md
-  function parseProducersSection(remainingBytes: number) {
+  function parseProducersSection() {
     const metadata = t.producersSectionMetadata([]);
-    const initialOffset = offset;
 
-    while (offset - initialOffset < remainingBytes) {
-      // field_count
-      const sectionTypeByte = readVaruint32();
-      eatBytes(sectionTypeByte.nextIndex);
+    // field_count
+    const sectionTypeByte = readVaruint32();
+    eatBytes(sectionTypeByte.nextIndex);
 
-      dump([sectionTypeByte.value], "num of producers");
+    dump([sectionTypeByte.value], "num of producers");
 
-      const fields = {
-        language: [],
-        "processed-by": [],
-        sdk: []
-      };
+    const fields = {
+      language: [],
+      "processed-by": [],
+      sdk: []
+    };
 
-      // fields
-      for (let fieldI = 0; fieldI < sectionTypeByte.value; fieldI++) {
-        // field_name
-        const fieldName = readUTF8String();
-        eatBytes(fieldName.nextIndex);
+    // fields
+    for (let fieldI = 0; fieldI < sectionTypeByte.value; fieldI++) {
+      // field_name
+      const fieldName = readUTF8String();
+      eatBytes(fieldName.nextIndex);
 
-        // field_value_count
-        const valueCount = readVaruint32();
-        eatBytes(valueCount.nextIndex);
+      // field_value_count
+      const valueCount = readVaruint32();
+      eatBytes(valueCount.nextIndex);
 
-        // field_values
-        for (let producerI = 0; producerI < valueCount.value; producerI++) {
-          const producerName = readUTF8String();
-          eatBytes(producerName.nextIndex);
+      // field_values
+      for (let producerI = 0; producerI < valueCount.value; producerI++) {
+        const producerName = readUTF8String();
+        eatBytes(producerName.nextIndex);
 
-          const producerVersion = readUTF8String();
-          eatBytes(producerVersion.nextIndex);
+        const producerVersion = readUTF8String();
+        eatBytes(producerVersion.nextIndex);
 
-          fields[fieldName.value].push(
-            t.producerMetadataVersionedName(
-              producerName.value,
-              producerVersion.value
-            )
-          );
-        }
-
-        metadata.producers.push(fields[fieldName.value]);
+        fields[fieldName.value].push(
+          t.producerMetadataVersionedName(
+            producerName.value,
+            producerVersion.value
+          )
+        );
       }
+
+      metadata.producers.push(fields[fieldName.value]);
     }
 
     return metadata;
@@ -1809,6 +1806,8 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         const remainingBytes = sectionSizeInBytes - sectionName.nextIndex;
 
         if (sectionName.value === "name") {
+          const initialOffset = offset;
+
           try {
             metadata.push(...parseNameSection(remainingBytes));
           } catch (e) {
@@ -1818,11 +1817,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
               }).`
             );
 
-            eatBytes(remainingBytes);
+            eatBytes(offset - (initialOffset + remainingBytes));
           }
         } else if (sectionName.value === "producers") {
+          const initialOffset = offset;
+
           try {
-            metadata.push(parseProducersSection(remainingBytes));
+            metadata.push(parseProducersSection());
           } catch (e) {
             console.warn(
               `Failed to decode custom "producers" section @${offset}; ignoring (${
@@ -1830,7 +1831,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
               }).`
             );
 
-            eatBytes(remainingBytes);
+            eatBytes(offset - (initialOffset + remainingBytes));
           }
         } else {
           // We don't parse the custom section
