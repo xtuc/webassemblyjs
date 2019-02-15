@@ -11,9 +11,12 @@
     "type": "git",
     "url": "https://github.com/xtuc/webassemblyjs.git"
   },
-  "devDependencies": {
-    "@webassemblyjs/wast-parser": "1.8.2",
+  "dependencies": {
+    "@webassemblyjs/ast": "1.8.2",
     "mamacro": "^0.0.3"
+  },
+  "devDependencies": {
+    "@webassemblyjs/wast-parser": "1.8.2"
   },
   "publishConfig": {
     "access": "public"
