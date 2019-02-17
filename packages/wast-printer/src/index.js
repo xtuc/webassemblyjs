@@ -202,14 +202,16 @@ function printData(n: Data, depth: number): string {
   out += printInstruction(n.offset, depth);
   out += space;
 
-  let value = "";
-
-  n.init.values.forEach(byte => {
-    value += String.fromCharCode(byte);
+  out += '"';
+  n.init.values.forEach(function(byte) {
+    // Avoid non-displayable characters
+    if (byte < 0x1f || (byte >= 0x7f && byte <= 0x9f) || byte == 0xad) {
+      out += '\\' + ('00' + byte.toString(16)).substr(-2);
+    } else {
+      out += String.fromCharCode(byte);
+    }
   });
-
-  // Avoid non-displayable characters
-  out += JSON.stringify(value);
+  out += '"'
 
   out += ")";
 
