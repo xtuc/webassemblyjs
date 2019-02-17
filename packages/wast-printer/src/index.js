@@ -206,12 +206,13 @@ function printData(n: Data, depth: number): string {
   n.init.values.forEach(function(byte) {
     // Avoid non-displayable characters
     if (byte < 0x1f || (byte >= 0x7f && byte <= 0x9f) || byte == 0xad) {
-      out += '\\' + ('00' + byte.toString(16)).substr(-2);
+      out += "\\";
+      out += ("00" + byte.toString(16)).substr(-2);
     } else {
       out += String.fromCharCode(byte);
     }
   });
-  out += '"'
+  out += '"';
 
   out += ")";
 
