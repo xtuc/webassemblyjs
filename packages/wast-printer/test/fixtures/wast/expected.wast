@@ -118,6 +118,6 @@
   (elem $t (offset (i32.const 0)) $f $f)
   (elem $t (offset (i32.const 0)))
   (elem $t (offset (i32.const 0)) $f $f)
-  (data 0 (i32.const 25) "abc")
-  (data 1 (i32.const 25) "abc")
+  (data 0 (i32.const 25) "abc\00\06")
+  (data 1 (i32.const 25) "abc*\14")
 )
