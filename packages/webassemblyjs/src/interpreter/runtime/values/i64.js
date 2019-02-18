@@ -1,6 +1,6 @@
 // @flow
 
-import Long from "long";
+import Long from "@xtuc/long";
 
 const { RuntimeError } = require("../../../errors");
 // eslint-disable-next-line no-unused-vars

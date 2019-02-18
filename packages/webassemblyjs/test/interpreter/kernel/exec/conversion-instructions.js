@@ -2,7 +2,7 @@
 
 const t = require("@webassemblyjs/ast");
 
-const Long = require("long");
+const Long = require("@xtuc/long");
 const { assert } = require("chai");
 
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");

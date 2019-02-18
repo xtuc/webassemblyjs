@@ -3,7 +3,7 @@
 const t = require("@webassemblyjs/ast");
 
 const { assert } = require("chai");
-const Long = require("long");
+const Long = require("@xtuc/long");
 
 const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
 const { Memory } = require("../../../../lib/interpreter/runtime/values/memory");

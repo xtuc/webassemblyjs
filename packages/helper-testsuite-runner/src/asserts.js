@@ -1,7 +1,7 @@
 // @flow
 
 import { assert } from "mamacro";
-import Long from "long";
+import Long from "@xtuc/long";
 
 function eq(actual: StackLocal, expected: Object) {
   // check type
