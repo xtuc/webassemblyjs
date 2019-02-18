@@ -1,1 +1,1 @@
-(data 23 (i32.const 25) "abc")
+(data 23 (i32.const 25) "abc\E2\98\83\00")

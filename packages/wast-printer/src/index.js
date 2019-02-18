@@ -205,9 +205,11 @@ function printData(n: Data, depth: number): string {
   out += '"';
   n.init.values.forEach(function(byte) {
     // Avoid non-displayable characters
-    if (byte < 0x1f || (byte >= 0x7f && byte <= 0x9f) || byte == 0xad) {
+    if (byte <= 31 || byte == 34 || byte == 92 || byte >= 127) {
       out += "\\";
       out += ("00" + byte.toString(16)).substr(-2);
+    } else if (byte > 255) {
+      throw new Error("Unsupported byte in data segment: " + byte);
     } else {
       out += String.fromCharCode(byte);
     }
