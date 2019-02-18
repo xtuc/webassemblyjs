@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-testsuite-runner",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@xtuc/long": "4.2.2",
-    "webassemblyjs": "1.8.2"
+    "webassemblyjs": "1.8.3"
   },
   "publishConfig": {
     "access": "public"
