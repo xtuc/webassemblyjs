@@ -2,7 +2,7 @@
 
 import { assertRuntimeError, define } from "mamacro";
 
-import Long from "long";
+import Long from "@xtuc/long";
 import { Memory } from "../runtime/values/memory";
 import { RuntimeError } from "../../errors";
 
