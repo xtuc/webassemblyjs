@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-module-context",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -12,11 +12,11 @@
     "url": "https://github.com/xtuc/webassemblyjs.git"
   },
   "dependencies": {
-    "@webassemblyjs/ast": "1.8.3",
+    "@webassemblyjs/ast": "1.8.4",
     "mamacro": "^0.0.3"
   },
   "devDependencies": {
-    "@webassemblyjs/wast-parser": "1.8.3"
+    "@webassemblyjs/wast-parser": "1.8.4"
   },
   "publishConfig": {
     "access": "public"
