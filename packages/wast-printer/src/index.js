@@ -202,14 +202,19 @@ function printData(n: Data, depth: number): string {
   out += printInstruction(n.offset, depth);
   out += space;
 
-  let value = "";
-
-  n.init.values.forEach(byte => {
-    value += String.fromCharCode(byte);
+  out += '"';
+  n.init.values.forEach(function(byte) {
+    // Avoid non-displayable characters
+    if (byte <= 31 || byte == 34 || byte == 92 || byte >= 127) {
+      out += "\\";
+      out += ("00" + byte.toString(16)).substr(-2);
+    } else if (byte > 255) {
+      throw new Error("Unsupported byte in data segment: " + byte);
+    } else {
+      out += String.fromCharCode(byte);
+    }
   });
-
-  // Avoid non-displayable characters
-  out += JSON.stringify(value);
+  out += '"';
 
   out += ")";
 
