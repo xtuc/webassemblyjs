@@ -24,7 +24,7 @@
     "@babel/preset-flow": "7.0.0-beta.34",
     "@babel/template": "7.0.0-beta.34",
     "babel-eslint": "8.0.3",
-    "babel-plugin-mamacro": "^0.0.6",
+    "babel-plugin-mamacro": "^0.0.7",
     "chai": "4.1.2",
     "eslint": "4.12.1",
     "eslint-config-prettier": "4.0.0",
