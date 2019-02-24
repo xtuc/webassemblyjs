@@ -20,7 +20,10 @@ export function removeSections(
 
   return sectionMetadatas.reverse().reduce((uint8Buffer, sectionMetadata) => {
     const startsIncludingId = sectionMetadata.startOffset - 1;
-    const ends = sectionMetadata.startOffset + sectionMetadata.size.value + 1;
+    const ends =
+      section === "start"
+        ? sectionMetadata.size.loc.end.column + 1
+        : sectionMetadata.startOffset + sectionMetadata.size.value + 1;
 
     const delta = -(ends - startsIncludingId);
 
