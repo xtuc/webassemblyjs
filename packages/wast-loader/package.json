@@ -24,6 +24,6 @@
     "access": "public"
   },
   "dependencies": {
-    "wabt": "1.0.0-nightly.20180421"
+    "wabt": "1.0.8"
   }
 }
