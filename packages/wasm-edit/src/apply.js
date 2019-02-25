@@ -23,16 +23,13 @@ import { define } from "mamacro";
 
 declare function CHECK_END(body: Array<Object>): void;
 
-define(
-  CHECK_END,
-  body => `
+define(CHECK_END, body => `
     const body = ${body};
 
     if (body.length === 0 || body[body.length - 1].id !== "end") {
       throw new Error("expressions must be ended");
     }
-  `
-);
+  `);
 
 type State = {
   uint8Buffer: Uint8Array,
@@ -154,7 +151,7 @@ function applyDelete(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
      */
     uint8Buffer = removeSections(ast, uint8Buffer, "start");
 
-    const deltaBytes = -(sectionMetadata.size.value + 1) /* section id */;
+    const deltaBytes = -(sectionMetadata.size.value + 1); /* section id */
 
     return { uint8Buffer, deltaBytes, deltaElements };
   }

@@ -10,14 +10,11 @@ import { tokens, keywords } from "./tokenizer";
 
 declare function createUnexpectedToken(msg: string): void;
 
-define(
-  createUnexpectedToken,
-  msg => `return new Error(
+define(createUnexpectedToken, msg => `return new Error(
     "\n" +
     codeFrameFromSource(source, token.loc) + "\n"
     + ${msg} + ", given " + tokenToString(token)
-  );`
-);
+  );`);
 
 type AllArgs = {
   args: Array<Expression>,

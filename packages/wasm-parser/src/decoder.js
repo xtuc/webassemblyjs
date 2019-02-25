@@ -8,9 +8,7 @@ import { define } from "mamacro";
 
 declare function WITH_LOC<T>(n: T, startLoc: Position): T;
 
-define(
-  WITH_LOC,
-  (node, startLoc) => `
+define(WITH_LOC, (node, startLoc) => `
     (function() {
       const endLoc = getPosition();
 
@@ -20,8 +18,7 @@ define(
         ${startLoc}
       );
     })()
-  `
-);
+  `);
 
 import {
   decodeInt32,

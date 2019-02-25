@@ -14,27 +14,19 @@ declare function POP_STACK_FRAME(): void;
 declare function POP_LABEL(): void;
 declare function assertNItemsOnStack(n: number): void;
 
-define(
-  assertNItemsOnStack,
-  n => `
+define(assertNItemsOnStack, n => `
   if (frame.values.length < ${n}) {
     throw new RuntimeError(
       "Assertion error: expected " + JSON.stringify(${n})
         + " on the stack, found " + frame.values.length
     );
-  }`
-);
+  }`);
 
-define(
-  trace,
-  msg => `
+define(trace, msg => `
     console.log("trace " + ${msg});
-  `
-);
+  `);
 
-define(
-  POP_LABEL,
-  () => `
+define(POP_LABEL, () => `
     // 3. Assert: due to validation, the label L is now on the top of the stack.
     // 4. Pop the label from the stack.
     let found = false;
@@ -51,19 +43,13 @@ define(
 
       frame.values.splice(initialOrderIndex, 1);
     }
-  `
-);
+  `);
 
-define(
-  GOTO,
-  labelOffset => `
+define(GOTO, labelOffset => `
     pc = offsets.indexOf(String(${labelOffset}));
-  `
-);
+  `);
 
-define(
-  RETURN,
-  () => `
+define(RETURN, () => `
     const activeFrame = getActiveStackFrame();
 
     if (activeFrame.values.length > 0) {
@@ -71,12 +57,9 @@ define(
     } else {
       return;
     }
-  `
-);
+  `);
 
-define(
-  PUSH_NEW_STACK_FRAME,
-  pc => `
+define(PUSH_NEW_STACK_FRAME, pc => `
     const stackframe = require("./stackframe");
 
     const activeFrame = getActiveStackFrame();
@@ -91,12 +74,9 @@ define(
 
     // Push the frame on top of the stack
     callStack[framepointer] = newStackFrame;
-  `
-);
+  `);
 
-define(
-  POP_STACK_FRAME,
-  () => `
+define(POP_STACK_FRAME, () => `
     const activeFrame = getActiveStackFrame();
 
     // pass the result of the previous call into the new active fame
@@ -115,8 +95,7 @@ define(
     if (res !== undefined && newStackFrame !== undefined) {
       pushResult(newStackFrame, res);
     }
-  `
-);
+  `);
 
 const {
   binopi32,

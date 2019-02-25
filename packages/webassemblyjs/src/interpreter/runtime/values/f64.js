@@ -57,7 +57,7 @@ export class f64nan extends f64 {
 
     // 52-bit mantissa which is obtained by disregarding the sign of _value
     const mantissa = this._value <= 0 ? -this._value : this._value;
-    lower = lower | (mantissa % 2 ** 32);
+    lower = lower | mantissa % 2 ** 32;
     upper = upper | Math.floor(mantissa / 2 ** 32);
 
     return new i64(Long.fromBits(lower, upper));
