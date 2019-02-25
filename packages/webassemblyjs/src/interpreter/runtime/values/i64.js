@@ -8,14 +8,11 @@ import { i32, createTrue, createFalse } from "./i32";
 import { define, assert } from "mamacro";
 
 declare function ASSERT_NOT_ZERO(x: any): void;
-define(
-  ASSERT_NOT_ZERO,
-  x => `{
+define(ASSERT_NOT_ZERO, x => `{
     if (${x}._value.isZero()) {
       throw new RuntimeError("integer divide by zero");
     }
-  }`
-);
+  }`);
 
 declare function TO_BOOLEAN(cond: any): i32;
 define(TO_BOOLEAN, cond => `(${cond}) ? createTrue() : createFalse()`);

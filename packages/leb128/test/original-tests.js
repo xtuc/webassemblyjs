@@ -508,7 +508,7 @@ function testLossy64() {
       const bit = i == 0 || i == bitCount - 1 ? 1 : rand.nextBit();
       const at = offset + i;
       if (bit) {
-        buf[Math.floor(at / 8)] |= 1 << (at % 8);
+        buf[Math.floor(at / 8)] |= 1 << at % 8;
       }
     }
 

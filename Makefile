@@ -80,7 +80,7 @@ bench:
 	$(NODE) $(NODE_OPTS) ./benchmark
 
 fix:
-	$(PRETTIER) --write "{packages,docs,benchmark}/**/*.js" "**/*.tjs"
+	$(PRETTIER) --write "{packages,docs,benchmark}/**/*.js"
 
 flow-update-def:
 	$(FLOWTYPED) install --libdefDir src/types

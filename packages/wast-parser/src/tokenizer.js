@@ -9,11 +9,8 @@ declare function unexpectedCharacter(): void;
 /**
  * Throw an error in case the current character is invalid
  */
-define(
-  unexpectedCharacter,
-  () =>
-    `throw new Error(getCodeFrame(input, line, column) + "Unexpected character " + JSON.stringify(char));`
-);
+define(unexpectedCharacter, () =>
+  `throw new Error(getCodeFrame(input, line, column) + "Unexpected character " + JSON.stringify(char));`);
 
 // eslint-disable-next-line
 function getCodeFrame(source: string, line: number, column: number) {

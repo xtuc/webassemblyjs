@@ -26,19 +26,13 @@ export const kStart = Symbol("_start");
 declare function LABEL_POP(): void;
 declare function LABEL_PUSH(n: Node): void;
 
-define(
-  LABEL_POP,
-  () => `
+define(LABEL_POP, () => `
     this._labels.pop();
-  `
-);
+  `);
 
-define(
-  LABEL_PUSH,
-  node => `
+define(LABEL_PUSH, node => `
     this._labels.push(${node});
-  `
-);
+  `);
 
 /**
  * ModuleContext

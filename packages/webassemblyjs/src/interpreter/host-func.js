@@ -14,12 +14,9 @@ const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");
 const { ExecutionHasBeenTrapped } = require("./kernel/signals");
 
-define(
-  trace,
-  msg => `
+define(trace, msg => `
     console.log("host " + ${msg});
-  `
-);
+  `);
 
 export function createHostfunc(
   ir: IR,
@@ -87,8 +84,9 @@ export function createHostfunc(
       );
     }
 
-    const argsWithType = args.map((value: any, i: number): StackLocal =>
-      castIntoStackLocalOfType(funcinstArgs[i], value)
+    const argsWithType = args.map(
+      (value: any, i: number): StackLocal =>
+        castIntoStackLocalOfType(funcinstArgs[i], value)
     );
 
     const stackFrame = createStackFrame(

@@ -2,7 +2,7 @@
 
 const { RuntimeError } = require("../../../errors");
 
-const WEBASSEMBLY_PAGE_SIZE = 64 * 1024 /* 64KiB */;
+const WEBASSEMBLY_PAGE_SIZE = 64 * 1024; /* 64KiB */
 
 export class Memory implements MemoryInstance {
   _initialBytes: number;
