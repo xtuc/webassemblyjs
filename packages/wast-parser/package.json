@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@webassemblyjs/helper-test-framework": "1.8.5",
-    "mamacro": "^0.0.3"
+    "mamacro": "^0.0.7"
   },
   "repository": {
     "type": "git",

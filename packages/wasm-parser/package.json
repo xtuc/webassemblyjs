@@ -37,7 +37,7 @@
     "@webassemblyjs/helper-wasm-bytecode": "1.7.7",
     "@webassemblyjs/wasm-gen": "1.8.5",
     "@webassemblyjs/wast-parser": "1.8.5",
-    "mamacro": "^0.0.3",
+    "mamacro": "^0.0.7",
     "wabt": "1.0.0-nightly.20180421"
   }
 }

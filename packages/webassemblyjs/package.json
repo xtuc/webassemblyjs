@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@webassemblyjs/floating-point-hex-parser": "1.8.5",
-    "mamacro": "^0.0.3",
+    "mamacro": "^0.0.7",
     "wabt": "1.0.0-nightly.20180421"
   },
   "repository": {

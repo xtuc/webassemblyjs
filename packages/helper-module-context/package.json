@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@webassemblyjs/ast": "1.8.5",
-    "mamacro": "^0.0.3"
+    "mamacro": "^0.0.7"
   },
   "devDependencies": {
     "@webassemblyjs/wast-parser": "1.8.5"
