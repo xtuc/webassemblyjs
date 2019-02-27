@@ -6,7 +6,7 @@
   "module": "esm/index.js",
   "license": "MIT",
   "devDependencies": {
-    "mamacro": "^0.0.3"
+    "mamacro": "^0.0.7"
   },
   "dependencies": {
     "@xtuc/long": "4.2.2",

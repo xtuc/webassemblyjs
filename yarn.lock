@@ -4499,9 +4499,10 @@ make-fetch-happen@^4.0.1:
     socks-proxy-agent "^4.0.0"
     ssri "^6.0.0"
 
-mamacro@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/mamacro/-/mamacro-0.0.3.tgz#ad2c9576197c9f1abf308d0787865bd975a3f3e4"
+mamacro@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/mamacro/-/mamacro-0.0.7.tgz#d734b7b9d124a3cb3ce98bfc5f34244285aefb16"
+  integrity sha512-U3Mgo/yOu5KO/fI4a3NC5Dh/hnELsjUpMfjGQDgQfRhEvqQT+UOXoPtkmQrIBwr0HAu6P6GKdeKsKw70cLdcGw==
 
 map-age-cleaner@^0.1.1:
   version "0.1.2"
