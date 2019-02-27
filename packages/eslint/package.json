@@ -18,7 +18,7 @@
     "@webassemblyjs/wasm-parser": "1.8.5",
     "eslint-rule-composer": "^0.3.0",
     "estraverse": "^4.2.0",
-    "requireindex": "~1.1.0"
+    "requireindex": "~1.2.0"
   },
   "devDependencies": {
     "eslint": "~3.9.1",
