@@ -4165,15 +4165,15 @@ isurl@^1.0.0-alpha5:
     has-to-string-tag-x "^1.2.0"
     is-object "^1.0.1"
 
-jest-diff@24.3.1, jest-diff@^24.0.0:
-  version "24.3.1"
-  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-24.3.1.tgz#87952e5ea1548567da91df398fa7bf7977d3f96a"
-  integrity sha512-YRVzDguyzShP3Pb9wP/ykBkV7Z+O4wltrMZ2P4LBtNxrHNpxwI2DECrpD9XevxWubRy5jcE8sSkxyX3bS7W+rA==
+jest-diff@24.4.0, jest-diff@^24.0.0:
+  version "24.4.0"
+  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-24.4.0.tgz#106cd0491cb32da31debbea3e21f094d358dc7d9"
+  integrity sha512-2GdKN8GOledWkMGXcRCSr3KVTrjZU6vxbfZzwzRlM7gSG8HNIx+eoFXauQNQ5j7q73fZCoPnyS5/uOcXQ3wkWg==
   dependencies:
     chalk "^2.0.1"
     diff-sequences "^24.3.0"
     jest-get-type "^24.3.0"
-    pretty-format "^24.3.1"
+    pretty-format "^24.4.0"
 
 jest-docblock@^21.0.0:
   version "21.2.0"
@@ -5492,10 +5492,10 @@ prettier@1.16.4:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.16.4.tgz#73e37e73e018ad2db9c76742e2647e21790c9717"
   integrity sha512-ZzWuos7TI5CKUeQAtFd6Zhm2s6EpAD/ZLApIhsF9pRvRtM1RFo61dM/4MSRUA0SuLugA/zgrZD8m0BaY46Og7g==
 
-pretty-format@^24.3.1:
-  version "24.3.1"
-  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-24.3.1.tgz#ae4a98e93d73d86913a8a7dd1a7c3c900f8fda59"
-  integrity sha512-NZGH1NWS6o4i9pvRWLsxIK00JB9pqOUzVrO7yWT6vjI2thdxwvxefBJO6O5T24UAhI8P5dMceZ7x5wphgVI7Mg==
+pretty-format@^24.4.0:
+  version "24.4.0"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-24.4.0.tgz#48db91969eb89f272c1bf3514bc5d5b228b3e722"
+  integrity sha512-SEXFzT01NwO4vaymwhz1/CM+wKCLOT92uqrzxIjmdRQMt7JAEuZ2eInCMvDS+4ZidEB+Rdq+fMs/Vwse8VAh1A==
   dependencies:
     "@jest/types" "^24.3.0"
     ansi-regex "^4.0.0"
