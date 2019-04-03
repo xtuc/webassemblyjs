@@ -2736,10 +2736,10 @@ eslint-plugin-flowtype-errors@3.5.0:
     babel-runtime "^6.26.0"
     slash "^1.0.0"
 
-eslint-plugin-flowtype@3.4.2:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-3.4.2.tgz#55475e10b05fd714d60bceebbbed596cb8706b16"
-  integrity sha512-sv6O6fiN3dIwhU4qRxfcyIpbKGVvsxwIQ6vgBLudpQKjH1rEyEFEOjGzGEUBTQP9J8LdTZm37OjiqZ0ZeFOa6g==
+eslint-plugin-flowtype@3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-3.5.0.tgz#3b73b445cc4ec6f34a0472f9ec041157ac5b2fe4"
+  integrity sha512-MjReILZxs40ip9SZwg3BjrJ3qh9UyYUxqvweHvN8CxBw1dPeGul9CjjGrwi7md9tyuHyPg3cEG4xKmYb8q+yLg==
   dependencies:
     lodash "^4.17.11"
 
