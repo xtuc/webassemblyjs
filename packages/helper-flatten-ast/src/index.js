@@ -20,21 +20,23 @@ export function flatten(ast: Node): Node {
    * (call 0)
    *
    */
-  function CallInstruction(path: NodePath<CallInstruction>) {
+  function CallInstructionVisitor(path: NodePath<CallInstruction>) {
     const { instrArgs } = path.node;
 
+    // $FlowIgnore
     if (typeof instrArgs === "undefined" || instrArgs.length === 0) {
       // no nested instructions
       return;
     }
 
+    // $FlowIgnore
     instrArgs.forEach(path.insertBefore);
     path.node.instrArgs = [];
 
     didFlatten = true;
   }
 
-  function Instr(path: NodePath<Instr>) {
+  function InstrVisitor(path: NodePath<Instr>) {
     if (path.node.args.length === 0) {
       // no nested instructions
       return;
@@ -58,8 +60,8 @@ export function flatten(ast: Node): Node {
     didFlatten = false;
 
     traverse(ast, {
-      CallInstruction,
-      Instr
+      CallInstruction: CallInstructionVisitor,
+      Instr: InstrVisitor
     });
   }
 

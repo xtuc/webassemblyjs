@@ -119,6 +119,8 @@ export function createPath(context: NodePathContext<Node>): NodePath<Node> {
   const path = {
     ...context
   };
+  // $FlowIgnore
   Object.assign(path, createPathOperations(path));
+  // $FlowIgnore
   return path;
 }

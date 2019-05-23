@@ -3,13 +3,14 @@
 [include]
 
 [libs]
-./packages/ast/src/types/
 ./types/
+./packages/ast/src/types/
 ./packages/wasm-parser/src/types/decoder.js
 
 [lints]
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowIgnore
+no_flowlib=true
 
 [strict]
