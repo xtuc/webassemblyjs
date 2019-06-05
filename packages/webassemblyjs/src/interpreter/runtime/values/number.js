@@ -106,7 +106,7 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
 }
 
 export function typedArrayToArray(typedArray: Object) {
-  const byteArray = new Array(typedArray.byteLength);
+  const byteArray: Array<Byte> = new Array(typedArray.byteLength);
   for (let i = 0; i < byteArray.length; i++) {
     byteArray[i] = typedArray[i];
   }

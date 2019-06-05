@@ -20,7 +20,7 @@ describe("compiler", () => {
       describe(suite, () => {
         const execFile = path.join(path.dirname(suite), "exec.tjs");
 
-        const module = toArrayBuffer(readFileSync(suite, null));
+        const module = toArrayBuffer(readFileSync(suite));
         const exec = readFileSync(execFile, "utf8");
 
         const sandbox = {

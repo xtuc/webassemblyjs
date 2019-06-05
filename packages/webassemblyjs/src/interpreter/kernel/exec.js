@@ -237,6 +237,7 @@ export function executeStackFrame(
 
   function getMemoryOffset(frame: StackFrame, instruction) {
     if (instruction.namedArgs && instruction.namedArgs.offset) {
+      // $FlowIgnore
       const offset = instruction.namedArgs.offset.value;
       if (offset < 0) {
         throw newRuntimeError("offset must be positive");
@@ -360,6 +361,7 @@ export function executeStackFrame(
       case "const": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-const
 
+        // $FlowIgnore
         const n = instruction.args[0];
 
         if (typeof n === "undefined") {
@@ -376,6 +378,7 @@ export function executeStackFrame(
 
         pushResult(
           frame,
+          // $FlowIgnore
           castIntoStackLocalOfType(instruction.object, n.value)
         );
 
@@ -408,9 +411,11 @@ export function executeStackFrame(
       case "call": {
         // FIXME(sven): check spec compliancy
 
+        // $FlowIgnore
         const index = instruction.index.value;
 
         PUSH_NEW_STACK_FRAME(pc);
+        // $FlowIgnore
         GOTO(index);
 
         break;
@@ -433,11 +438,14 @@ export function executeStackFrame(
         frame.labels.push({
           value: block,
           arity: 0,
+          // $FlowIgnore
           id: block.label
         });
 
+        // $FlowIgnore
         pushResult(frame, label.createValue(block.label.value));
 
+        // $FlowIgnore
         trace("entering block " + block.label.value);
 
         break;
@@ -445,13 +453,16 @@ export function executeStackFrame(
 
       case "br": {
         // FIXME(sven): check spec compliancy
+        // $FlowIgnore
         const label = instruction.args[0];
+        // $FlowIgnore
         GOTO(label.value);
 
         break;
       }
 
       case "br_if": {
+        // $FlowIgnore
         const label = instruction.args[0];
 
         // 1. Assert: due to validation, a value of type i32 is on the top of the stack.
@@ -461,6 +472,7 @@ export function executeStackFrame(
         if (c.value.eqz().isTrue() === false) {
           // 3. If c is non-zero, then
           // 3. a. Execute the instruction (br l).
+          // $FlowIgnore
           GOTO(label.value);
         } else {
           // 4. Else:
@@ -484,16 +496,19 @@ export function executeStackFrame(
       }
 
       case "local": {
+        // $FlowIgnore
         const [valtype] = instruction.args;
 
         if (valtype.name === "i64") {
           const init = castIntoStackLocalOfType(valtype.name, new Long(0, 0));
           frame.locals.push(init);
         } else {
+          // $FlowIgnore
           const init = castIntoStackLocalOfType(valtype.name, 0);
           frame.locals.push(init);
         }
 
+        // $FlowIgnore
         trace("new local " + valtype.name);
 
         break;
@@ -506,6 +521,7 @@ export function executeStackFrame(
        */
       case "get_local": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-get-local
+        // $FlowIgnore
         const index = instruction.args[0];
 
         if (typeof index === "undefined") {
@@ -525,6 +541,7 @@ export function executeStackFrame(
 
       case "set_local": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-set-local
+        // $FlowIgnore
         const index = instruction.args[0];
 
         if (index.type === "NumberLiteral") {
@@ -546,6 +563,7 @@ export function executeStackFrame(
 
       case "tee_local": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-tee-local
+        // $FlowIgnore
         const index = instruction.args[0];
 
         if (index.type === "NumberLiteral") {
@@ -576,12 +594,15 @@ export function executeStackFrame(
 
       case "set_global": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-set-global
+        // $FlowIgnore
         const index = instruction.args[0];
 
         // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
+        // $FlowIgnore
         const globaladdr = frame.originatingModule.globaladdrs[index.value];
 
         if (typeof globaladdr === "undefined") {
+          // $FlowIgnore
           throw newRuntimeError(`Global address ${index.value} not found`);
         }
 
@@ -589,7 +610,9 @@ export function executeStackFrame(
         const globalinst = frame.allocator.get(globaladdr);
 
         if (typeof globalinst !== "object") {
-          throw newRuntimeError(`Unexpected data for global at ${globaladdr}`);
+          throw newRuntimeError(
+            `Unexpected data for global at ${globaladdr.toString()}`
+          );
         }
 
         // 7. Pop the value val from the stack.
@@ -605,20 +628,27 @@ export function executeStackFrame(
 
       case "get_global": {
         // https://webassembly.github.io/spec/core/exec/instructions.html#exec-get-global
+        // $FlowIgnore
         const index = instruction.args[0];
 
         // 2. Assert: due to validation, F.module.globaladdrs[x] exists.
+        // $FlowIgnore
         const globaladdr = frame.originatingModule.globaladdrs[index.value];
 
         if (typeof globaladdr === "undefined") {
-          throw newRuntimeError(`Unknown global at index: ${index.value}`);
+          throw newRuntimeError(
+            // $FlowIgnore
+            `Unknown global at index: ${index.value.toString()}`
+          );
         }
 
         // 4. Assert: due to validation, S.globals[a] exists.
         const globalinst = frame.allocator.get(globaladdr);
 
         if (typeof globalinst !== "object") {
-          throw newRuntimeError(`Unexpected data for global at ${globaladdr}`);
+          throw newRuntimeError(
+            `Unexpected data for global at ${globaladdr.toString()}`
+          );
         }
 
         // 7. Pop the value val from the stack.
@@ -636,10 +666,12 @@ export function executeStackFrame(
       case "store8":
       case "store16":
       case "store32": {
+        // $FlowIgnore
         const { id, object } = instruction;
 
         const memory = getMemory(frame);
 
+        // $FlowIgnore
         const [c1, c2] = pop2(frame, "i32", object);
         const ptr = c1.value.toNumber() + getMemoryOffset(frame, instruction);
         let valueBuffer = c2.value.toByteArray();
@@ -683,6 +715,7 @@ export function executeStackFrame(
       case "load8_u":
       case "load32_s":
       case "load32_u": {
+        // $FlowIgnore
         const { id, object } = instruction;
 
         const memory = getMemory(frame);
@@ -742,6 +775,7 @@ export function executeStackFrame(
           }
 
           default:
+            // $FlowIgnore
             throw new RuntimeError("Unsupported " + object + " load");
         }
 
@@ -806,6 +840,7 @@ export function executeStackFrame(
       case "xor":
       case "and": {
         let binopFn;
+        // $FlowIgnore
         switch (instruction.object) {
           case "i32":
             binopFn = binopi32;
@@ -824,11 +859,13 @@ export function executeStackFrame(
               "Unsupported operation " +
                 instruction.id +
                 " on " +
+                // $FlowIgnore
                 instruction.object
             );
         }
 
         const [c1, c2] = pop2(frame, instruction.object, instruction.object);
+        // $FlowIgnore
         pushResult(frame, binopFn(c1, c2, instruction.id));
 
         break;
@@ -848,7 +885,9 @@ export function executeStackFrame(
       case "gt_u":
       case "ge_s":
       case "ge_u": {
+        // $FlowIgnore
         const [c1, c2] = pop2(frame, instruction.object, instruction.object);
+        // $FlowIgnore
         pushResult(frame, compare(c1, c2, instruction.id));
 
         break;
@@ -871,8 +910,10 @@ export function executeStackFrame(
         // e.g. with i32.reinterpret/f32, the oprand is f32, and the resultant is i32
         const opType =
           instruction.id.indexOf("/") !== -1
-            ? instruction.id.split("/")[1]
-            : instruction.object;
+            ? // $FlowIgnore
+              instruction.id.split("/")[1]
+            : // $FlowIgnore
+              instruction.object;
 
         switch (opType) {
           case "i32":
@@ -889,12 +930,14 @@ export function executeStackFrame(
             break;
           default:
             throw createTrap(
+              // $FlowIgnore
               "Unsupported operation " + instruction.id + " on " + opType
             );
         }
 
         const c = pop1OfType(frame, opType);
 
+        // $FlowIgnore
         pushResult(frame, unopFn(c, instruction.id));
 
         break;

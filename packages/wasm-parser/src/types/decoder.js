@@ -83,5 +83,6 @@ type State = {
 type DecoderOpts = {
   dump: boolean,
   ignoreDataSection: boolean,
-  ignoreCodeSection: boolean
+  ignoreCodeSection: boolean,
+  ignoreCustomNameSection: boolean
 };
