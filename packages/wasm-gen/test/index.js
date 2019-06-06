@@ -1,7 +1,15 @@
 const { assert } = require("chai");
+const { writeFileSync } = require("fs");
 const t = require("@webassemblyjs/ast");
+const { join } = require("path");
+const { spawnSync } = require("child_process");
+const { decode } = require("@webassemblyjs/wasm-parser");
+const {
+  getFixtures,
+  compare
+} = require("@webassemblyjs/helper-test-framework");
 
-const { encodeNode } = require("../lib");
+const { encodeNode, encodeProgram } = require("../lib");
 const encoder = require("../lib/encoder");
 
 function callIndirectInstructionIndex(index) {
@@ -294,5 +302,30 @@ describe("wasm gen", () => {
 
   it("should encode an u32 of multiple bytes", () => {
     assert.deepEqual(encoder.encodeU32(0xff1), [241, 31]);
+  });
+
+  describe("Round tripping", () => {
+    const testSuites = getFixtures(__dirname, "fixtures", "**", "expected.wasm");
+
+    function dump(file) {
+      const ret = spawnSync("node", [
+        join("packages", "cli", "lib", "wasmdump.js"),
+        file
+      ]);
+      const stderr = ret.output[2].toString();
+      const stdout = ret.output[1].toString();
+      return stdout + stderr;
+    }
+
+    const getExpected = (buffer, file) => {
+      const actual = encodeProgram(decode(Buffer.from(buffer)));
+      const actualFile = file.replace("expected", "actual");
+      writeFileSync(actualFile, Buffer.from(actual));
+      return dump(actualFile);
+    };
+
+    const getActual = (buffer, file) => dump(file);
+
+    compare(testSuites, getActual, getExpected);
   });
 });

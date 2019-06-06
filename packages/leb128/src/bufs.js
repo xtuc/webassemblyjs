@@ -84,7 +84,7 @@ export function alloc(length) {
   if (result) {
     bufPool[length] = undefined;
   } else {
-    result = new Buffer(length);
+    result = Buffer.alloc(length);
   }
 
   result.fill(0);

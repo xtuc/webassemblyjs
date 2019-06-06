@@ -63,3 +63,5 @@ esm/
 package-lock.json
 
 wasm_test_dir
+
+packages/wasm-gen/test/fixtures/**/actual.wasm
