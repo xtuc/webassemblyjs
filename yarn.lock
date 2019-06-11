@@ -6410,10 +6410,10 @@ supports-color@^5.3.0:
   dependencies:
     has-flag "^3.0.0"
 
-synp@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/synp/-/synp-1.4.0.tgz#82af65200951758ac828278f65d79060a5ec666e"
-  integrity sha512-AxasOfyMJELOksT/HpEY/Xixhh+4J/5UG6Fue4yENXy02lqzxMZZ/QVbuk3EaVzoGcYAgfS4OYX7NqdovhLm/w==
+synp@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/synp/-/synp-1.5.0.tgz#aac2fab5bea9b54a901baa35ae580d1d03a4bef6"
+  integrity sha512-6HulKqyrdBKk+UOh3g75VjupxeK8NWvIZU56l5sVbPFl7CRBsjT8Ct6JPxUKwa6ufMomN28FS+r60bdFlv9EBw==
   dependencies:
     "@yarnpkg/lockfile" "^1.0.0"
     colors "^1.1.2"
