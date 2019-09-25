@@ -1259,7 +1259,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     return nameMetadata;
   }
 
-  // this is a custom setion used for information about the producers
+  // this is a custom section used for information about the producers
   // https://github.com/WebAssembly/tool-conventions/blob/master/ProducersSection.md
   function parseProducersSection() {
     const metadata = t.producersSectionMetadata([]);
