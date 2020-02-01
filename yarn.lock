@@ -4515,7 +4515,7 @@ make-fetch-happen@^4.0.1:
     socks-proxy-agent "^4.0.0"
     ssri "^6.0.0"
 
-mamacro@^0.0.7:
+mamacro@0.0.7, mamacro@^0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mamacro/-/mamacro-0.0.7.tgz#d734b7b9d124a3cb3ce98bfc5f34244285aefb16"
   integrity sha512-U3Mgo/yOu5KO/fI4a3NC5Dh/hnELsjUpMfjGQDgQfRhEvqQT+UOXoPtkmQrIBwr0HAu6P6GKdeKsKw70cLdcGw==
@@ -6794,6 +6794,11 @@ verror@1.10.0:
 wabt@1.0.0-nightly.20180421:
   version "1.0.0-nightly.20180421"
   resolved "https://registry.yarnpkg.com/wabt/-/wabt-1.0.0-nightly.20180421.tgz#db3565bff0d5023c9576270aa5369f2cec45b878"
+
+wabt@1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/wabt/-/wabt-1.0.12.tgz#c3ef04e464a47ddffe9c37af480b0de159bf48b7"
+  integrity sha512-Pq6UNbElHXo/Gxr+amBsmY3CgsO3VxS540YsH5cN/WaGl87yrWGC61TSxz2n5L+V2qC0jb7QoVIBvz4WbVQUlA==
 
 wcwidth@^1.0.0:
   version "1.0.1"

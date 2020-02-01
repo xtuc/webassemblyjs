@@ -1,7 +1,8 @@
 // @flow
 
+const { existsSync, readFileSync } = require("fs");
 const { assert } = require("chai");
-const { join } = require("path");
+const { join, dirname } = require("path");
 const { spawnSync } = require("child_process");
 const {
   getFixtures,
@@ -15,7 +16,7 @@ const {
   encodeHeader
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
-const wabt = require("wabt");
+const wabt = require("wabt")();
 const { parse } = require("@webassemblyjs/wast-parser");
 const { decode } = require("../lib");
 const { traverse } = require("@webassemblyjs/ast");
@@ -51,6 +52,10 @@ function stripMetadata(ast) {
   return ast;
 }
 
+const wasmFeatures = {
+  simd: true
+};
+
 // - Expected is wast-parser
 // + Received is wasm-parser
 describe("Binary decoder", () => {
@@ -59,7 +64,7 @@ describe("Binary decoder", () => {
 
     // convert the WAT fixture to WASM
     const getActual = (f, suite) => {
-      const module = wabt.parseWat(suite, f);
+      const module = wabt.parseWat(suite, f, wasmFeatures);
       const { buffer } = module.toBinary({ write_debug_names: true });
 
       // read the WASM file and strip custom metadata
@@ -84,17 +89,31 @@ describe("Binary decoder", () => {
     const testSuites = getFixtures(__dirname, "fixtures", "**", "actual.wasm");
 
     const getActual = (buffer, file) => {
+      let decoderOptions = "";
+
+      const decoderOptionsPath = join(dirname(file), "options");
+      if (existsSync(decoderOptionsPath)) {
+        decoderOptions = readFileSync(decoderOptionsPath, "utf8");
+      }
+
       const ret = spawnSync("node", [
         join("packages", "cli", "lib", "wasmdump.js"),
-        file
+        file,
+        ...decoderOptions.split("\n")
       ]);
       const stderr = ret.output[2].toString();
       const stdout = ret.output[1].toString();
 
+      let out = "";
+
+      if (decoderOptions !== "") {
+        out += "Options: " + decoderOptions + "\n";
+      }
+
       if (ret.status === 1) {
-        return stderr;
+        return out + stderr;
       } else {
-        return stdout;
+        return out + stdout;
       }
     };
 
