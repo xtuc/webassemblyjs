@@ -29,10 +29,6 @@ First you can see the JavaScript API is specified here https://github.com/WebAss
 
 I encounter some issues (like removing the `func` wasn't working) and added an additional parse of the WASM file.
 
-## Third party licenses
-
-- [webassemblyjs](https://github.com/xtuc/webassemblyjs) - MIT License see [LICENSE](https://github.com/xtuc/webassemblyjs/blob/master/LICENSE)
-
 ## TODO
 
 - Support DCE for exported `global`, `memory`, `table`.
