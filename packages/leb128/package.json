@@ -2,7 +2,7 @@
   "name": "@webassemblyjs/leb128",
   "version": "1.9.0",
   "description": "LEB128 decoder and encoder",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "main": "lib/index.js",
   "module": "esm/index.js",
   "scripts": {
