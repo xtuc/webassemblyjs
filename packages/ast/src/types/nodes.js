@@ -339,7 +339,8 @@ type Limit = {
   ...BaseNode,
   type: "Limit",
   min: number,
-  max?: number
+  max?: number,
+  shared?: boolean
 };
 
 type Signature = {
