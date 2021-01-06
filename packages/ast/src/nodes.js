@@ -30,7 +30,7 @@ export function module(
   const node: Module = {
     type: "Module",
     id,
-    fields
+    fields,
   };
 
   if (typeof metadata !== "undefined") {
@@ -71,7 +71,7 @@ export function moduleMetadata(
 
   const node: ModuleMetadata = {
     type: "ModuleMetadata",
-    sections
+    sections,
   };
 
   if (typeof functionNames !== "undefined" && functionNames.length > 0) {
@@ -97,7 +97,7 @@ export function moduleNameMetadata(value: string): ModuleNameMetadata {
 
   const node: ModuleNameMetadata = {
     type: "ModuleNameMetadata",
-    value
+    value,
   };
 
   return node;
@@ -119,7 +119,7 @@ export function functionNameMetadata(
   const node: FunctionNameMetadata = {
     type: "FunctionNameMetadata",
     value,
-    index
+    index,
   };
 
   return node;
@@ -148,7 +148,7 @@ export function localNameMetadata(
     type: "LocalNameMetadata",
     value,
     localIndex,
-    functionIndex
+    functionIndex,
   };
 
   return node;
@@ -167,7 +167,7 @@ export function binaryModule(id: ?string, blob: Array<string>): BinaryModule {
   const node: BinaryModule = {
     type: "BinaryModule",
     id,
-    blob
+    blob,
   };
 
   return node;
@@ -186,7 +186,7 @@ export function quoteModule(id: ?string, string: Array<string>): QuoteModule {
   const node: QuoteModule = {
     type: "QuoteModule",
     id,
-    string
+    string,
   };
 
   return node;
@@ -208,7 +208,7 @@ export function sectionMetadata(
     section,
     startOffset,
     size,
-    vectorOfSize
+    vectorOfSize,
   };
 
   return node;
@@ -223,7 +223,7 @@ export function producersSectionMetadata(
 
   const node: ProducersSectionMetadata = {
     type: "ProducersSectionMetadata",
-    producers
+    producers,
   };
 
   return node;
@@ -248,7 +248,7 @@ export function producerMetadata(
     type: "ProducerMetadata",
     language,
     processedBy,
-    sdk
+    sdk,
   };
 
   return node;
@@ -270,7 +270,7 @@ export function producerMetadataVersionedName(
   const node: ProducerMetadataVersionedName = {
     type: "ProducerMetadataVersionedName",
     name,
-    version
+    version,
   };
 
   return node;
@@ -288,7 +288,7 @@ export function loopInstruction(
     id: "loop",
     label,
     resulttype,
-    instr
+    instr,
   };
 
   return node;
@@ -310,7 +310,7 @@ export function instr(
   const node: Instr = {
     type: "Instr",
     id,
-    args
+    args,
   };
 
   if (typeof object !== "undefined") {
@@ -348,7 +348,7 @@ export function ifInstruction(
     test,
     result,
     consequent,
-    alternate
+    alternate,
   };
 
   return node;
@@ -362,7 +362,7 @@ export function stringLiteral(value: string): StringLiteral {
 
   const node: StringLiteral = {
     type: "StringLiteral",
-    value
+    value,
   };
 
   return node;
@@ -381,7 +381,7 @@ export function numberLiteral(value: number, raw: string): NumberLiteral {
   const node: NumberLiteral = {
     type: "NumberLiteral",
     value,
-    raw
+    raw,
   };
 
   return node;
@@ -399,7 +399,7 @@ export function longNumberLiteral(
   const node: LongNumberLiteral = {
     type: "LongNumberLiteral",
     value,
-    raw
+    raw,
   };
 
   return node;
@@ -438,7 +438,7 @@ export function floatLiteral(
   const node: FloatLiteral = {
     type: "FloatLiteral",
     value,
-    raw
+    raw,
   };
 
   if (nan === true) {
@@ -465,7 +465,7 @@ export function elem(
     type: "Elem",
     table,
     offset,
-    funcs
+    funcs,
   };
 
   return node;
@@ -474,7 +474,7 @@ export function elem(
 export function indexInFuncSection(index: Index): IndexInFuncSection {
   const node: IndexInFuncSection = {
     type: "IndexInFuncSection",
-    index
+    index,
   };
 
   return node;
@@ -483,7 +483,7 @@ export function indexInFuncSection(index: Index): IndexInFuncSection {
 export function valtypeLiteral(name: Valtype): ValtypeLiteral {
   const node: ValtypeLiteral = {
     type: "ValtypeLiteral",
-    name
+    name,
   };
 
   return node;
@@ -496,7 +496,7 @@ export function typeInstruction(
   const node: TypeInstruction = {
     type: "TypeInstruction",
     id,
-    functype
+    functype,
   };
 
   return node;
@@ -505,7 +505,7 @@ export function typeInstruction(
 export function start(index: Index): Start {
   const node: Start = {
     type: "Start",
-    index
+    index,
   };
 
   return node;
@@ -518,7 +518,7 @@ export function globalType(
   const node: GlobalType = {
     type: "GlobalType",
     valtype,
-    mutability
+    mutability,
   };
 
   return node;
@@ -532,7 +532,7 @@ export function leadingComment(value: string): LeadingComment {
 
   const node: LeadingComment = {
     type: "LeadingComment",
-    value
+    value,
   };
 
   return node;
@@ -546,7 +546,7 @@ export function blockComment(value: string): BlockComment {
 
   const node: BlockComment = {
     type: "BlockComment",
-    value
+    value,
   };
 
   return node;
@@ -561,7 +561,7 @@ export function data(
     type: "Data",
     memoryIndex,
     offset,
-    init
+    init,
   };
 
   return node;
@@ -578,7 +578,7 @@ export function global(
     type: "Global",
     globalType,
     init,
-    name
+    name,
   };
 
   return node;
@@ -605,7 +605,7 @@ export function table(
     type: "Table",
     elementType,
     limits,
-    name
+    name,
   };
 
   if (typeof elements !== "undefined" && elements.length > 0) {
@@ -619,7 +619,7 @@ export function memory(limits: Limit, id: ?Index): Memory {
   const node: Memory = {
     type: "Memory",
     limits,
-    id
+    id,
   };
 
   return node;
@@ -632,7 +632,7 @@ export function funcImportDescr(
   const node: FuncImportDescr = {
     type: "FuncImportDescr",
     id,
-    signature
+    signature,
   };
 
   return node;
@@ -656,7 +656,7 @@ export function moduleImport(
     type: "ModuleImport",
     module,
     name,
-    descr
+    descr,
   };
 
   return node;
@@ -669,7 +669,7 @@ export function moduleExportDescr(
   const node: ModuleExportDescr = {
     type: "ModuleExportDescr",
     exportType,
-    id
+    id,
   };
 
   return node;
@@ -687,7 +687,7 @@ export function moduleExport(
   const node: ModuleExport = {
     type: "ModuleExport",
     name,
-    descr
+    descr,
   };
 
   return node;
@@ -708,7 +708,7 @@ export function limit(min: number, max?: number): Limit {
 
   const node: Limit = {
     type: "Limit",
-    min
+    min,
   };
 
   if (typeof max !== "undefined") {
@@ -729,7 +729,7 @@ export function signature(
   const node: Signature = {
     type: "Signature",
     params,
-    results
+    results,
   };
 
   return node;
@@ -740,7 +740,7 @@ export function program(body: Array<Node>): Program {
 
   const node: Program = {
     type: "Program",
-    body
+    body,
   };
 
   return node;
@@ -761,7 +761,7 @@ export function identifier(value: string, raw?: string): Identifier {
 
   const node: Identifier = {
     type: "Identifier",
-    value
+    value,
   };
 
   if (typeof raw !== "undefined") {
@@ -783,7 +783,7 @@ export function blockInstruction(
     id: "block",
     label,
     instr,
-    result
+    result,
   };
 
   return node;
@@ -803,7 +803,7 @@ export function callInstruction(
   const node: CallInstruction = {
     type: "CallInstruction",
     id: "call",
-    index
+    index,
   };
 
   if (typeof instrArgs !== "undefined" && instrArgs.length > 0) {
@@ -828,7 +828,7 @@ export function callIndirectInstruction(
   const node: CallIndirectInstruction = {
     type: "CallIndirectInstruction",
     id: "call_indirect",
-    signature
+    signature,
   };
 
   if (typeof intrs !== "undefined" && intrs.length > 0) {
@@ -843,7 +843,7 @@ export function byteArray(values: Array<Byte>): ByteArray {
 
   const node: ByteArray = {
     type: "ByteArray",
-    values
+    values,
   };
 
   return node;
@@ -869,7 +869,7 @@ export function func(
     type: "Func",
     name,
     signature,
-    body
+    body,
   };
 
   if (isExternal === true) {
@@ -891,7 +891,7 @@ export function internalBrUnless(target: number): InternalBrUnless {
 
   const node: InternalBrUnless = {
     type: "InternalBrUnless",
-    target
+    target,
   };
 
   return node;
@@ -905,7 +905,7 @@ export function internalGoto(target: number): InternalGoto {
 
   const node: InternalGoto = {
     type: "InternalGoto",
-    target
+    target,
   };
 
   return node;
@@ -919,7 +919,7 @@ export function internalCallExtern(target: number): InternalCallExtern {
 
   const node: InternalCallExtern = {
     type: "InternalCallExtern",
-    target
+    target,
   };
 
   return node;
@@ -927,7 +927,7 @@ export function internalCallExtern(target: number): InternalCallExtern {
 
 export function internalEndAndReturn(): InternalEndAndReturn {
   const node: InternalEndAndReturn = {
-    type: "InternalEndAndReturn"
+    type: "InternalEndAndReturn",
   };
 
   return node;
@@ -1261,7 +1261,7 @@ export const unionTypesMap = {
   InternalBrUnless: ["Node", "Intrinsic"],
   InternalGoto: ["Node", "Intrinsic"],
   InternalCallExtern: ["Node", "Intrinsic"],
-  InternalEndAndReturn: ["Node", "Intrinsic"]
+  InternalEndAndReturn: ["Node", "Intrinsic"],
 };
 
 export const nodeAndUnionTypes = [
@@ -1318,5 +1318,5 @@ export const nodeAndUnionTypes = [
   "Expression",
   "NumericLiteral",
   "ImportDescr",
-  "Intrinsic"
+  "Intrinsic",
 ];

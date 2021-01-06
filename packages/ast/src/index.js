@@ -20,3 +20,5 @@ export { signatures } from "./signatures";
 export * from "./utils";
 
 export { cloneNode } from "./clone";
+
+export { moduleContextFromModuleAST } from "./transform/ast-module-to-module-context"

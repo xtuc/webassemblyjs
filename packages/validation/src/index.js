@@ -5,7 +5,7 @@ import isConst from "./is-const";
 import typeChecker from "./type-checker";
 import imports from "./imports";
 import duplicatedExports from "./duplicated-exports";
-import { moduleContextFromModuleAST } from "@webassemblyjs/helper-module-context";
+import { moduleContextFromModuleAST } from "@webassemblyjs/ast";
 
 export default function validateAST(ast: Program) {
   const errors = getValidationErrors(ast);

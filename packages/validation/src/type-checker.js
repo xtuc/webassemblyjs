@@ -5,7 +5,7 @@ import {
   isNumberLiteral
 } from "@webassemblyjs/ast";
 import { assert } from "mamacro";
-import { moduleContextFromModuleAST } from "@webassemblyjs/helper-module-context";
+import { moduleContextFromModuleAST } from "@webassemblyjs/ast";
 import getType from "./type-checker/get-type.js";
 import { ANY, POLYMORPHIC } from "./type-checker/types.js";
 

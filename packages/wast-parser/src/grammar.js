@@ -4,7 +4,7 @@ import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 import { define } from "mamacro";
 import * as t from "@webassemblyjs/ast";
 
-import { parse32I } from "./number-literals";
+import { parse32I } from "@webassemblyjs/helper-numbers";
 import { parseString } from "./string-literals";
 import { tokens, keywords } from "./tokenizer";
 
