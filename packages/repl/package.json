@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/repl",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "description": "WebAssembly REPL",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -17,11 +17,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@webassemblyjs/ast": "1.10.1",
-    "@webassemblyjs/validation": "1.10.1",
-    "@webassemblyjs/wasm-parser": "1.10.1",
-    "@webassemblyjs/wast-parser": "1.10.1",
-    "webassemblyjs": "1.10.1"
+    "@webassemblyjs/ast": "1.11.0",
+    "@webassemblyjs/validation": "1.11.0",
+    "@webassemblyjs/wasm-parser": "1.11.0",
+    "@webassemblyjs/wast-parser": "1.11.0",
+    "webassemblyjs": "1.11.0"
   },
   "bin": {
     "wasm": "./lib/bin.js"
