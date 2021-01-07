@@ -35,7 +35,7 @@
     "flow-bin": "0.98.1",
     "flow-typed": "2.5.1",
     "glob": "7.1.4",
-    "http-server": "0.11.1",
+    "http-server": "0.12.3",
     "jest-diff": "24.8.0",
     "lerna": "3.13.4",
     "markdown-to-html": "0.0.13",
