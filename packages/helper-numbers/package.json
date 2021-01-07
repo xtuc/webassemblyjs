@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-numbers",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "description": "Number parsing utility",
   "main": "lib/index.js",
   "module": "esm/index.js",
