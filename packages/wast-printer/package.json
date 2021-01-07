@@ -19,11 +19,11 @@
   "license": "MIT",
   "dependencies": {
     "@webassemblyjs/ast": "1.9.1",
-    "@webassemblyjs/wast-parser": "1.9.1",
     "@xtuc/long": "4.2.2"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-test-framework": "1.9.1"
+    "@webassemblyjs/helper-test-framework": "1.9.1",
+    "@webassemblyjs/wast-parser": "1.9.1"
   },
   "repository": {
     "type": "git",

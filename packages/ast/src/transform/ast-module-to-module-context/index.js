@@ -1,6 +1,6 @@
 // TODO(sven): add flow in here
 
-import { isSignature, isNumberLiteral } from "@webassemblyjs/ast";
+import { isSignature, isNumberLiteral } from "../../nodes.js";
 import { assert } from "mamacro";
 
 export function moduleContextFromModuleAST(m) {

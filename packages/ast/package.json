@@ -12,9 +12,8 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/helper-module-context": "1.9.1",
     "@webassemblyjs/helper-wasm-bytecode": "1.9.1",
-    "@webassemblyjs/wast-parser": "1.9.1"
+    "@webassemblyjs/helper-numbers": "1.9.1"
   },
   "repository": {
     "type": "git",

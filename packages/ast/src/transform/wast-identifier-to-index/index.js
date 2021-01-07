@@ -10,7 +10,7 @@ import {
 import {
   moduleContextFromModuleAST,
   type ModuleContext
-} from "@webassemblyjs/helper-module-context";
+} from "../ast-module-to-module-context";
 
 // FIXME(sven): do the same with all block instructions, must be more generic here
 

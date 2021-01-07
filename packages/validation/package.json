@@ -17,8 +17,7 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.9.1",
-    "@webassemblyjs/helper-module-context": "1.9.1"
+    "@webassemblyjs/ast": "1.9.1"
   },
   "devDependencies": {
     "@webassemblyjs/helper-test-framework": "1.9.1",

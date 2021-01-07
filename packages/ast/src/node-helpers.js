@@ -8,7 +8,7 @@ import {
   parseU32,
   isNanLiteral,
   isInfLiteral
-} from "@webassemblyjs/wast-parser";
+} from "@webassemblyjs/helper-numbers";
 
 import { longNumberLiteral, floatLiteral, numberLiteral, instr } from "./nodes";
 

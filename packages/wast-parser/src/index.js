@@ -12,4 +12,4 @@ export function parse(source: string): Program {
   return ast;
 }
 
-export * from "./number-literals";
+export * from "@webassemblyjs/helper-numbers";
