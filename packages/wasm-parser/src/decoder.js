@@ -1065,6 +1065,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     dump([limitType], "limit type");
 
     let min, max;
+    const shared = limitType === 0x03;
 
     if (
       limitType === 0x01 ||
@@ -1091,7 +1092,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       dump([min], "min");
     }
 
-    return t.limit(min, max);
+    return t.limit(min, max, shared);
   }
 
   // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
