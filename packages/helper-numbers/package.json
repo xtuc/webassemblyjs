@@ -14,6 +14,11 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "@webassemblyjs/floating-point-hex-parser": "1.10.0",
+    "@webassemblyjs/helper-api-error": "1.10.0",
+    "@xtuc/long": "4.2.2"
+  },
   "author": "Sven Sauleau",
   "license": "MIT"
 }
