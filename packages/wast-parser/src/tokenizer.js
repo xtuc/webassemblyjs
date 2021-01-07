@@ -82,6 +82,7 @@ export const keywords = {
   call_indirect: "call_indirect",
   import: "import",
   memory: "memory",
+  shared: "shared",
   table: "table",
   global: "global",
   anyfunc: "anyfunc",
@@ -429,18 +430,21 @@ export function tokenize(input: string) {
         } else {
           pushNameToken(value);
         }
-        eatCharacter();
 
-        value = "";
-        const nameStartColumn = column;
-
-        while (LETTERS.test(char)) {
-          value += char;
-          eatCharacter();
+        while (char === ".") {
+          eatCharacter(); // Eat the dot
+  
+          value = "";
+          const nameStartColumn = column;
+  
+          while (LETTERS.test(char)) {
+            value += char;
+            eatCharacter();
+          }
+  
+          pushDotToken(".", { startColumn: dotStartColumn });
+          pushNameToken(value, { startColumn: nameStartColumn });
         }
-
-        pushDotToken(".", { startColumn: dotStartColumn });
-        pushNameToken(value, { startColumn: nameStartColumn });
 
         continue;
       }

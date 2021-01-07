@@ -992,6 +992,10 @@ function printLimit(n: Limit): string {
   if (n.max != null) {
     out += space;
     out += String(n.max);
+
+    if (n.shared === true) {
+      out += ' shared';
+    }
   }
 
   return out;

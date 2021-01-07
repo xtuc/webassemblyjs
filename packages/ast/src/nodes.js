@@ -693,7 +693,7 @@ export function moduleExport(
   return node;
 }
 
-export function limit(min: number, max?: number): Limit {
+export function limit(min: number, max?: number, shared?: boolean): Limit {
   assert(
     typeof min === "number",
     "Argument min must be of type number, given: " + typeof min
@@ -706,6 +706,13 @@ export function limit(min: number, max?: number): Limit {
     );
   }
 
+  if (shared !== null && shared !== undefined) {
+    assert(
+      typeof shared === "boolean",
+      "Argument shared must be of type boolean, given: " + typeof shared
+    );
+  }
+
   const node: Limit = {
     type: "Limit",
     min
@@ -713,6 +720,10 @@ export function limit(min: number, max?: number): Limit {
 
   if (typeof max !== "undefined") {
     node.max = max;
+  }
+
+  if (shared === true) {
+    node.shared = true;
   }
 
   return node;

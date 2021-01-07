@@ -527,6 +527,12 @@ defineType("Limit", {
     max: {
       optional: true,
       type: "number"
+    },
+
+    // Threads proposal, shared memory
+    shared: {
+      optional: true,
+      type: "boolean"
     }
   }
 });

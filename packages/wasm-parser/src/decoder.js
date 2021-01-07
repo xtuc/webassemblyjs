@@ -710,11 +710,12 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       let instructionAlreadyCreated = false;
 
-      const instructionByte = readByte();
+      let instructionByte = readByte();
       eatBytes(1);
 
       if (instructionByte === 0xfe) {
-        throw new CompileError("Atomic instructions are not implemented");
+        instructionByte = 0xfe00 + readByte();
+        eatBytes(1);
       }
 
       const instruction = constants.symbolsByByte[instructionByte];
@@ -1026,6 +1027,22 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
             t.floatLiteral(value, valuef64.nan, valuef64.inf, String(value))
           );
         }
+      } else if (instructionByte >= 0xfe00 && instructionByte <= 0xfeff) {
+        /**
+         * Atomic memory instructions
+         */
+
+        const align32 = readU32();
+        const align = align32.value;
+        eatBytes(align32.nextIndex);
+
+        dump([align], "align");
+
+        const offsetu32 = readU32();
+        const offset = offsetu32.value;
+        eatBytes(offsetu32.nextIndex);
+
+        dump([offset], "offset");
       } else {
         for (let i = 0; i < instruction.numberOfArgs; i++) {
           const u32 = readU32();
@@ -1061,8 +1078,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   function parseLimits(): Limit {
     const limitType = readByte();
     eatBytes(1);
+    
+    const shared = limitType === 0x03;
 
-    dump([limitType], "limit type");
+    dump([limitType], "limit type" + (shared ? " (shared)" : ""));
 
     let min, max;
 
@@ -1091,7 +1110,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       dump([min], "min");
     }
 
-    return t.limit(min, max);
+    return t.limit(min, max, shared);
   }
 
   // https://webassembly.github.io/spec/core/binary/types.html#binary-tabletype
