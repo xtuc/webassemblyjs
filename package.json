@@ -45,6 +45,6 @@
   },
   "dependencies": {
     "mkdirp": "0.5.1",
-    "synp": "1.4.0"
+    "synp": "1.9.5"
   }
 }
