@@ -227,6 +227,11 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         if (token.type === tokens.number) {
           limits.max = parse32I(token.value);
           eatToken();
+
+          if (token.type === tokens.keyword && token.value === 'shared') {
+            limits.shared = true;
+            eatToken();
+          }
         }
       }
 
@@ -1108,16 +1113,22 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (token.type === tokens.dot) {
           object = name;
-          eatToken();
+          const name_parts = []
 
-          if (token.type !== tokens.name) {
-            throw new TypeError(
-              "Unknown token: " + token.type + ", name expected"
-            );
-          }
+          do {
+            eatToken(); // Eat the dot
 
-          name = token.value;
-          eatToken();
+            if (token.type !== tokens.name) {
+              throw new TypeError(
+                "Unknown token: " + token.type + ", name expected"
+              );
+            }
+
+            name_parts.push(token.value);
+            eatToken(); // Eat the name
+          } while (token.type === tokens.dot);
+
+          name = name_parts.join('.');
         }
 
         if (token.type === tokens.closeParen) {

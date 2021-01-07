@@ -53,7 +53,8 @@ function stripMetadata(ast) {
 }
 
 const wasmFeatures = {
-  simd: true
+  simd: true,
+  threads: true
 };
 
 // - Expected is wast-parser
