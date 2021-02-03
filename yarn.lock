@@ -238,6 +238,11 @@
   dependencies:
     "@babel/types" "7.0.0-beta.34"
 
+"@babel/helper-plugin-utils@^7.12.13":
+  version "7.12.13"
+  resolved "https://registry.yarnpkg.com/@babel/helper-plugin-utils/-/helper-plugin-utils-7.12.13.tgz#174254d0f2424d8aefb4dd48057511247b0a9eeb"
+  integrity sha512-C+10MXCXJLiR6IeG9+Wiejt9jmtFpxUc3MQqCmPY8hfCjyUGl9kT+B2okzEZrtykiwrc4dbCPdDoz0A/HQbDaA==
+
 "@babel/helper-regex@7.0.0-beta.34":
   version "7.0.0-beta.34"
   resolved "https://registry.yarnpkg.com/@babel/helper-regex/-/helper-regex-7.0.0-beta.34.tgz#761224365616ef0652491920848fd27cf65f85d2"
@@ -353,11 +358,13 @@
     "@babel/helper-remap-async-to-generator" "7.0.0-beta.34"
     "@babel/plugin-syntax-async-generators" "7.0.0-beta.34"
 
-"@babel/plugin-proposal-export-default-from@7.0.0-beta.34":
-  version "7.0.0-beta.34"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-export-default-from/-/plugin-proposal-export-default-from-7.0.0-beta.34.tgz#66b9bc9d910f2c488d538c77bc732d511fce31f1"
+"@babel/plugin-proposal-export-default-from@7.12.13":
+  version "7.12.13"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-export-default-from/-/plugin-proposal-export-default-from-7.12.13.tgz#f110284108a9b2b96f01b15b3be9e54c2610a989"
+  integrity sha512-idIsBT+DGXdOHL82U+8bwX4goHm/z10g8sGGrQroh+HCRcm7mDv/luaGdWJQMTuCX2FsdXS7X0Nyyzp4znAPJA==
   dependencies:
-    "@babel/plugin-syntax-export-default-from" "7.0.0-beta.34"
+    "@babel/helper-plugin-utils" "^7.12.13"
+    "@babel/plugin-syntax-export-default-from" "^7.12.13"
 
 "@babel/plugin-proposal-object-rest-spread@7.0.0-beta.34":
   version "7.0.0-beta.34"
@@ -382,9 +389,12 @@
   version "7.0.0-beta.34"
   resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-async-generators/-/plugin-syntax-async-generators-7.0.0-beta.34.tgz#8f3990ec7f98ded0ede1edc65a636bebc63fa34b"
 
-"@babel/plugin-syntax-export-default-from@7.0.0-beta.34":
-  version "7.0.0-beta.34"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-export-default-from/-/plugin-syntax-export-default-from-7.0.0-beta.34.tgz#ed832f9f60b7c2eb1318528bf96d0e29068d7fce"
+"@babel/plugin-syntax-export-default-from@^7.12.13":
+  version "7.12.13"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-export-default-from/-/plugin-syntax-export-default-from-7.12.13.tgz#3c807d37efaf0a806f1deb556ccb3b2f562ae9c2"
+  integrity sha512-gVry0zqoums0hA+EniCYK3gABhjYSLX1dVuwYpPw9DrLNA4/GovXySHVg4FGRsZht09ON/5C2NVx3keq+qqVGQ==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.12.13"
 
 "@babel/plugin-syntax-flow@7.0.0-beta.34":
   version "7.0.0-beta.34"
