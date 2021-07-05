@@ -6,6 +6,11 @@
   "module": "esm/index.js",
   "author": "Sven Sauleau",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git",
+    "directory": "packages/helper-api-error"
+  },
   "publishConfig": {
     "access": "public"
   }
