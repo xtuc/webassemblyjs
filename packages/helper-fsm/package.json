@@ -6,6 +6,11 @@
   "module": "esm/index.js",
   "author": "Mauro Bringolf",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xtuc/webassemblyjs.git",
+    "directory": "packages/helper-fsm"
+  },
   "publishConfig": {
     "access": "public"
   }
