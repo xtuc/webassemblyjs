@@ -32,7 +32,7 @@ it("should support offsets", () => {
 
     // load a number with an offset
     const offset = 4;
-    i32[(4 + offset) / I32_SIZE - 1] = 45;
+    i32[(4 + offset) / I32_SIZE] = 45;
     assert.equal(m.instance.exports.load_with_offset(4), 45);
   });
 });

@@ -744,6 +744,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       }
 
       const args = [];
+      let namedArgs;
 
       if (instruction.name === "loop") {
         const startLoc = getPosition();
@@ -943,6 +944,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           eatBytes(offsetu32.nextIndex);
 
           dump([offset], "offset");
+
+          if (namedArgs === undefined) namedArgs = {};
+          namedArgs.offset = t.numberLiteralFromRaw(offset);
         }
       } else if (instructionByte >= 0x41 && instructionByte <= 0x44) {
         /**
@@ -1057,14 +1061,19 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       if (instructionAlreadyCreated === false) {
         if (typeof instruction.object === "string") {
           const node = WITH_LOC(
-            t.objectInstruction(instruction.name, instruction.object, args),
+            t.objectInstruction(
+              instruction.name,
+              instruction.object,
+              args,
+              namedArgs
+            ),
             startLoc
           );
 
           code.push(node);
         } else {
           const node = WITH_LOC(
-            t.instruction(instruction.name, args),
+            t.instruction(instruction.name, args, namedArgs),
             startLoc
           );
 
