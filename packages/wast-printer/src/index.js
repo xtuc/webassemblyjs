@@ -832,6 +832,13 @@ function printGenericInstruction(n: Instr, depth: number): string {
     out += printFuncInstructionArg(arg, depth + 1);
   });
 
+  if (n.namedArgs !== undefined) {
+    for (let key in n.namedArgs) {
+      out += space + key + "=";
+      out += printFuncInstructionArg(n.namedArgs[key], depth + 1);
+    }
+  }
+
   out += ")";
 
   return out;
@@ -994,7 +1001,7 @@ function printLimit(n: Limit): string {
     out += String(n.max);
 
     if (n.shared === true) {
-      out += ' shared';
+      out += " shared";
     }
   }
 
