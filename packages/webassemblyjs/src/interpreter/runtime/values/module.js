@@ -390,7 +390,6 @@ function instantiateExports(
           break;
         }
 
-        case "Mem":
         case "Memory": {
           createModuleExport(
             node,

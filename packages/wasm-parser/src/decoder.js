@@ -482,7 +482,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         state.globalsInModule.push(globalNode);
       } else if (descrType === "table") {
         importDescr = parseTableType(i);
-      } else if (descrType === "mem") {
+      } else if (descrType === "memory") {
         const memoryNode = parseMemoryType(0);
 
         state.memoriesInModule.push(memoryNode);
@@ -586,7 +586,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         id = t.numberLiteralFromRaw(index, String(index));
 
         signature = null;
-      } else if (constants.exportTypes[typeIndex] === "Mem") {
+      } else if (constants.exportTypes[typeIndex] === "Memory") {
         const memNode = state.memoriesInModule[index];
 
         if (typeof memNode === "undefined") {
@@ -1078,7 +1078,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   function parseLimits(): Limit {
     const limitType = readByte();
     eatBytes(1);
-    
+
     const shared = limitType === 0x03;
 
     dump([limitType], "limit type" + (shared ? " (shared)" : ""));
