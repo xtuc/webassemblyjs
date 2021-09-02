@@ -3951,7 +3951,7 @@
 0x1320:	 0x22 										 ; tee_local
 0x1321:	 0x5 										 ; argument 0
 0x1322:	 0x42 										 ; i64.const
-0x1323:	 0xff 										 ; i64 value
+0x1323:	 0x-1 										 ; i64 value
 0x1324:	 0x51 										 ; i64.eq
 0x1325:	 0xd 										 ; br_if
 0x1326:	 0x0 										 ; argument 0
@@ -20476,7 +20476,7 @@
 0x5add:	 0x20 										 ; get_local
 0x5ade:	 0x5 										 ; argument 0
 0x5adf:	 0x42 										 ; i64.const
-0x5ae5:	 0xff00ffffffff 										 ; i64 value
+0x5ae5:	 0x-ff00000001 										 ; i64 value
 0x5ae6:	 0x83 										 ; i64.and
 0x5ae7:	 0x21 										 ; set_local
 0x5ae8:	 0x5 										 ; argument 0
@@ -20556,7 +20556,7 @@
 0x5b35:	 0x20 										 ; get_local
 0x5b36:	 0x5 										 ; argument 0
 0x5b37:	 0x42 										 ; i64.const
-0x5b38:	 0xff 										 ; i64 value
+0x5b38:	 0x-1 										 ; i64 value
 0x5b39:	 0x7c 										 ; i64.add
 0x5b3a:	 0x42 										 ; i64.const
 0x5b3f:	 0xffffffff 										 ; i64 value
@@ -20564,7 +20564,7 @@
 0x5b41:	 0x20 										 ; get_local
 0x5b42:	 0x5 										 ; argument 0
 0x5b43:	 0x42 										 ; i64.const
-0x5b48:	 0xff00000000 										 ; i64 value
+0x5b48:	 0x-100000000 										 ; i64 value
 0x5b49:	 0x83 										 ; i64.and
 0x5b4a:	 0x84 										 ; i64.or
 0x5b4b:	 0x21 										 ; set_local
@@ -20579,7 +20579,7 @@
 0x5b54:	 0x20 										 ; get_local
 0x5b55:	 0x5 										 ; argument 0
 0x5b56:	 0x42 										 ; i64.const
-0x5b5c:	 0xff00ffffffff 										 ; i64 value
+0x5b5c:	 0x-ff00000001 										 ; i64 value
 0x5b5d:	 0x83 										 ; i64.and
 0x5b5e:	 0x42 										 ; i64.const
 0x5b63:	 0x200000000 										 ; i64 value
@@ -20600,7 +20600,7 @@
 0x5b73:	 0x20 										 ; get_local
 0x5b74:	 0x5 										 ; argument 0
 0x5b75:	 0x42 										 ; i64.const
-0x5b7b:	 0xff00ffffffff 										 ; i64 value
+0x5b7b:	 0x-ff00000001 										 ; i64 value
 0x5b7c:	 0x83 										 ; i64.and
 0x5b7d:	 0x42 										 ; i64.const
 0x5b82:	 0x300000000 										 ; i64 value
@@ -20621,7 +20621,7 @@
 0x5b92:	 0x20 										 ; get_local
 0x5b93:	 0x5 										 ; argument 0
 0x5b94:	 0x42 										 ; i64.const
-0x5b9a:	 0xff00ffffffff 										 ; i64 value
+0x5b9a:	 0x-ff00000001 										 ; i64 value
 0x5b9b:	 0x83 										 ; i64.and
 0x5b9c:	 0x42 										 ; i64.const
 0x5ba2:	 0x400000000 										 ; i64 value
@@ -20642,7 +20642,7 @@
 0x5bb2:	 0x20 										 ; get_local
 0x5bb3:	 0x5 										 ; argument 0
 0x5bb4:	 0x42 										 ; i64.const
-0x5bba:	 0xff00ffffffff 										 ; i64 value
+0x5bba:	 0x-ff00000001 										 ; i64 value
 0x5bbb:	 0x83 										 ; i64.and
 0x5bbc:	 0x42 										 ; i64.const
 0x5bc1:	 0x100000000 										 ; i64 value
@@ -25375,7 +25375,7 @@
 0x7055:	 0x20 										 ; get_local
 0x7056:	 0x12 										 ; argument 0
 0x7057:	 0x42 										 ; i64.const
-0x705d:	 0xff00ffffffff 										 ; i64 value
+0x705d:	 0x-ff00000001 										 ; i64 value
 0x705e:	 0x83 										 ; i64.and
 0x705f:	 0x21 										 ; set_local
 0x7060:	 0x12 										 ; argument 0
@@ -25411,7 +25411,7 @@
 0x707f:	 0x20 										 ; get_local
 0x7080:	 0x12 										 ; argument 0
 0x7081:	 0x42 										 ; i64.const
-0x7087:	 0xff00ffffffff 										 ; i64 value
+0x7087:	 0x-ff00000001 										 ; i64 value
 0x7088:	 0x83 										 ; i64.and
 0x7089:	 0x42 										 ; i64.const
 0x708f:	 0x400000000 										 ; i64 value
@@ -25424,7 +25424,7 @@
 0x7096:	 0x20 										 ; get_local
 0x7097:	 0x12 										 ; argument 0
 0x7098:	 0x42 										 ; i64.const
-0x709e:	 0xff00ffffffff 										 ; i64 value
+0x709e:	 0x-ff00000001 										 ; i64 value
 0x709f:	 0x83 										 ; i64.and
 0x70a0:	 0x42 										 ; i64.const
 0x70a5:	 0x200000000 										 ; i64 value
@@ -25445,7 +25445,7 @@
 0x70b5:	 0x20 										 ; get_local
 0x70b6:	 0x12 										 ; argument 0
 0x70b7:	 0x42 										 ; i64.const
-0x70bd:	 0xff00ffffffff 										 ; i64 value
+0x70bd:	 0x-ff00000001 										 ; i64 value
 0x70be:	 0x83 										 ; i64.and
 0x70bf:	 0x42 										 ; i64.const
 0x70c4:	 0x300000000 										 ; i64 value
@@ -25508,7 +25508,7 @@
 0x70ff:	 0x20 										 ; get_local
 0x7100:	 0x12 										 ; argument 0
 0x7101:	 0x42 										 ; i64.const
-0x7102:	 0xff 										 ; i64 value
+0x7102:	 0x-1 										 ; i64 value
 0x7103:	 0x7c 										 ; i64.add
 0x7104:	 0x42 										 ; i64.const
 0x7109:	 0xffffffff 										 ; i64 value
@@ -25516,7 +25516,7 @@
 0x710b:	 0x20 										 ; get_local
 0x710c:	 0x12 										 ; argument 0
 0x710d:	 0x42 										 ; i64.const
-0x7112:	 0xff00000000 										 ; i64 value
+0x7112:	 0x-100000000 										 ; i64 value
 0x7113:	 0x83 										 ; i64.and
 0x7114:	 0x84 										 ; i64.or
 0x7115:	 0x21 										 ; set_local
@@ -25527,7 +25527,7 @@
 0x711a:	 0x20 										 ; get_local
 0x711b:	 0x12 										 ; argument 0
 0x711c:	 0x42 										 ; i64.const
-0x7122:	 0xff00ffffffff 										 ; i64 value
+0x7122:	 0x-ff00000001 										 ; i64 value
 0x7123:	 0x83 										 ; i64.and
 0x7124:	 0x42 										 ; i64.const
 0x7129:	 0x100000000 										 ; i64 value
