@@ -482,7 +482,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         state.globalsInModule.push(globalNode);
       } else if (descrType === "table") {
         importDescr = parseTableType(i);
-      } else if (descrType === "mem") {
+      } else if (descrType === "memory") {
         const memoryNode = parseMemoryType(0);
 
         state.memoriesInModule.push(memoryNode);
@@ -586,7 +586,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         id = t.numberLiteralFromRaw(index, String(index));
 
         signature = null;
-      } else if (constants.exportTypes[typeIndex] === "Mem") {
+      } else if (constants.exportTypes[typeIndex] === "Memory") {
         const memNode = state.memoriesInModule[index];
 
         if (typeof memNode === "undefined") {
@@ -744,6 +744,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       }
 
       const args = [];
+      let namedArgs;
 
       if (instruction.name === "loop") {
         const startLoc = getPosition();
@@ -943,6 +944,9 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
           eatBytes(offsetu32.nextIndex);
 
           dump([offset], "offset");
+
+          if (namedArgs === undefined) namedArgs = {};
+          namedArgs.offset = t.numberLiteralFromRaw(offset);
         }
       } else if (instructionByte >= 0x41 && instructionByte <= 0x44) {
         /**
@@ -1057,14 +1061,19 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       if (instructionAlreadyCreated === false) {
         if (typeof instruction.object === "string") {
           const node = WITH_LOC(
-            t.objectInstruction(instruction.name, instruction.object, args),
+            t.objectInstruction(
+              instruction.name,
+              instruction.object,
+              args,
+              namedArgs
+            ),
             startLoc
           );
 
           code.push(node);
         } else {
           const node = WITH_LOC(
-            t.instruction(instruction.name, args),
+            t.instruction(instruction.name, args, namedArgs),
             startLoc
           );
 
@@ -1078,7 +1087,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   function parseLimits(): Limit {
     const limitType = readByte();
     eatBytes(1);
-    
+
     const shared = limitType === 0x03;
 
     dump([limitType], "limit type" + (shared ? " (shared)" : ""));

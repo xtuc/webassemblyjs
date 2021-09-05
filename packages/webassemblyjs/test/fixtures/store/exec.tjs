@@ -44,7 +44,7 @@ it("should support offsets", () => {
     // upper bound
     const offset = 4;
     m.instance.exports.store_with_offset(4, 22);
-    assert.equal(i32[(4 + offset) / I32_SIZE - 1], 22);
+    assert.equal(i32[(4 + offset) / I32_SIZE], 22);
   });
 });
 

@@ -832,6 +832,13 @@ function printGenericInstruction(n: Instr, depth: number): string {
     out += printFuncInstructionArg(arg, depth + 1);
   });
 
+  if (n.namedArgs !== undefined) {
+    for (let key in n.namedArgs) {
+      out += space + key + "=";
+      out += printFuncInstructionArg(n.namedArgs[key], depth + 1);
+    }
+  }
+
   out += ")";
 
   return out;
@@ -923,7 +930,7 @@ function printModuleExport(n: ModuleExport): string {
     out += printIndex(n.descr.id);
 
     out += ")";
-  } else if (n.descr.exportType === "Memory" || n.descr.exportType === "Mem") {
+  } else if (n.descr.exportType === "Memory") {
     out += space;
 
     out += "(";
@@ -994,7 +1001,7 @@ function printLimit(n: Limit): string {
     out += String(n.max);
 
     if (n.shared === true) {
-      out += ' shared';
+      out += " shared";
     }
   }
 

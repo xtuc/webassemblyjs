@@ -110,7 +110,7 @@ export class Instance {
         return;
       }
 
-      if (exportinst.value.type === "Mem") {
+      if (exportinst.value.type === "Memory") {
         const memoryinst = this._allocator.get(exportinst.value.addr);
 
         if (memoryinst == null) {
