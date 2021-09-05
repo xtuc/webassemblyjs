@@ -17,7 +17,7 @@
     "@webassemblyjs/ast": "1.11.1",
     "@webassemblyjs/wasm-parser": "1.11.1",
     "eslint-rule-composer": "^0.3.0",
-    "estraverse": "^4.2.0",
+    "estraverse": "^5.2.0",
     "requireindex": "~1.2.0"
   },
   "devDependencies": {
