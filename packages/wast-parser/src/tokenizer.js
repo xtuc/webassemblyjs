@@ -4,13 +4,13 @@ import { define } from "mamacro";
 import { FSM, makeTransition } from "@webassemblyjs/helper-fsm";
 import { codeFrameFromSource } from "@webassemblyjs/helper-code-frame";
 
-declare function unexpectedCharacter(): void;
+declare function unexpectedCharacter(char: string): void;
 
 /**
  * Throw an error in case the current character is invalid
  */
-define(unexpectedCharacter, () =>
-  `throw new Error(getCodeFrame(input, line, column) + "Unexpected character " + JSON.stringify(char));`);
+define(unexpectedCharacter, char =>
+  `throw new Error(getCodeFrame(input, line, column) + "Unexpected character " + JSON.stringify(${char}));`);
 
 // eslint-disable-next-line
 function getCodeFrame(source: string, line: number, column: number) {
@@ -373,14 +373,14 @@ export function tokenize(input: string) {
       const value = numberLiteralFSM.run(input.slice(current));
 
       if (value === "") {
-        unexpectedCharacter();
+        unexpectedCharacter(char);
       }
 
       pushNumberToken(value, { startColumn });
       eatCharacter(value.length);
 
       if (char && !PARENS.test(char) && !WHITESPACE.test(char)) {
-        unexpectedCharacter();
+        unexpectedCharacter(char);
       }
 
       continue;
@@ -395,7 +395,7 @@ export function tokenize(input: string) {
 
       while (char !== '"') {
         if (isNewLine(char)) {
-          unexpectedCharacter();
+          unexpectedCharacter(char);
         }
 
         value += char;
@@ -433,15 +433,14 @@ export function tokenize(input: string) {
 
         while (char === ".") {
           eatCharacter(); // Eat the dot
-  
+
           value = "";
           const nameStartColumn = column;
-  
+
           while (LETTERS.test(char)) {
             value += char;
             eatCharacter();
           }
-  
           pushDotToken(".", { startColumn: dotStartColumn });
           pushNameToken(value, { startColumn: nameStartColumn });
         }
@@ -476,7 +475,7 @@ export function tokenize(input: string) {
       continue;
     }
 
-    unexpectedCharacter();
+    unexpectedCharacter(char);
   }
 
   return tokens;
