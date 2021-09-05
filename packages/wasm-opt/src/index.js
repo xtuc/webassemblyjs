@@ -13,7 +13,7 @@ class OptimizerError extends Error {
 
 const decoderOpts = {
   ignoreCodeSection: true,
-  ignoreDataSection: true
+  ignoreDataSection: true,
 };
 
 export function shrinkPaddedLEB128(uint8Buffer: Uint8Array): Uint8Array {

@@ -20,7 +20,7 @@ export default function validate(ast: Program): Array<string> {
       }
 
       seenExports[name] = true;
-    }
+    },
   });
 
   return errors;

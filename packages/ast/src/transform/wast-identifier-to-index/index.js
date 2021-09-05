@@ -5,11 +5,11 @@ import {
   isFunc,
   isIdentifier,
   numberLiteralFromRaw,
-  traverse
+  traverse,
 } from "../../index";
 import {
   moduleContextFromModuleAST,
-  type ModuleContext
+  type ModuleContext,
 } from "../ast-module-to-module-context";
 
 // FIXME(sven): do the same with all block instructions, must be more generic here
@@ -24,7 +24,7 @@ export function transform(ast: Program) {
   traverse(ast, {
     Module(path: NodePath<Module>) {
       module = path.node;
-    }
+    },
   });
 
   const moduleContext = moduleContextFromModuleAST(module);
@@ -51,7 +51,7 @@ export function transform(ast: Program) {
         // $FlowIgnore: reference?
         path.node.index = numberLiteralFromRaw(offsetInModule);
       }
-    }
+    },
   });
 }
 
@@ -71,7 +71,7 @@ function transformFuncPath(
   const { params } = signature;
 
   // Add func locals in the context
-  params.forEach(p => moduleContext.addLocal(p.valtype));
+  params.forEach((p) => moduleContext.addLocal(p.valtype));
 
   traverse(funcNode, {
     Instr(instrPath: NodePath<Instr>) {
@@ -94,9 +94,7 @@ function transformFuncPath(
 
           if (offsetInParams === -1) {
             throw new Error(
-              `${firstArg.value} not found in ${
-                instrNode.id
-              }: not declared in func params`
+              `${firstArg.value} not found in ${instrNode.id}: not declared in func params`
             );
           }
 
@@ -185,6 +183,6 @@ function transformFuncPath(
         // $FlowIgnore: reference?
         node.index = numberLiteralFromRaw(offsetInModule);
       }
-    }
+    },
   });
 }

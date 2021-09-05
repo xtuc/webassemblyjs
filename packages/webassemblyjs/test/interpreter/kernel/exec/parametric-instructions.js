@@ -6,10 +6,10 @@ const { assert } = require("chai");
 
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
 const {
-  executeStackFrame
+  executeStackFrame,
 } = require("../../../../lib/interpreter/kernel/exec");
 const {
-  createStackFrame
+  createStackFrame,
 } = require("../../../../lib/interpreter/kernel/stackframe");
 const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
@@ -23,14 +23,14 @@ describe("kernel exec - parametric instructions", () => {
       code: [
         t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
         t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(2)]),
-        t.instruction("drop", [])
+        t.instruction("drop", []),
       ],
 
-      resEqual: new i32(1)
-    }
+      resEqual: new i32(1),
+    },
   ];
 
-  operations.forEach(op => {
+  operations.forEach((op) => {
     it(op.name + " should result in a correct state", () => {
       const ir = compileASTNodes(op.code);
 

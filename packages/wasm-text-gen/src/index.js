@@ -4,7 +4,7 @@ const printText = require("./printers/text");
 const printMarkdown = require("./printers/markdown");
 const printJavaScript = require("./printers/javascript");
 
-module.exports = function(buff, { out, url }) {
+module.exports = function (buff, { out, url }) {
   const ast = decode(buff);
 
   switch (out) {

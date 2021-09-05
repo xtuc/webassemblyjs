@@ -16,7 +16,7 @@ export function castIntoStackLocalOfType(
     i32: i32.createValueFromAST,
     i64: i64.createValueFromAST,
     f32: f32.createValueFromAST,
-    f64: f64.createValueFromAST
+    f64: f64.createValueFromAST,
   };
 
   if (nan === true) {

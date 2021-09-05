@@ -106,7 +106,7 @@ function instantiateImports(
         default:
           throw new Error("Unsupported import of type: " + node.descr.type);
       }
-    }
+    },
   });
 }
 
@@ -145,7 +145,7 @@ function instantiateDataSections(
       for (let i = 0; i < node.init.values.length; i++) {
         buffer[i + offset] = node.init.values[i];
       }
-    }
+    },
   });
 }
 
@@ -214,7 +214,7 @@ function instantiateInternals(
 
       if (typeof table === "object") {
         // FIXME(sven): expose the function in a HostFunc
-        table.push(function() {
+        table.push(function () {
           throw new Error("Unsupported operation");
         });
       } else {
@@ -231,7 +231,7 @@ function instantiateInternals(
       const { min, max } = node.limits;
 
       const memoryDescriptor: MemoryDescriptor = {
-        initial: min
+        initial: min,
       };
 
       if (typeof max === "number") {
@@ -258,9 +258,9 @@ function instantiateInternals(
 
       internals.instantiatedGlobals.push({
         addr,
-        type: node.globalType
+        type: node.globalType,
       });
-    }
+    },
   });
 }
 
@@ -292,7 +292,7 @@ function instantiateExports(
     // instantiatedItemInFromModule which avoid the duplicated array
     instantiatedItemArray,
     instantiatedItemInFromModule,
-    validate: Object => void
+    validate: (Object) => void
   ) {
     if (isIdentifier(node.descr.id) === true) {
       const instantiatedItem = instantiatedItemArray[node.descr.id.value];
@@ -305,12 +305,12 @@ function instantiateExports(
         name: node.name,
         value: {
           type: node.descr.exportType,
-          addr: instantiatedItem.addr
-        }
+          addr: instantiatedItem.addr,
+        },
       });
     } else if (isNumberLiteral(node.descr.id) === true) {
       const instantiatedItem = {
-        addr: instantiatedItemInFromModule[parseInt(node.descr.id.value)]
+        addr: instantiatedItemInFromModule[parseInt(node.descr.id.value)],
       };
       assert(instantiatedItem !== undefined);
 
@@ -322,8 +322,8 @@ function instantiateExports(
         name: node.name,
         value: {
           type: node.descr.exportType,
-          addr: instantiatedItem.addr
-        }
+          addr: instantiatedItem.addr,
+        },
       });
     } else {
       throw new CompileError(
@@ -340,12 +340,10 @@ function instantiateExports(
             node,
             internals.instantiatedFuncs,
             moduleInstance.funcaddrs,
-            instantiatedFunc => {
+            (instantiatedFunc) => {
               assert(
                 instantiatedFunc !== undefined,
-                `Function ${
-                  node.name
-                } has been exported but was not instantiated`
+                `Function ${node.name} has been exported but was not instantiated`
               );
             }
           );
@@ -357,7 +355,7 @@ function instantiateExports(
             node,
             internals.instantiatedGlobals,
             moduleInstance.globaladdrs,
-            instantiatedGlobal => {
+            (instantiatedGlobal) => {
               assert(
                 instantiatedGlobal !== undefined,
                 `Global ${node.name} has been exported but was not instantiated`
@@ -380,7 +378,7 @@ function instantiateExports(
             node,
             internals.instantiatedTables,
             moduleInstance.tableaddrs,
-            instantiatedTable => {
+            (instantiatedTable) => {
               assert(
                 instantiatedTable !== undefined,
                 `Table ${node.name} has been exported but was not instantiated`
@@ -395,7 +393,7 @@ function instantiateExports(
             node,
             internals.instantiatedMemories,
             moduleInstance.memaddrs,
-            instantiatedMemory => {
+            (instantiatedMemory) => {
               assert(
                 instantiatedMemory !== undefined,
                 `Memory ${node.name} has been exported but was not instantiated`
@@ -409,7 +407,7 @@ function instantiateExports(
           throw new CompileError("unknown export: " + node.descr.exportType);
         }
       }
-    }
+    },
   });
 }
 
@@ -426,7 +424,7 @@ export function createInstance(
     tableaddrs: [],
     memaddrs: [],
     globaladdrs: [],
-    exports: []
+    exports: [],
   };
 
   /**
@@ -437,7 +435,7 @@ export function createInstance(
     instantiatedFuncs: {},
     instantiatedGlobals: [],
     instantiatedTables: {},
-    instantiatedMemories: []
+    instantiatedMemories: [],
   };
 
   instantiateImports(

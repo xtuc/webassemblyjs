@@ -13,7 +13,7 @@ export function createAllocator(): Allocator {
 
     return {
       index: offset,
-      size
+      size,
     };
   }
 
@@ -33,6 +33,6 @@ export function createAllocator(): Allocator {
     malloc,
     free,
     get,
-    set
+    set,
   };
 }

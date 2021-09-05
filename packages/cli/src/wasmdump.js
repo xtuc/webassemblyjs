@@ -14,7 +14,7 @@ if (typeof filename === "undefined") {
 }
 
 const decoderOpts = {
-  dump: true
+  dump: true,
 };
 
 if (process.argv.indexOf("--ignore-code-section") !== -1) {

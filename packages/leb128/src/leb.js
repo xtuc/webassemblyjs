@@ -322,5 +322,5 @@ export default {
   encodeIntBuffer: encodeIntBuffer,
   encodeUInt32: encodeUInt32,
   encodeUInt64: encodeUInt64,
-  encodeUIntBuffer: encodeUIntBuffer
+  encodeUIntBuffer: encodeUIntBuffer,
 };

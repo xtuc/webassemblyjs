@@ -18,7 +18,7 @@ import {
   isIfInstruction,
   isNumberLiteral,
   internalEndAndReturn,
-  traverse
+  traverse,
 } from "@webassemblyjs/ast";
 
 export const kStart = Symbol("_start");
@@ -26,13 +26,19 @@ export const kStart = Symbol("_start");
 declare function LABEL_POP(): void;
 declare function LABEL_PUSH(n: Node): void;
 
-define(LABEL_POP, () => `
+define(
+  LABEL_POP,
+  () => `
     this._labels.pop();
-  `);
+  `
+);
 
-define(LABEL_PUSH, node => `
+define(
+  LABEL_PUSH,
+  (node) => `
     this._labels.push(${node});
-  `);
+  `
+);
 
 /**
  * ModuleContext
@@ -40,19 +46,19 @@ define(LABEL_PUSH, node => `
  * TODO(sven): refactor current implementation?
  */
 type Context = {
-  funcs: Array<{ node?: Func, isImplemented: boolean }>
+  funcs: Array<{ node?: Func, isImplemented: boolean }>,
 };
 
 function createContext(ast: Program): Context {
   const context = {
-    funcs: []
+    funcs: [],
   };
 
   traverse(ast, {
     ModuleImport(path: NodePath<ModuleImport>) {
       if (isFuncImportDescr(path.node.descr)) {
         context.funcs.push({
-          isImplemented: false
+          isImplemented: false,
         });
       }
     },
@@ -60,9 +66,9 @@ function createContext(ast: Program): Context {
     Func(path: NodePath<Func>) {
       context.funcs.push({
         isImplemented: true,
-        node: path.node
+        node: path.node,
       });
-    }
+    },
   });
 
   return context;
@@ -171,7 +177,7 @@ export class Module {
       this._emit(internalBrUnlessNode);
 
       // $FlowIgnore
-      node.consequent.forEach(n => this._emit(n));
+      node.consequent.forEach((n) => this._emit(n));
 
       // Skipping the alternate once the consequent block has been executed.
       // We inject a goto at the offset of the else instruction
@@ -187,14 +193,14 @@ export class Module {
         start: {
           line: -1,
           // $FlowIgnore
-          column: node.alternate[0].loc.start.column - 1
-        }
+          column: node.alternate[0].loc.start.column - 1,
+        },
       };
 
       this._emit(internalGotoNode);
 
       // $FlowIgnore
-      node.alternate.forEach(n => this._emit(n));
+      node.alternate.forEach((n) => this._emit(n));
 
       return;
     }
@@ -211,7 +217,7 @@ export class Module {
 
     return {
       name: kStart,
-      startAt: getFunctionBeginingByteOffset(func)
+      startAt: getFunctionBeginingByteOffset(func),
     };
   }
 
@@ -233,7 +239,7 @@ export class Module {
     return {
       name: func.name ? func.name.value : null,
       startAt: getFunctionBeginingByteOffset(func),
-      instructions: this._program
+      instructions: this._program,
     };
   }
 }

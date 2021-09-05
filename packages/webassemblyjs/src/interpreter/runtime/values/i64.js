@@ -8,14 +8,17 @@ import { i32, createTrue, createFalse } from "./i32";
 import { define, assert } from "mamacro";
 
 declare function ASSERT_NOT_ZERO(x: any): void;
-define(ASSERT_NOT_ZERO, x => `{
+define(
+  ASSERT_NOT_ZERO,
+  (x) => `{
     if (${x}._value.isZero()) {
       throw new RuntimeError("integer divide by zero");
     }
-  }`);
+  }`
+);
 
 declare function TO_BOOLEAN(cond: any): i32;
-define(TO_BOOLEAN, cond => `(${cond}) ? createTrue() : createFalse()`);
+define(TO_BOOLEAN, (cond) => `(${cond}) ? createTrue() : createFalse()`);
 
 const type = "i64";
 
@@ -247,10 +250,7 @@ export class i64 implements IntegerValue<i64> {
       offset < byteArray.length;
       offset++, shift += 8
     ) {
-      byteArray[offset] = this._value
-        .shru(shift)
-        .and(0xff)
-        .toNumber();
+      byteArray[offset] = this._value.shru(shift).and(0xff).toNumber();
     }
     return byteArray;
   }
@@ -282,14 +282,14 @@ export function createValueFromAST(value: LongNumber): StackLocal {
 
   return {
     type,
-    value: new i64(new Long(value.low, value.high))
+    value: new i64(new Long(value.low, value.high)),
   };
 }
 
 export function createValue(value: i64): StackLocal {
   return {
     type,
-    value
+    value,
   };
 }
 
@@ -301,6 +301,6 @@ export function createValueFromArrayBuffer(
 ): StackLocal {
   return {
     type,
-    value: i64.fromArrayBuffer(buffer, ptr, extend, signed)
+    value: i64.fromArrayBuffer(buffer, ptr, extend, signed),
   };
 }

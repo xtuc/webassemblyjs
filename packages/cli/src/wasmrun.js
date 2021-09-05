@@ -26,10 +26,10 @@ const buff = toArrayBuffer(fs.readFileSync(filename, null));
 
 const importObject = {
   env: {
-    printf: function(...args) {
+    printf: function (...args) {
       console.log("printf", ...args);
-    }
-  }
+    },
+  },
 };
 
 instantiate(buff, importObject)
@@ -49,10 +49,10 @@ instantiate(buff, importObject)
       console.log("exited with code", exitCode);
     }
   })
-  .catch(err => {
+  .catch((err) => {
     throw err;
   });
 
-process.on("unhandledRejection", error => {
+process.on("unhandledRejection", (error) => {
   throw error;
 });

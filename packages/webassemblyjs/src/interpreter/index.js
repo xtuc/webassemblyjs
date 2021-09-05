@@ -44,7 +44,7 @@ export class Instance {
      */
     let internalInstanceOptions: InternalInstanceOptions = {
       checkForI64InSignature: true,
-      returnStackLocal: false
+      returnStackLocal: false,
     };
 
     if (typeof importObject._internalInstanceOptions === "object") {
@@ -81,7 +81,7 @@ export class Instance {
       this._externalElements
     );
 
-    moduleInstance.exports.forEach(exportinst => {
+    moduleInstance.exports.forEach((exportinst) => {
       if (exportinst.value.type === "Func") {
         this.exports[exportinst.name] = createHostfunc(
           module._ir,
@@ -139,7 +139,7 @@ export class Instance {
 
     this._moduleInstance = moduleInstance;
 
-    const startFunc = module._ir.funcTable.find(x => x.name === kStart);
+    const startFunc = module._ir.funcTable.find((x) => x.name === kStart);
 
     if (startFunc != null) {
       this.executeStartFunc(module._ir, startFunc.startAt);
@@ -172,7 +172,7 @@ function getModuleFromProgram(ast: Program): ?Module {
   traverse(ast, {
     Module({ node }: NodePath<Module>) {
       module = node;
-    }
+    },
   });
 
   return module;

@@ -19,7 +19,7 @@ import * as f64 from "../../runtime/values/f64";
 function unop(
   { value: value }: StackLocal,
   operation: Operation,
-  createValue: any => StackLocal
+  createValue: (any) => StackLocal
 ): StackLocal {
   switch (operation) {
     case "abs":

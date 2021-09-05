@@ -92,7 +92,7 @@ describe("WebAssembly JavaScript API", () => {
         new WebAssembly.Table({
           element: "anyfunc",
           initial: 10,
-          maximum: 1
+          maximum: 1,
         });
 
       assert.throws(

@@ -1,5 +1,5 @@
 const {
-  compareArrayBuffers
+  compareArrayBuffers,
 } = require("@webassemblyjs/helper-buffer/lib/compare");
 
 const { fromHexdump } = require("@webassemblyjs/helper-buffer");

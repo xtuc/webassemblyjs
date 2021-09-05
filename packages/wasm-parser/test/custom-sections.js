@@ -3,7 +3,7 @@ const {
   encodeVersion,
   encodeHeader,
   encodeU32,
-  encodeUTF8Vec
+  encodeUTF8Vec,
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
@@ -42,7 +42,7 @@ describe("Binary decoder", () => {
       "func",
       "custom",
       "code",
-      "custom"
+      "custom",
     ]);
   });
 
@@ -69,7 +69,7 @@ describe("Binary decoder", () => {
         0x03,
         0x66,
         0x6f,
-        0x6f
+        0x6f,
       ],
       randCustSection("?", 5)
     );
@@ -98,7 +98,7 @@ function randCustSection(name, contentLength) {
     constants.sections.custom,
     ...secLengthBytes,
     ...nameBytes,
-    ...contents
+    ...contents,
   ];
 }
 
@@ -107,7 +107,7 @@ function findSections(ast) {
   traverse(ast, {
     SectionMetadata({ node }) {
       sections.push(node.section);
-    }
+    },
   });
   return sections;
 }

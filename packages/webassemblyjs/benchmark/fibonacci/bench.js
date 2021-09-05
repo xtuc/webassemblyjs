@@ -7,9 +7,9 @@ function test({
   formatNumber,
   output,
 
-  _random
+  _random,
 }) {
-  return WebAssembly.instantiate(wasmbin).then(m => {
+  return WebAssembly.instantiate(wasmbin).then((m) => {
     showHeader();
 
     const exports = m.instance.exports;

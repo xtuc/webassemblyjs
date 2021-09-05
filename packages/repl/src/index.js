@@ -1,20 +1,20 @@
 const {
-  createCompiledModule
+  createCompiledModule,
 } = require("webassemblyjs/lib/compiler/compile/module");
 const { Instance } = require("webassemblyjs/lib/interpreter");
 const partialEvaluation = require("webassemblyjs/lib/interpreter/partial-evaluation");
 const { parse } = require("@webassemblyjs/wast-parser");
 const {
-  Memory
+  Memory,
 } = require("webassemblyjs/lib/interpreter/runtime/values/memory");
 const {
-  createAllocator
+  createAllocator,
 } = require("webassemblyjs/lib/interpreter/kernel/memory");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const t = require("@webassemblyjs/ast");
 const { getValidationErrors } = require("@webassemblyjs/validation");
-const denormalizeTypeReferences = require("@webassemblyjs/ast/lib/transform/denormalize-type-references")
-  .transform;
+const denormalizeTypeReferences =
+  require("@webassemblyjs/ast/lib/transform/denormalize-type-references").transform;
 
 function addEndInstruction(body) {
   body.push(t.instruction("end"));
@@ -197,7 +197,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       `Module with export "${name.value}" not found`
     );
 
-    const argValues = args.map(expr => {
+    const argValues = args.map((expr) => {
       const code = [expr];
       addEndInstruction(code);
       const evaluation = partialEvaluation.evaluate(allocator, code);
@@ -270,7 +270,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
   }
 
   function countChar(char) {
-    return str =>
+    return (str) =>
       str.split("").reduce((acc, e) => {
         if (e === char) {
           acc++;
@@ -298,11 +298,11 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
   function createModuleInstanceFromAst(moduleNode, enableTypeChecking = false) {
     const internalInstanceOptions = {
       checkForI64InSignature: false,
-      returnStackLocal: true
+      returnStackLocal: true,
     };
 
     const importObject = {
-      _internalInstanceOptions: internalInstanceOptions
+      _internalInstanceOptions: internalInstanceOptions,
     };
 
     if (enableTypeChecking === true) {
@@ -311,7 +311,7 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
       const typeErrors = getValidationErrors(t.program([moduleNode]));
 
       if (typeErrors.length > 0) {
-        const containsImmutableGlobalViolation = typeErrors.some(x =>
+        const containsImmutableGlobalViolation = typeErrors.some((x) =>
           x.match(/global is immutable/)
         );
 
@@ -401,6 +401,6 @@ export function createRepl({ isVerbose, onAssert, onLog, onOk }) {
   }
 
   return {
-    read
+    read,
   };
 }

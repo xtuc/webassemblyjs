@@ -7,7 +7,7 @@ import {
   parse64I,
   parseU32,
   isNanLiteral,
-  isInfLiteral
+  isInfLiteral,
 } from "@webassemblyjs/helper-numbers";
 
 import { longNumberLiteral, floatLiteral, numberLiteral, instr } from "./nodes";
@@ -81,7 +81,7 @@ export function objectInstruction(
 export function withLoc(n: Node, end: Position, start: Position): Node {
   const loc = {
     start,
-    end
+    end,
   };
 
   n.loc = loc;
@@ -97,7 +97,7 @@ export function withRaw(n: NumericLiteral, raw: string): Node {
 export function funcParam(valtype: Valtype, id: ?string): FuncParam {
   return {
     id,
-    valtype
+    valtype,
   };
 }
 

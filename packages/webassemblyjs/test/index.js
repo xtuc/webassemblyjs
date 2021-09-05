@@ -19,7 +19,7 @@ describe("interpreter", () => {
       "packages/webassemblyjs/test/fixtures/**/module.wasm"
     );
 
-    testSuites.forEach(suite => {
+    testSuites.forEach((suite) => {
       describe(suite, () => {
         const execFile = path.join(path.dirname(suite), "exec.tjs");
 
@@ -32,7 +32,7 @@ describe("interpreter", () => {
           console: global.console,
           assert: chai.assert,
           it,
-          xit
+          xit,
         };
 
         try {
@@ -51,7 +51,7 @@ describe("interpreter", () => {
       "packages/webassemblyjs/test/fixtures/**/module.wast"
     );
 
-    testSuites.forEach(suite => {
+    testSuites.forEach((suite) => {
       describe(suite, () => {
         const execFile = path.join(path.dirname(suite), "exec.tjs");
 
@@ -69,7 +69,7 @@ describe("interpreter", () => {
           console: global.console,
           assert: chai.assert,
           it,
-          xit
+          xit,
         };
 
         try {

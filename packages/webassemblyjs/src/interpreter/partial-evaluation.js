@@ -24,7 +24,7 @@ export function evaluate(
 
   const stackFrame = createStackFrame([], moduleInstance, allocator);
 
-  const main = ir.funcTable.find(f => f.name === "main");
+  const main = ir.funcTable.find((f) => f.name === "main");
   assert(typeof main === "object");
 
   return executeStackFrame(ir, main.startAt, stackFrame);

@@ -46,30 +46,30 @@ type NodePath<T> = {
   node: T,
   parentPath: ?NodePath<Node>,
   findParent: (NodePath<Node>) => ?boolean,
-  replaceWith: Node => void,
-  remove: () => void
+  replaceWith: (Node) => void,
+  remove: () => void,
 };
 
 type TableElementType = "anyfunc";
 
 type LongNumber = {
   high: number,
-  low: number
+  low: number,
 };
 
 type Position = {
   line: number,
-  column: number
+  column: number,
 };
 
 type SourceLocation = {
   start: Position,
-  end?: Position
+  end?: Position,
 };
 
 type FuncParam = {
   id: ?string,
-  valtype: Valtype
+  valtype: Valtype,
 };
 
 type BaseNode = {
@@ -77,11 +77,11 @@ type BaseNode = {
   loc?: ?SourceLocation,
 
   // Internal property
-  _deleted?: ?boolean
+  _deleted?: ?boolean,
 };
 
 type FuncMetadata = {
-  bodySize: number
+  bodySize: number,
 };
 
 type ExportDescrType = "Func" | "Table" | "Memory" | "Global";

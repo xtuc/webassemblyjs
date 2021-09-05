@@ -9,7 +9,7 @@ type TransitionList<T> = { [State<T>]: Array<TransitionEdge<T>> };
 
 type transitionFactoryOpts = {
   n?: number,
-  allowedSeparator?: string
+  allowedSeparator?: string,
 };
 
 function makeTransition<T>(
@@ -17,7 +17,7 @@ function makeTransition<T>(
   nextState: State<T>,
   { n = 1, allowedSeparator }: transitionFactoryOpts = {}
 ): TransitionEdge<T> {
-  return function(instance: FSM<T>) {
+  return function (instance: FSM<T>) {
     if (allowedSeparator) {
       if (instance.input[instance.ptr] === allowedSeparator) {
         if (
@@ -42,7 +42,7 @@ function makeTransition<T>(
 function combineTransitions<T>(
   transitions: TransitionList<T>
 ): TransitionFunction<T> {
-  return function() {
+  return function () {
     let match = false;
     const currentTransitions = transitions[this.currentState] || [];
 

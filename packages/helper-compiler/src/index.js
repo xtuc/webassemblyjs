@@ -4,7 +4,7 @@ import {
   traverse,
   identifier,
   func,
-  program as tProgram
+  program as tProgram,
 } from "@webassemblyjs/ast";
 import { flatten } from "@webassemblyjs/helper-flatten-ast";
 
@@ -37,7 +37,7 @@ export function toIR(ast: Program): IR {
       traverse(funcPath.node, {
         Instruction(path: NodePath<Instruction>) {
           module.onFuncInstruction(path.node);
-        }
+        },
       });
 
       const { name, instructions, startAt } = module.finalizeFunc(
@@ -46,16 +46,16 @@ export function toIR(ast: Program): IR {
 
       funcTable.push({ name, startAt });
 
-      instructions.forEach(instruction => {
+      instructions.forEach((instruction) => {
         program[instruction.offset] = instruction.node;
       });
-    }
+    },
   });
 
   return {
     // $FlowIgnore
     funcTable,
-    program
+    program,
   };
 }
 
@@ -68,20 +68,20 @@ export function listOfInstructionsToIr(instrs: Array<Instruction>): IR {
 
   module.beginFuncBody(fakeFunc);
 
-  instrs.forEach(i => module.onFuncInstruction(i));
+  instrs.forEach((i) => module.onFuncInstruction(i));
 
   const { name, instructions, startAt } = module.finalizeFunc(fakeFunc);
 
   funcTable.push({ name, startAt });
 
-  instructions.forEach(instruction => {
+  instructions.forEach((instruction) => {
     program[instruction.offset] = instruction.node;
   });
 
   return {
     // $FlowIgnore
     funcTable,
-    program
+    program,
   };
 }
 

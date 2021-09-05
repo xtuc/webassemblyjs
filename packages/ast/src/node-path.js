@@ -43,7 +43,7 @@ function insert(
 
   // $FlowIgnore
   const parentList = parentPath.node[parentKey];
-  const indexInList = parentList.findIndex(n => n === node);
+  const indexInList = parentList.findIndex((n) => n === node);
   parentList.splice(indexInList + indexOffset, 0, newNode);
 }
 
@@ -56,7 +56,7 @@ function remove({ node, parentKey, parentPath }: NodePathContext<Node>) {
   const parentProperty = parentNode[parentKey];
   if (Array.isArray(parentProperty)) {
     // $FlowIgnore
-    parentNode[parentKey] = parentProperty.filter(n => n !== node);
+    parentNode[parentKey] = parentProperty.filter((n) => n !== node);
   } else {
     // $FlowIgnore
     delete parentNode[parentKey];
@@ -75,7 +75,7 @@ function replaceWith(context: NodePathContext<Node>, newNode: Node) {
   // $FlowIgnore
   const parentProperty = parentNode[context.parentKey];
   if (Array.isArray(parentProperty)) {
-    const indexInList = parentProperty.findIndex(n => n === context.node);
+    const indexInList = parentProperty.findIndex((n) => n === context.node);
     parentProperty.splice(indexInList, 1, newNode);
   } else {
     // $FlowIgnore
@@ -92,7 +92,7 @@ function bindNodeOperations(
 ) {
   const keys = Object.keys(operations);
   const boundOperations = {};
-  keys.forEach(key => {
+  keys.forEach((key) => {
     boundOperations[key] = operations[key].bind(null, context);
   });
   return boundOperations;
@@ -109,7 +109,7 @@ function createPathOperations(
       remove,
       insertBefore,
       insertAfter,
-      stop
+      stop,
     },
     context
   );
@@ -117,7 +117,7 @@ function createPathOperations(
 
 export function createPath(context: NodePathContext<Node>): NodePath<Node> {
   const path = {
-    ...context
+    ...context,
   };
   // $FlowIgnore
   Object.assign(path, createPathOperations(path));

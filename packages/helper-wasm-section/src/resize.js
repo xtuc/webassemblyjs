@@ -61,7 +61,7 @@ export function resizeSectionByteSize(
       if (encounteredSection === true) {
         shiftSection(ast, path.node, deltaBytes);
       }
-    }
+    },
   });
 
   return overrideBytesInBuffer(uint8Buffer, start, end, newBytes);

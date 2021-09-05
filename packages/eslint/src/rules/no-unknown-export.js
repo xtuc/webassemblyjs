@@ -6,7 +6,7 @@ import { traverse as estraverse } from "estraverse";
 
 const decoderOpts = {
   ignoreCodeSection: true,
-  ignoreDataSection: true
+  ignoreDataSection: true,
 };
 
 function getExportsFromWasm(file) {
@@ -18,7 +18,7 @@ function getExportsFromWasm(file) {
   traverse(ast, {
     ModuleExport({ node }) {
       exports.push(node.name);
-    }
+    },
   });
 
   return exports;
@@ -28,7 +28,7 @@ function getUsageIn(body, on) {
   const used = [];
 
   estraverse(body, {
-    enter: function(node) {
+    enter: function (node) {
       if (node.type === "MemberExpression") {
         const { object, property } = node;
 
@@ -36,7 +36,7 @@ function getUsageIn(body, on) {
           used.push(property.name);
         }
       }
-    }
+    },
   });
 
   return used;
@@ -71,7 +71,7 @@ module.exports = {
         if (existsSync(file) === false) {
           return context.report({
             node: object,
-            message: JSON.stringify(file) + " is not a valid WASM file"
+            message: JSON.stringify(file) + " is not a valid WASM file",
           });
         }
 
@@ -88,20 +88,20 @@ module.exports = {
         }
 
         if (binding.type === "ObjectPattern") {
-          used = binding.properties.map(prop => prop.value.name);
+          used = binding.properties.map((prop) => prop.value.name);
         }
 
-        used.forEach(name => {
+        used.forEach((name) => {
           const exportExists = exports.indexOf(name) !== -1;
 
           if (exportExists === false) {
             context.report({
               node,
-              message: JSON.stringify(name) + " is not exported"
+              message: JSON.stringify(name) + " is not exported",
             });
           }
         });
-      }
+      },
     };
-  }
+  },
 };

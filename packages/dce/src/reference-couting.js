@@ -15,7 +15,7 @@ module.exports = function countRefByName(ast, name) {
       if (node.value === name) {
         refCount++;
       }
-    }
+    },
   });
 
   return refCount;

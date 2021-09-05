@@ -2,7 +2,7 @@ const { decode } = require("@webassemblyjs/wasm-parser");
 const wabt = require("wabt");
 const {
   getFixtures,
-  compareWithExpected
+  compareWithExpected,
 } = require("@webassemblyjs/helper-test-framework");
 
 const { toIR, dumpIR } = require("../lib");

@@ -2,7 +2,7 @@ const t = require("@webassemblyjs/ast");
 const { decode } = require("@webassemblyjs/wasm-parser");
 const {
   encodeVersion,
-  encodeHeader
+  encodeHeader,
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const { compareStrings } = require("@webassemblyjs/helper-test-framework");
@@ -41,7 +41,7 @@ function ASTToString(ast) {
     // Instr's loc are not updated
     Instr({ node }) {
       delete node.loc;
-    }
+    },
   });
 
   return JSON.stringify(astCopy, null, 2);
@@ -50,7 +50,7 @@ function ASTToString(ast) {
 function makeGlobalNode(n) {
   return t.global(t.globalType("i32", "const"), [
     t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(n)]),
-    t.instruction("end")
+    t.instruction("end"),
   ]);
 }
 
@@ -58,7 +58,7 @@ function removeNodesOfType(t) {
   return {
     [t](path) {
       path.remove();
-    }
+    },
   };
 }
 
@@ -108,7 +108,7 @@ function renameImports(name) {
   return {
     ModuleImport({ node }) {
       node.module = node.name = name;
-    }
+    },
   };
 }
 
@@ -124,26 +124,26 @@ describe("AST synchronization", () => {
   const ast = decode(bin);
 
   const steps = [
-    b => addWithAST(ast, b, []),
-    b => editWithAST(ast, b, {}),
+    (b) => addWithAST(ast, b, []),
+    (b) => editWithAST(ast, b, {}),
 
-    b => addWithAST(ast, b, [makeGlobalNode(10)]),
-    b => editWithAST(ast, b, removeNodesOfType("TypeInstruction")),
+    (b) => addWithAST(ast, b, [makeGlobalNode(10)]),
+    (b) => editWithAST(ast, b, removeNodesOfType("TypeInstruction")),
 
-    b => addWithAST(ast, b, [makeTypeNode()]),
+    (b) => addWithAST(ast, b, [makeTypeNode()]),
 
-    b => addWithAST(ast, b, [makeFuncImportNode()]),
-    b => editWithAST(ast, b, renameImports("c")),
+    (b) => addWithAST(ast, b, [makeFuncImportNode()]),
+    (b) => editWithAST(ast, b, renameImports("c")),
 
-    b => addWithAST(ast, b, makeFuncNodes(1)),
-    b => addWithAST(ast, b, [makeFuncExportNode(0)]),
+    (b) => addWithAST(ast, b, makeFuncNodes(1)),
+    (b) => addWithAST(ast, b, [makeFuncExportNode(0)]),
 
-    b => addWithAST(ast, b, [makeGlobalImportNode()]),
-    b => editWithAST(ast, b, renameImports("a")),
-    b => editWithAST(ast, b, renameImports("b"))
+    (b) => addWithAST(ast, b, [makeGlobalImportNode()]),
+    (b) => editWithAST(ast, b, renameImports("a")),
+    (b) => editWithAST(ast, b, renameImports("b")),
   ];
 
-  it("should run steps", function() {
+  it("should run steps", function () {
     if (typeof WebAssembly === "undefined") {
       console.log("WebAssembly not available, skipping");
       this.skip();

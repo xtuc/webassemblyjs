@@ -194,28 +194,28 @@ export class f32inf extends f32 {
 export function createInfFromAST(sign: number): StackLocal {
   return {
     type,
-    value: new f32inf(sign)
+    value: new f32inf(sign),
   };
 }
 
 export function createNanFromAST(payload: number): StackLocal {
   return {
     type,
-    value: new f32nan(payload)
+    value: new f32nan(payload),
   };
 }
 
 export function createValueFromAST(value: number): StackLocal {
   return {
     type,
-    value: new f32(value)
+    value: new f32(value),
   };
 }
 
 export function createValue(value: f32): StackLocal {
   return {
     type,
-    value
+    value,
   };
 }
 
@@ -225,6 +225,6 @@ export function createValueFromArrayBuffer(
 ): StackLocal {
   return {
     type,
-    value: f32.fromArrayBuffer(buffer, ptr)
+    value: f32.fromArrayBuffer(buffer, ptr),
   };
 }

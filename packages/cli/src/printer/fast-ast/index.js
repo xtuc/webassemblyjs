@@ -16,7 +16,7 @@ export function print(ast: Node) {
     imports: [],
     exports: {},
     functions: {},
-    globals: []
+    globals: [],
   };
 
   traverse(ast, {
@@ -40,7 +40,7 @@ export function print(ast: Node) {
 
     ModuleImport({ node }: NodePath<ModuleImport>) {
       out.imports.push(node);
-    }
+    },
   });
 
   console.log(JSON.stringify(out, null, 4));

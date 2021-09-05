@@ -2,7 +2,7 @@ import {
   traverse,
   isInstruction,
   isSignature,
-  isNumberLiteral
+  isNumberLiteral,
 } from "@webassemblyjs/ast";
 import { assert } from "mamacro";
 import { moduleContextFromModuleAST } from "@webassemblyjs/ast";
@@ -53,7 +53,7 @@ function createTypeChecker() {
 
   function isEmptyStack(stack) {
     // Polymorphic types are allowed in empty stack
-    return stack.filter(t => t !== POLYMORPHIC).length === 0;
+    return stack.filter((t) => t !== POLYMORPHIC).length === 0;
   }
 
   function checkStacks(expectedStack, actualStack) {
@@ -266,7 +266,7 @@ function createTypeChecker() {
     },
 
     applyInstruction,
-    checkStacks
+    checkStacks,
   };
 }
 
@@ -307,7 +307,7 @@ export default function validate(ast) {
       moduleContext.newContext(node.name.value, expectedResult);
 
       // Parameters are local variables
-      signature.params.forEach(p => moduleContext.addLocal(p.valtype));
+      signature.params.forEach((p) => moduleContext.addLocal(p.valtype));
 
       const resultingStack = node.body.reduce(
         typeChecker.applyInstruction.bind(null, moduleContext),
@@ -320,7 +320,7 @@ export default function validate(ast) {
 
       // Compare the two stacks
       typeChecker.checkStacks(expectedResult, resultingStack);
-    }
+    },
   });
 
   return typeChecker.getErrors();

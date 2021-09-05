@@ -16,7 +16,7 @@ if (typeof filename === "undefined") {
 
 const decoderOpts = {
   ignoreCodeSection: true,
-  ignoreDataSection: true
+  ignoreDataSection: true,
 };
 
 // $FlowIgnore: this is correct but not correctly documented
@@ -27,14 +27,14 @@ let found = false;
 
 traverse(ast, {
   ProducersSectionMetadata({ node }) {
-    node.producers.forEach(entry => {
-      entry.forEach(producer => {
+    node.producers.forEach((entry) => {
+      entry.forEach((producer) => {
         console.log(producer.name, producer.version);
       });
     });
 
     found = true;
-  }
+  },
 });
 
 if (found === false) {

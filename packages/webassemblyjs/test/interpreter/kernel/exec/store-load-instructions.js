@@ -8,10 +8,10 @@ const Long = require("@xtuc/long");
 const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
 const { Memory } = require("../../../../lib/interpreter/runtime/values/memory");
 const {
-  executeStackFrame
+  executeStackFrame,
 } = require("../../../../lib/interpreter/kernel/exec");
 const {
-  createStackFrame
+  createStackFrame,
 } = require("../../../../lib/interpreter/kernel/stackframe");
 const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
@@ -28,13 +28,13 @@ describe("kernel exec - store / load instructions", () => {
     linearMemory = new Memory({ initial: PAGES, maximum: 1024 });
 
     originatingModule = {
-      memaddrs: [linearMemory]
+      memaddrs: [linearMemory],
     };
 
     allocator = {
       get() {
         return linearMemory;
-      }
+      },
     };
   });
 
@@ -43,7 +43,7 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(12)]),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x70000000)]),
       t.objectInstruction("store", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -61,7 +61,7 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(12)]),
       t.objectInstruction("const", "f32", [t.numberLiteralFromRaw(123.456)]),
       t.objectInstruction("store", "f32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const args = [];
@@ -79,7 +79,7 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(16)]),
       t.objectInstruction("const", "f64", [t.numberLiteralFromRaw(123.456)]),
       t.objectInstruction("store", "f64"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -97,7 +97,7 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(12)]),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x12345678)]),
       t.objectInstruction("store8", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -118,7 +118,7 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("store", "i32"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -136,12 +136,12 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i32", [
-        t.numberLiteralFromRaw(-0x01020304)
+        t.numberLiteralFromRaw(-0x01020304),
       ]),
       t.objectInstruction("store", "i32"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load16_s", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -159,12 +159,12 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i32", [
-        t.numberLiteralFromRaw(-0x01020304)
+        t.numberLiteralFromRaw(-0x01020304),
       ]),
       t.objectInstruction("store", "i32"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load16_u", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -182,12 +182,12 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteralFromRaw("-0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("-0x0102030405060708", "i64"),
       ]),
       t.objectInstruction("store", "i64"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load16_s", "i64"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -205,12 +205,12 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteralFromRaw("-0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("-0x0102030405060708", "i64"),
       ]),
       t.objectInstruction("store", "i64"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load8_s", "i64"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -228,12 +228,12 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteralFromRaw("-0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("-0x0102030405060708", "i64"),
       ]),
       t.objectInstruction("store", "i64"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load32_s", "i64"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -251,12 +251,12 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i32", [
-        t.numberLiteralFromRaw(-0x01020304)
+        t.numberLiteralFromRaw(-0x01020304),
       ]),
       t.objectInstruction("store", "i32"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load8_u", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -274,12 +274,12 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i32", [
-        t.numberLiteralFromRaw(-0x01020304)
+        t.numberLiteralFromRaw(-0x01020304),
       ]),
       t.objectInstruction("store", "i32"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load8_s", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -297,12 +297,12 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteralFromRaw("0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("0x0102030405060708", "i64"),
       ]),
       t.objectInstruction("store", "i64"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load", "i64"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -325,7 +325,7 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("store", "f32"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load", "f32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -343,12 +343,12 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "f64", [
-        t.numberLiteralFromRaw(123.456, "f64")
+        t.numberLiteralFromRaw(123.456, "f64"),
       ]),
       t.objectInstruction("store", "f64"),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("load", "f64"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -372,7 +372,7 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(15)]),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x01020101)]), // writes 0x01
       t.objectInstruction("store8", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -389,10 +389,10 @@ describe("kernel exec - store / load instructions", () => {
     const code = [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(8)]),
       t.objectInstruction("const", "i64", [
-        t.numberLiteralFromRaw("0x0102030405060708", "i64")
+        t.numberLiteralFromRaw("0x0102030405060708", "i64"),
       ]),
       t.objectInstruction("store", "i64"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -418,7 +418,7 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(12)]),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0x70000000)]),
       t.objectInstruction("store", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -434,11 +434,11 @@ describe("kernel exec - store / load instructions", () => {
   it("should throw if memory accessed out of bounds", () => {
     const code = [
       t.objectInstruction("const", "i32", [
-        t.numberLiteralFromRaw(PAGE_SIZE * PAGES - I32_SIZE + 1)
+        t.numberLiteralFromRaw(PAGE_SIZE * PAGES - I32_SIZE + 1),
       ]),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
       t.objectInstruction("store", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -455,11 +455,11 @@ describe("kernel exec - store / load instructions", () => {
   it("should not throw if memory accessed within bounds - upper boundary value", () => {
     const code = [
       t.objectInstruction("const", "i32", [
-        t.numberLiteralFromRaw(PAGE_SIZE - I32_SIZE) // upper boundary value
+        t.numberLiteralFromRaw(PAGE_SIZE - I32_SIZE), // upper boundary value
       ]),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
       t.objectInstruction("store", "i32"),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -475,9 +475,9 @@ describe("kernel exec - store / load instructions", () => {
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(4)]),
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(25)]),
       t.objectInstruction("store", "i32", [], {
-        offset: t.numberLiteralFromRaw(0x4)
+        offset: t.numberLiteralFromRaw(0x4),
       }),
-      t.instruction("end")
+      t.instruction("end"),
     ];
 
     const ir = compileASTNodes(code);
@@ -492,14 +492,14 @@ describe("kernel exec - store / load instructions", () => {
   });
 
   it("should ensure the offset is within the required bounds", () => {
-    const execueteStoreWithOffset = offset => {
+    const execueteStoreWithOffset = (offset) => {
       const code = [
         t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(0)]),
         t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(25)]),
         t.objectInstruction("store", "i32", [], {
-          offset: t.numberLiteralFromRaw(offset)
+          offset: t.numberLiteralFromRaw(offset),
         }),
-        t.instruction("end")
+        t.instruction("end"),
       ];
 
       const ir = compileASTNodes(code);

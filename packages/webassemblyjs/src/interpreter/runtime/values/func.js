@@ -20,11 +20,11 @@ function createInstance(
   }
 
   const signature = (n.signature: Signature);
-  signature.params.forEach(param => {
+  signature.params.forEach((param) => {
     type[0].push(param.valtype);
   });
 
-  signature.results.forEach(result => {
+  signature.results.forEach((result) => {
     type[1].push(result);
   });
 
@@ -35,10 +35,10 @@ function createInstance(
     type,
     code,
     module: fromModule,
-    isExternal: false
+    isExternal: false,
   };
 }
 
 module.exports = {
-  createInstance
+  createInstance,
 };

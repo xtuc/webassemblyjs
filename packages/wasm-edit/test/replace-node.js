@@ -1,11 +1,11 @@
 const {
   encodeVersion,
-  encodeHeader
+  encodeHeader,
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const t = require("@webassemblyjs/ast");
 const {
-  compareArrayBuffers
+  compareArrayBuffers,
 } = require("@webassemblyjs/helper-buffer/lib/compare");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 
@@ -14,7 +14,7 @@ const { add, edit } = require("../lib");
 function callIndirectInstructionIndex(index) {
   return {
     type: "CallIndirectInstruction",
-    index
+    index,
   };
 }
 
@@ -31,7 +31,7 @@ describe("replace a node", () => {
       ModuleImport({ node }) {
         node.module = "foo";
         node.name = "bar";
-      }
+      },
     });
 
     const expectedBinary = makeBuffer(
@@ -67,7 +67,7 @@ describe("replace a node", () => {
           funcTypeIndex,
           t.signature(funcType.functype.params, funcType.functype.results)
         );
-      }
+      },
     });
 
     // (module
@@ -105,7 +105,7 @@ describe("replace a node", () => {
           const newNode = t.callInstruction(t.indexLiteral(0));
           path.replaceWith(newNode);
         }
-      }
+      },
     });
 
     // (module
@@ -148,7 +148,7 @@ describe("replace a node", () => {
           const newNode = callIndirectInstructionIndex(t.indexLiteral(0));
           path.replaceWith(newNode);
         }
-      }
+      },
     });
 
     // (module
@@ -187,7 +187,7 @@ describe("replace a node", () => {
           t.funcParam("i32"),
           t.funcParam("i32"),
           t.funcParam("i32"),
-          t.funcParam("i32")
+          t.funcParam("i32"),
         ];
 
         const results = [];
@@ -197,7 +197,7 @@ describe("replace a node", () => {
           t.signature(params, results)
         );
         path.replaceWith(newNode);
-      }
+      },
     });
 
     // (module

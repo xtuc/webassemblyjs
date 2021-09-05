@@ -40,14 +40,14 @@ function walk(context: NodePathContext<Node>, callback: TraverseCallback) {
         return;
       }
       const valueAsArray = Array.isArray(value) ? value : [value];
-      valueAsArray.forEach(childNode => {
+      valueAsArray.forEach((childNode) => {
         if (typeof childNode.type === "string") {
           const childContext = {
             node: childNode,
             parentKey: prop,
             parentPath: path,
             shouldStop: false,
-            inList: Array.isArray(value)
+            inList: Array.isArray(value),
           };
           innerWalk(childContext, callback);
         }
@@ -66,7 +66,7 @@ export function traverse(
   before: TraverseCallback = noop,
   after: TraverseCallback = noop
 ) {
-  Object.keys(visitors).forEach(visitor => {
+  Object.keys(visitors).forEach((visitor) => {
     if (!nodeAndUnionTypes.includes(visitor)) {
       throw new Error(`Unexpected visitor ${visitor}`);
     }
@@ -77,7 +77,7 @@ export function traverse(
     inList: false,
     shouldStop: false,
     parentPath: null,
-    parentKey: null
+    parentKey: null,
   };
 
   walk(context, (type: string, path: NodePath<Node>) => {
@@ -91,7 +91,7 @@ export function traverse(
     if (!unionTypes) {
       throw new Error(`Unexpected node type ${type}`);
     }
-    unionTypes.forEach(unionType => {
+    unionTypes.forEach((unionType) => {
       if (typeof visitors[unionType] === "function") {
         before(unionType, path);
         visitors[unionType](path);

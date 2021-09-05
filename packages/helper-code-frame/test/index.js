@@ -8,15 +8,15 @@ const codeFrame = require("../lib").codeFrameFromAst;
 
 describe("code frame", () => {
   const m = t.program([
-    t.module(null, [t.func(t.identifier("foo"), t.signature([], []), [])])
+    t.module(null, [t.func(t.identifier("foo"), t.signature([], []), [])]),
   ]);
 
   it("should point to a location", () => {
     const pointer = {
       start: {
         line: 2,
-        column: 9
-      }
+        column: 9,
+      },
     };
 
     const actual = codeFrame(m, pointer);
@@ -42,12 +42,12 @@ describe("code frame", () => {
     const pointer = {
       start: {
         line: 2,
-        column: 9
+        column: 9,
       },
       end: {
         line: 2,
-        column: 12
-      }
+        column: 12,
+      },
     };
 
     const actual = codeFrame(m, pointer);
@@ -74,7 +74,7 @@ describe("code frame", () => {
     for (let i = 0; i < 100; i++) {
       m.body.push(
         t.module(null, [
-          t.func(t.identifier("foo" + i), t.signature([], []), [])
+          t.func(t.identifier("foo" + i), t.signature([], []), []),
         ])
       );
     }
@@ -82,8 +82,8 @@ describe("code frame", () => {
     const pointer = {
       start: {
         line: 50,
-        column: 9
-      }
+        column: 9,
+      },
     };
 
     const actual = codeFrame(m, pointer);

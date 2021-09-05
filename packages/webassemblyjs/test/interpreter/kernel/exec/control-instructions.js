@@ -5,10 +5,10 @@ const t = require("@webassemblyjs/ast");
 const { assert } = require("chai");
 
 const {
-  executeStackFrame
+  executeStackFrame,
 } = require("../../../../lib/interpreter/kernel/exec");
 const {
-  createStackFrame
+  createStackFrame,
 } = require("../../../../lib/interpreter/kernel/stackframe");
 const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
@@ -19,7 +19,7 @@ describe("kernel exec - control instruction", () => {
     const code = [
       t.instruction("nop"),
       t.instruction("nop"),
-      t.instruction("nop")
+      t.instruction("nop"),
     ];
 
     const ir = compileASTNodes(code);

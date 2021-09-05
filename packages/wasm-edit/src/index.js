@@ -69,14 +69,14 @@ export function editWithAST(
     if (path.node._deleted === true) {
       operations.push({
         kind: "delete",
-        node: path.node
+        node: path.node,
       });
       // $FlowIgnore
     } else if (hashNode(nodeBefore) !== hashNode(path.node)) {
       operations.push({
         kind: "update",
         oldNode: nodeBefore,
-        node: path.node
+        node: path.node,
       });
     }
   }
@@ -106,9 +106,9 @@ export function addWithAST(
   let uint8Buffer = new Uint8Array(ab);
 
   // Map node into operations
-  const operations = newNodes.map(n => ({
+  const operations = newNodes.map((n) => ({
     kind: "add",
-    node: n
+    node: n,
   }));
 
   uint8Buffer = applyOperations(ast, uint8Buffer, operations);

@@ -8,15 +8,18 @@ const t = require("@webassemblyjs/ast");
 
 import { RuntimeError } from "../errors";
 const {
-  castIntoStackLocalOfType
+  castIntoStackLocalOfType,
 } = require("./runtime/castIntoStackLocalOfType");
 const { executeStackFrame } = require("./kernel/exec");
 const { createStackFrame } = require("./kernel/stackframe");
 const { ExecutionHasBeenTrapped } = require("./kernel/signals");
 
-define(trace, msg => `
+define(
+  trace,
+  (msg) => `
     console.log("host " + ${msg});
-  `);
+  `
+);
 
 export function createHostfunc(
   ir: IR,
@@ -31,15 +34,12 @@ export function createHostfunc(
     /**
      * Find callable in instantiated function in the module funcaddrs
      */
-    const hasModuleInstantiatedFunc = moduleinst.funcaddrs.indexOf(
-      exportinstAddr
-    );
+    const hasModuleInstantiatedFunc =
+      moduleinst.funcaddrs.indexOf(exportinstAddr);
 
     if (hasModuleInstantiatedFunc === -1) {
       throw new RuntimeError(
-        `Function at addr ${
-          exportinstAddr.index
-        } has not been initialized in the module.` +
+        `Function at addr ${exportinstAddr.index} has not been initialized in the module.` +
           "Probably an internal failure"
       );
     }
@@ -76,17 +76,14 @@ export function createHostfunc(
      */
     if (args.length !== funcinstArgs.length) {
       throw new RuntimeError(
-        `Function ${exportinstAddr.index} called with ${
-          args.length
-        } arguments but ` +
+        `Function ${exportinstAddr.index} called with ${args.length} arguments but ` +
           funcinst.type[0].length +
           " expected"
       );
     }
 
-    const argsWithType = args.map(
-      (value: any, i: number): StackLocal =>
-        castIntoStackLocalOfType(funcinstArgs[i], value)
+    const argsWithType = args.map((value: any, i: number): StackLocal =>
+      castIntoStackLocalOfType(funcinstArgs[i], value)
     );
 
     const stackFrame = createStackFrame(
@@ -104,7 +101,7 @@ export function createHostfunc(
     stackFrame.labels.push({
       value: funcinst,
       arity: funcinstArgs.length,
-      id: t.identifier(exportinst.name)
+      id: t.identifier(exportinst.name),
     });
 
     trace("invoking " + exportinst.name);

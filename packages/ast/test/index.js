@@ -2,7 +2,7 @@
 
 const {
   getFixtures,
-  compareWithExpected
+  compareWithExpected,
 } = require("@webassemblyjs/helper-test-framework");
 
 const denormalizeTypeReferences = require("../lib/transform/denormalize-type-references");
@@ -16,7 +16,7 @@ describe("AST transforms", () => {
       "**/actual.json"
     );
 
-    const pre = f => {
+    const pre = (f) => {
       const ast = JSON.parse(f);
       denormalizeTypeReferences.transform(ast);
 
@@ -33,7 +33,7 @@ describe("AST transforms", () => {
       "**/actual.json"
     );
 
-    const pre = f => {
+    const pre = (f) => {
       const ast = JSON.parse(f);
       identifierToIndex.transform(ast);
 

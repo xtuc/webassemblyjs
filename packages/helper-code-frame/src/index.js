@@ -4,9 +4,7 @@ import { print } from "@webassemblyjs/wast-printer";
 const SHOW_LINES_AROUND_POINTER = 5;
 
 function repeat(char: string, nb: number): string {
-  return Array(nb)
-    .fill(char)
-    .join("");
+  return Array(nb).fill(char).join("");
 }
 
 // TODO(sven): allow arbitrary ast nodes

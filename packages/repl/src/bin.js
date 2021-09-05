@@ -6,7 +6,7 @@ const { createReadStream } = require("fs");
 const { createRepl } = require("./index");
 
 const filename = process.argv[2];
-const isVerbose = process.argv.find(x => x === "--debug") !== undefined;
+const isVerbose = process.argv.find((x) => x === "--debug") !== undefined;
 
 function onAssert() {
   process.exit(1);
@@ -22,7 +22,7 @@ const repl = createRepl({ isVerbose, onAssert, onOk, onLog });
 
 if (filename === undefined) {
   const rl = readline.createInterface({
-    input: process.stdin
+    input: process.stdin,
   });
 
   process.stdout.write("wasm 1.0 JavaScript interpreter\n");
@@ -31,7 +31,7 @@ if (filename === undefined) {
   rl.on("line", repl.read);
 } else {
   const rl = readline.createInterface({
-    input: createReadStream(filename)
+    input: createReadStream(filename),
   });
 
   rl.on("line", repl.read);

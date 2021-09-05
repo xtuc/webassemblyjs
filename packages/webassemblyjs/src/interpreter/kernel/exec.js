@@ -14,19 +14,27 @@ declare function POP_STACK_FRAME(): void;
 declare function POP_LABEL(): void;
 declare function assertNItemsOnStack(n: number): void;
 
-define(assertNItemsOnStack, n => `
+define(
+  assertNItemsOnStack,
+  (n) => `
   if (frame.values.length < ${n}) {
     throw new RuntimeError(
       "Assertion error: expected " + JSON.stringify(${n})
         + " on the stack, found " + frame.values.length
     );
-  }`);
+  }`
+);
 
-define(trace, msg => `
+define(
+  trace,
+  (msg) => `
     console.log("trace " + ${msg});
-  `);
+  `
+);
 
-define(POP_LABEL, () => `
+define(
+  POP_LABEL,
+  () => `
     // 3. Assert: due to validation, the label L is now on the top of the stack.
     // 4. Pop the label from the stack.
     let found = false;
@@ -43,13 +51,19 @@ define(POP_LABEL, () => `
 
       frame.values.splice(initialOrderIndex, 1);
     }
-  `);
+  `
+);
 
-define(GOTO, labelOffset => `
+define(
+  GOTO,
+  (labelOffset) => `
     pc = offsets.indexOf(String(${labelOffset}));
-  `);
+  `
+);
 
-define(RETURN, () => `
+define(
+  RETURN,
+  () => `
     const activeFrame = getActiveStackFrame();
 
     if (activeFrame.values.length > 0) {
@@ -57,9 +71,12 @@ define(RETURN, () => `
     } else {
       return;
     }
-  `);
+  `
+);
 
-define(PUSH_NEW_STACK_FRAME, pc => `
+define(
+  PUSH_NEW_STACK_FRAME,
+  (pc) => `
     const stackframe = require("./stackframe");
 
     const activeFrame = getActiveStackFrame();
@@ -74,9 +91,12 @@ define(PUSH_NEW_STACK_FRAME, pc => `
 
     // Push the frame on top of the stack
     callStack[framepointer] = newStackFrame;
-  `);
+  `
+);
 
-define(POP_STACK_FRAME, () => `
+define(
+  POP_STACK_FRAME,
+  () => `
     const activeFrame = getActiveStackFrame();
 
     // pass the result of the previous call into the new active fame
@@ -95,17 +115,18 @@ define(POP_STACK_FRAME, () => `
     if (res !== undefined && newStackFrame !== undefined) {
       pushResult(newStackFrame, res);
     }
-  `);
+  `
+);
 
 const {
   binopi32,
   binopi64,
   binopf32,
-  binopf64
+  binopf64,
 } = require("./instruction/binop");
 const { unopi32, unopi64, unopf32, unopf64 } = require("./instruction/unop");
 const {
-  castIntoStackLocalOfType
+  castIntoStackLocalOfType,
 } = require("../runtime/castIntoStackLocalOfType");
 const i32 = require("../runtime/values/i32");
 const i64 = require("../runtime/values/i64");
@@ -161,7 +182,7 @@ export function executeStackFrame(
   function popArrayOfValTypes(frame: StackFrame, types: Array<Valtype>): any {
     assertNItemsOnStack(types.length);
 
-    return types.map(type => {
+    return types.map((type) => {
       return pop1OfType(frame, type);
     });
   }
@@ -347,7 +368,7 @@ export function executeStackFrame(
 
         assertRuntimeError(subroutine.isExternal);
 
-        const res = subroutine.code(args.map(arg => arg.value));
+        const res = subroutine.code(args.map((arg) => arg.value));
 
         if (typeof res !== "undefined") {
           pushResult(frame, castIntoStackLocalOfType(resultType, res));
@@ -439,7 +460,7 @@ export function executeStackFrame(
           value: block,
           arity: 0,
           // $FlowIgnore
-          id: block.label
+          id: block.label,
         });
 
         // $FlowIgnore

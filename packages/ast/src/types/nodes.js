@@ -87,7 +87,7 @@ type Module = {
   type: "Module",
   id: ?string,
   fields: Array<Node>,
-  metadata?: ModuleMetadata
+  metadata?: ModuleMetadata,
 };
 
 type ModuleMetadata = {
@@ -96,20 +96,20 @@ type ModuleMetadata = {
   sections: Array<SectionMetadata>,
   functionNames?: Array<FunctionNameMetadata>,
   localNames?: Array<ModuleMetadata>,
-  producers?: Array<ProducersSectionMetadata>
+  producers?: Array<ProducersSectionMetadata>,
 };
 
 type ModuleNameMetadata = {
   ...BaseNode,
   type: "ModuleNameMetadata",
-  value: string
+  value: string,
 };
 
 type FunctionNameMetadata = {
   ...BaseNode,
   type: "FunctionNameMetadata",
   value: string,
-  index: number
+  index: number,
 };
 
 type LocalNameMetadata = {
@@ -117,21 +117,21 @@ type LocalNameMetadata = {
   type: "LocalNameMetadata",
   value: string,
   localIndex: number,
-  functionIndex: number
+  functionIndex: number,
 };
 
 type BinaryModule = {
   ...BaseNode,
   type: "BinaryModule",
   id: ?string,
-  blob: Array<string>
+  blob: Array<string>,
 };
 
 type QuoteModule = {
   ...BaseNode,
   type: "QuoteModule",
   id: ?string,
-  string: Array<string>
+  string: Array<string>,
 };
 
 type SectionMetadata = {
@@ -140,13 +140,13 @@ type SectionMetadata = {
   section: SectionName,
   startOffset: number,
   size: NumberLiteral,
-  vectorOfSize: NumberLiteral
+  vectorOfSize: NumberLiteral,
 };
 
 type ProducersSectionMetadata = {
   ...BaseNode,
   type: "ProducersSectionMetadata",
-  producers: Array<ProducerMetadata>
+  producers: Array<ProducerMetadata>,
 };
 
 type ProducerMetadata = {
@@ -154,14 +154,14 @@ type ProducerMetadata = {
   type: "ProducerMetadata",
   language: Array<ProducerMetadataVersionedName>,
   processedBy: Array<ProducerMetadataVersionedName>,
-  sdk: Array<ProducerMetadataVersionedName>
+  sdk: Array<ProducerMetadataVersionedName>,
 };
 
 type ProducerMetadataVersionedName = {
   ...BaseNode,
   type: "ProducerMetadataVersionedName",
   name: string,
-  version: string
+  version: string,
 };
 
 type LoopInstruction = {
@@ -170,7 +170,7 @@ type LoopInstruction = {
   id: string,
   label: ?Identifier,
   resulttype: ?Valtype,
-  instr: Array<Instruction>
+  instr: Array<Instruction>,
 };
 
 type Instr = {
@@ -179,7 +179,7 @@ type Instr = {
   id: string,
   object?: Valtype,
   args: Array<Expression>,
-  namedArgs?: Object
+  namedArgs?: Object,
 };
 
 type IfInstruction = {
@@ -190,27 +190,27 @@ type IfInstruction = {
   test: Array<Instruction>,
   result: ?Valtype,
   consequent: Array<Instruction>,
-  alternate: Array<Instruction>
+  alternate: Array<Instruction>,
 };
 
 type StringLiteral = {
   ...BaseNode,
   type: "StringLiteral",
-  value: string
+  value: string,
 };
 
 type NumberLiteral = {
   ...BaseNode,
   type: "NumberLiteral",
   value: number,
-  raw: string
+  raw: string,
 };
 
 type LongNumberLiteral = {
   ...BaseNode,
   type: "LongNumberLiteral",
   value: LongNumber,
-  raw: string
+  raw: string,
 };
 
 type FloatLiteral = {
@@ -219,7 +219,7 @@ type FloatLiteral = {
   value: number,
   nan?: boolean,
   inf?: boolean,
-  raw: string
+  raw: string,
 };
 
 type Elem = {
@@ -227,51 +227,51 @@ type Elem = {
   type: "Elem",
   table: Index,
   offset: Array<Instruction>,
-  funcs: Array<Index>
+  funcs: Array<Index>,
 };
 
 type IndexInFuncSection = {
   ...BaseNode,
   type: "IndexInFuncSection",
-  index: Index
+  index: Index,
 };
 
 type ValtypeLiteral = {
   ...BaseNode,
   type: "ValtypeLiteral",
-  name: Valtype
+  name: Valtype,
 };
 
 type TypeInstruction = {
   ...BaseNode,
   type: "TypeInstruction",
   id: ?Index,
-  functype: Signature
+  functype: Signature,
 };
 
 type Start = {
   ...BaseNode,
   type: "Start",
-  index: Index
+  index: Index,
 };
 
 type GlobalType = {
   ...BaseNode,
   type: "GlobalType",
   valtype: Valtype,
-  mutability: Mutability
+  mutability: Mutability,
 };
 
 type LeadingComment = {
   ...BaseNode,
   type: "LeadingComment",
-  value: string
+  value: string,
 };
 
 type BlockComment = {
   ...BaseNode,
   type: "BlockComment",
-  value: string
+  value: string,
 };
 
 type Data = {
@@ -279,7 +279,7 @@ type Data = {
   type: "Data",
   memoryIndex: Memidx,
   offset: Instruction,
-  init: ByteArray
+  init: ByteArray,
 };
 
 type Global = {
@@ -287,7 +287,7 @@ type Global = {
   type: "Global",
   globalType: GlobalType,
   init: Array<Instruction>,
-  name: ?Identifier
+  name: ?Identifier,
 };
 
 type Table = {
@@ -296,21 +296,21 @@ type Table = {
   elementType: TableElementType,
   limits: Limit,
   name: ?Identifier,
-  elements?: Array<Index>
+  elements?: Array<Index>,
 };
 
 type Memory = {
   ...BaseNode,
   type: "Memory",
   limits: Limit,
-  id: ?Index
+  id: ?Index,
 };
 
 type FuncImportDescr = {
   ...BaseNode,
   type: "FuncImportDescr",
   id: Identifier,
-  signature: Signature
+  signature: Signature,
 };
 
 type ModuleImport = {
@@ -318,21 +318,21 @@ type ModuleImport = {
   type: "ModuleImport",
   module: string,
   name: string,
-  descr: ImportDescr
+  descr: ImportDescr,
 };
 
 type ModuleExportDescr = {
   ...BaseNode,
   type: "ModuleExportDescr",
   exportType: ExportDescrType,
-  id: Index
+  id: Index,
 };
 
 type ModuleExport = {
   ...BaseNode,
   type: "ModuleExport",
   name: string,
-  descr: ModuleExportDescr
+  descr: ModuleExportDescr,
 };
 
 type Limit = {
@@ -340,27 +340,27 @@ type Limit = {
   type: "Limit",
   min: number,
   max?: number,
-  shared?: boolean
+  shared?: boolean,
 };
 
 type Signature = {
   ...BaseNode,
   type: "Signature",
   params: Array<FuncParam>,
-  results: Array<Valtype>
+  results: Array<Valtype>,
 };
 
 type Program = {
   ...BaseNode,
   type: "Program",
-  body: Array<Node>
+  body: Array<Node>,
 };
 
 type Identifier = {
   ...BaseNode,
   type: "Identifier",
   value: string,
-  raw?: string
+  raw?: string,
 };
 
 type BlockInstruction = {
@@ -369,7 +369,7 @@ type BlockInstruction = {
   id: string,
   label: ?Identifier,
   instr: Array<Instruction>,
-  result: ?Valtype
+  result: ?Valtype,
 };
 
 type CallInstruction = {
@@ -378,7 +378,7 @@ type CallInstruction = {
   id: string,
   index: Index,
   instrArgs?: Array<Expression>,
-  numeric?: Index
+  numeric?: Index,
 };
 
 type CallIndirectInstruction = {
@@ -386,13 +386,13 @@ type CallIndirectInstruction = {
   type: "CallIndirectInstruction",
   id: string,
   signature: SignatureOrTypeRef,
-  intrs?: Array<Expression>
+  intrs?: Array<Expression>,
 };
 
 type ByteArray = {
   ...BaseNode,
   type: "ByteArray",
-  values: Array<Byte>
+  values: Array<Byte>,
 };
 
 type Func = {
@@ -402,28 +402,28 @@ type Func = {
   signature: SignatureOrTypeRef,
   body: Array<Instruction>,
   isExternal?: boolean,
-  metadata?: FuncMetadata
+  metadata?: FuncMetadata,
 };
 
 type InternalBrUnless = {
   ...BaseNode,
   type: "InternalBrUnless",
-  target: number
+  target: number,
 };
 
 type InternalGoto = {
   ...BaseNode,
   type: "InternalGoto",
-  target: number
+  target: number,
 };
 
 type InternalCallExtern = {
   ...BaseNode,
   type: "InternalCallExtern",
-  target: number
+  target: number,
 };
 
 type InternalEndAndReturn = {
   ...BaseNode,
-  type: "InternalEndAndReturn"
+  type: "InternalEndAndReturn",
 };

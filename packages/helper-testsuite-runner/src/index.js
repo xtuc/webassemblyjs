@@ -13,7 +13,7 @@ import {
   assert_return,
   assert_malformed,
   assert_invalid,
-  assert_trap
+  assert_trap,
 } from "./asserts";
 
 const WASM_TEST_DIR = "./wasm_test_dir";
@@ -32,12 +32,12 @@ type Command = {
   module_type: "text" | "binary",
   text: string,
   action: Object,
-  expected: Object
+  expected: Object,
 };
 
 type Manifest = {
   source_filename: string,
-  commands: Array<Command>
+  commands: Array<Command>,
 };
 
 let lastInstance;
@@ -61,7 +61,7 @@ export default function run(filename: string) {
 
   const manifest: Manifest = JSON.parse(readFileSync(manifestOut, "utf8"));
 
-  manifest.commands.forEach(command => {
+  manifest.commands.forEach((command) => {
     switch (command.type) {
       case "module": {
         // $FlowIgnore
@@ -159,11 +159,11 @@ function getExportedElement(name: string, moduleName: ?string): Object {
 function loadModule(type: string, filename: string): Instance {
   const internalInstanceOptions = {
     checkForI64InSignature: false,
-    returnStackLocal: true
+    returnStackLocal: true,
   };
 
   const importObject = {
-    _internalInstanceOptions: internalInstanceOptions
+    _internalInstanceOptions: internalInstanceOptions,
   };
 
   if (type === "text") {

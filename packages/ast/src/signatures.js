@@ -12,7 +12,7 @@ const i64 = "i64";
 const f32 = "f32";
 const f64 = "f64";
 
-const vector = t => {
+const vector = (t) => {
   const vecType = [t];
   // $FlowIgnore
   vecType.vector = true;
@@ -31,12 +31,12 @@ const controlInstructions = {
   br_table: sign(vector(u32), []),
   return: sign([], []),
   call: sign([u32], []),
-  call_indirect: sign([u32], [])
+  call_indirect: sign([u32], []),
 };
 
 const parametricInstructions = {
   drop: sign([], []),
-  select: sign([], [])
+  select: sign([], []),
 };
 
 const variableInstructions = {
@@ -44,7 +44,7 @@ const variableInstructions = {
   set_local: sign([u32], []),
   tee_local: sign([u32], []),
   get_global: sign([u32], []),
-  set_global: sign([u32], [])
+  set_global: sign([u32], []),
 };
 
 const memoryInstructions = {
@@ -72,7 +72,7 @@ const memoryInstructions = {
   "i64.store16": sign([u32, u32], []),
   "i64.store32": sign([u32, u32], []),
   current_memory: sign([], []),
-  grow_memory: sign([], [])
+  grow_memory: sign([], []),
 };
 
 const numericInstructions = {
@@ -211,7 +211,7 @@ const numericInstructions = {
   "i32.reinterpret/f32": sign([f32], [i32]),
   "i64.reinterpret/f64": sign([f64], [i64]),
   "f32.reinterpret/i32": sign([i32], [f32]),
-  "f64.reinterpret/i64": sign([i64], [f64])
+  "f64.reinterpret/i64": sign([i64], [f64]),
 };
 
 export const signatures = Object.assign(

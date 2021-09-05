@@ -36,14 +36,10 @@ describe("string literal parsing", () => {
 
   it("should support escaped control characters", () => {
     assert.deepEqual(parseString("ab\\tc"), [97, 98, 9, 99]);
-    assert.deepEqual(parseString('\\t\\n\\r\\"\\′\\\\'), [
-      0x09,
-      0x0a,
-      0x0d,
-      0x22,
-      0x27,
-      0x5c
-    ]);
+    assert.deepEqual(
+      parseString('\\t\\n\\r\\"\\′\\\\'),
+      [0x09, 0x0a, 0x0d, 0x22, 0x27, 0x5c]
+    );
   });
 
   it("should throw if encoded character is invalid", () => {

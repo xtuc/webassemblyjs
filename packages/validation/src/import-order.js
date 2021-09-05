@@ -44,7 +44,7 @@ export default function validate(ast: Program): Array<string> {
       if (!isImportInstruction(path)) {
         noMoreImports = true;
       }
-    }
+    },
   });
 
   return errors;

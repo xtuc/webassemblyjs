@@ -41,7 +41,7 @@ function printInstruction(instruction: Instruction): string {
 
   if (instruction.args !== undefined) {
     // $FlowIgnore
-    instruction.args.forEach(arg => {
+    instruction.args.forEach((arg) => {
       out += " ";
       // $FlowIgnore
       out += arg.value;
@@ -61,7 +61,7 @@ export function dumpIR(ir: IR): string {
 
   out += "Func table:\n";
 
-  ir.funcTable.forEach(func => {
+  ir.funcTable.forEach((func) => {
     if (func.name === kStart) {
       out += "__start" + " at " + func.startAt + "\n";
       return;

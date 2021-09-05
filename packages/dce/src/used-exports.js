@@ -10,7 +10,7 @@ function parseSource(source) {
   return parse(source, {
     sourceType: "module",
 
-    plugins: ["jsx"]
+    plugins: ["jsx"],
   });
 }
 
@@ -46,7 +46,7 @@ function onLocalModuleBinding(ident, ast, acc) {
 
         onInstanceThenFn(thenFnBody, acc);
       }
-    }
+    },
   });
 }
 
@@ -107,11 +107,11 @@ function onInstanceThenFn(fn, acc) {
 
         path.stop();
       }
-    }
+    },
   });
 }
 
-module.exports = function(source) {
+module.exports = function (source) {
   const usedExports = [];
   const ast = parseSource(source);
 
@@ -123,7 +123,7 @@ module.exports = function(source) {
         onLocalModuleBinding(specifier.local, ast, usedExports);
         path.stop();
       }
-    }
+    },
   });
 
   return usedExports;

@@ -8,7 +8,7 @@ export function moduleContextFromModuleAST(m) {
 
   assert(m.type === "Module");
 
-  m.fields.forEach(field => {
+  m.fields.forEach((field) => {
     switch (field.type) {
       case "Start": {
         moduleContext.setStart(field.index);
@@ -126,7 +126,7 @@ export class ModuleContext {
     // eslint-disable-next-line prefer-const
     let { params: args = [], results: result = [] } = func.signature || {};
 
-    args = args.map(arg => arg.valtype);
+    args = args.map((arg) => arg.valtype);
 
     this.funcs.push({ args, result });
 
@@ -139,7 +139,7 @@ export class ModuleContext {
     if (isSignature(funcimport.signature)) {
       // eslint-disable-next-line prefer-const
       let { params: args, results: result } = funcimport.signature;
-      args = args.map(arg => arg.valtype);
+      args = args.map((arg) => arg.valtype);
 
       this.funcs.push({ args, result });
     } else {
@@ -150,8 +150,8 @@ export class ModuleContext {
 
       const signature = this.getType(typeId);
       this.funcs.push({
-        args: signature.params.map(arg => arg.valtype),
-        result: signature.results
+        args: signature.params.map((arg) => arg.valtype),
+        result: signature.results,
       });
     }
 

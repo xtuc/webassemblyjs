@@ -6,9 +6,9 @@ function test({
   NBINTERATION,
   formatNumber,
   output,
-  random
+  random,
 }) {
-  return WebAssembly.instantiate(wasmbin).then(m => {
+  return WebAssembly.instantiate(wasmbin).then((m) => {
     showHeader();
 
     const exports = m.instance.exports;

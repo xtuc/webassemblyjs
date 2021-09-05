@@ -7,13 +7,13 @@ const { spawnSync } = require("child_process");
 const {
   getFixtures,
   compare,
-  compareWithExpected
+  compareWithExpected,
 } = require("@webassemblyjs/helper-test-framework");
 
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const {
   encodeVersion,
-  encodeHeader
+  encodeHeader,
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 const wabt = require("wabt")();
@@ -46,7 +46,7 @@ function stripMetadata(ast) {
       if (path.node.id === "end") {
         path.remove();
       }
-    }
+    },
   });
 
   return ast;
@@ -54,7 +54,7 @@ function stripMetadata(ast) {
 
 const wasmFeatures = {
   simd: true,
-  threads: true
+  threads: true,
 };
 
 // - Expected is wast-parser
@@ -76,7 +76,7 @@ describe("Binary decoder", () => {
     };
 
     // parse the wat file to create the expected AST
-    const getExpected = f => {
+    const getExpected = (f) => {
       const ast = stripMetadata(parse(f));
       const expected = JSON.stringify(ast, null, 2);
 
@@ -100,7 +100,7 @@ describe("Binary decoder", () => {
       const ret = spawnSync("node", [
         join("packages", "cli", "lib", "wasmdump.js"),
         file,
-        ...decoderOptions.split("\n")
+        ...decoderOptions.split("\n"),
       ]);
       const stderr = ret.output[2].toString();
       const stdout = ret.output[1].toString();
@@ -138,7 +138,7 @@ describe("Binary decoder", () => {
 
   describe("ignore section(s)", () => {
     const decoderOpts = {
-      ignoreDataSection: true
+      ignoreDataSection: true,
     };
 
     it("should eat the data section without overflowing", () => {
@@ -158,7 +158,7 @@ describe("Binary decoder", () => {
           if (node.section === "custom") {
             foundCustomSection = true;
           }
-        }
+        },
       });
 
       assert.isTrue(foundCustomSection, "Custom section was not detected");

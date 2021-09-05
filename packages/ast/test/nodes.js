@@ -12,7 +12,7 @@ const {
   assertStringLiteral,
 
   table,
-  identifier
+  identifier,
 } = require("../lib/nodes.js");
 
 describe("Node utils", () => {

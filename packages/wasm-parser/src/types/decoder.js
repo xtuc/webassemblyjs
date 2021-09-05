@@ -5,7 +5,7 @@ type Byte = number;
 
 type VariableLengthValue = {
   value: number,
-  nextIndex: number
+  nextIndex: number,
 };
 
 interface Type {
@@ -16,20 +16,20 @@ interface Type {
 type Decoded32 = VariableLengthValue;
 type Decoded64 = {
   value: LongNumber,
-  nextIndex: number
+  nextIndex: number,
 };
 type DecodedF32 = VariableLengthValue;
 type DecodedF64 = VariableLengthValue;
 
 type DecodedUTF8String = {
   value: string,
-  nextIndex: number
+  nextIndex: number,
 };
 
 type DecodedSymbol = {
   name: string,
   object?: Valtype,
-  numberOfArgs: number
+  numberOfArgs: number,
 };
 
 /**
@@ -37,13 +37,13 @@ type DecodedSymbol = {
  */
 type DecodedModuleType = {
   params: Array<FuncParam>,
-  result: Array<Valtype>
+  result: Array<Valtype>,
 };
 
 type DecodedModuleFunc = {
   id: Identifier,
   signature: DecodedModuleType,
-  isExternal: boolean
+  isExternal: boolean,
 };
 
 type DecodedElementInExportSection = {
@@ -54,7 +54,7 @@ type DecodedElementInExportSection = {
   index: number,
 
   startLoc: Position,
-  endLoc: Position
+  endLoc: Position,
 };
 
 type DecodedElementInCodeSection = {
@@ -62,7 +62,7 @@ type DecodedElementInCodeSection = {
   endLoc: Position,
   bodySize: number,
   code: Array<Instruction>,
-  locals: Array<Valtype>
+  locals: Array<Valtype>,
 };
 
 type DecodedModuleMemory = Memory;
@@ -77,12 +77,12 @@ type State = {
   globalsInModule: Array<DecodedModuleGlobal>,
 
   elementsInExportSection: Array<DecodedElementInExportSection>,
-  elementsInCodeSection: Array<DecodedElementInCodeSection>
+  elementsInCodeSection: Array<DecodedElementInCodeSection>,
 };
 
 type DecoderOpts = {
   dump: boolean,
   ignoreDataSection: boolean,
   ignoreCodeSection: boolean,
-  ignoreCustomNameSection: boolean
+  ignoreCustomNameSection: boolean,
 };

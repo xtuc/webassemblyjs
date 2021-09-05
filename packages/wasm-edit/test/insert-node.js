@@ -2,12 +2,12 @@ const { assert } = require("chai");
 const t = require("@webassemblyjs/ast");
 const {
   encodeVersion,
-  encodeHeader
+  encodeHeader,
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 const {
-  compareArrayBuffers
+  compareArrayBuffers,
 } = require("@webassemblyjs/helper-buffer/lib/compare");
 const { fromHexdump } = require("@webassemblyjs/helper-buffer");
 
@@ -30,7 +30,7 @@ describe("insert a node", () => {
       const actualBinary = makeBuffer(encodeHeader(), encodeVersion(1));
 
       const newBinary = add(actualBinary, [
-        t.moduleImport("a", "b", t.memory(t.limit(1)))
+        t.moduleImport("a", "b", t.memory(t.limit(1))),
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -41,11 +41,11 @@ describe("insert a node", () => {
       const actualBinary = makeBuffer(encodeHeader(), encodeVersion(1), [
         constants.sections.import,
         0x01,
-        0x00
+        0x00,
       ]);
 
       const newBinary = add(actualBinary, [
-        t.moduleImport("a", "b", t.memory(t.limit(1)))
+        t.moduleImport("a", "b", t.memory(t.limit(1))),
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -80,7 +80,7 @@ describe("insert a node", () => {
       );
 
       const newBinary = add(actual, [
-        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0))),
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
@@ -99,13 +99,13 @@ describe("insert a node", () => {
       );
 
       const newBinary = add(actual, [
-        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0))),
       ]);
 
       compareArrayBuffers(newBinary, expectedBinary);
     });
 
-    it("should export a function in WebAssembly", function() {
+    it("should export a function in WebAssembly", function () {
       if (typeof WebAssembly === "undefined") {
         console.warn("WebAssembly not available; skiping test");
         return this.skip();
@@ -123,10 +123,10 @@ describe("insert a node", () => {
       );
 
       const newBinary = add(actual, [
-        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
+        t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0))),
       ]);
 
-      return WebAssembly.instantiate(newBinary).then(m => {
+      return WebAssembly.instantiate(newBinary).then((m) => {
         assert.isOk(m.instance.exports.a);
         assert.typeOf(m.instance.exports.a, "function");
       });
@@ -145,12 +145,12 @@ describe("insert a node", () => {
       0x01,
       0x41,
       0x01,
-      0x0b
+      0x0b,
     ]);
 
     const global = t.global(t.globalType("i32", "var"), [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
-      t.instruction("end")
+      t.instruction("end"),
     ]);
 
     it("should insert the node in existing section", () => {
@@ -158,7 +158,7 @@ describe("insert a node", () => {
       const actual = makeBuffer(encodeHeader(), encodeVersion(1), [
         constants.sections.global,
         0x01,
-        0x00
+        0x00,
       ]);
 
       const newBinary = add(actual, [global]);
@@ -190,7 +190,7 @@ describe("insert a node", () => {
 
     const func = t.func(null, t.signature([], ["i32"]), [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
-      t.instruction("end")
+      t.instruction("end"),
     ]);
 
     const functype = t.typeInstruction(
@@ -251,7 +251,7 @@ describe("insert a node", () => {
 
     const global = t.global(t.globalType("i32", "const"), [
       t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(1)]),
-      t.instruction("end")
+      t.instruction("end"),
     ]);
 
     const functype = t.typeInstruction(undefined, t.signature([], []));
@@ -263,7 +263,7 @@ describe("insert a node", () => {
     );
 
     const func = t.func(t.identifier("foo"), t.signature([], []), [
-      t.instruction("end")
+      t.instruction("end"),
     ]);
 
     // (module)
@@ -280,7 +280,7 @@ describe("insert a node", () => {
       global,
       functype,
       funcindex,
-      moduleExport
+      moduleExport,
     ]);
 
     const expected = makeBuffer(

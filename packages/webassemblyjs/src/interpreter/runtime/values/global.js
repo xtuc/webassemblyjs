@@ -38,6 +38,6 @@ export function createInstance(
   return {
     type: valtype,
     mutability,
-    value
+    value,
   };
 }

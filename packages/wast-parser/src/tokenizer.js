@@ -9,13 +9,16 @@ declare function unexpectedCharacter(char: string): void;
 /**
  * Throw an error in case the current character is invalid
  */
-define(unexpectedCharacter, char =>
-  `throw new Error(getCodeFrame(input, line, column) + "Unexpected character " + JSON.stringify(${char}));`);
+define(
+  unexpectedCharacter,
+  (char) =>
+    `throw new Error(getCodeFrame(input, line, column) + "Unexpected character " + JSON.stringify(${char}));`
+);
 
 // eslint-disable-next-line
 function getCodeFrame(source: string, line: number, column: number) {
   const loc = {
-    start: { line, column }
+    start: { line, column },
   };
 
   return "\n" + codeFrameFromSource(source, loc) + "\n";
@@ -40,8 +43,8 @@ function Token(type, value, start, end, opts = {}) {
     value,
     loc: {
       start,
-      end
-    }
+      end,
+    },
   };
 
   if (Object.keys(opts).length > 0) {
@@ -64,7 +67,7 @@ const tokenTypes = {
   comment: "comment",
   equal: "equal",
 
-  keyword: "keyword"
+  keyword: "keyword",
 };
 
 export const keywords = {
@@ -91,7 +94,7 @@ export const keywords = {
   type: "type",
   elem: "elem",
   start: "start",
-  offset: "offset"
+  offset: "offset",
 };
 
 const NUMERIC_SEPARATOR = "_";
@@ -121,60 +124,60 @@ const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
       makeTransition(/nan|inf/, "STOP", { n: 3 }),
       makeTransition(/0x/, "HEX", { n: 2 }),
       makeTransition(/[0-9]/, "DEC"),
-      makeTransition(/\./, "DEC_FRAC")
+      makeTransition(/\./, "DEC_FRAC"),
     ],
     AFTER_SIGN: [
       makeTransition(/nan:0x/, "NAN_HEX", { n: 6 }),
       makeTransition(/nan|inf/, "STOP", { n: 3 }),
       makeTransition(/0x/, "HEX", { n: 2 }),
       makeTransition(/[0-9]/, "DEC"),
-      makeTransition(/\./, "DEC_FRAC")
+      makeTransition(/\./, "DEC_FRAC"),
     ],
     DEC_FRAC: [
       makeTransition(/[0-9]/, "DEC_FRAC", {
-        allowedSeparator: NUMERIC_SEPARATOR
+        allowedSeparator: NUMERIC_SEPARATOR,
       }),
-      makeTransition(/e|E/, "DEC_SIGNED_EXP")
+      makeTransition(/e|E/, "DEC_SIGNED_EXP"),
     ],
     DEC: [
       makeTransition(/[0-9]/, "DEC", { allowedSeparator: NUMERIC_SEPARATOR }),
       makeTransition(/\./, "DEC_FRAC"),
-      makeTransition(/e|E/, "DEC_SIGNED_EXP")
+      makeTransition(/e|E/, "DEC_SIGNED_EXP"),
     ],
     DEC_SIGNED_EXP: [
       makeTransition(/\+|-/, "DEC_EXP"),
-      makeTransition(/[0-9]/, "DEC_EXP")
+      makeTransition(/[0-9]/, "DEC_EXP"),
     ],
     DEC_EXP: [
       makeTransition(/[0-9]/, "DEC_EXP", {
-        allowedSeparator: NUMERIC_SEPARATOR
-      })
+        allowedSeparator: NUMERIC_SEPARATOR,
+      }),
     ],
     HEX: [
       makeTransition(/[0-9|A-F|a-f]/, "HEX", {
-        allowedSeparator: NUMERIC_SEPARATOR
+        allowedSeparator: NUMERIC_SEPARATOR,
       }),
       makeTransition(/\./, "HEX_FRAC"),
-      makeTransition(/p|P/, "HEX_SIGNED_EXP")
+      makeTransition(/p|P/, "HEX_SIGNED_EXP"),
     ],
     HEX_FRAC: [
       makeTransition(/[0-9|A-F|a-f]/, "HEX_FRAC", {
-        allowedSeparator: NUMERIC_SEPARATOR
+        allowedSeparator: NUMERIC_SEPARATOR,
       }),
-      makeTransition(/p|P|/, "HEX_SIGNED_EXP")
+      makeTransition(/p|P|/, "HEX_SIGNED_EXP"),
     ],
     HEX_SIGNED_EXP: [makeTransition(/[0-9|+|-]/, "HEX_EXP")],
     HEX_EXP: [
       makeTransition(/[0-9]/, "HEX_EXP", {
-        allowedSeparator: NUMERIC_SEPARATOR
-      })
+        allowedSeparator: NUMERIC_SEPARATOR,
+      }),
     ],
     NAN_HEX: [
       makeTransition(/[0-9|A-F|a-f]/, "NAN_HEX", {
-        allowedSeparator: NUMERIC_SEPARATOR
-      })
+        allowedSeparator: NUMERIC_SEPARATOR,
+      }),
     ],
-    STOP: []
+    STOP: [],
   },
   "START",
   "STOP"
@@ -194,7 +197,7 @@ export function tokenize(input: string) {
    * Creates a pushToken function for a given type
    */
   function pushToken(type: string) {
-    return function(v: string | number, opts: Object = {}) {
+    return function (v: string | number, opts: Object = {}) {
       const startColumn = opts.startColumn || column - String(v).length;
       delete opts.startColumn;
 

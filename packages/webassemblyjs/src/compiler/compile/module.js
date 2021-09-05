@@ -45,10 +45,10 @@ export function createCompiledModule(ast: Program): CompiledModule {
       if (node.descr.exportType === "Func") {
         exports.push({
           name: node.name,
-          kind: "function"
+          kind: "function",
         });
       }
-    }
+    },
   });
 
   /**

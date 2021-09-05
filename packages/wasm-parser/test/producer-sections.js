@@ -34,7 +34,7 @@ describe("Binary decoder", () => {
         assert.equal(second[0].version, "1.32.0 (9fda7c223 2019-01-16)");
 
         found = true;
-      }
+      },
     });
 
     assert.isTrue(found, "no producers section was found");

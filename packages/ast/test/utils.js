@@ -4,7 +4,7 @@ const { assert } = require("chai");
 function locOnCol(n) {
   return {
     start: { line: -1, column: n },
-    end: { line: -1, column: n + 1 }
+    end: { line: -1, column: n + 1 },
   };
 }
 
@@ -14,21 +14,23 @@ describe("AST utils", () => {
       metadata: {
         sections: [
           {
-            section: "data"
+            section: "data",
           },
           {
-            section: "global"
+            section: "global",
           },
           {
-            section: "type"
-          }
-        ]
-      }
+            section: "type",
+          },
+        ],
+      },
     };
 
     t.sortSectionMetadata(fakeModule);
 
-    const sections = fakeModule.metadata.sections.map(x => x.section).join(",");
+    const sections = fakeModule.metadata.sections
+      .map((x) => x.section)
+      .join(",");
 
     assert.equal(sections, "type,global,data");
   });
@@ -45,7 +47,7 @@ describe("AST utils", () => {
 
       t.orderedInsertNode(m, n);
 
-      const nodes = m.fields.map(x => x.type);
+      const nodes = m.fields.map((x) => x.type);
 
       assert.deepEqual(nodes, ["TypeInstruction"]);
     });
@@ -58,7 +60,7 @@ describe("AST utils", () => {
 
       t.orderedInsertNode(m, n);
 
-      const nodes = m.fields.map(x => x.type);
+      const nodes = m.fields.map((x) => x.type);
 
       assert.deepEqual(nodes, ["BlockComment", "TypeInstruction"]);
     });
@@ -71,7 +73,7 @@ describe("AST utils", () => {
 
       t.orderedInsertNode(m, n);
 
-      const nodes = m.fields.map(x => x.type);
+      const nodes = m.fields.map((x) => x.type);
 
       assert.deepEqual(nodes, ["TypeInstruction", "BlockComment"]);
     });
@@ -87,12 +89,12 @@ describe("AST utils", () => {
 
       t.orderedInsertNode(m, firstType);
 
-      const nodes = m.fields.map(x => x.type);
+      const nodes = m.fields.map((x) => x.type);
 
       assert.deepEqual(nodes, [
         "TypeInstruction",
         "TypeInstruction",
-        "ModuleExport"
+        "ModuleExport",
       ]);
     });
   });

@@ -11,7 +11,7 @@ const testCases = [];
 if (typeof process.env["DISABLE_FUZZER_TEST"] === "undefined") {
   for (let i = 1; i < numberOfRuns; ++i) {
     const output = execFileSync(fuzzerBin, [i], {
-      encoding: "utf8"
+      encoding: "utf8",
     });
 
     const [arg, result] = output.split(" ");

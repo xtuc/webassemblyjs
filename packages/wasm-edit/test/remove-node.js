@@ -1,10 +1,10 @@
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const {
-  compareArrayBuffers
+  compareArrayBuffers,
 } = require("@webassemblyjs/helper-buffer/lib/compare");
 const {
   encodeVersion,
-  encodeHeader
+  encodeHeader,
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 
@@ -26,7 +26,7 @@ describe("remove a node", () => {
     const newBinary = edit(actualBinary, {
       ModuleExport(path) {
         path.remove();
-      }
+      },
     });
 
     // (module
@@ -59,7 +59,7 @@ describe("remove a node", () => {
     const newBinary = edit(actualBinary, {
       Start(path) {
         path.remove();
-      }
+      },
     });
 
     // (module
@@ -91,14 +91,14 @@ describe("remove a node", () => {
     const newBinary = edit(actualBinary, {
       TypeInstruction(path) {
         path.remove();
-      }
+      },
     });
 
     // (module)
     const expectedBinary = makeBuffer(encodeHeader(), encodeVersion(1), [
       constants.sections.type,
       0x01,
-      0x00
+      0x00,
     ]);
 
     compareArrayBuffers(newBinary, expectedBinary);

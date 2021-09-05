@@ -21,7 +21,7 @@ export function getSectionMetadata(
       if (node.section === name) {
         section = node;
       }
-    }
+    },
   });
 
   return section;
@@ -38,7 +38,7 @@ export function getSectionMetadatas(
       if (node.section === name) {
         sections.push(node);
       }
-    }
+    },
   });
 
   return sections;
@@ -159,7 +159,7 @@ export function shiftSection(
       if (section === sectionName && typeof node.loc === "object") {
         shiftLoc(node, delta);
       }
-    }
+    },
   });
 }
 
@@ -178,9 +178,9 @@ export function signatureForOpcode(object: string, name: string): SignatureMap {
   return sign[0];
 }
 
-export function getUniqueNameGenerator(): string => string {
+export function getUniqueNameGenerator(): (string) => string {
   const inc = {};
-  return function(prefix: string = "temp"): string {
+  return function (prefix: string = "temp"): string {
     if (!(prefix in inc)) {
       inc[prefix] = 0;
     } else {

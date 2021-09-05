@@ -13,7 +13,7 @@ describe("fsm", () => {
     const simpleFsm = new FSM(
       {
         A: [makeTransition(/a/, "B")],
-        B: [makeTransition(/b/, "A")]
+        B: [makeTransition(/b/, "A")],
       },
       "A"
     );

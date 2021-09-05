@@ -18,7 +18,7 @@ function shiftFollowingSections(ast, { section }, deltaInSizeEncoding) {
       if (encounteredSection === true) {
         shiftSection(ast, path.node, deltaInSizeEncoding);
       }
-    }
+    },
   });
 }
 
@@ -53,7 +53,7 @@ export function shrinkPaddedLEB128(
           shiftFollowingSections(ast, node, -deltaInSizeEncoding);
         }
       }
-    }
+    },
   });
 
   return uint8Buffer;

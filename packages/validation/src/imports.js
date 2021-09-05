@@ -7,7 +7,7 @@ import { traverse } from "@webassemblyjs/ast";
  *
  * See https://webassembly.github.io/spec/core/multipage/valid/instructions.html#valid-constant
  */
-export default function(
+export default function (
   ast: Program /*, moduleContext: Object */
 ): Array<string> {
   const errors = [];
@@ -19,7 +19,7 @@ export default function(
       if (mutability === "var") {
         errors.push("mutable globals cannot be imported");
       }
-    }
+    },
   });
 
   return errors;

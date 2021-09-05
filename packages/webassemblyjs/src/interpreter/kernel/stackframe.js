@@ -40,7 +40,7 @@ export function createStackFrame(
     /**
      * The callee address
      */
-    returnAddress: -1
+    returnAddress: -1,
   };
 }
 

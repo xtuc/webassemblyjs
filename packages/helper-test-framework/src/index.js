@@ -50,7 +50,7 @@ export function compareWithExpected(
   pre: (string, string) => string = NOOP_FN,
   expectedFilename: string = "expected.wast"
 ) {
-  fixtures.forEach(suite => {
+  fixtures.forEach((suite) => {
     it(suite, () => {
       const input = readFileSync(suite, "utf8");
       const expectedThrows = getThrowsFile(dirname(suite));
@@ -96,7 +96,7 @@ export function compare(
   getActual: (string, string) => string = NOOP_FN,
   getExpected: (string, string) => string = NOOP_FN
 ) {
-  fixtures.forEach(suite => {
+  fixtures.forEach((suite) => {
     it(suite, () => {
       const input = readFileSync(suite, "utf8");
 

@@ -31,7 +31,7 @@ function binop(
   { value: value1 }: StackLocal,
   { value: value2 }: StackLocal,
   sign: Sign,
-  createValue: any => StackLocal
+  createValue: (any) => StackLocal
 ): StackLocal {
   switch (sign) {
     case "add":

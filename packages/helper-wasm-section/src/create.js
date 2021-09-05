@@ -115,7 +115,7 @@ export function createEmptySection(
       if (encounteredSection === true) {
         t.shiftSection(ast, path.node, deltaBytes);
       }
-    }
+    },
   });
 
   return { uint8Buffer, sectionMetadata };

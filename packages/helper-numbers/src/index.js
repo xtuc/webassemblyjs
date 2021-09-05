@@ -76,7 +76,7 @@ export function parse64I(sourceString: string): LongNumber {
 
   return {
     high: long.high,
-    low: long.low
+    low: long.low,
   };
 }
 

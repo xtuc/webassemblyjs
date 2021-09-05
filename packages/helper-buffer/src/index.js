@@ -45,7 +45,7 @@ export function fromHexdump(str: string): Buffer {
   let lines = str.split("\n");
 
   // remove any leading left whitespace
-  lines = lines.map(line => line.trim());
+  lines = lines.map((line) => line.trim());
 
   const bytes = lines.reduce((acc, line) => {
     let cols = line.split(" ");
@@ -53,9 +53,9 @@ export function fromHexdump(str: string): Buffer {
     // remove the offset, left column
     cols.shift();
 
-    cols = cols.filter(x => x !== "");
+    cols = cols.filter((x) => x !== "");
 
-    const bytes = cols.map(x => parseInt(x, 16));
+    const bytes = cols.map((x) => parseInt(x, 16));
 
     acc.push(...bytes);
 

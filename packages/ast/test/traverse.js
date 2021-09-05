@@ -16,7 +16,7 @@ describe("AST traverse", () => {
           assert.equal(path.node.id, node.id);
 
           called = true;
-        }
+        },
       });
 
       assert.isTrue(called, "Module visitor has not been called");
@@ -29,7 +29,7 @@ describe("AST traverse", () => {
       traverse(node, {
         Module() {
           nb++;
-        }
+        },
       });
 
       assert.equal(nb, 1);
@@ -42,7 +42,7 @@ describe("AST traverse", () => {
       traverse(node, {
         Node() {
           called = true;
-        }
+        },
       });
 
       assert.isTrue(called, "Module visitor has not been called");
@@ -60,7 +60,7 @@ describe("AST traverse", () => {
       assert.throws(
         () =>
           traverse(node, {
-            NotANode() {}
+            NotANode() {},
           }),
         "Unexpected visitor NotANode"
       );
@@ -77,7 +77,7 @@ describe("AST traverse", () => {
           assert.isObject(path.parentPath);
           assert.equal(path.parentPath.node.type, "Module");
           called = true;
-        }
+        },
       });
 
       assert.isTrue(called, "visitor has not been called");
@@ -91,7 +91,7 @@ describe("AST traverse", () => {
         Module(path) {
           assert.isNull(path.parentPath);
           called = true;
-        }
+        },
       });
 
       assert.isTrue(called, "visitor has not been called");
@@ -106,7 +106,7 @@ describe("AST traverse", () => {
           assert.isObject(path.parentPath);
           assert.equal(path.parentKey, "fields");
           called = true;
-        }
+        },
       });
 
       assert.isTrue(called, "visitor has not been called");
@@ -114,7 +114,7 @@ describe("AST traverse", () => {
 
     it("should set inList", () => {
       const m = t.module("test", [
-        t.func(null, t.signature([], []), [t.instruction("nop")])
+        t.func(null, t.signature([], []), [t.instruction("nop")]),
       ]);
 
       traverse(m, {
@@ -123,7 +123,7 @@ describe("AST traverse", () => {
         },
         Func(path) {
           assert.isTrue(path.inList);
-        }
+        },
       });
     });
   });
@@ -142,7 +142,7 @@ describe("AST traverse", () => {
               false,
               "traversal should have halted before this node"
             );
-          }
+          },
         });
       });
     });
@@ -154,7 +154,7 @@ describe("AST traverse", () => {
         traverse(root, {
           Func(path) {
             path.insertBefore(t.global(t.globalType("i32", "var"), []));
-          }
+          },
         });
 
         assert.lengthOf(root.fields, 2);
@@ -165,7 +165,7 @@ describe("AST traverse", () => {
       it("should insert at the middle of a list of nodes", () => {
         const root = t.module("test", [
           t.func(t.identifier("foo"), t.signature([], []), []),
-          t.func(t.identifier("bar"), t.signature([], []), [])
+          t.func(t.identifier("bar"), t.signature([], []), []),
         ]);
 
         traverse(root, {
@@ -173,7 +173,7 @@ describe("AST traverse", () => {
             if (path.node.name.value === "bar") {
               path.insertBefore(t.global(t.globalType("i32", "var"), []));
             }
-          }
+          },
         });
 
         assert.lengthOf(root.fields, 3);
@@ -190,7 +190,7 @@ describe("AST traverse", () => {
             traverse(root, {
               Module(path) {
                 path.insertBefore(t.global(t.globalType("i32", "var"), []));
-              }
+              },
             }),
           "insert can only be used for nodes that are within lists"
         );
@@ -204,7 +204,7 @@ describe("AST traverse", () => {
         traverse(root, {
           Func(path) {
             path.insertAfter(t.global(t.globalType("i32", "var"), []));
-          }
+          },
         });
 
         assert.lengthOf(root.fields, 2);
@@ -215,7 +215,7 @@ describe("AST traverse", () => {
       it("should insert at the middle of a list of nodes", () => {
         const root = t.module("test", [
           t.func(t.identifier("foo"), t.signature([], []), []),
-          t.func(t.identifier("bar"), t.signature([], []), [])
+          t.func(t.identifier("bar"), t.signature([], []), []),
         ]);
 
         traverse(root, {
@@ -223,7 +223,7 @@ describe("AST traverse", () => {
             if (path.node.name.value === "foo") {
               path.insertAfter(t.global(t.globalType("i32", "var"), []));
             }
-          }
+          },
         });
 
         assert.lengthOf(root.fields, 3);
@@ -240,7 +240,7 @@ describe("AST traverse", () => {
             traverse(root, {
               Module(path) {
                 path.insertAfter(t.global(t.globalType("i32", "var"), []));
-              }
+              },
             }),
           "insert can only be used for nodes that are within lists"
         );
@@ -251,7 +251,7 @@ describe("AST traverse", () => {
       it("should remove nodes when they have siblings", () => {
         const root = t.module("test", [
           t.func(t.identifier("foo"), t.signature([], []), []),
-          t.func(t.identifier("bar"), t.signature([], []), [])
+          t.func(t.identifier("bar"), t.signature([], []), []),
         ]);
 
         traverse(root, {
@@ -259,7 +259,7 @@ describe("AST traverse", () => {
             if (path.node.name.value === "bar") {
               path.remove();
             }
-          }
+          },
         });
 
         assert.lengthOf(root.fields, 1);
@@ -272,7 +272,7 @@ describe("AST traverse", () => {
         traverse(root, {
           Signature(path) {
             path.remove();
-          }
+          },
         });
 
         assert.equal(root.fields[0].signature, null);
@@ -284,7 +284,7 @@ describe("AST traverse", () => {
         traverse(root, {
           Func(path) {
             path.remove();
-          }
+          },
         });
 
         assert.lengthOf(root.fields, 0);
@@ -292,13 +292,13 @@ describe("AST traverse", () => {
 
       it("should remove export in module", () => {
         const root = t.module("test", [
-          t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0)))
+          t.moduleExport("a", t.moduleExportDescr("Func", t.indexLiteral(0))),
         ]);
 
         traverse(root, {
           ModuleExport(path) {
             path.remove();
-          }
+          },
         });
 
         assert.lengthOf(root.fields, 0);
@@ -310,7 +310,7 @@ describe("AST traverse", () => {
         traverse(func, {
           Instr(path) {
             path.remove();
-          }
+          },
         });
 
         assert.lengthOf(func.body, 0);
@@ -325,7 +325,7 @@ describe("AST traverse", () => {
           Instr(path) {
             const newNode = t.callInstruction(t.indexLiteral(0));
             path.replaceWith(newNode);
-          }
+          },
         });
 
         assert.equal(func.body[0].type, "CallInstruction");
@@ -335,7 +335,7 @@ describe("AST traverse", () => {
         const root = t.module("test", [
           t.func(t.identifier("foo"), t.signature([], []), []),
           t.func(t.identifier("bar"), t.signature([], []), []),
-          t.func(t.identifier("baz"), t.signature([], []), [])
+          t.func(t.identifier("baz"), t.signature([], []), []),
         ]);
 
         traverse(root, {
@@ -344,7 +344,7 @@ describe("AST traverse", () => {
               const newNode = t.callInstruction(t.indexLiteral(0));
               path.replaceWith(newNode);
             }
-          }
+          },
         });
 
         assert.equal(root.fields[1].type, "CallInstruction");
@@ -357,7 +357,7 @@ describe("AST traverse", () => {
           Signature(path) {
             const newNode = t.callInstruction(t.indexLiteral(0));
             path.replaceWith(newNode);
-          }
+          },
         });
 
         assert.equal(root.fields[0].signature.type, "CallInstruction");
@@ -372,13 +372,13 @@ describe("AST traverse", () => {
           Node(path) {
             const fn = () => path.findParent(() => {});
             assert.throws(fn);
-          }
+          },
         });
       });
 
       it("should find parent until the root", () => {
         const m = t.module("test", [
-          t.func(null, t.signature([], []), [t.instruction("nop")])
+          t.func(null, t.signature([], []), [t.instruction("nop")]),
         ]);
 
         const typesFound = [];
@@ -388,7 +388,7 @@ describe("AST traverse", () => {
             path.findParent(({ node }) => {
               typesFound.push(node.type);
             });
-          }
+          },
         });
 
         assert.deepEqual(typesFound, ["Func", "Module"]);
@@ -396,7 +396,7 @@ describe("AST traverse", () => {
 
       it("should find parent until false", () => {
         const m = t.module("test", [
-          t.func(null, t.signature([], []), [t.instruction("nop")])
+          t.func(null, t.signature([], []), [t.instruction("nop")]),
         ]);
 
         const typesFound = [];
@@ -412,7 +412,7 @@ describe("AST traverse", () => {
             });
 
             assert.equal(foundNode.type, "Func");
-          }
+          },
         });
 
         assert.deepEqual(typesFound, ["Func"]);

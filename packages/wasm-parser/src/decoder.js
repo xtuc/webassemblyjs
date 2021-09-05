@@ -8,7 +8,9 @@ import { define } from "mamacro";
 
 declare function WITH_LOC<T>(n: T, startLoc: Position): T;
 
-define(WITH_LOC, (node, startLoc) => `
+define(
+  WITH_LOC,
+  (node, startLoc) => `
     (function() {
       const endLoc = getPosition();
 
@@ -18,7 +20,8 @@ define(WITH_LOC, (node, startLoc) => `
         ${startLoc}
       );
     })()
-  `);
+  `
+);
 
 import {
   decodeInt32,
@@ -26,7 +29,7 @@ import {
   MAX_NUMBER_OF_BYTE_U32,
   decodeInt64,
   decodeUInt64,
-  MAX_NUMBER_OF_BYTE_U64
+  MAX_NUMBER_OF_BYTE_U64,
 } from "@webassemblyjs/leb128";
 
 import constants from "@webassemblyjs/helper-wasm-bytecode";
@@ -119,7 +122,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
      * Decoded globals from:
      * - Global section
      */
-    globalsInModule: []
+    globalsInModule: [],
   };
 
   function isEOF(): boolean {
@@ -155,7 +158,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       return {
         value: Math.sign(value),
         inf: true,
-        nextIndex: ieee754.NUMBER_OF_BYTE_F64
+        nextIndex: ieee754.NUMBER_OF_BYTE_F64,
       };
     }
 
@@ -170,13 +173,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       return {
         value: sign * mantissa,
         nan: true,
-        nextIndex: ieee754.NUMBER_OF_BYTE_F64
+        nextIndex: ieee754.NUMBER_OF_BYTE_F64,
       };
     }
 
     return {
       value,
-      nextIndex: ieee754.NUMBER_OF_BYTE_F64
+      nextIndex: ieee754.NUMBER_OF_BYTE_F64,
     };
   }
 
@@ -188,7 +191,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       return {
         value: Math.sign(value),
         inf: true,
-        nextIndex: ieee754.NUMBER_OF_BYTE_F32
+        nextIndex: ieee754.NUMBER_OF_BYTE_F32,
       };
     }
 
@@ -203,13 +206,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       return {
         value: sign * mantissa,
         nan: true,
-        nextIndex: ieee754.NUMBER_OF_BYTE_F32
+        nextIndex: ieee754.NUMBER_OF_BYTE_F32,
       };
     }
 
     return {
       value,
-      nextIndex: ieee754.NUMBER_OF_BYTE_F32
+      nextIndex: ieee754.NUMBER_OF_BYTE_F32,
     };
   }
 
@@ -230,7 +233,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     return {
       value,
-      nextIndex: strlen + lenu32.nextIndex
+      nextIndex: strlen + lenu32.nextIndex,
     };
   }
 
@@ -328,7 +331,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     eatBytes(4);
   }
 
-  function parseVec<T>(cast: Byte => T): Array<T> {
+  function parseVec<T>(cast: (Byte) => T): Array<T> {
     const u32 = readU32();
     const length = u32.value;
     eatBytes(u32.nextIndex);
@@ -380,11 +383,11 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([type], "func");
 
         const paramValtypes: Array<Valtype> = parseVec(
-          b => constants.valtypes[b]
+          (b) => constants.valtypes[b]
         );
-        const params = paramValtypes.map(v => t.funcParam(/*valtype*/ v));
+        const params = paramValtypes.map((v) => t.funcParam(/*valtype*/ v));
 
-        const result: Array<Valtype> = parseVec(b => constants.valtypes[b]);
+        const result: Array<Valtype> = parseVec((b) => constants.valtypes[b]);
 
         typeInstructionNodes.push(
           WITH_LOC(
@@ -395,7 +398,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         state.typesInModule.push({
           params,
-          result
+          result,
         });
       } else {
         throw new Error("Unsupported type: " + toHex(type));
@@ -472,7 +475,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         state.functionsInModule.push({
           id: t.identifier(name.value),
           signature,
-          isExternal: true
+          isExternal: true,
         });
       } else if (descrType === "global") {
         importDescr = parseGlobalType();
@@ -527,7 +530,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       state.functionsInModule.push({
         id,
         signature,
-        isExternal: false
+        isExternal: false,
       });
     }
   }
@@ -620,7 +623,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         id,
         index,
         endLoc,
-        startLoc
+        startLoc,
       });
     }
   }
@@ -699,7 +702,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
         endLoc,
         startLoc,
-        bodySize: bodySizeU32.value
+        bodySize: bodySizeU32.value,
       });
     }
   }
@@ -983,7 +986,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           const node = {
             type: "LongNumberLiteral",
-            value: { high, low }
+            value: { high, low },
           };
 
           args.push(node);
@@ -1000,7 +1003,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           const node = {
             type: "LongNumberLiteral",
-            value: { high, low }
+            value: { high, low },
           };
 
           args.push(node);
@@ -1301,7 +1304,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     const fields = {
       language: [],
       "processed-by": [],
-      sdk: []
+      sdk: [],
     };
 
     // fields
@@ -1482,7 +1485,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const instrs: Array<Instruction> = [];
       parseInstructionBlock(instrs);
 
-      const hasExtraInstrs = instrs.filter(i => i.id !== "end").length !== 1;
+      const hasExtraInstrs = instrs.filter((i) => i.id !== "end").length !== 1;
 
       if (hasExtraInstrs) {
         throw new CompileError(
@@ -1490,7 +1493,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         );
       }
 
-      const bytes: Array<Byte> = parseVec(b => b);
+      const bytes: Array<Byte> = parseVec((b) => b);
 
       dump([], "init");
 
@@ -1503,12 +1506,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
   }
 
   // https://webassembly.github.io/spec/binary/modules.html#binary-section
-  function parseSection(
-    sectionIndex: number
-  ): {
+  function parseSection(sectionIndex: number): {
     nodes: Array<Node>,
     metadata: SectionMetadata | Array<SectionMetadata>,
-    nextSectionIndex: number
+    nextSectionIndex: number,
   } {
     const sectionId = readByte();
     eatBytes(1);
@@ -1820,7 +1821,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         dump([sectionSizeInBytes], "section size");
 
         const metadata = [
-          t.sectionMetadata("custom", startOffset, sectionSizeInBytesNode)
+          t.sectionMetadata("custom", startOffset, sectionSizeInBytesNode),
         ];
 
         const sectionName = readUTF8String();
@@ -1837,9 +1838,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
             metadata.push(...parseNameSection(remainingBytes));
           } catch (e) {
             console.warn(
-              `Failed to decode custom "name" section @${offset}; ignoring (${
-                e.message
-              }).`
+              `Failed to decode custom "name" section @${offset}; ignoring (${e.message}).`
             );
 
             eatBytes(offset - (initialOffset + remainingBytes));
@@ -1851,9 +1850,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
             metadata.push(parseProducersSection());
           } catch (e) {
             console.warn(
-              `Failed to decode custom "producers" section @${offset}; ignoring (${
-                e.message
-              }).`
+              `Failed to decode custom "producers" section @${offset}; ignoring (${e.message}).`
             );
 
             eatBytes(offset - (initialOffset + remainingBytes));
@@ -1887,7 +1884,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     sections: [],
     functionNames: [],
     localNames: [],
-    producers: []
+    producers: [],
   };
 
   /**
@@ -1899,7 +1896,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     moduleFields.push(...nodes);
 
     const metadataArray = Array.isArray(metadata) ? metadata : [metadata];
-    metadataArray.forEach(metadataItem => {
+    metadataArray.forEach((metadataItem) => {
       if (metadataItem.type === "FunctionNameMetadata") {
         moduleMetadata.functionNames.push(metadataItem);
       } else if (metadataItem.type === "LocalNameMetadata") {

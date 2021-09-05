@@ -5,7 +5,7 @@ import Long from "@xtuc/long";
 
 const compact = false;
 const space = " ";
-const quote = str => `"${str}"`;
+const quote = (str) => `"${str}"`;
 
 function indent(nb: number): string {
   return Array(nb)
@@ -64,7 +64,7 @@ function printTypeInstruction(n: TypeInstruction): string {
   out += "(";
   out += "func";
 
-  n.functype.params.forEach(param => {
+  n.functype.params.forEach((param) => {
     out += space;
     out += "(";
     out += "param";
@@ -75,7 +75,7 @@ function printTypeInstruction(n: TypeInstruction): string {
     out += ")";
   });
 
-  n.functype.results.forEach(result => {
+  n.functype.results.forEach((result) => {
     out += space;
     out += "(";
     out += "result";
@@ -107,7 +107,7 @@ function printModule(n: Module, depth: number): string {
     out += space;
   }
 
-  n.fields.forEach(field => {
+  n.fields.forEach((field) => {
     if (compact === false) {
       out += indent(depth);
     }
@@ -203,7 +203,7 @@ function printData(n: Data, depth: number): string {
   out += space;
 
   out += '"';
-  n.init.values.forEach(function(byte) {
+  n.init.values.forEach(function (byte) {
     // Avoid non-displayable characters
     if (byte <= 31 || byte == 34 || byte == 92 || byte >= 127) {
       out += "\\";
@@ -241,7 +241,7 @@ function printElem(n: Elem, depth: number): string {
   out += printInstruction(firstOffset, depth);
   out += ")";
 
-  n.funcs.forEach(func => {
+  n.funcs.forEach((func) => {
     out += space;
     out += printIndex(func);
   });
@@ -299,7 +299,7 @@ function printBlockComment(n: BlockComment): string {
 function printSignature(n: Signature): string {
   let out = "";
 
-  n.params.forEach(param => {
+  n.params.forEach((param) => {
     out += space;
     out += "(";
     out += "param";
@@ -309,7 +309,7 @@ function printSignature(n: Signature): string {
     out += ")";
   });
 
-  n.results.forEach(result => {
+  n.results.forEach((result) => {
     out += space;
     out += "(";
     out += "result";
@@ -406,7 +406,7 @@ function printGlobal(n: Global, depth: number): string {
   out += printGlobalType(n.globalType);
   out += space;
 
-  n.init.forEach(i => {
+  n.init.forEach((i) => {
     out += printInstruction(i, depth + 1);
   });
 
@@ -488,7 +488,7 @@ function printFunc(n: Func, depth: number): string {
       out += "\n";
     }
 
-    n.body.forEach(i => {
+    n.body.forEach((i) => {
       if (i.id !== "end") {
         out += indent(depth);
         out += printInstruction(i, depth);
@@ -609,7 +609,7 @@ function printLoopInstruction(n: LoopInstruction, depth: number): string {
   }
 
   if (n.instr.length > 0) {
-    n.instr.forEach(e => {
+    n.instr.forEach((e) => {
       if (compact === false) {
         out += "\n";
       }
@@ -641,7 +641,7 @@ function printCallInstruction(n: CallInstruction, depth: number): string {
 
   if (typeof n.instrArgs === "object") {
     // $FlowIgnore
-    n.instrArgs.forEach(arg => {
+    n.instrArgs.forEach((arg) => {
       out += space;
       out += printFuncInstructionArg(arg, depth + 1);
     });
@@ -677,7 +677,7 @@ function printIfInstruction(n: IfInstruction, depth: number): string {
   if (n.test.length > 0) {
     out += space;
 
-    n.test.forEach(i => {
+    n.test.forEach((i) => {
       out += printInstruction(i, depth + 1);
     });
   }
@@ -693,7 +693,7 @@ function printIfInstruction(n: IfInstruction, depth: number): string {
 
     depth++;
 
-    n.consequent.forEach(i => {
+    n.consequent.forEach((i) => {
       if (compact === false) {
         out += "\n";
       }
@@ -732,7 +732,7 @@ function printIfInstruction(n: IfInstruction, depth: number): string {
 
     depth++;
 
-    n.alternate.forEach(i => {
+    n.alternate.forEach((i) => {
       if (compact === false) {
         out += "\n";
       }
@@ -793,7 +793,7 @@ function printBlockInstruction(n: BlockInstruction, depth: number): string {
   }
 
   if (n.instr.length > 0) {
-    n.instr.forEach(i => {
+    n.instr.forEach((i) => {
       if (compact === false) {
         out += "\n";
       }
@@ -827,7 +827,7 @@ function printGenericInstruction(n: Instr, depth: number): string {
 
   out += n.id;
 
-  n.args.forEach(arg => {
+  n.args.forEach((arg) => {
     out += space;
     out += printFuncInstructionArg(arg, depth + 1);
   });

@@ -66,14 +66,14 @@ function printExport(moduleExport, funcsTable) {
     const funcNode = funcsTable[moduleExport.descr.id.value];
 
     const params = funcNode.params
-      .map(x => x.valtype)
+      .map((x) => x.valtype)
       .map((x, k) => t.identifier("p" + k + "_" + x));
 
     return (
       genTemplate(exportFuncTemplate, {
         NAME: t.identifier(moduleExport.name),
         ARGS: params,
-        INSTANCE: globalInstanceIdentifier
+        INSTANCE: globalInstanceIdentifier,
       }) + "\n\n"
     );
   }
@@ -91,7 +91,7 @@ function print(ast, { url }) {
   const state = {
     moduleExports: [],
     moduleImports: [],
-    funcsTable: {}
+    funcsTable: {},
   };
 
   traverse(ast, {
@@ -105,7 +105,7 @@ function print(ast, { url }) {
 
     ModuleImport({ node }) {
       state.moduleImports.push(node);
-    }
+    },
   });
 
   // Add comment
@@ -120,7 +120,7 @@ function print(ast, { url }) {
   out += genTemplate(headerTemplate, {
     INSTANCE: globalInstanceIdentifier,
     MEMORY: globalMemoryIdentifier,
-    TABLE: globalTableIdentifier
+    TABLE: globalTableIdentifier,
   });
 
   out += "\n\n";
@@ -128,7 +128,7 @@ function print(ast, { url }) {
   out += genTemplate(initFuncTemplate, {
     URL: t.StringLiteral(url),
     MEMORY: globalMemoryIdentifier,
-    TABLE: globalTableIdentifier
+    TABLE: globalTableIdentifier,
   });
 
   out += "\n\n";

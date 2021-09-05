@@ -6,27 +6,25 @@ function defineType(typeName, metadata) {
 
 defineType("Module", {
   spec: {
-    wasm:
-      "https://webassembly.github.io/spec/core/binary/modules.html#binary-module",
-    wat: "https://webassembly.github.io/spec/core/text/modules.html#text-module"
+    wasm: "https://webassembly.github.io/spec/core/binary/modules.html#binary-module",
+    wat: "https://webassembly.github.io/spec/core/text/modules.html#text-module",
   },
-  doc:
-    "A module consists of a sequence of sections (termed fields in the text format).",
+  doc: "A module consists of a sequence of sections (termed fields in the text format).",
   unionType: ["Node"],
   fields: {
     id: {
       maybe: true,
-      type: "string"
+      type: "string",
     },
     fields: {
       array: true,
-      type: "Node"
+      type: "Node",
     },
     metadata: {
       optional: true,
-      type: "ModuleMetadata"
-    }
-  }
+      type: "ModuleMetadata",
+    },
+  },
 });
 
 defineType("ModuleMetadata", {
@@ -34,60 +32,60 @@ defineType("ModuleMetadata", {
   fields: {
     sections: {
       array: true,
-      type: "SectionMetadata"
+      type: "SectionMetadata",
     },
     functionNames: {
       optional: true,
       array: true,
-      type: "FunctionNameMetadata"
+      type: "FunctionNameMetadata",
     },
     localNames: {
       optional: true,
       array: true,
-      type: "ModuleMetadata"
+      type: "ModuleMetadata",
     },
     producers: {
       optional: true,
       array: true,
-      type: "ProducersSectionMetadata"
-    }
-  }
+      type: "ProducersSectionMetadata",
+    },
+  },
 });
 
 defineType("ModuleNameMetadata", {
   unionType: ["Node"],
   fields: {
     value: {
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("FunctionNameMetadata", {
   unionType: ["Node"],
   fields: {
     value: {
-      type: "string"
+      type: "string",
     },
     index: {
-      type: "number"
-    }
-  }
+      type: "number",
+    },
+  },
 });
 
 defineType("LocalNameMetadata", {
   unionType: ["Node"],
   fields: {
     value: {
-      type: "string"
+      type: "string",
     },
     localIndex: {
-      type: "number"
+      type: "number",
     },
     functionIndex: {
-      type: "number"
-    }
-  }
+      type: "number",
+    },
+  },
 });
 
 defineType("BinaryModule", {
@@ -95,13 +93,13 @@ defineType("BinaryModule", {
   fields: {
     id: {
       maybe: true,
-      type: "string"
+      type: "string",
     },
     blob: {
       array: true,
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("QuoteModule", {
@@ -109,32 +107,32 @@ defineType("QuoteModule", {
   fields: {
     id: {
       maybe: true,
-      type: "string"
+      type: "string",
     },
     string: {
       array: true,
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("SectionMetadata", {
   unionType: ["Node"],
   fields: {
     section: {
-      type: "SectionName"
+      type: "SectionName",
     },
     startOffset: {
-      type: "number"
+      type: "number",
     },
     size: {
-      type: "NumberLiteral"
+      type: "NumberLiteral",
     },
     vectorOfSize: {
       comment: "Size of the vector in the section (if any)",
-      type: "NumberLiteral"
-    }
-  }
+      type: "NumberLiteral",
+    },
+  },
 });
 
 defineType("ProducersSectionMetadata", {
@@ -142,9 +140,9 @@ defineType("ProducersSectionMetadata", {
   fields: {
     producers: {
       array: true,
-      type: "ProducerMetadata"
-    }
-  }
+      type: "ProducerMetadata",
+    },
+  },
 });
 
 defineType("ProducerMetadata", {
@@ -152,29 +150,29 @@ defineType("ProducerMetadata", {
   fields: {
     language: {
       type: "ProducerMetadataVersionedName",
-      array: true
+      array: true,
     },
     processedBy: {
       type: "ProducerMetadataVersionedName",
-      array: true
+      array: true,
     },
     sdk: {
       type: "ProducerMetadataVersionedName",
-      array: true
-    }
-  }
+      array: true,
+    },
+  },
 });
 
 defineType("ProducerMetadataVersionedName", {
   unionType: ["Node"],
   fields: {
     name: {
-      type: "string"
+      type: "string",
     },
     version: {
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 /*
@@ -187,42 +185,42 @@ defineType("LoopInstruction", {
     id: {
       constant: true,
       type: "string",
-      value: "loop"
+      value: "loop",
     },
     label: {
       maybe: true,
-      type: "Identifier"
+      type: "Identifier",
     },
     resulttype: {
       maybe: true,
-      type: "Valtype"
+      type: "Valtype",
     },
     instr: {
       array: true,
-      type: "Instruction"
-    }
-  }
+      type: "Instruction",
+    },
+  },
 });
 
 defineType("Instr", {
   unionType: ["Node", "Expression", "Instruction"],
   fields: {
     id: {
-      type: "string"
+      type: "string",
     },
     object: {
       optional: true,
-      type: "Valtype"
+      type: "Valtype",
     },
     args: {
       array: true,
-      type: "Expression"
+      type: "Expression",
     },
     namedArgs: {
       optional: true,
-      type: "Object"
-    }
-  }
+      type: "Object",
+    },
+  },
 });
 
 defineType("IfInstruction", {
@@ -231,29 +229,29 @@ defineType("IfInstruction", {
     id: {
       constant: true,
       type: "string",
-      value: "if"
+      value: "if",
     },
     testLabel: {
       comment: "only for WAST",
-      type: "Identifier"
+      type: "Identifier",
     },
     test: {
       array: true,
-      type: "Instruction"
+      type: "Instruction",
     },
     result: {
       maybe: true,
-      type: "Valtype"
+      type: "Valtype",
     },
     consequent: {
       array: true,
-      type: "Instruction"
+      type: "Instruction",
     },
     alternate: {
       array: true,
-      type: "Instruction"
-    }
-  }
+      type: "Instruction",
+    },
+  },
 });
 
 /* 
@@ -264,88 +262,88 @@ defineType("StringLiteral", {
   unionType: ["Node", "Expression"],
   fields: {
     value: {
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("NumberLiteral", {
   unionType: ["Node", "NumericLiteral", "Expression"],
   fields: {
     value: {
-      type: "number"
+      type: "number",
     },
     raw: {
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("LongNumberLiteral", {
   unionType: ["Node", "NumericLiteral", "Expression"],
   fields: {
     value: {
-      type: "LongNumber"
+      type: "LongNumber",
     },
     raw: {
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("FloatLiteral", {
   unionType: ["Node", "NumericLiteral", "Expression"],
   fields: {
     value: {
-      type: "number"
+      type: "number",
     },
     nan: {
       optional: true,
-      type: "boolean"
+      type: "boolean",
     },
     inf: {
       optional: true,
-      type: "boolean"
+      type: "boolean",
     },
     raw: {
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("Elem", {
   unionType: ["Node"],
   fields: {
     table: {
-      type: "Index"
+      type: "Index",
     },
     offset: {
       array: true,
-      type: "Instruction"
+      type: "Instruction",
     },
     funcs: {
       array: true,
-      type: "Index"
-    }
-  }
+      type: "Index",
+    },
+  },
 });
 
 defineType("IndexInFuncSection", {
   unionType: ["Node"],
   fields: {
     index: {
-      type: "Index"
-    }
-  }
+      type: "Index",
+    },
+  },
 });
 
 defineType("ValtypeLiteral", {
   unionType: ["Node", "Expression"],
   fields: {
     name: {
-      type: "Valtype"
-    }
-  }
+      type: "Valtype",
+    },
+  },
 });
 
 defineType("TypeInstruction", {
@@ -353,188 +351,188 @@ defineType("TypeInstruction", {
   fields: {
     id: {
       maybe: true,
-      type: "Index"
+      type: "Index",
     },
     functype: {
-      type: "Signature"
-    }
-  }
+      type: "Signature",
+    },
+  },
 });
 
 defineType("Start", {
   unionType: ["Node"],
   fields: {
     index: {
-      type: "Index"
-    }
-  }
+      type: "Index",
+    },
+  },
 });
 
 defineType("GlobalType", {
   unionType: ["Node", "ImportDescr"],
   fields: {
     valtype: {
-      type: "Valtype"
+      type: "Valtype",
     },
     mutability: {
-      type: "Mutability"
-    }
-  }
+      type: "Mutability",
+    },
+  },
 });
 
 defineType("LeadingComment", {
   unionType: ["Node"],
   fields: {
     value: {
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("BlockComment", {
   unionType: ["Node"],
   fields: {
     value: {
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("Data", {
   unionType: ["Node"],
   fields: {
     memoryIndex: {
-      type: "Memidx"
+      type: "Memidx",
     },
     offset: {
-      type: "Instruction"
+      type: "Instruction",
     },
     init: {
-      type: "ByteArray"
-    }
-  }
+      type: "ByteArray",
+    },
+  },
 });
 
 defineType("Global", {
   unionType: ["Node"],
   fields: {
     globalType: {
-      type: "GlobalType"
+      type: "GlobalType",
     },
     init: {
       array: true,
-      type: "Instruction"
+      type: "Instruction",
     },
     name: {
       maybe: true,
-      type: "Identifier"
-    }
-  }
+      type: "Identifier",
+    },
+  },
 });
 
 defineType("Table", {
   unionType: ["Node", "ImportDescr"],
   fields: {
     elementType: {
-      type: "TableElementType"
+      type: "TableElementType",
     },
     limits: {
       assertNodeType: true,
-      type: "Limit"
+      type: "Limit",
     },
     name: {
       maybe: true,
-      type: "Identifier"
+      type: "Identifier",
     },
     elements: {
       array: true,
       optional: true,
-      type: "Index"
-    }
-  }
+      type: "Index",
+    },
+  },
 });
 
 defineType("Memory", {
   unionType: ["Node", "ImportDescr"],
   fields: {
     limits: {
-      type: "Limit"
+      type: "Limit",
     },
     id: {
       maybe: true,
-      type: "Index"
-    }
-  }
+      type: "Index",
+    },
+  },
 });
 
 defineType("FuncImportDescr", {
   unionType: ["Node", "ImportDescr"],
   fields: {
     id: {
-      type: "Identifier"
+      type: "Identifier",
     },
     signature: {
-      type: "Signature"
-    }
-  }
+      type: "Signature",
+    },
+  },
 });
 
 defineType("ModuleImport", {
   unionType: ["Node"],
   fields: {
     module: {
-      type: "string"
+      type: "string",
     },
     name: {
-      type: "string"
+      type: "string",
     },
     descr: {
-      type: "ImportDescr"
-    }
-  }
+      type: "ImportDescr",
+    },
+  },
 });
 
 defineType("ModuleExportDescr", {
   unionType: ["Node"],
   fields: {
     exportType: {
-      type: "ExportDescrType"
+      type: "ExportDescrType",
     },
     id: {
-      type: "Index"
-    }
-  }
+      type: "Index",
+    },
+  },
 });
 
 defineType("ModuleExport", {
   unionType: ["Node"],
   fields: {
     name: {
-      type: "string"
+      type: "string",
     },
     descr: {
-      type: "ModuleExportDescr"
-    }
-  }
+      type: "ModuleExportDescr",
+    },
+  },
 });
 
 defineType("Limit", {
   unionType: ["Node"],
   fields: {
     min: {
-      type: "number"
+      type: "number",
     },
     max: {
       optional: true,
-      type: "number"
+      type: "number",
     },
 
     // Threads proposal, shared memory
     shared: {
       optional: true,
-      type: "boolean"
-    }
-  }
+      type: "boolean",
+    },
+  },
 });
 
 defineType("Signature", {
@@ -542,13 +540,13 @@ defineType("Signature", {
   fields: {
     params: {
       array: true,
-      type: "FuncParam"
+      type: "FuncParam",
     },
     results: {
       array: true,
-      type: "Valtype"
-    }
-  }
+      type: "Valtype",
+    },
+  },
 });
 
 defineType("Program", {
@@ -556,22 +554,22 @@ defineType("Program", {
   fields: {
     body: {
       array: true,
-      type: "Node"
-    }
-  }
+      type: "Node",
+    },
+  },
 });
 
 defineType("Identifier", {
   unionType: ["Node", "Expression"],
   fields: {
     value: {
-      type: "string"
+      type: "string",
     },
     raw: {
       optional: true,
-      type: "string"
-    }
-  }
+      type: "string",
+    },
+  },
 });
 
 defineType("BlockInstruction", {
@@ -580,21 +578,21 @@ defineType("BlockInstruction", {
     id: {
       constant: true,
       type: "string",
-      value: "block"
+      value: "block",
     },
     label: {
       maybe: true,
-      type: "Identifier"
+      type: "Identifier",
     },
     instr: {
       array: true,
-      type: "Instruction"
+      type: "Instruction",
     },
     result: {
       maybe: true,
-      type: "Valtype"
-    }
-  }
+      type: "Valtype",
+    },
+  },
 });
 
 defineType("CallInstruction", {
@@ -603,21 +601,21 @@ defineType("CallInstruction", {
     id: {
       constant: true,
       type: "string",
-      value: "call"
+      value: "call",
     },
     index: {
-      type: "Index"
+      type: "Index",
     },
     instrArgs: {
       array: true,
       optional: true,
-      type: "Expression"
+      type: "Expression",
     },
     numeric: {
       type: "Index",
-      optional: true
-    }
-  }
+      optional: true,
+    },
+  },
 });
 
 defineType("CallIndirectInstruction", {
@@ -626,17 +624,17 @@ defineType("CallIndirectInstruction", {
     id: {
       constant: true,
       type: "string",
-      value: "call_indirect"
+      value: "call_indirect",
     },
     signature: {
-      type: "SignatureOrTypeRef"
+      type: "SignatureOrTypeRef",
     },
     intrs: {
       array: true,
       optional: true,
-      type: "Expression"
-    }
-  }
+      type: "Expression",
+    },
+  },
 });
 
 defineType("ByteArray", {
@@ -644,9 +642,9 @@ defineType("ByteArray", {
   fields: {
     values: {
       array: true,
-      type: "Byte"
-    }
-  }
+      type: "Byte",
+    },
+  },
 });
 
 defineType("Func", {
@@ -654,25 +652,25 @@ defineType("Func", {
   fields: {
     name: {
       maybe: true,
-      type: "Index"
+      type: "Index",
     },
     signature: {
-      type: "SignatureOrTypeRef"
+      type: "SignatureOrTypeRef",
     },
     body: {
       array: true,
-      type: "Instruction"
+      type: "Instruction",
     },
     isExternal: {
       comment: "means that it has been imported from the outside js",
       optional: true,
-      type: "boolean"
+      type: "boolean",
     },
     metadata: {
       optional: true,
-      type: "FuncMetadata"
-    }
-  }
+      type: "FuncMetadata",
+    },
+  },
 });
 
 /**
@@ -682,27 +680,27 @@ defineType("InternalBrUnless", {
   unionType: ["Node", "Intrinsic"],
   fields: {
     target: {
-      type: "number"
-    }
-  }
+      type: "number",
+    },
+  },
 });
 
 defineType("InternalGoto", {
   unionType: ["Node", "Intrinsic"],
   fields: {
     target: {
-      type: "number"
-    }
-  }
+      type: "number",
+    },
+  },
 });
 
 defineType("InternalCallExtern", {
   unionType: ["Node", "Intrinsic"],
   fields: {
     target: {
-      type: "number"
-    }
-  }
+      type: "number",
+    },
+  },
 });
 
 // function bodies are terminated by an `end` instruction but are missing a
@@ -711,7 +709,7 @@ defineType("InternalCallExtern", {
 // Since we can't inject a new instruction we are injecting a new instruction.
 defineType("InternalEndAndReturn", {
   unionType: ["Node", "Intrinsic"],
-  fields: {}
+  fields: {},
 });
 
 module.exports = definitions;

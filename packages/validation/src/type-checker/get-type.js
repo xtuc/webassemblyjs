@@ -19,7 +19,7 @@ export default function getType(moduleContext, stack, instruction) {
      * We skip over it by treating it as `nop` here.
      */
     case "local": {
-      instruction.args.forEach(t => moduleContext.addLocal(t.name));
+      instruction.args.forEach((t) => moduleContext.addLocal(t.name));
       args = [];
       result = [];
       break;
@@ -504,7 +504,7 @@ export default function getType(moduleContext, stack, instruction) {
       }
 
       // TODO: There are more things to be checked here
-      args = ["i32", ...signature.params.reverse().map(p => p.valtype)];
+      args = ["i32", ...signature.params.reverse().map((p) => p.valtype)];
       result = signature.results;
       break;
     }
@@ -519,6 +519,6 @@ export default function getType(moduleContext, stack, instruction) {
   return {
     args,
     result,
-    error
+    error,
   };
 }

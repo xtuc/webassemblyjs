@@ -39,13 +39,13 @@ const WebAssembly = {
 
       resolve({
         instance,
-        module
+        module,
       });
     });
   },
 
   compile(buff: ArrayBuffer): Promise<CompiledModule> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const ast = decode(buff);
 
       resolve(createCompiledModule(ast));
@@ -80,7 +80,7 @@ const WebAssembly = {
   Table,
   RuntimeError,
   LinkError,
-  CompileError
+  CompileError,
 };
 
 module.exports = WebAssembly;

@@ -3,7 +3,7 @@ const illegalop = "illegal";
 const magicModuleHeader = [0x00, 0x61, 0x73, 0x6d];
 const moduleVersion = [0x01, 0x00, 0x00, 0x00];
 
-function invertMap(obj, keyModifierFn = k => k) {
+function invertMap(obj, keyModifierFn = (k) => k) {
   const result = {};
   const keys = Object.keys(obj);
   for (let i = 0, length = keys.length; i < length; i++) {
@@ -20,7 +20,7 @@ function createSymbolObject(
   return {
     name,
     object,
-    numberOfArgs
+    numberOfArgs,
   };
 }
 
@@ -30,20 +30,20 @@ function createSymbol(
 ) /*: Symbol*/ {
   return {
     name,
-    numberOfArgs
+    numberOfArgs,
   };
 }
 
 const types = {
   func: 0x60,
-  result: 0x40
+  result: 0x40,
 };
 
 const exportTypes = {
   0x00: "Func",
   0x01: "Table",
   0x02: "Memory",
-  0x03: "Global"
+  0x03: "Global",
 };
 
 const exportTypesByName = invertMap(exportTypes);
@@ -53,13 +53,13 @@ const valtypes = {
   0x7e: "i64",
   0x7d: "f32",
   0x7c: "f64",
-  0x7b: "v128"
+  0x7b: "v128",
 };
 
 const valtypesByString = invertMap(valtypes);
 
 const tableTypes = {
-  0x70: "anyfunc"
+  0x70: "anyfunc",
 };
 
 const blockTypes = Object.assign({}, valtypes, {
@@ -69,12 +69,12 @@ const blockTypes = Object.assign({}, valtypes, {
   0x7f: "i32",
   0x7e: "i64",
   0x7d: "f32",
-  0x7c: "f64"
+  0x7c: "f64",
 });
 
 const globalTypes = {
   0x00: "const",
-  0x01: "var"
+  0x01: "var",
 };
 
 const globalTypesByString = invertMap(globalTypes);
@@ -83,7 +83,7 @@ const importTypes = {
   0x00: "func",
   0x01: "table",
   0x02: "memory",
-  0x03: "global"
+  0x03: "global",
 };
 
 const sections = {
@@ -98,7 +98,7 @@ const sections = {
   start: 8,
   element: 9,
   code: 10,
-  data: 11
+  data: 11,
 };
 
 const symbolsByByte = {
@@ -393,10 +393,10 @@ const symbolsByByte = {
   0xfe4b: createSymbolObject("atomic.rmw16_u.cmpxchg_u", "i32", 1),
   0xfe4c: createSymbolObject("atomic.rmw8_u.cmpxchg_u", "i64", 1),
   0xfe4d: createSymbolObject("atomic.rmw16_u.cmpxchg_u", "i64", 1),
-  0xfe4e: createSymbolObject("atomic.rmw32_u.cmpxchg_u", "i64", 1)
+  0xfe4e: createSymbolObject("atomic.rmw32_u.cmpxchg_u", "i64", 1),
 };
 
-const symbolsByName = invertMap(symbolsByByte, obj => {
+const symbolsByName = invertMap(symbolsByByte, (obj) => {
   if (typeof obj.object === "string") {
     return `${obj.object}.${obj.name}`;
   }
@@ -419,7 +419,7 @@ export default {
   valtypesByString,
   globalTypesByString,
   exportTypesByName,
-  symbolsByName
+  symbolsByName,
 };
 
 export { getSectionForNode } from "./section";

@@ -81,7 +81,7 @@ export function assert_return(element: any, action: Object, expected: Object) {
   }
 
   if (type === "invoke") {
-    const compatibleArgs = args.map(x => {
+    const compatibleArgs = args.map((x) => {
       if (x.type === "i64") {
         return new Long.fromString(x.value);
       }
@@ -145,7 +145,7 @@ export function assert_trap(element: any, action: Object, expected: string) {
   assert(type === "invoke", `unsupported type "${type}"`);
 
   if (type === "invoke") {
-    const compatibleArgs = args.map(x => {
+    const compatibleArgs = args.map((x) => {
       if (x.type === "i64") {
         return new Long.fromString(x.value);
       }

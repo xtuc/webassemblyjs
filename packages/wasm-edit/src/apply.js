@@ -9,13 +9,13 @@ import {
   orderedInsertNode,
   getSectionMetadata,
   traverse,
-  getEndOfSection
+  getEndOfSection,
 } from "@webassemblyjs/ast";
 import {
   resizeSectionByteSize,
   resizeSectionVecSize,
   createEmptySection,
-  removeSections
+  removeSections,
 } from "@webassemblyjs/helper-wasm-section";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 import { getSectionForNode } from "@webassemblyjs/helper-wasm-bytecode";
@@ -23,19 +23,22 @@ import { define } from "mamacro";
 
 declare function CHECK_END(body: Array<Object>): void;
 
-define(CHECK_END, body => `
+define(
+  CHECK_END,
+  (body) => `
     const body = ${body};
 
     if (body.length === 0 || body[body.length - 1].id !== "end") {
       throw new Error("expressions must be ended");
     }
-  `);
+  `
+);
 
 type State = {
   uint8Buffer: Uint8Array,
 
   deltaBytes: number,
-  deltaElements: number
+  deltaElements: number,
 };
 
 function shiftLocNodeByDelta(node: Node, delta: number) {
@@ -79,7 +82,7 @@ function applyUpdate(
     traverse(ast, {
       Func({ node }) {
         const funcHasThisIntr =
-          node.body.find(n => n === newNode) !== undefined;
+          node.body.find((n) => n === newNode) !== undefined;
 
         // Update func's body size if needed
         if (funcHasThisIntr === true) {
@@ -106,7 +109,7 @@ function applyUpdate(
             );
           }
         }
-      }
+      },
     });
   }
 
@@ -121,7 +124,7 @@ function applyUpdate(
   // Init location informations
   newNode.loc = {
     start: { line: -1, column: -1 },
-    end: { line: -1, column: -1 }
+    end: { line: -1, column: -1 },
   };
 
   // Update new node end position
@@ -226,7 +229,7 @@ function applyAdd(ast: Program, uint8Buffer: Uint8Array, node: Node): State {
 
   node.loc = {
     start: { line: -1, column: start },
-    end: { line: -1, column: start + deltaBytes }
+    end: { line: -1, column: start + deltaBytes },
   };
 
   // for func add the additional metadata in the AST
@@ -250,7 +253,7 @@ export function applyOperations(
   uint8Buffer: Uint8Array,
   ops: Array<Operation>
 ): Uint8Array {
-  ops.forEach(op => {
+  ops.forEach((op) => {
     let state;
     let sectionName;
 
@@ -315,7 +318,7 @@ export function applyOperations(
      * Shift following operation's nodes
      */
     if (state.deltaBytes !== 0) {
-      ops.forEach(op => {
+      ops.forEach((op) => {
         // We don't need to handle add ops, they are positioning independent
         switch (op.kind) {
           case "update":

@@ -11,7 +11,7 @@ export function createFuncInstance(
     type,
     code: func,
     module: null,
-    isExternal: true
+    isExternal: true,
   };
 }
 
@@ -23,6 +23,6 @@ export function createGlobalInstance(
   return {
     type,
     mutability,
-    value
+    value,
   };
 }

@@ -16,7 +16,7 @@ describe("compiler", () => {
   describe("compile", () => {
     const testSuites = getFixtures(__dirname, "fixtures", "**/module.wasm");
 
-    testSuites.forEach(suite => {
+    testSuites.forEach((suite) => {
       describe(suite, () => {
         const execFile = path.join(path.dirname(suite), "exec.tjs");
 
@@ -29,7 +29,7 @@ describe("compiler", () => {
           console: global.console,
           assert: chai.assert,
           it,
-          xit
+          xit,
         };
 
         try {

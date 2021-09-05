@@ -22,7 +22,7 @@ export function transform(ast: Program) {
   t.traverse(ast, {
     TypeInstruction({ node }) {
       typeInstructions.push(node);
-    }
+    },
   });
 
   if (!typeInstructions.length) {
@@ -36,7 +36,7 @@ export function transform(ast: Program) {
     if (signature.type === "Identifier") {
       const identifier: Identifier = signature;
       const typeInstruction = typeInstructions.find(
-        t => t.id.type === identifier.type && t.id.value === identifier.value
+        (t) => t.id.type === identifier.type && t.id.value === identifier.value
       );
 
       if (!typeInstruction) {
@@ -66,6 +66,6 @@ export function transform(ast: Program) {
     },
     CallIndirectInstruction({ node }: NodePath<Func>) {
       node.signature = denormalizeSignature(node.signature);
-    }
+    },
   });
 }

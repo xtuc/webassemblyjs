@@ -32,7 +32,7 @@ export function getValidationErrors(ast: Program): Array<string> {
     modules = ast.body.filter(({ type }) => type === "Module");
   }
 
-  modules.forEach(m => {
+  modules.forEach((m) => {
     const moduleContext = moduleContextFromModuleAST(m);
 
     // $FlowIgnore

@@ -23,6 +23,6 @@ module.exports = function removeFunc(moduleExport, ast) {
         path.remove();
         // console.log('\t> remove export');
       }
-    }
+    },
   });
 };

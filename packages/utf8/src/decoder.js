@@ -16,7 +16,7 @@ function code(min, n) {
 
 export function decode(bytes) {
   return _decode(bytes)
-    .map(x => String.fromCharCode(x))
+    .map((x) => String.fromCharCode(x))
     .join("");
 }
 
@@ -60,7 +60,7 @@ function _decode(bytes) {
     if (b1 < 0xf0) {
       return [
         code(0x800, ((b1 & 0x0f) << 12) + (con(b2) << 6) + con(b3)),
-        ..._decode(bs)
+        ..._decode(bs),
       ];
     }
   }
@@ -77,7 +77,7 @@ function _decode(bytes) {
           0x10000,
           ((((b1 & 0x07) << 18) + con(b2)) << 12) + (con(b3) << 6) + con(b4)
         ),
-        ..._decode(bs)
+        ..._decode(bs),
       ];
     }
   }

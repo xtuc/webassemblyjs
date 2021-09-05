@@ -12,7 +12,7 @@ const CONTROL_CODES = [
   13, // carriage return
   26, // Control-Z
   27, // escape
-  127 // delete
+  127, // delete
 ];
 
 // escaped sequences can either be a two character hex value, or one of the

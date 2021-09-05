@@ -1,11 +1,11 @@
 const {
   encodeVersion,
   encodeHeader,
-  encodeU32
+  encodeU32,
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const {
-  compareArrayBuffers
+  compareArrayBuffers,
 } = require("@webassemblyjs/helper-buffer/lib/compare");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 
@@ -53,7 +53,7 @@ describe("resize handling", () => {
     const newBinary1 = edit(actualBinary, {
       ModuleExport(path) {
         path.node.name = path.node.name.slice(3);
-      }
+      },
     });
 
     let expVec2 = [numExports];
@@ -91,7 +91,7 @@ describe("resize handling", () => {
     const newBinary2 = edit(expectedBinary, {
       ModuleExport(path) {
         path.node.name = "exp" + path.node.name;
-      }
+      },
     });
 
     compareArrayBuffers(newBinary2, actualBinary);
@@ -137,7 +137,7 @@ describe("resize handling", () => {
         } else {
           path.remove();
         }
-      }
+      },
     });
 
     let expVec2 = encodeU32(numExports - 1);
@@ -179,5 +179,5 @@ function padUTF8Num(num, digits) {
   return ("0".repeat(digits - 1) + num)
     .slice(-digits)
     .split("")
-    .map(c => c.charCodeAt(0));
+    .map((c) => c.charCodeAt(0));
 }

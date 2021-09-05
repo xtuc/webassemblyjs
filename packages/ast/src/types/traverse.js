@@ -8,19 +8,19 @@ type NodePathContext<T> = {
   inList: boolean,
   shouldStop: boolean,
   parentPath: ?NodePath<Node>,
-  parentKey: ?string
+  parentKey: ?string,
 };
 
 type NodePathMatcher = (NodePath<Node>) => ?boolean;
-type NodeLocator = NodePathMatcher => ?Node;
+type NodeLocator = (NodePathMatcher) => ?Node;
 
 type NodePathOperations = {
   findParent: NodeLocator,
-  replaceWith: Node => void,
+  replaceWith: (Node) => void,
   remove: () => void,
-  insertBefore: Node => void,
-  insertAfter: Node => void,
-  stop: () => void
+  insertBefore: (Node) => void,
+  insertAfter: (Node) => void,
+  stop: () => void,
 };
 
 type NodePath<T> = NodePathContext<T> & NodePathOperations;

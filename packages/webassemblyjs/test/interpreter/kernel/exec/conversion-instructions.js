@@ -8,13 +8,13 @@ const { assert } = require("chai");
 const { i32 } = require("../../../../lib/interpreter/runtime/values/i32");
 const { i64 } = require("../../../../lib/interpreter/runtime/values/i64");
 const {
-  castIntoStackLocalOfType
+  castIntoStackLocalOfType,
 } = require("../../../../lib/interpreter/runtime/castIntoStackLocalOfType");
 const {
-  executeStackFrame
+  executeStackFrame,
 } = require("../../../../lib/interpreter/kernel/exec");
 const {
-  createStackFrame
+  createStackFrame,
 } = require("../../../../lib/interpreter/kernel/stackframe");
 const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
@@ -43,10 +43,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(1078530010)
+      resEqual: new i32(1078530010),
     },
 
     {
@@ -56,10 +56,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(0)
+      resEqual: new i32(0),
     },
 
     {
@@ -69,10 +69,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(0x80000000)
+      resEqual: new i32(0x80000000),
     },
 
     {
@@ -82,10 +82,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(0x7fc00000)
+      resEqual: new i32(0x7fc00000),
     },
     {
       name: "i32.reinterpret/f32 - negative canonical nan",
@@ -94,10 +94,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(0xffc00000)
+      resEqual: new i32(0xffc00000),
     },
 
     {
@@ -107,10 +107,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(-1)
+      resEqual: new i32(-1),
     },
     {
       name: "i32.reinterpret/f32 - negative nan payload",
@@ -119,10 +119,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(0x7fa00000)
+      resEqual: new i32(0x7fa00000),
     },
     {
       name: "i32.reinterpret/f32 - negative nan payload",
@@ -131,10 +131,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(0xffa00000)
+      resEqual: new i32(0xffa00000),
     },
 
     {
@@ -144,10 +144,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(0x7f800000)
+      resEqual: new i32(0x7f800000),
     },
     {
       name: "i32.reinterpret/f32 - negative infinity",
@@ -156,10 +156,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f32", "i32")
+        t.objectInstruction("reinterpret/f32", "i32"),
       ],
 
-      resEqual: new i32(0xff800000)
+      resEqual: new i32(0xff800000),
     },
 
     {
@@ -169,10 +169,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f64", "i64")
+        t.objectInstruction("reinterpret/f64", "i64"),
       ],
 
-      resEqual: new i64(Long.fromString("0"))
+      resEqual: new i64(Long.fromString("0")),
     },
 
     {
@@ -182,10 +182,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f64", "i64")
+        t.objectInstruction("reinterpret/f64", "i64"),
       ],
 
-      resEqual: new i64(Long.fromString("4614256656552045841"))
+      resEqual: new i64(Long.fromString("4614256656552045841")),
     },
 
     {
@@ -195,10 +195,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f64", "i64")
+        t.objectInstruction("reinterpret/f64", "i64"),
       ],
 
-      resEqual: new i64(Long.fromString("0"))
+      resEqual: new i64(Long.fromString("0")),
     },
 
     {
@@ -208,10 +208,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f64", "i64")
+        t.objectInstruction("reinterpret/f64", "i64"),
       ],
 
-      resEqual: new i64(Long.fromString("8000000000000000", false, 16))
+      resEqual: new i64(Long.fromString("8000000000000000", false, 16)),
     },
     {
       name: "i64.reinterpret/f64 - positive infinity",
@@ -220,10 +220,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f64", "i64")
+        t.objectInstruction("reinterpret/f64", "i64"),
       ],
 
-      resEqual: new i64(Long.fromString("0x7ff0000000000000", false, 16))
+      resEqual: new i64(Long.fromString("0x7ff0000000000000", false, 16)),
     },
     {
       name: "i64.reinterpret/f64 - negative infinity",
@@ -232,10 +232,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f64", "i64")
+        t.objectInstruction("reinterpret/f64", "i64"),
       ],
 
-      resEqual: new i64(Long.fromString("0xfff0000000000000", false, 16))
+      resEqual: new i64(Long.fromString("0xfff0000000000000", false, 16)),
     },
     {
       name: "i64.reinterpret/f64 - negative nan payload",
@@ -244,10 +244,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f64", "i64")
+        t.objectInstruction("reinterpret/f64", "i64"),
       ],
 
-      resEqual: new i64(Long.NEG_ONE)
+      resEqual: new i64(Long.NEG_ONE),
     },
     {
       name: "i64.reinterpret/f64 - canonical nan",
@@ -256,10 +256,10 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f64", "i64")
+        t.objectInstruction("reinterpret/f64", "i64"),
       ],
 
-      resEqual: new i64(Long.fromString("0x7ff4000000000000", false, 16))
+      resEqual: new i64(Long.fromString("0x7ff4000000000000", false, 16)),
     },
     {
       name: "i64.reinterpret/f64 - negative canonical nan",
@@ -268,11 +268,11 @@ describe("kernel exec - conversion instructions", () => {
 
       code: [
         t.instruction("get_local", [t.numberLiteralFromRaw(0)]),
-        t.objectInstruction("reinterpret/f64", "i64")
+        t.objectInstruction("reinterpret/f64", "i64"),
       ],
 
-      resEqual: new i64(Long.fromString("0xfff4000000000000", false, 16))
-    }
+      resEqual: new i64(Long.fromString("0xfff4000000000000", false, 16)),
+    },
   ];
 
   operations.forEach((op /*: TestCase */) => {

@@ -10,7 +10,7 @@ export {
   indexLiteral,
   memIndexLiteral,
   instruction,
-  objectInstruction
+  objectInstruction,
 } from "./node-helpers.js";
 
 export { traverse } from "./traverse";
@@ -21,4 +21,4 @@ export * from "./utils";
 
 export { cloneNode } from "./clone";
 
-export { moduleContextFromModuleAST } from "./transform/ast-module-to-module-context"
+export { moduleContextFromModuleAST } from "./transform/ast-module-to-module-context";

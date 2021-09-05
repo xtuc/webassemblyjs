@@ -61,7 +61,7 @@ export function flatten(ast: Node): Node {
 
     traverse(ast, {
       CallInstruction: CallInstructionVisitor,
-      Instr: InstrVisitor
+      Instr: InstrVisitor,
     });
   }
 

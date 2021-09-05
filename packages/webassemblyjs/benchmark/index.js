@@ -62,11 +62,11 @@ function writeResult(dir, result) {
   console.log("wrote result file", resultFile);
 }
 
-benchmarks.forEach(file => {
+benchmarks.forEach((file) => {
   let outputBuffer = "";
 
   function createShowHeader(mode) {
-    return function() {
+    return function () {
       console.log(file + "\n");
 
       output("");
@@ -95,21 +95,21 @@ benchmarks.forEach(file => {
     output,
     performance: { now },
     NBINTERATION,
-    formatNumber
+    formatNumber,
   };
 
   // Run native
   const nativeSandbox = Object.assign({}, sandbox, {
     WebAssembly: global.WebAssembly,
     showHeader: createShowHeader("native"),
-    random: createRNG(NBINTERATION * 2)
+    random: createRNG(NBINTERATION * 2),
   });
 
   // Run interpreted
   const interpretedSandbox = Object.assign({}, sandbox, {
     showHeader: createShowHeader("interpreted"),
     WebAssembly: interpreter,
-    random: createRNG(NBINTERATION * 2)
+    random: createRNG(NBINTERATION * 2),
   });
 
   Promise.all([bench.test(nativeSandbox), bench.test(interpretedSandbox)])
@@ -125,7 +125,7 @@ benchmarks.forEach(file => {
 
       clearOuputBuffer();
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(outputBuffer);
       console.error(err);
     });

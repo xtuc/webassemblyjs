@@ -7,7 +7,7 @@ const libwabt = require("./libwabt");
 const removeFunc = require("./removal");
 const countRefByName = require("./reference-couting");
 
-module.exports = function(buff, usedExports) {
+module.exports = function (buff, usedExports) {
   function isUnused(moduleExport) {
     return usedExports.indexOf(moduleExport.name) === -1;
   }
@@ -31,7 +31,7 @@ module.exports = function(buff, usedExports) {
     traverse(ast, {
       ModuleExport({ node }) {
         moduleExports.push(node);
-      }
+      },
     });
 
     return moduleExports;
@@ -51,7 +51,7 @@ module.exports = function(buff, usedExports) {
   getModuleExports(ast)
     .filter(isUnused)
     .filter(canRemove)
-    .forEach(e => removeFunc(e, ast));
+    .forEach((e) => removeFunc(e, ast));
 
   const wast = print(ast);
 

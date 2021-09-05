@@ -1,5 +1,5 @@
 import noUnknownExport from "./no-unknown-export";
 
 export default {
-  "no-unknown-export": noUnknownExport
+  "no-unknown-export": noUnknownExport,
 };

@@ -10,7 +10,7 @@ const type = "i32";
 // the specification describes the conversion from unsigned to signed
 // https://webassembly.github.io/spec/core/exec/numerics.html#aux-signed
 // this function performs the inverse
-const toUnsigned = a => a >>> 0;
+const toUnsigned = (a) => a >>> 0;
 
 export class i32 implements IntegerValue<i32> {
   _value: number;
@@ -306,14 +306,14 @@ export class i32 implements IntegerValue<i32> {
 export function createValueFromAST(value: number): StackLocal {
   return {
     type,
-    value: new i32(value)
+    value: new i32(value),
   };
 }
 
 export function createValue(value: i32): StackLocal {
   return {
     type,
-    value
+    value,
   };
 }
 
@@ -325,7 +325,7 @@ export function createValueFromArrayBuffer(
 ): StackLocal {
   return {
     type,
-    value: i32.fromArrayBuffer(buffer, ptr, extend, signed)
+    value: i32.fromArrayBuffer(buffer, ptr, extend, signed),
   };
 }
 

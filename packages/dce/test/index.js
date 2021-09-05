@@ -2,7 +2,7 @@
 
 const {
   getFixtures,
-  compareWithExpected
+  compareWithExpected,
 } = require("@webassemblyjs/helper-test-framework");
 
 const { decode } = require("@webassemblyjs/wasm-parser");

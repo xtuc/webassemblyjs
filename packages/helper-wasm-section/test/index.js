@@ -1,6 +1,6 @@
 const {
   encodeVersion,
-  encodeHeader
+  encodeHeader,
 } = require("@webassemblyjs/wasm-gen/lib/encoder");
 const { assert } = require("chai");
 const { decode } = require("@webassemblyjs/wasm-parser");
@@ -8,14 +8,14 @@ const { makeBuffer } = require("@webassemblyjs/helper-buffer");
 const constants = require("@webassemblyjs/helper-wasm-bytecode").default;
 const { getSectionMetadata } = require("@webassemblyjs/ast");
 const {
-  compareArrayBuffers
+  compareArrayBuffers,
 } = require("@webassemblyjs/helper-buffer/lib/compare");
 
 const {
   resizeSectionVecSize,
   resizeSectionByteSize,
   createEmptySection,
-  removeSections
+  removeSections,
 } = require("../lib");
 
 const section = "import";
@@ -91,7 +91,7 @@ describe("create", () => {
       makeBuffer(encodeHeader(), encodeVersion(1), [
         constants.sections.global,
         0x01,
-        0x00
+        0x00,
       ])
     );
 
@@ -227,7 +227,7 @@ describe("remove", () => {
   });
 
   it("should remove multiple sections at once", () => {
-    const char = c => c.charCodeAt(0);
+    const char = (c) => c.charCodeAt(0);
 
     const actual = new Uint8Array(
       makeBuffer(

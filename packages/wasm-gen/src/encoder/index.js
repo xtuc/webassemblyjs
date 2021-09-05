@@ -226,7 +226,7 @@ export function encodeModuleExport(n: ModuleExport): Array<Byte> {
 export function encodeTypeInstruction(n: TypeInstruction): Array<Byte> {
   const out = [0x60];
 
-  const params = n.functype.params.map(x => x.valtype).map(encodeValtype);
+  const params = n.functype.params.map((x) => x.valtype).map(encodeValtype);
   const results = n.functype.results.map(encodeValtype);
 
   out.push(...encodeVec(params));
@@ -257,7 +257,7 @@ export function encodeInstr(n: Instr): Array<Byte> {
   out.push(byte);
 
   if (n.args) {
-    n.args.forEach(arg => {
+    n.args.forEach((arg) => {
       let encoder = encodeU32;
 
       // find correct encoder
@@ -299,7 +299,7 @@ export function encodeInstr(n: Instr): Array<Byte> {
 function encodeExpr(instrs: Array<Instruction>): Array<Byte> {
   const out = [];
 
-  instrs.forEach(instr => {
+  instrs.forEach((instr) => {
     // $FlowIgnore
     const n = encodeNode(instr);
 

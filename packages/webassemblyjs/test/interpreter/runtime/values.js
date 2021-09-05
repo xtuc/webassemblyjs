@@ -18,7 +18,7 @@ const { Memory } = require("../../../lib/interpreter/runtime/values/memory");
 const { createAllocator } = require("../../../lib/interpreter/kernel/memory");
 const {
   compileASTNodes,
-  addFakeLocsListOfInstructions
+  addFakeLocsListOfInstructions,
 } = require("@webassemblyjs/helper-test-framework");
 
 describe("module create interface", () => {
@@ -47,7 +47,7 @@ describe("module create interface", () => {
         t.moduleExport(
           exportName,
           t.moduleExportDescr("Func", t.identifier(exportName))
-        )
+        ),
       ];
 
       const ir = compileASTNodes(nodes);
@@ -91,7 +91,10 @@ describe("module create interface", () => {
     });
 
     it("return an instance with arg and result types", () => {
-      const args = [{ id: "a", valtype: "i32" }, { id: "b", valtype: "i32" }];
+      const args = [
+        { id: "a", valtype: "i32" },
+        { id: "b", valtype: "i32" },
+      ];
       const result = ["i32"];
 
       const node = t.func(t.identifier("test"), t.signature(args, result), []);
@@ -153,7 +156,7 @@ describe("module create interface", () => {
     it("createValue should return the correct value", () => {
       const v = i64.createValueFromAST({
         high: 0,
-        low: 1
+        low: 1,
       });
 
       assert.typeOf(v, "object");
@@ -229,7 +232,7 @@ describe("module create interface", () => {
     it("should initialized with a given length", () => {
       const table = new tablevalue.Table({
         initial: 2,
-        element: "anyfunc"
+        element: "anyfunc",
       });
 
       assert.equal(table.length, 2);
@@ -242,7 +245,7 @@ describe("module create interface", () => {
     it("should have a value", () => {
       const initNode = [
         t.objectInstruction("const", "i32", [t.numberLiteralFromRaw(10)]),
-        t.instruction("end")
+        t.instruction("end"),
       ];
 
       addFakeLocsListOfInstructions(initNode);
@@ -260,8 +263,8 @@ describe("module create interface", () => {
   it("module imports (external functions)", () => {
     const externalFunctions = {
       env: {
-        test() {}
-      }
+        test() {},
+      },
     };
 
     const params = [t.funcParam("i32"), t.funcParam("i32")];
@@ -271,7 +274,7 @@ describe("module create interface", () => {
         "env",
         "test",
         t.funcImportDescr(t.identifier("foo"), t.signature(params, []))
-      )
+      ),
     ]);
 
     const funcTable = {};

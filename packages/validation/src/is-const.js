@@ -54,7 +54,7 @@ export default function isConst(
           errors.push("type mismatch in global initializer");
         }
       }
-    }
+    },
   });
 
   return errors;

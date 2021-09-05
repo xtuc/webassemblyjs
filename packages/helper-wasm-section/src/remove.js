@@ -3,7 +3,7 @@
 import {
   traverse,
   getSectionMetadatas,
-  shiftSection
+  shiftSection,
 } from "@webassemblyjs/ast";
 import { overrideBytesInBuffer } from "@webassemblyjs/helper-buffer";
 
@@ -44,7 +44,7 @@ export function removeSections(
         if (encounteredSection === true) {
           shiftSection(ast, path.node, delta);
         }
-      }
+      },
     });
 
     // replacement is nothing

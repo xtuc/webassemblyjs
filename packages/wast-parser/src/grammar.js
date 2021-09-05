@@ -10,15 +10,18 @@ import { tokens, keywords } from "./tokenizer";
 
 declare function createUnexpectedToken(msg: string): void;
 
-define(createUnexpectedToken, msg => `return new Error(
+define(
+  createUnexpectedToken,
+  (msg) => `return new Error(
     "\n" +
     codeFrameFromSource(source, token.loc) + "\n"
     + ${msg} + ", given " + tokenToString(token)
-  );`);
+  );`
+);
 
 type AllArgs = {
   args: Array<Expression>,
-  namedArgs: Object
+  namedArgs: Object,
 };
 
 function hasPlugin(name: string): boolean {
@@ -48,8 +51,8 @@ type ParserState = {
   registredExportedElements: Array<{
     exportType: ExportDescrType,
     name: string,
-    id: Index
-  }>
+    id: Index,
+  }>,
 };
 
 export function parse(tokensList: Array<Object>, source: string): Program {
@@ -57,7 +60,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
   const getUniqueName = t.getUniqueNameGenerator();
 
   const state: ParserState = {
-    registredExportedElements: []
+    registredExportedElements: [],
   };
 
   // But this time we're going to use recursion instead of a `while` loop. So we
@@ -211,7 +214,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         state.registredExportedElements.push({
           exportType: "Memory",
           name,
-          id
+          id,
         });
 
         eatTokenOfType(tokens.closeParen);
@@ -228,7 +231,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           limits.max = parse32I(token.value);
           eatToken();
 
-          if (token.type === tokens.keyword && token.value === 'shared') {
+          if (token.type === tokens.keyword && token.value === "shared") {
             limits.shared = true;
             eatToken();
           }
@@ -345,7 +348,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
           state.registredExportedElements.push({
             exportType: "Table",
             name: exportName,
-            id: name
+            id: name,
           });
 
           eatTokenOfType(tokens.closeParen);
@@ -911,7 +914,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         moduleFields.push(walk());
 
         if (state.registredExportedElements.length > 0) {
-          state.registredExportedElements.forEach(decl => {
+          state.registredExportedElements.forEach((decl) => {
             moduleFields.push(
               t.moduleExport(
                 decl.name,
@@ -1113,7 +1116,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         if (token.type === tokens.dot) {
           object = name;
-          const name_parts = []
+          const name_parts = [];
 
           do {
             eatToken(); // Eat the dot
@@ -1128,7 +1131,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
             eatToken(); // Eat the name
           } while (token.type === tokens.dot);
 
-          name = name_parts.join('.');
+          name = name_parts.join(".");
         }
 
         if (token.type === tokens.closeParen) {
@@ -1337,7 +1340,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
       state.registredExportedElements.push({
         exportType: "Func",
         name,
-        id
+        id,
       });
     }
 
@@ -1472,7 +1475,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         state.registredExportedElements.push({
           exportType: "Global",
           name: exportName,
-          id: name
+          id: name,
         });
 
         eatTokenOfType(tokens.closeParen);
@@ -1494,7 +1497,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
         importing = {
           module: moduleName,
           name,
-          descr: undefined
+          descr: undefined,
         };
 
         eatTokenOfType(tokens.closeParen);
@@ -1572,7 +1575,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
         params.push({
           id,
-          valtype
+          valtype,
         });
 
         /**
@@ -1587,7 +1590,7 @@ export function parse(tokensList: Array<Object>, source: string): Program {
 
             params.push({
               id: undefined,
-              valtype
+              valtype,
             });
           }
         }
