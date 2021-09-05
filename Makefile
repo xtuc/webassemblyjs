@@ -77,7 +77,7 @@ serve-docs:
 	$(HTTP_SERVER) docs
 
 bench:
-	$(NODE) $(NODE_OPTS) ./benchmark
+	$(NODE) $(NODE_OPTS) ./packages/webassemblyjs/benchmark
 
 fix:
 	$(PRETTIER) --write "{packages,docs,benchmark}/**/*.js"
