@@ -52,4 +52,12 @@ describe("LEB128", () => {
     assert.equal(u64.nextIndex, 10);
     assert.equal(u64.value.toString(), "-9223372036854775808");
   });
+
+  it("should decode -1 to i64", () => {
+    const u64 = decodeInt64(Buffer.from([0x7f]));
+
+    assert.typeOf(u64.value, "object");
+    assert.equal(u64.nextIndex, 1);
+    assert.equal(u64.value.toString(), "-1");
+  });
 });

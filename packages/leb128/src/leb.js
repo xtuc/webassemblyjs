@@ -242,6 +242,13 @@ function encodeInt64(num) {
 function decodeInt64(encodedBuffer, index) {
   const result = decodeIntBuffer(encodedBuffer, index);
 
+  // sign-extend if necessary
+  const length = result.value.length;
+  if (result.value[length - 1] >> 7) {
+    result.value = bufs.resize(result.value, 8);
+    result.value.fill(255, length);
+  }
+
   const value = Long.fromBytesLE(result.value, false);
 
   bufs.free(result.value);
