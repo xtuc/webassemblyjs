@@ -1,0 +1,41 @@
+language: node_js
+
+cache:
+  yarn: true
+
+install: make YARN_EXTRA_ARGS="$YARN_EXTRA_ARGS" bootstrap
+
+script: make $JOB
+
+matrix:
+  include:
+    - node_js: "10"
+      env: JOB=test-ci
+    - node_js: "8"
+      env: JOB=test-ci
+    - node_js: "node"
+      env: JOB=test-pnpm
+      if: branch = master
+    - node_js: "10"
+      env:
+        - NODEJS_VERSION=v12.0.0-nightly20181024bb79e768e5
+        - YARN_EXTRA_ARGS="--ignore-engines"
+        - JOB=test-ci
+
+  allow_failures:
+    - node_js: "node"
+
+before_install:
+  - npm i -g yarn
+  - |
+      mkdir /opt/wabt
+      curl -L --silent "https://github.com/WebAssembly/wabt/releases/download/1.0.6/wabt-1.0.6-linux.tar.gz" | tar -zxf - --directory /opt/wabt
+      export PATH="/opt/wabt/wabt-1.0.6:$PATH"
+  - |
+      if [ "$NODEJS_VERSION" != "" ];
+      then
+        mkdir /opt/node
+        curl --silent "https://nodejs.org/download/nightly/$NODEJS_VERSION/node-$NODEJS_VERSION-linux-x64.tar.gz" | tar -zxf - --directory /opt/node
+        export PATH="/opt/node/node-$NODEJS_VERSION-linux-x64/bin:$PATH"
+        node --version
+      fi
