@@ -43,6 +43,7 @@ function restoreFunctionNames(ast) {
         const oldValue = nodeName.value;
 
         nodeName.value = functionName.name;
+        // $FlowIgnore
         nodeName.numeric = oldValue;
 
         // $FlowIgnore

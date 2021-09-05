@@ -21,6 +21,7 @@ import {
   traverse,
 } from "@webassemblyjs/ast";
 
+// $FlowIgnore
 export const kStart = Symbol("_start");
 
 declare function LABEL_POP(): void;
@@ -208,7 +209,7 @@ export class Module {
     this._emit(node);
   }
 
-  emitStartFunc(index: number) {
+  emitStartFunc(index: number): any {
     const funcInContext = this._context.funcs[index];
     assert(typeof funcInContext === "object");
     assert(funcInContext.isImplemented);
@@ -221,7 +222,7 @@ export class Module {
     };
   }
 
-  finalizeFunc(func: Func) {
+  finalizeFunc(func: Func): any {
     LABEL_POP();
 
     // transform the function body `end` into a return

@@ -833,7 +833,7 @@ function printGenericInstruction(n: Instr, depth: number): string {
   });
 
   if (n.namedArgs !== undefined) {
-    for (let key in n.namedArgs) {
+    for (const key in n.namedArgs) {
       out += space + key + "=";
       out += printFuncInstructionArg(n.namedArgs[key], depth + 1);
     }

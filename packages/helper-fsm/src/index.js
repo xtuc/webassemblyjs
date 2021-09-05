@@ -1,5 +1,6 @@
 // @flow
 
+// $FlowIgnore
 const STOP = Symbol("STOP");
 
 type State<T> = T | Symbol;
@@ -68,6 +69,7 @@ class FSM<T> {
   constructor(
     transitions: TransitionList<T>,
     initialState: State<T>,
+    // $FlowIgnore
     terminatingState: State<T> = STOP
   ) {
     this.initialState = initialState;

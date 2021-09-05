@@ -21,7 +21,8 @@ export class f32 extends Float<f32> {
     return operand instanceof f32nan
       ? // $FlowIgnore
         operand.add(this)
-      : Float.prototype.add.call(this, operand);
+      : // $FlowIgnore
+        Float.prototype.add.call(this, operand);
   }
 
   sub(operand: Float<f32>): Float<f32> {
@@ -29,7 +30,8 @@ export class f32 extends Float<f32> {
     return operand instanceof f32nan
       ? // $FlowIgnore
         operand.sub(this)
-      : Float.prototype.sub.call(this, operand);
+      : // $FlowIgnore
+        Float.prototype.sub.call(this, operand);
   }
 
   mul(operand: Float<f32>): Float<f32> {
@@ -37,7 +39,8 @@ export class f32 extends Float<f32> {
     return operand instanceof f32nan
       ? // $FlowIgnore
         operand.mul(this)
-      : Float.prototype.mul.call(this, operand);
+      : // $FlowIgnore
+        Float.prototype.mul.call(this, operand);
   }
 
   div(operand: Float<f32>): Float<f32> {
@@ -45,7 +48,8 @@ export class f32 extends Float<f32> {
     return operand instanceof f32nan
       ? // $FlowIgnore
         operand.div(this)
-      : Float.prototype.div.call(this, operand);
+      : // $FlowIgnore
+        Float.prototype.div.call(this, operand);
   }
 
   toByteArray(): Array<number> {

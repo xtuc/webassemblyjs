@@ -156,6 +156,7 @@ function getExportedElement(name: string, moduleName: ?string): Object {
   return fn;
 }
 
+// $FlowIgnore
 function loadModule(type: string, filename: string): Instance {
   const internalInstanceOptions = {
     checkForI64InSignature: false,

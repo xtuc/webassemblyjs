@@ -161,7 +161,7 @@ function generate() {
   // Node testers
   iterateProps(definitions, (typeDefinition) => {
     stdout.write(`
-      export const is${typeDefinition.name} =
+      export const is${typeDefinition.name}: ((n: Node) => boolean) =
         isTypeOf("${typeDefinition.name}");
     `);
   });
@@ -176,7 +176,7 @@ function generate() {
   unionTypes.forEach((unionType) => {
     stdout.write(
       `
-      export const is${unionType} = (node: Node) => ` +
+      export const is${unionType} = (node: Node): boolean => ` +
         mapProps(definitions)
           .filter((d) => d.unionType && d.unionType.includes(unionType))
           .map((d) => `is${d.name}(node) `)
@@ -188,7 +188,7 @@ function generate() {
   // Node assertion
   iterateProps(definitions, (typeDefinition) => {
     stdout.write(`
-      export const assert${typeDefinition.name} =
+      export const assert${typeDefinition.name}: ((n: Node) => void) =
         assertTypeOf("${typeDefinition.name}");
     `);
   });

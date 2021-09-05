@@ -36,7 +36,8 @@ export function overrideBytesInBuffer(
   return concatUint8Arrays(beforeBytes, replacement, afterBytes);
 }
 
-export function makeBuffer(...splitedBytes: Array<Array<Byte>>) {
+export function makeBuffer(...splitedBytes: Array<Array<Byte>>): Array<Byte> {
+  // $FlowIgnore
   const bytes = [].concat.apply([], splitedBytes);
   return new Uint8Array(bytes).buffer;
 }

@@ -318,6 +318,7 @@ export function executeStackFrame(
     pc++;
 
     switch (instruction.type) {
+      // $FlowIgnore
       case "InternalEndAndReturn": {
         if (frame.returnAddress !== -1) {
           pc = frame.returnAddress; // raw goto
@@ -329,6 +330,7 @@ export function executeStackFrame(
         }
       }
 
+      // $FlowIgnore
       case "InternalGoto": {
         const { target } = instruction;
 
@@ -337,6 +339,7 @@ export function executeStackFrame(
         break;
       }
 
+      // $FlowIgnore
       case "InternalCallExtern": {
         const { target } = instruction;
 

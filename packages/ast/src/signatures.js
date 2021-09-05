@@ -214,7 +214,7 @@ const numericInstructions = {
   "f64.reinterpret/i64": sign([i64], [f64]),
 };
 
-export const signatures = Object.assign(
+export const signatures: any = Object.assign(
   {},
   controlInstructions,
   parametricInstructions,

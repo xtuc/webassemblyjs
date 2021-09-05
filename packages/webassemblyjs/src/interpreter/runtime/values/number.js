@@ -46,7 +46,7 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
     return new this.constructor(this._value ^ operand._value);
   }
 
-  isZero() {
+  isZero(): boolean {
     return this._value == 0;
   }
 
@@ -105,7 +105,7 @@ export class Float<U> implements FloatingPointValue<Float<U>, U> {
   }
 }
 
-export function typedArrayToArray(typedArray: Object) {
+export function typedArrayToArray(typedArray: Object): Array<Byte> {
   const byteArray: Array<Byte> = new Array(typedArray.byteLength);
   for (let i = 0; i < byteArray.length; i++) {
     byteArray[i] = typedArray[i];

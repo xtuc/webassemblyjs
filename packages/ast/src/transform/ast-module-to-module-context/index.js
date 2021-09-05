@@ -1,9 +1,9 @@
-// TODO(sven): add flow in here
+// @flow
 
 import { isSignature, isNumberLiteral } from "../../nodes.js";
 import { assert } from "mamacro";
 
-export function moduleContextFromModuleAST(m) {
+export function moduleContextFromModuleAST(m: Module): any {
   const moduleContext = new ModuleContext();
 
   assert(m.type === "Module");
@@ -74,6 +74,18 @@ export function moduleContextFromModuleAST(m) {
  * Module context for type checking
  */
 export class ModuleContext {
+  funcs: Array<any>;
+  funcsOffsetByIdentifier: Array<any>;
+  types: Array<any>;
+  globals: Array<any>;
+  globalsOffsetByIdentifier: Array<any>;
+  mems: Array<any>;
+  locals: Array<any>;
+  labels: Array<any>;
+  return: Array<any>;
+  debugName: string;
+  start: any;
+
   constructor() {
     this.funcs = [];
     this.funcsOffsetByIdentifier = [];
@@ -98,21 +110,21 @@ export class ModuleContext {
   /**
    * Set start segment
    */
-  setStart(index) {
+  setStart(index: any) {
     this.start = index.value;
   }
 
   /**
    * Get start function
    */
-  getStart() {
+  getStart(): any {
     return this.start;
   }
 
   /**
    * Reset the active stack frame
    */
-  newContext(debugName, expectedResult) {
+  newContext(debugName: string, expectedResult: any) {
     this.locals = [];
     this.labels = [expectedResult];
     this.return = expectedResult;
@@ -122,8 +134,9 @@ export class ModuleContext {
   /**
    * Functions
    */
-  addFunction(func /*: Func*/) {
+  addFunction(func: Func) {
     // eslint-disable-next-line prefer-const
+    // $FlowIgnore
     let { params: args = [], results: result = [] } = func.signature || {};
 
     args = args.map((arg) => arg.valtype);
@@ -131,11 +144,12 @@ export class ModuleContext {
     this.funcs.push({ args, result });
 
     if (typeof func.name !== "undefined") {
+      // $FlowIgnore
       this.funcsOffsetByIdentifier[func.name.value] = this.funcs.length - 1;
     }
   }
 
-  importFunction(funcimport) {
+  importFunction(funcimport: any) {
     if (isSignature(funcimport.signature)) {
       // eslint-disable-next-line prefer-const
       let { params: args, results: result } = funcimport.signature;
@@ -161,11 +175,11 @@ export class ModuleContext {
     }
   }
 
-  hasFunction(index) {
+  hasFunction(index: any): boolean {
     return typeof this.getFunction(index) !== "undefined";
   }
 
-  getFunction(index) {
+  getFunction(index: any): any {
     if (typeof index !== "number") {
       throw new Error("getFunction only supported for number index");
     }
@@ -173,24 +187,23 @@ export class ModuleContext {
     return this.funcs[index];
   }
 
-  getFunctionOffsetByIdentifier(name) {
+  getFunctionOffsetByIdentifier(name: any): any {
     assert(typeof name === "string");
-
     return this.funcsOffsetByIdentifier[name];
   }
 
   /**
    * Labels
    */
-  addLabel(result) {
+  addLabel(result: any) {
     this.labels.unshift(result);
   }
 
-  hasLabel(index) {
+  hasLabel(index: any): boolean {
     return this.labels.length > index && index >= 0;
   }
 
-  getLabel(index) {
+  getLabel(index: any): any {
     return this.labels[index];
   }
 
@@ -201,87 +214,88 @@ export class ModuleContext {
   /**
    * Locals
    */
-  hasLocal(index) {
+  hasLocal(index: any): boolean {
     return typeof this.getLocal(index) !== "undefined";
   }
 
-  getLocal(index) {
+  getLocal(index: any): any {
     return this.locals[index];
   }
 
-  addLocal(type) {
+  addLocal(type: any) {
     this.locals.push(type);
   }
 
   /**
    * Types
    */
-  addType(type) {
+  addType(type: any) {
     assert(type.functype.type === "Signature");
     this.types.push(type.functype);
   }
 
-  hasType(index) {
+  hasType(index: any): boolean {
     return this.types[index] !== undefined;
   }
 
-  getType(index) {
+  getType(index: any): any {
     return this.types[index];
   }
 
   /**
    * Globals
    */
-  hasGlobal(index) {
+  hasGlobal(index: any): boolean {
     return this.globals.length > index && index >= 0;
   }
 
-  getGlobal(index) {
+  getGlobal(index: any): any {
     return this.globals[index].type;
   }
 
-  getGlobalOffsetByIdentifier(name) {
+  getGlobalOffsetByIdentifier(name: string): any {
     assert(typeof name === "string");
-
+    // $FlowIgnore
     return this.globalsOffsetByIdentifier[name];
   }
 
-  defineGlobal(global /*: Global*/) {
+  defineGlobal(global: Global) {
     const type = global.globalType.valtype;
     const mutability = global.globalType.mutability;
 
     this.globals.push({ type, mutability });
 
     if (typeof global.name !== "undefined") {
+      // $FlowIgnore
       this.globalsOffsetByIdentifier[global.name.value] =
         this.globals.length - 1;
     }
   }
 
-  importGlobal(type, mutability) {
+  importGlobal(type: any, mutability: any) {
     this.globals.push({ type, mutability });
   }
 
-  isMutableGlobal(index) {
+  isMutableGlobal(index: any): any {
     return this.globals[index].mutability === "var";
   }
 
-  isImmutableGlobal(index) {
+  isImmutableGlobal(index: any): any {
     return this.globals[index].mutability === "const";
   }
 
   /**
    * Memories
    */
-  hasMemory(index) {
+  hasMemory(index: any): boolean {
     return this.mems.length > index && index >= 0;
   }
 
-  addMemory(min, max) {
+  addMemory(min: any, max: any) {
     this.mems.push({ min, max });
   }
 
-  getMemory(index) {
+  getMemory(index: any): any {
     return this.mems[index];
   }
 }

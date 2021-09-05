@@ -1,32 +1,33 @@
 // @flow
 /* eslint no-unused-vars: off */
 
-import { type Instance } from "webassemblyjs/lib/interpreter";
+interface CompiledModule {
+  _ir: IR;
+  _ast: Program; // FIXME(sven): do we still need the AST here?
 
-type CompiledModule = {
-  _ir: IR,
-  _ast: Program, // FIXME(sven): do we still need the AST here?
+  exports: Array<CompiledModuleExportDescr>;
+  imports: Array<CompiledModuleImportDescr>;
+}
 
-  exports: Array<CompiledModuleExportDescr>,
-  imports: Array<CompiledModuleImportDescr>
-};
+interface Instance {
+  exports: any;
+  executeStartFunc: (ir: IR, offset: number) => void;
+}
 
 type CompiledModuleExportDescr = {
   name: string,
-  kind: string
+  kind: string,
 };
 
 type CompiledModuleImportDescr = {
   module: string,
   name: string,
-  kind: string
+  kind: string,
 };
-
-type Hostfunc = any;
 
 type MemoryDescriptor = {
   initial: number,
-  maximum?: ?number
+  maximum?: ?number,
 };
 
 interface MemoryInstance {
@@ -36,21 +37,21 @@ interface MemoryInstance {
 type TableDescriptor = {
   element: string,
   initial: number,
-  maximum?: number
+  maximum?: number,
 };
 
 type ImportObject =
   | Object
   | {
-      _internalInstanceOptions: InternalInstanceOptions
+      _internalInstanceOptions: InternalInstanceOptions,
     };
 
 type InstansitatedInstanceAndModule = {
   instance: Instance,
-  module: CompiledModule
+  module: CompiledModule,
 };
 
 type InternalInstanceOptions = {
   checkForI64InSignature: boolean,
-  returnStackLocal: boolean
+  returnStackLocal: boolean,
 };

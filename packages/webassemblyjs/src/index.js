@@ -38,6 +38,7 @@ const WebAssembly = {
       const instance = new Instance(module, importObject);
 
       resolve({
+        // $FlowIgnore
         instance,
         module,
       });

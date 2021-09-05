@@ -19,7 +19,7 @@ function newUnexpectedFunction(i) {
 }
 
 export function transform(ast: Program) {
-  let module;
+  let module = null;
 
   traverse(ast, {
     Module(path: NodePath<Module>) {
@@ -27,6 +27,9 @@ export function transform(ast: Program) {
     },
   });
 
+  if (module == null) {
+    throw new Error("Module not foudn in program");
+  }
   const moduleContext = moduleContextFromModuleAST(module);
 
   // Transform the actual instruction in function bodies

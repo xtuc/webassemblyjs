@@ -14,7 +14,7 @@ const { compileASTNodes } = require("@webassemblyjs/helper-test-framework");
 
 describe("kernel exec - control instruction", () => {
   it("should execute nop", () => {
-    let pc;
+    let pc = 0;
 
     const code = [
       t.instruction("nop"),

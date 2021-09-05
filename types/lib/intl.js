@@ -5,6 +5,8 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
  */
 
 declare var Intl: {
@@ -12,8 +14,8 @@ declare var Intl: {
   DateTimeFormat: Class<Intl$DateTimeFormat>,
   NumberFormat: Class<Intl$NumberFormat>,
   PluralRules: ?Class<Intl$PluralRules>,
-
-  getCanonicalLocales?: (locales?: Intl$Locales) => Intl$Locale[]
+  getCanonicalLocales?: (locales?: Intl$Locales) => Intl$Locale[],
+  ...
 }
 
 type Intl$Locale = string
@@ -39,7 +41,8 @@ declare class Intl$Collator {
     ignorePunctuation: boolean,
     collation: string,
     numeric: boolean,
-    caseFirst?: 'upper' | 'lower' | 'false'
+    caseFirst?: 'upper' | 'lower' | 'false',
+    ...
   };
 
   static supportedLocalesOf (locales?: Intl$Locales): Intl$Locale[];
@@ -51,7 +54,8 @@ declare type Intl$CollatorOptions = {
   sensitivity?: 'base' | 'accent' | 'case' | 'variant',
   ignorePunctuation?: boolean,
   numeric?: boolean,
-  caseFirst?: 'upper' | 'lower' | 'false'
+  caseFirst?: 'upper' | 'lower' | 'false',
+  ...
 }
 
 type FormatToPartsType = | 'day' | 'dayPeriod' | 'era' | 'hour' | 'literal'
@@ -73,6 +77,7 @@ declare class Intl$DateTimeFormat {
   formatToParts (value?: Date | number): Array<{
     type: FormatToPartsType,
     value: string,
+    ...
   }>;
 
   resolvedOptions (): {
@@ -89,7 +94,8 @@ declare class Intl$DateTimeFormat {
     hour?: 'numeric' | '2-digit',
     minute?: 'numeric' | '2-digit',
     second?: 'numeric' | '2-digit',
-    timeZoneName?: 'short' | 'long'
+    timeZoneName?: 'short' | 'long',
+    ...
   };
 
   static supportedLocalesOf (locales?: Intl$Locales): Intl$Locale[];
@@ -108,7 +114,8 @@ declare type Intl$DateTimeFormatOptions = {
   hour?: 'numeric' | '2-digit',
   minute?: 'numeric' | '2-digit',
   second?: 'numeric' | '2-digit',
-  timeZoneName?: 'short' | 'long'
+  timeZoneName?: 'short' | 'long',
+  ...
 }
 
 declare class Intl$NumberFormat {
@@ -135,7 +142,8 @@ declare class Intl$NumberFormat {
     minimumFractionDigits?: number,
     maximumFractionDigits?: number,
     minimumSignificantDigits?: number,
-    maximumSignificantDigits?: number
+    maximumSignificantDigits?: number,
+    ...
   };
 
   static supportedLocalesOf (locales?: Intl$Locales): Intl$Locale[];
@@ -151,7 +159,8 @@ declare type Intl$NumberFormatOptions = {
   minimumFractionDigits?: number,
   maximumFractionDigits?: number,
   minimumSignificantDigits?: number,
-  maximumSignificantDigits?: number
+  maximumSignificantDigits?: number,
+  ...
 }
 
 declare class Intl$PluralRules {
@@ -171,6 +180,7 @@ declare class Intl$PluralRules {
     minimumSignificantDigits?: number,
     maximumSignificantDigits?: number,
     pluralCategories: Intl$PluralRule[],
+    ...
   };
 
   static supportedLocalesOf (locales?: Intl$Locales): Intl$Locale[];
@@ -185,5 +195,6 @@ declare type Intl$PluralRulesOptions = {
   minimumFractionDigits?: number,
   maximumFractionDigits?: number,
   minimumSignificantDigits?: number,
-  maximumSignificantDigits?: number
+  maximumSignificantDigits?: number,
+  ...
 }

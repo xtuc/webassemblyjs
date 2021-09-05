@@ -1897,10 +1897,13 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     const metadataArray = Array.isArray(metadata) ? metadata : [metadata];
     metadataArray.forEach((metadataItem) => {
+      // $FlowIgnore
       if (metadataItem.type === "FunctionNameMetadata") {
         moduleMetadata.functionNames.push(metadataItem);
+        // $FlowIgnore
       } else if (metadataItem.type === "LocalNameMetadata") {
         moduleMetadata.localNames.push(metadataItem);
+        // $FlowIgnore
       } else if (metadataItem.type === "ProducersSectionMetadata") {
         moduleMetadata.producers.push(metadataItem);
       } else {

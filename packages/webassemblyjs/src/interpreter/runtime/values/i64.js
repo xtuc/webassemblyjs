@@ -23,8 +23,10 @@ define(TO_BOOLEAN, (cond) => `(${cond}) ? createTrue() : createFalse()`);
 const type = "i64";
 
 export class i64 implements IntegerValue<i64> {
+  // $FlowIgnore
   _value: Long;
 
+  // $FlowIgnore
   constructor(value: Long) {
     assert(value instanceof Long);
     this._value = value;

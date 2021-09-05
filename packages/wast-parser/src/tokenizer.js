@@ -116,6 +116,7 @@ type NumberLiteralState =
   | "HEX_SIGNED_EXP"
   | "HEX_EXP";
 
+// $FlowIgnore
 const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
   {
     START: [
@@ -183,7 +184,7 @@ const numberLiteralFSM: FSM<NumberLiteralState> = new FSM(
   "STOP"
 );
 
-export function tokenize(input: string) {
+export function tokenize(input: string): Array<any> {
   let current: number = 0;
   let char = input[current];
 

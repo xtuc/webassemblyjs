@@ -5,9 +5,11 @@ type Bytes = number;
 
 type Functype = [Array<Valtype>, Array<Valtype>];
 
+type Hostfunc = any;
+
 type Addr = {
   index: Bytes,
-  size: Bytes
+  size: Bytes,
 };
 
 type FuncAddr = Addr;
@@ -21,12 +23,12 @@ interface ExternalVal {
 }
 
 type FuncExternalVal = ExternalVal & {
-  type: "Func"
+  type: "Func",
 };
 
 type ExportInstance = {
   name: string,
-  value: ExternalVal
+  value: ExternalVal,
 };
 
 type FuncInstance = {
@@ -39,13 +41,13 @@ type FuncInstance = {
   // I'll store the instructions from the function body here.
   code: Array<Instruction> | Function,
 
-  isExternal: boolean
+  isExternal: boolean,
 };
 
 type GlobalInstance = {
   type: Valtype,
   mutability: Mutability,
-  value: ?NumericOperations<*>
+  value: ?NumericOperations<*>,
 };
 
 type ModuleInstance = {
@@ -56,7 +58,7 @@ type ModuleInstance = {
   memaddrs: Array<MemAddr>,
   globaladdrs: Array<GlobalAddr>,
 
-  exports: Array<ExportInstance>
+  exports: Array<ExportInstance>,
 };
 
 /**
@@ -75,12 +77,12 @@ type StackFrame = {
 
   trace?: (number, number, Instruction, StackFrame) => void,
 
-  returnAddress: number
+  returnAddress: number,
 };
 
 type StackLocal = {
   type: Valtype,
-  value: any
+  value: any,
 };
 
 type i32 = any;
@@ -142,7 +144,7 @@ interface NumericOperations<T> {
 type Label = {
   arity: number,
   value: any,
-  id: ?Identifier
+  id: ?Identifier,
 };
 
 interface Allocator {
@@ -161,12 +163,12 @@ type SignatureMap = { [string]: string } | [string, string];
 
 type IRFuncTable = {
   name: string,
-  startAt: number
+  startAt: number,
 };
 
 type IR = {
   funcTable: Array<IRFuncTable>,
   program: {
-    [number]: Instruction
-  }
+    [number]: Instruction,
+  },
 };
