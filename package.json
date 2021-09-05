@@ -34,7 +34,7 @@
     "eslint-plugin-prettier": "2.7.0",
     "flow-bin": "0.159.0",
     "flow-typed": "3.3.1",
-    "glob": "7.1.4",
+    "glob": "7.1.7",
     "http-server": "0.11.1",
     "jest-diff": "24.8.0",
     "lerna": "3.13.4",
