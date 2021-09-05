@@ -135,9 +135,10 @@ export class ModuleContext {
    * Functions
    */
   addFunction(func: Func) {
-    // eslint-disable-next-line prefer-const
+    /* eslint-disable */
     // $FlowIgnore
     let { params: args = [], results: result = [] } = func.signature || {};
+    /* eslint-enable */
 
     args = args.map((arg) => arg.valtype);
 
