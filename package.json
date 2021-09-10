@@ -41,7 +41,7 @@
     "markdown-to-html": "0.0.13",
     "mocha": "6.1.4",
     "performance-now": "2.1.0",
-    "prettier": "2.3.2"
+    "prettier": "2.4.0"
   },
   "dependencies": {
     "mkdirp": "1.0.4",
