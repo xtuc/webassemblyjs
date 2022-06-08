@@ -36,7 +36,7 @@
     "flow-typed": "3.3.1",
     "glob": "7.1.7",
     "http-server": "13.0.1",
-    "jest-diff": "24.8.0",
+    "jest-diff": "28.1.1",
     "lerna": "3.13.4",
     "markdown-to-html": "0.0.13",
     "mocha": "6.1.4",
