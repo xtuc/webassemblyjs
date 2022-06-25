@@ -85,4 +85,5 @@ type DecoderOpts = {
   ignoreDataSection: boolean,
   ignoreCodeSection: boolean,
   ignoreCustomNameSection: boolean,
+  errorOnUnknownSection: boolean,
 };
