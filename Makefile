@@ -21,6 +21,7 @@ REPL = $(NODE) ./packages/repl/lib/bin.js
 
 .PHONY: test build
 
+.PHONY: clean-all
 clean-all:
 	rm -rf ./node_modules ./packages/*/node_modules ./packages/*/{lib,esm}
 
