@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-parser",
-  "version": "1.11.2",
+  "version": "1.11.1",
   "keywords": [
     "webassembly",
     "javascript",
