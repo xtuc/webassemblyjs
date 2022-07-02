@@ -25,7 +25,7 @@
     "@babel/template": "7.15.4",
     "babel-eslint": "8.0.3",
     "babel-plugin-mamacro": "^0.0.7",
-    "chai": "4.3.4",
+    "chai": "4.3.6",
     "eslint": "4.12.1",
     "eslint-config-prettier": "6.15.0",
     "eslint-plugin-flowtype": "3.10.4",
