@@ -66,7 +66,7 @@ lint:
 	$(ESLINT) packages
 
 publish: build
-	$(LERNA) publish --force-publish --exact --otp=${read}
+	$(LERNA) publish --force-publish --exact
 
 repl: build
 	$(NODE) $(NODE_OPTS) ./lib/repl
