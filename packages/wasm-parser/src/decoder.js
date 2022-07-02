@@ -1872,7 +1872,20 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       }
     }
 
-    throw new CompileError("Unexpected section: " + toHex(sectionId));
+    if (opts.errorOnUnknownSection) {
+      throw new CompileError("Unexpected section: " + toHex(sectionId));
+    } else {
+      dumpSep("section " + toHex(sectionId));
+      dump([sectionId], "section code");
+      dump([sectionSizeInBytes], "section size");
+      eatBytes(sectionSizeInBytes);
+      dumpSep("ignoring (" + sectionSizeInBytes + " bytes)");
+      return {
+        nodes: [],
+        metadata: [],
+        nextSectionIndex: 0,
+      };
+    }
   }
 
   parseModuleHeader();
