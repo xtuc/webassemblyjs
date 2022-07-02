@@ -23,3 +23,16 @@ Options:
 | `--no-name-resolution` | disable name resolution |
 | `--ignore-code-section` | don't print the code |
 
+
+### `wasmdump`
+
+```sh
+wasmdump module.wasm
+```
+
+Options:
+
+| name | description |
+|------|-------------|
+| `--ignore-code-section` | don't print the code |
+| `--error-on-unknown-section` | error on unknown section |
