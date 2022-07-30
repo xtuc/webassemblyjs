@@ -5,7 +5,7 @@ id: contrib-wat-vs-wast
 
 ## `.wat`
 
-First, WAT and WAT refers to the same format, it's officially part of the WebAssembly specification available [here](https://webassembly.github.io/spec/core/text/index.html).
+First, WAST and WAT refers to the same format, it's officially part of the WebAssembly specification available [here](https://webassembly.github.io/spec/core/text/index.html).
 
 It's basically a retranscription of the binary format in text, it closely follows the same semantics.
 
