@@ -12,7 +12,8 @@
     ]
   },
   "engines": {
-    "yarn": "^1.5.0"
+    "yarn": "^1.5.0",
+    "node": "^14.15.0 || >=16.0.0"
   },
   "devDependencies": {
     "@babel/cli": "7.15.4",
