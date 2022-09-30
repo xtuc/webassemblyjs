@@ -22,7 +22,7 @@
     "@webassemblyjs/floating-point-hex-parser": "1.11.4",
     "@webassemblyjs/helper-api-error": "1.11.4",
     "@webassemblyjs/helper-code-frame": "1.11.3",
-    "@webassemblyjs/helper-fsm": "1.11.3",
+    "@webassemblyjs/helper-fsm": "1.11.4",
     "@xtuc/long": "4.2.2"
   },
   "devDependencies": {
