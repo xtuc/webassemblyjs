@@ -20,7 +20,7 @@
     "@webassemblyjs/ast": "1.11.3",
     "@webassemblyjs/helper-api-error": "1.11.3",
     "@webassemblyjs/helper-wasm-bytecode": "1.11.4",
-    "@webassemblyjs/ieee754": "1.11.3",
+    "@webassemblyjs/ieee754": "1.11.4",
     "@webassemblyjs/leb128": "1.11.3",
     "@webassemblyjs/utf8": "1.11.3"
   },
