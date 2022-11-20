@@ -75,10 +75,12 @@ function _decode(bytes) {
       const [b1, b2, b3, b4, ...bs] = remainingBytes;
 
       if (b1 < 0xf8) {
-        acc.push(code(
-          0x10000,
-          ((((b1 & 0x07) << 18) + con(b2)) << 12) + (con(b3) << 6) + con(b4)
-        ));
+        acc.push(
+          code(
+            0x10000,
+            ((((b1 & 0x07) << 18) + con(b2)) << 12) + (con(b3) << 6) + con(b4)
+          )
+        );
         remainingBytes = bs;
         continue;
       }
