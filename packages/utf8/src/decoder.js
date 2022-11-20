@@ -21,66 +21,71 @@ export function decode(bytes) {
 }
 
 function _decode(bytes) {
-  if (bytes.length === 0) {
-    return [];
-  }
+  let remainingBytes = bytes;
+  const acc = [];
 
-  /**
-   * 1 byte
-   */
-  {
-    const [b1, ...bs] = bytes;
+  while (remainingBytes.length > 0) {
+    /**
+     * 1 byte
+     */
+    {
+      const [b1, ...bs] = remainingBytes;
 
-    if (b1 < 0x80) {
-      return [code(0x0, b1), ..._decode(bs)];
+      if (b1 < 0x80) {
+        acc.push(code(0x0, b1));
+        remainingBytes = bs;
+        continue;
+      }
+
+      if (b1 < 0xc0) {
+        throw new Error("invalid UTF-8 encoding");
+      }
     }
 
-    if (b1 < 0xc0) {
-      throw new Error("invalid UTF-8 encoding");
+    /**
+     * 2 bytes
+     */
+    {
+      const [b1, b2, ...bs] = remainingBytes;
+
+      if (b1 < 0xe0) {
+        acc.push(code(0x80, ((b1 & 0x1f) << 6) + con(b2)));
+        remainingBytes = bs;
+        continue;
+      }
     }
-  }
 
-  /**
-   * 2 bytes
-   */
-  {
-    const [b1, b2, ...bs] = bytes;
+    /**
+     * 3 bytes
+     */
+    {
+      const [b1, b2, b3, ...bs] = remainingBytes;
 
-    if (b1 < 0xe0) {
-      return [code(0x80, ((b1 & 0x1f) << 6) + con(b2)), ..._decode(bs)];
+      if (b1 < 0xf0) {
+        acc.push(code(0x800, ((b1 & 0x0f) << 12) + (con(b2) << 6) + con(b3)));
+        remainingBytes = bs;
+        continue;
+      }
     }
-  }
 
-  /**
-   * 3 bytes
-   */
-  {
-    const [b1, b2, b3, ...bs] = bytes;
+    /**
+     * 4 bytes
+     */
+    {
+      const [b1, b2, b3, b4, ...bs] = remainingBytes;
 
-    if (b1 < 0xf0) {
-      return [
-        code(0x800, ((b1 & 0x0f) << 12) + (con(b2) << 6) + con(b3)),
-        ..._decode(bs),
-      ];
-    }
-  }
-
-  /**
-   * 4 bytes
-   */
-  {
-    const [b1, b2, b3, b4, ...bs] = bytes;
-
-    if (b1 < 0xf8) {
-      return [
-        code(
+      if (b1 < 0xf8) {
+        acc.push(code(
           0x10000,
           ((((b1 & 0x07) << 18) + con(b2)) << 12) + (con(b3) << 6) + con(b4)
-        ),
-        ..._decode(bs),
-      ];
+        ));
+        remainingBytes = bs;
+        continue;
+      }
     }
+
+    throw new Error("invalid UTF-8 encoding");
   }
 
-  throw new Error("invalid UTF-8 encoding");
+  return acc;
 }
