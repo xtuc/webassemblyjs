@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-flatten-ast",
-  "version": "1.11.3",
+  "version": "1.11.5",
   "description": "Flatten an AST helper",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -14,11 +14,11 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.11.3"
+    "@webassemblyjs/ast": "1.11.5"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-test-framework": "1.11.3",
-    "@webassemblyjs/wast-parser": "1.11.3",
-    "@webassemblyjs/wast-printer": "1.11.3"
+    "@webassemblyjs/helper-test-framework": "1.11.5",
+    "@webassemblyjs/wast-parser": "1.11.5",
+    "@webassemblyjs/wast-printer": "1.11.5"
   }
 }
