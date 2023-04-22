@@ -63,3 +63,6 @@ esm/
 package-lock.json
 
 wasm_test_dir
+
+# IntelliJ
+.idea/
