@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-opt",
-  "version": "1.11.5",
+  "version": "1.11.6",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -17,9 +17,9 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.11.5",
-    "@webassemblyjs/helper-buffer": "1.11.5",
-    "@webassemblyjs/wasm-gen": "1.11.5",
-    "@webassemblyjs/wasm-parser": "1.11.5"
+    "@webassemblyjs/ast": "1.11.6",
+    "@webassemblyjs/helper-buffer": "1.11.6",
+    "@webassemblyjs/wasm-gen": "1.11.6",
+    "@webassemblyjs/wasm-parser": "1.11.6"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/utf8",
-  "version": "1.11.5",
+  "version": "1.11.6",
   "description": "UTF8 encoder/decoder for WASM",
   "main": "lib/index.js",
   "module": "esm/index.js",

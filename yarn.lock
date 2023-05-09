@@ -2244,218 +2244,218 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@webassemblyjs/ast@1.11.5", "@webassemblyjs/ast@file:/home/doug/Development/thirdparty/webassemblyjs/packages/ast":
+"@webassemblyjs/ast@1.11.6", "@webassemblyjs/ast@file:/home/doug/Development/thirdparty/webassemblyjs/packages/ast":
   "resolved" "file:packages/ast"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/helper-numbers" "1.11.5"
-    "@webassemblyjs/helper-wasm-bytecode" "1.11.5"
+    "@webassemblyjs/helper-numbers" "1.11.6"
+    "@webassemblyjs/helper-wasm-bytecode" "1.11.6"
 
 "@webassemblyjs/cli@file:/home/doug/Development/thirdparty/webassemblyjs/packages/cli":
   "resolved" "file:packages/cli"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/wasm-parser" "1.11.5"
-    "@webassemblyjs/wast-parser" "1.11.5"
-    "@webassemblyjs/wast-printer" "1.11.5"
-    "webassemblyjs" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/wasm-parser" "1.11.6"
+    "@webassemblyjs/wast-parser" "1.11.6"
+    "@webassemblyjs/wast-printer" "1.11.6"
+    "webassemblyjs" "1.11.6"
 
 "@webassemblyjs/dce@file:/home/doug/Development/thirdparty/webassemblyjs/packages/dce":
   "resolved" "file:packages/dce"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
     "@babel/core" "^7.0.0-beta.39"
     "@babel/traverse" "^7.0.0-beta.39"
     "@babel/types" "^7.0.0-beta.39"
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/wasm-parser" "1.11.5"
-    "@webassemblyjs/wast-parser" "1.11.5"
-    "@webassemblyjs/wast-printer" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/wasm-parser" "1.11.6"
+    "@webassemblyjs/wast-parser" "1.11.6"
+    "@webassemblyjs/wast-printer" "1.11.6"
     "babylon" "^7.0.0-beta.39"
 
-"@webassemblyjs/floating-point-hex-parser@1.11.5", "@webassemblyjs/floating-point-hex-parser@file:/home/doug/Development/thirdparty/webassemblyjs/packages/floating-point-hex-parser":
+"@webassemblyjs/floating-point-hex-parser@1.11.6", "@webassemblyjs/floating-point-hex-parser@file:/home/doug/Development/thirdparty/webassemblyjs/packages/floating-point-hex-parser":
   "resolved" "file:packages/floating-point-hex-parser"
-  "version" "1.11.5"
+  "version" "1.11.6"
 
-"@webassemblyjs/helper-api-error@1.11.5", "@webassemblyjs/helper-api-error@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-api-error":
+"@webassemblyjs/helper-api-error@1.11.6", "@webassemblyjs/helper-api-error@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-api-error":
   "resolved" "file:packages/helper-api-error"
-  "version" "1.11.5"
+  "version" "1.11.6"
 
-"@webassemblyjs/helper-buffer@1.11.5", "@webassemblyjs/helper-buffer@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-buffer":
+"@webassemblyjs/helper-buffer@1.11.6", "@webassemblyjs/helper-buffer@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-buffer":
   "resolved" "file:packages/helper-buffer"
-  "version" "1.11.5"
+  "version" "1.11.6"
 
-"@webassemblyjs/helper-code-frame@1.11.5", "@webassemblyjs/helper-code-frame@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-code-frame":
+"@webassemblyjs/helper-code-frame@1.11.6", "@webassemblyjs/helper-code-frame@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-code-frame":
   "resolved" "file:packages/helper-code-frame"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/wast-printer" "1.11.5"
+    "@webassemblyjs/wast-printer" "1.11.6"
 
-"@webassemblyjs/helper-compiler@1.11.5", "@webassemblyjs/helper-compiler@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-compiler":
+"@webassemblyjs/helper-compiler@1.11.6", "@webassemblyjs/helper-compiler@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-compiler":
   "resolved" "file:packages/helper-compiler"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/helper-flatten-ast" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/helper-flatten-ast" "1.11.6"
 
-"@webassemblyjs/helper-flatten-ast@1.11.5", "@webassemblyjs/helper-flatten-ast@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-flatten-ast":
+"@webassemblyjs/helper-flatten-ast@1.11.6", "@webassemblyjs/helper-flatten-ast@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-flatten-ast":
   "resolved" "file:packages/helper-flatten-ast"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
 
-"@webassemblyjs/helper-fsm@1.11.5", "@webassemblyjs/helper-fsm@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-fsm":
+"@webassemblyjs/helper-fsm@1.11.6", "@webassemblyjs/helper-fsm@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-fsm":
   "resolved" "file:packages/helper-fsm"
-  "version" "1.11.5"
+  "version" "1.11.6"
 
-"@webassemblyjs/helper-numbers@1.11.5", "@webassemblyjs/helper-numbers@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-numbers":
+"@webassemblyjs/helper-numbers@1.11.6", "@webassemblyjs/helper-numbers@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-numbers":
   "resolved" "file:packages/helper-numbers"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/floating-point-hex-parser" "1.11.5"
-    "@webassemblyjs/helper-api-error" "1.11.5"
+    "@webassemblyjs/floating-point-hex-parser" "1.11.6"
+    "@webassemblyjs/helper-api-error" "1.11.6"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/helper-test-framework@1.11.5", "@webassemblyjs/helper-test-framework@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-test-framework":
+"@webassemblyjs/helper-test-framework@1.11.6", "@webassemblyjs/helper-test-framework@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-test-framework":
   "resolved" "file:packages/helper-test-framework"
-  "version" "1.11.5"
+  "version" "1.11.6"
 
 "@webassemblyjs/helper-testsuite-runner@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-testsuite-runner":
   "resolved" "file:packages/helper-testsuite-runner"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
     "@xtuc/long" "4.2.2"
-    "webassemblyjs" "1.11.5"
+    "webassemblyjs" "1.11.6"
 
-"@webassemblyjs/helper-wasm-bytecode@1.11.5", "@webassemblyjs/helper-wasm-bytecode@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-wasm-bytecode":
+"@webassemblyjs/helper-wasm-bytecode@1.11.6", "@webassemblyjs/helper-wasm-bytecode@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-wasm-bytecode":
   "resolved" "file:packages/helper-wasm-bytecode"
-  "version" "1.11.5"
+  "version" "1.11.6"
 
 "@webassemblyjs/helper-wasm-bytecode@1.7.7":
   "integrity" "sha512-zMVxi0HIMHjEtbd69BrX5XWloS1pT0SP3Um28mvhrus6xxByLHFRCzOv4DRMbEgMrbw23G4Ckngg/ySGXRs+bQ=="
   "resolved" "https://registry.npmjs.org/@webassemblyjs/helper-wasm-bytecode/-/helper-wasm-bytecode-1.7.7.tgz"
   "version" "1.7.7"
 
-"@webassemblyjs/helper-wasm-section@1.11.5", "@webassemblyjs/helper-wasm-section@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-wasm-section":
+"@webassemblyjs/helper-wasm-section@1.11.6", "@webassemblyjs/helper-wasm-section@file:/home/doug/Development/thirdparty/webassemblyjs/packages/helper-wasm-section":
   "resolved" "file:packages/helper-wasm-section"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/helper-buffer" "1.11.5"
-    "@webassemblyjs/helper-wasm-bytecode" "1.11.5"
-    "@webassemblyjs/wasm-gen" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/helper-buffer" "1.11.6"
+    "@webassemblyjs/helper-wasm-bytecode" "1.11.6"
+    "@webassemblyjs/wasm-gen" "1.11.6"
 
-"@webassemblyjs/ieee754@1.11.5", "@webassemblyjs/ieee754@file:/home/doug/Development/thirdparty/webassemblyjs/packages/ieee754":
+"@webassemblyjs/ieee754@1.11.6", "@webassemblyjs/ieee754@file:/home/doug/Development/thirdparty/webassemblyjs/packages/ieee754":
   "resolved" "file:packages/ieee754"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
     "@xtuc/ieee754" "^1.2.0"
 
-"@webassemblyjs/leb128@1.11.5", "@webassemblyjs/leb128@file:/home/doug/Development/thirdparty/webassemblyjs/packages/leb128":
+"@webassemblyjs/leb128@1.11.6", "@webassemblyjs/leb128@file:/home/doug/Development/thirdparty/webassemblyjs/packages/leb128":
   "resolved" "file:packages/leb128"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
     "@xtuc/long" "4.2.2"
 
 "@webassemblyjs/repl@file:/home/doug/Development/thirdparty/webassemblyjs/packages/repl":
   "resolved" "file:packages/repl"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/validation" "1.11.5"
-    "@webassemblyjs/wasm-parser" "1.11.5"
-    "@webassemblyjs/wast-parser" "1.11.5"
-    "webassemblyjs" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/validation" "1.11.6"
+    "@webassemblyjs/wasm-parser" "1.11.6"
+    "@webassemblyjs/wast-parser" "1.11.6"
+    "webassemblyjs" "1.11.6"
 
-"@webassemblyjs/utf8@1.11.5", "@webassemblyjs/utf8@file:/home/doug/Development/thirdparty/webassemblyjs/packages/utf8":
+"@webassemblyjs/utf8@1.11.6", "@webassemblyjs/utf8@file:/home/doug/Development/thirdparty/webassemblyjs/packages/utf8":
   "resolved" "file:packages/utf8"
-  "version" "1.11.5"
+  "version" "1.11.6"
 
-"@webassemblyjs/validation@1.11.5", "@webassemblyjs/validation@file:/home/doug/Development/thirdparty/webassemblyjs/packages/validation":
+"@webassemblyjs/validation@1.11.6", "@webassemblyjs/validation@file:/home/doug/Development/thirdparty/webassemblyjs/packages/validation":
   "resolved" "file:packages/validation"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
 
 "@webassemblyjs/wasm-edit@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wasm-edit":
   "resolved" "file:packages/wasm-edit"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/helper-buffer" "1.11.5"
-    "@webassemblyjs/helper-wasm-bytecode" "1.11.5"
-    "@webassemblyjs/helper-wasm-section" "1.11.5"
-    "@webassemblyjs/wasm-gen" "1.11.5"
-    "@webassemblyjs/wasm-opt" "1.11.5"
-    "@webassemblyjs/wasm-parser" "1.11.5"
-    "@webassemblyjs/wast-printer" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/helper-buffer" "1.11.6"
+    "@webassemblyjs/helper-wasm-bytecode" "1.11.6"
+    "@webassemblyjs/helper-wasm-section" "1.11.6"
+    "@webassemblyjs/wasm-gen" "1.11.6"
+    "@webassemblyjs/wasm-opt" "1.11.6"
+    "@webassemblyjs/wasm-parser" "1.11.6"
+    "@webassemblyjs/wast-printer" "1.11.6"
 
-"@webassemblyjs/wasm-gen@1.11.5", "@webassemblyjs/wasm-gen@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wasm-gen":
+"@webassemblyjs/wasm-gen@1.11.6", "@webassemblyjs/wasm-gen@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wasm-gen":
   "resolved" "file:packages/wasm-gen"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/helper-wasm-bytecode" "1.11.5"
-    "@webassemblyjs/ieee754" "1.11.5"
-    "@webassemblyjs/leb128" "1.11.5"
-    "@webassemblyjs/utf8" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/helper-wasm-bytecode" "1.11.6"
+    "@webassemblyjs/ieee754" "1.11.6"
+    "@webassemblyjs/leb128" "1.11.6"
+    "@webassemblyjs/utf8" "1.11.6"
 
-"@webassemblyjs/wasm-opt@1.11.5", "@webassemblyjs/wasm-opt@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wasm-opt":
+"@webassemblyjs/wasm-opt@1.11.6", "@webassemblyjs/wasm-opt@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wasm-opt":
   "resolved" "file:packages/wasm-opt"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/helper-buffer" "1.11.5"
-    "@webassemblyjs/wasm-gen" "1.11.5"
-    "@webassemblyjs/wasm-parser" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/helper-buffer" "1.11.6"
+    "@webassemblyjs/wasm-gen" "1.11.6"
+    "@webassemblyjs/wasm-parser" "1.11.6"
 
-"@webassemblyjs/wasm-parser@1.11.5", "@webassemblyjs/wasm-parser@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wasm-parser":
+"@webassemblyjs/wasm-parser@1.11.6", "@webassemblyjs/wasm-parser@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wasm-parser":
   "resolved" "file:packages/wasm-parser"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/helper-api-error" "1.11.5"
-    "@webassemblyjs/helper-wasm-bytecode" "1.11.5"
-    "@webassemblyjs/ieee754" "1.11.5"
-    "@webassemblyjs/leb128" "1.11.5"
-    "@webassemblyjs/utf8" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/helper-api-error" "1.11.6"
+    "@webassemblyjs/helper-wasm-bytecode" "1.11.6"
+    "@webassemblyjs/ieee754" "1.11.6"
+    "@webassemblyjs/leb128" "1.11.6"
+    "@webassemblyjs/utf8" "1.11.6"
 
 "@webassemblyjs/wasm-text-gen@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wasm-text-gen":
   "resolved" "file:packages/wasm-text-gen"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
     "@babel/generator" "^7.0.0-beta.40"
     "@babel/template" "^7.0.0-beta.40"
     "@babel/types" "^7.0.0-beta.40"
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/wasm-parser" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/wasm-parser" "1.11.6"
     "commander" "^2.14.1"
 
-"@webassemblyjs/wast-parser@1.11.5", "@webassemblyjs/wast-parser@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wast-parser":
+"@webassemblyjs/wast-parser@1.11.6", "@webassemblyjs/wast-parser@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wast-parser":
   "resolved" "file:packages/wast-parser"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/floating-point-hex-parser" "1.11.5"
-    "@webassemblyjs/helper-api-error" "1.11.5"
-    "@webassemblyjs/helper-code-frame" "1.11.5"
-    "@webassemblyjs/helper-fsm" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/floating-point-hex-parser" "1.11.6"
+    "@webassemblyjs/helper-api-error" "1.11.6"
+    "@webassemblyjs/helper-code-frame" "1.11.6"
+    "@webassemblyjs/helper-fsm" "1.11.6"
     "@xtuc/long" "4.2.2"
 
-"@webassemblyjs/wast-printer@1.11.5", "@webassemblyjs/wast-printer@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wast-printer":
+"@webassemblyjs/wast-printer@1.11.6", "@webassemblyjs/wast-printer@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wast-printer":
   "resolved" "file:packages/wast-printer"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
     "@xtuc/long" "4.2.2"
 
 "@webassemblyjs/wast-refmt@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wast-refmt":
   "resolved" "file:packages/wast-refmt"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/wast-parser" "1.11.5"
-    "@webassemblyjs/wast-printer" "1.11.5"
+    "@webassemblyjs/wast-parser" "1.11.6"
+    "@webassemblyjs/wast-printer" "1.11.6"
 
 "@xtuc/ieee754@^1.2.0":
   "integrity" "sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA=="
@@ -4299,10 +4299,10 @@
 
 "eslint-plugin-webassembly@file:/home/doug/Development/thirdparty/webassemblyjs/packages/eslint":
   "resolved" "file:packages/eslint"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/wasm-parser" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/wasm-parser" "1.11.6"
     "eslint-rule-composer" "^0.3.0"
     "estraverse" "^5.2.0"
     "requireindex" "~1.2.0"
@@ -9359,7 +9359,7 @@
 
 "wast-loader@file:/home/doug/Development/thirdparty/webassemblyjs/packages/wast-loader":
   "resolved" "file:packages/wast-loader"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
     "wabt" "1.0.0-nightly.20180421"
 
@@ -9370,15 +9370,15 @@
   dependencies:
     "defaults" "^1.0.3"
 
-"webassemblyjs@1.11.5", "webassemblyjs@file:/home/doug/Development/thirdparty/webassemblyjs/packages/webassemblyjs":
+"webassemblyjs@1.11.6", "webassemblyjs@file:/home/doug/Development/thirdparty/webassemblyjs/packages/webassemblyjs":
   "resolved" "file:packages/webassemblyjs"
-  "version" "1.11.5"
+  "version" "1.11.6"
   dependencies:
-    "@webassemblyjs/ast" "1.11.5"
-    "@webassemblyjs/helper-compiler" "1.11.5"
-    "@webassemblyjs/validation" "1.11.5"
-    "@webassemblyjs/wasm-parser" "1.11.5"
-    "@webassemblyjs/wast-parser" "1.11.5"
+    "@webassemblyjs/ast" "1.11.6"
+    "@webassemblyjs/helper-compiler" "1.11.6"
+    "@webassemblyjs/validation" "1.11.6"
+    "@webassemblyjs/wasm-parser" "1.11.6"
+    "@webassemblyjs/wast-parser" "1.11.6"
     "@xtuc/long" "4.2.2"
 
 "webidl-conversions@^3.0.0":

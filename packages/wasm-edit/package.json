@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-edit",
-  "version": "1.11.5",
+  "version": "1.11.6",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -17,16 +17,16 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.11.5",
-    "@webassemblyjs/helper-buffer": "1.11.5",
-    "@webassemblyjs/helper-wasm-bytecode": "1.11.5",
-    "@webassemblyjs/helper-wasm-section": "1.11.5",
-    "@webassemblyjs/wasm-gen": "1.11.5",
-    "@webassemblyjs/wasm-opt": "1.11.5",
-    "@webassemblyjs/wasm-parser": "1.11.5",
-    "@webassemblyjs/wast-printer": "1.11.5"
+    "@webassemblyjs/ast": "1.11.6",
+    "@webassemblyjs/helper-buffer": "1.11.6",
+    "@webassemblyjs/helper-wasm-bytecode": "1.11.6",
+    "@webassemblyjs/helper-wasm-section": "1.11.6",
+    "@webassemblyjs/wasm-gen": "1.11.6",
+    "@webassemblyjs/wasm-opt": "1.11.6",
+    "@webassemblyjs/wasm-parser": "1.11.6",
+    "@webassemblyjs/wast-printer": "1.11.6"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-test-framework": "1.11.5"
+    "@webassemblyjs/helper-test-framework": "1.11.6"
   }
 }
