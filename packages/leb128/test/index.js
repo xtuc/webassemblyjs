@@ -9,35 +9,35 @@ describe("LEB128", () => {
     let u32;
 
     it("1 byte", () => {
-      u32 = decodeUInt32(Buffer.from([0x00]));
+      u32 = decodeUInt32(new Uint8Array([0x00]));
       assert.equal(u32.value, 0);
       assert.equal(u32.nextIndex, 1);
 
-      u32 = decodeUInt32(Buffer.from([0x08]));
+      u32 = decodeUInt32(new Uint8Array([0x08]));
       assert.equal(u32.value, 8);
       assert.equal(u32.nextIndex, 1);
     });
 
     it("2 byte", () => {
-      u32 = decodeUInt32(Buffer.from([0x80, 0x7f]));
+      u32 = decodeUInt32(new Uint8Array([0x80, 0x7f]));
       assert.equal(u32.value, 16256);
       assert.equal(u32.nextIndex, 2);
     });
 
     it("3 byte", () => {
-      u32 = decodeUInt32(Buffer.from([0xe5, 0x8e, 0x26]));
+      u32 = decodeUInt32(new Uint8Array([0xe5, 0x8e, 0x26]));
       assert.equal(u32.value, 624485);
       assert.equal(u32.nextIndex, 3);
     });
 
     it("4 byte", () => {
-      u32 = decodeUInt32(Buffer.from([0x80, 0x80, 0x80, 0x4f]));
+      u32 = decodeUInt32(new Uint8Array([0x80, 0x80, 0x80, 0x4f]));
       assert.equal(u32.value, 165675008);
       assert.equal(u32.nextIndex, 4);
     });
 
     it("5 byte", () => {
-      u32 = decodeUInt32(Buffer.from([0x89, 0x80, 0x80, 0x80, 0x00]));
+      u32 = decodeUInt32(new Uint8Array([0x89, 0x80, 0x80, 0x80, 0x00]));
       assert.equal(u32.value, 9);
       assert.equal(u32.nextIndex, 5);
     });
@@ -45,7 +45,7 @@ describe("LEB128", () => {
 
   it("should decode number where |n| > 2^53", () => {
     const u64 = decodeInt64(
-      Buffer.from([0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x7f])
+      new Uint8Array([0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x7f])
     );
 
     assert.typeOf(u64.value, "object");
@@ -54,7 +54,7 @@ describe("LEB128", () => {
   });
 
   it("should decode -1 to i64", () => {
-    const u64 = decodeInt64(Buffer.from([0x7f]));
+    const u64 = decodeInt64(new Uint8Array([0x7f]));
 
     assert.typeOf(u64.value, "object");
     assert.equal(u64.nextIndex, 1);

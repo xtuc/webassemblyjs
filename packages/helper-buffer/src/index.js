@@ -42,7 +42,7 @@ export function makeBuffer(...splitedBytes: Array<Array<Byte>>): Array<Byte> {
   return new Uint8Array(bytes).buffer;
 }
 
-export function fromHexdump(str: string): Buffer {
+export function fromHexdump(str: string): Uint8Array {
   let lines = str.split("\n");
 
   // remove any leading left whitespace
@@ -63,5 +63,5 @@ export function fromHexdump(str: string): Buffer {
     return acc;
   }, []);
 
-  return Buffer.from(bytes);
+  return new Uint8Array(bytes);
 }
