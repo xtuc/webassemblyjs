@@ -245,7 +245,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
    */
   function readU32(): Decoded32 {
     const bytes = readBytes(MAX_NUMBER_OF_BYTE_U32);
-    const buffer = Buffer.from(bytes);
+    const buffer = new Uint8Array(bytes);
 
     return decodeUInt32(buffer);
   }
@@ -254,7 +254,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     // where 32 bits = max 4 bytes
 
     const bytes = readBytes(4);
-    const buffer = Buffer.from(bytes);
+    const buffer = new Uint8Array(bytes);
 
     return decodeUInt32(buffer);
   }
@@ -263,7 +263,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
     // where 7 bits = max 1 bytes
 
     const bytes = readBytes(1);
-    const buffer = Buffer.from(bytes);
+    const buffer = new Uint8Array(bytes);
 
     return decodeUInt32(buffer);
   }
@@ -273,7 +273,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
    */
   function read32(): Decoded32 {
     const bytes = readBytes(MAX_NUMBER_OF_BYTE_U32);
-    const buffer = Buffer.from(bytes);
+    const buffer = new Uint8Array(bytes);
 
     return decodeInt32(buffer);
   }
@@ -283,14 +283,14 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
    */
   function read64(): Decoded64 {
     const bytes = readBytes(MAX_NUMBER_OF_BYTE_U64);
-    const buffer = Buffer.from(bytes);
+    const buffer = new Uint8Array(bytes);
 
     return decodeInt64(buffer);
   }
 
   function readU64(): Decoded64 {
     const bytes = readBytes(MAX_NUMBER_OF_BYTE_U64);
-    const buffer = Buffer.from(bytes);
+    const buffer = new Uint8Array(bytes);
 
     return decodeUInt64(buffer);
   }
@@ -1861,10 +1861,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dumpSep(
             "ignore custom " +
-              JSON.stringify(sectionName.value) +
-              " section (" +
-              remainingBytes +
-              " bytes)"
+            JSON.stringify(sectionName.value) +
+            " section (" +
+            remainingBytes +
+            " bytes)"
           );
         }
 

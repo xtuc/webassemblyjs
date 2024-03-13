@@ -204,13 +204,15 @@ function decodeIntBuffer(encodedBuffer, index) {
 }
 
 function encodeInt32(num) {
-  const buf = bufs.alloc(4);
+  const buf = new Uint8Array(4);
 
-  buf.writeInt32LE(num, 0);
+  buf[0] = num & 0xff;
+  buf[1] = (num >> 8) & 0xff;
+  buf[2] = (num >> 16) & 0xff;
+  buf[3] = (num >> 24) & 0xff;
 
   const result = encodeIntBuffer(buf);
 
-  bufs.free(buf);
   return result;
 }
 
@@ -265,13 +267,15 @@ function decodeUIntBuffer(encodedBuffer, index) {
 }
 
 function encodeUInt32(num) {
-  const buf = bufs.alloc(4);
+  const buf = new Uint8Array(4);
 
-  buf.writeUInt32LE(num, 0);
+  buf[0] = num & 0xff;
+  buf[1] = (num >> 8) & 0xff;
+  buf[2] = (num >> 16) & 0xff;
+  buf[3] = (num >> 24) & 0xff;
 
   const result = encodeUIntBuffer(buf);
 
-  bufs.free(buf);
   return result;
 }
 
