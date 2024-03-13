@@ -1,6 +1,6 @@
 {
   "name": "webassemblyjs",
-  "version": "1.11.6",
+  "version": "1.12.1",
   "keywords": [
     "webassembly",
     "interpreter",
@@ -19,11 +19,11 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.11.6",
-    "@webassemblyjs/helper-compiler": "1.11.6",
-    "@webassemblyjs/validation": "1.11.6",
-    "@webassemblyjs/wasm-parser": "1.11.6",
-    "@webassemblyjs/wast-parser": "1.11.6",
+    "@webassemblyjs/ast": "1.12.1",
+    "@webassemblyjs/helper-compiler": "1.12.1",
+    "@webassemblyjs/validation": "1.12.1",
+    "@webassemblyjs/wasm-parser": "1.12.1",
+    "@webassemblyjs/wast-parser": "1.12.1",
     "@xtuc/long": "4.2.2"
   },
   "devDependencies": {
@@ -34,5 +34,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuc/webassemblyjs.git"
-  }
+  },
+  "gitHead": "6d1606bde5ab7ef21ea4b25715bd2fe58e8742cd"
 }

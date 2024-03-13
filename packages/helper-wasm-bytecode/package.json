@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-wasm-bytecode",
-  "version": "1.12.0",
+  "version": "1.12.1",
   "description": "WASM's Bytecode constants",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -15,5 +15,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "6d1606bde5ab7ef21ea4b25715bd2fe58e8742cd"
 }

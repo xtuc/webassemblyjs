@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/wasm-parser",
-  "version": "1.11.6",
+  "version": "1.12.1",
   "keywords": [
     "webassembly",
     "javascript",
@@ -17,7 +17,7 @@
   "author": "Sven Sauleau",
   "license": "MIT",
   "dependencies": {
-    "@webassemblyjs/ast": "1.11.6",
+    "@webassemblyjs/ast": "1.12.1",
     "@webassemblyjs/helper-api-error": "1.11.6",
     "@webassemblyjs/helper-wasm-bytecode": "1.11.6",
     "@webassemblyjs/ieee754": "1.11.6",
@@ -32,12 +32,13 @@
     "access": "public"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-buffer": "1.11.6",
-    "@webassemblyjs/helper-test-framework": "1.11.6",
+    "@webassemblyjs/helper-buffer": "1.12.1",
+    "@webassemblyjs/helper-test-framework": "1.12.1",
     "@webassemblyjs/helper-wasm-bytecode": "1.7.7",
-    "@webassemblyjs/wasm-gen": "1.11.6",
-    "@webassemblyjs/wast-parser": "1.11.6",
+    "@webassemblyjs/wasm-gen": "1.12.1",
+    "@webassemblyjs/wast-parser": "1.12.1",
     "mamacro": "^0.0.7",
     "wabt": "1.0.12"
-  }
+  },
+  "gitHead": "6d1606bde5ab7ef21ea4b25715bd2fe58e8742cd"
 }
