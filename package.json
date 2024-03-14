@@ -44,7 +44,7 @@
     "prettier": "2.4.0"
   },
   "dependencies": {
-    "mkdirp": "1.0.4",
+    "mkdirp": "3.0.1",
     "synp": "1.9.7"
   }
 }
