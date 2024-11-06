@@ -10,7 +10,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.14.0",
+  "version": "1.14.1",
   "description": "A function to parse floating point hexadecimal strings as defined by the WebAssembly specification",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -20,5 +20,5 @@
   ],
   "author": "Mauro Bringolf",
   "license": "MIT",
-  "gitHead": "9b0c0c1c1e035e3336edbda8c330827a1f267513"
+  "gitHead": "76babfc909478ebf173fc0269881878ca747dc01"
 }

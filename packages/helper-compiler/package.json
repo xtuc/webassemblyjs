@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-compiler",
-  "version": "1.13.2",
+  "version": "1.14.1",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -12,12 +12,12 @@
     "url": "https://github.com/xtuc/webassemblyjs.git"
   },
   "dependencies": {
-    "@webassemblyjs/ast": "1.13.2",
-    "@webassemblyjs/helper-flatten-ast": "1.13.2"
+    "@webassemblyjs/ast": "1.14.1",
+    "@webassemblyjs/helper-flatten-ast": "1.14.1"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-test-framework": "1.13.2",
-    "@webassemblyjs/wasm-parser": "1.13.2",
+    "@webassemblyjs/helper-test-framework": "1.14.1",
+    "@webassemblyjs/wasm-parser": "1.14.1",
     "mamacro": "0.0.7",
     "wabt": "1.0.0-nightly.20180421"
   },
@@ -26,5 +26,5 @@
   },
   "author": "Sven Sauleau",
   "license": "MIT",
-  "gitHead": "9b0c0c1c1e035e3336edbda8c330827a1f267513"
+  "gitHead": "76babfc909478ebf173fc0269881878ca747dc01"
 }

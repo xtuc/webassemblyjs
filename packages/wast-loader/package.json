@@ -1,6 +1,6 @@
 {
   "name": "wast-loader",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "description": "Webpack loader for WebAssembly text format",
   "keywords": [
     "webassembly",
@@ -26,5 +26,5 @@
   "dependencies": {
     "wabt": "1.0.0-nightly.20180421"
   },
-  "gitHead": "9b0c0c1c1e035e3336edbda8c330827a1f267513"
+  "gitHead": "76babfc909478ebf173fc0269881878ca747dc01"
 }
