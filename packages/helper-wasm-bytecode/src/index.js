@@ -49,17 +49,25 @@ const exportTypes = {
 const exportTypesByName = invertMap(exportTypes);
 
 const valtypes = {
+  // numtype
   0x7f: "i32",
   0x7e: "i64",
   0x7d: "f32",
   0x7c: "f64",
+
+  // vectype
   0x7b: "v128",
+
+  // reftype
+  0x70: "anyfunc",
+  0x6f: "externref",
 };
 
 const valtypesByString = invertMap(valtypes);
 
 const tableTypes = {
   0x70: "anyfunc",
+  0x6f: "externref",
 };
 
 const blockTypes = Object.assign({}, valtypes, {
@@ -148,8 +156,8 @@ const symbolsByByte = {
   0x23: createSymbol("get_global", 1),
   0x24: createSymbol("set_global", 1),
 
-  0x25: illegalop,
-  0x26: illegalop,
+  0x25: createSymbol("table.get", 1),
+  0x26: createSymbol("table.set", 1),
   0x27: illegalop,
 
   0x28: createSymbolObject("load", "u32", 1),
@@ -323,6 +331,19 @@ const symbolsByByte = {
   0xc2: createSymbolObject("extend8_s", "i64"),
   0xc3: createSymbolObject("extend16_s", "i64"),
   0xc4: createSymbolObject("extend32_s", "i64"),
+
+  0xd0: createSymbol("ref.null"),
+  0xd1: createSymbol("ref.is_null"),
+  0xd2: createSymbol("ref.func", 1),
+
+  // Table instructions
+  // https://webassembly.github.io/spec/core/binary/instructions.html#table-instructions
+  0xfc_0c: createSymbol("table.init", 2),
+  0xfc_0d: createSymbol("elem.drop", 1),
+  0xfc_0e: createSymbol("table.copy", 2),
+  0xfc_0f: createSymbol("table.grow", 1),
+  0xfc_10: createSymbol("table.size", 1),
+  0xfc_11: createSymbol("table.fill", 1),
 
   // Atomic Memory Instructions
   0xfe00: createSymbol("memory.atomic.notify", 1),
