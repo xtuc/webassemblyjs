@@ -34,7 +34,7 @@
   "devDependencies": {
     "@webassemblyjs/helper-buffer": "1.13.2",
     "@webassemblyjs/helper-test-framework": "1.13.2",
-    "@webassemblyjs/helper-wasm-bytecode": "1.7.7",
+    "@webassemblyjs/helper-wasm-bytecode": "1.13.2",
     "@webassemblyjs/wasm-gen": "1.13.2",
     "@webassemblyjs/wast-parser": "1.13.2",
     "mamacro": "^0.0.7",
