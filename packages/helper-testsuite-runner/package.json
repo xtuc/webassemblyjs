@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-testsuite-runner",
-  "version": "1.13.2",
+  "version": "1.13.3",
   "description": "",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@xtuc/long": "4.2.2",
-    "webassemblyjs": "1.13.2"
+    "webassemblyjs": "1.13.3"
   },
   "publishConfig": {
     "access": "public"
@@ -18,5 +18,5 @@
   "bin": {
     "webassemblyjs-testsuite-runner": "lib/cli.js"
   },
-  "gitHead": "9b0c0c1c1e035e3336edbda8c330827a1f267513"
+  "gitHead": "288422d676ce2c009f34613f0dfc8173e431f976"
 }
