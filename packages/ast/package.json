@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/ast",
-  "version": "1.13.3",
+  "version": "1.13.4",
   "description": "AST utils for webassemblyjs",
   "keywords": [
     "webassembly",
@@ -23,7 +23,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@webassemblyjs/helper-test-framework": "1.13.3",
+    "@webassemblyjs/helper-test-framework": "1.13.4",
     "array.prototype.flatmap": "^1.2.1",
     "dump-exports": "^0.1.0",
     "mamacro": "^0.0.7"
