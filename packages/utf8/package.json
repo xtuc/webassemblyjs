@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/utf8",
-  "version": "1.13.0",
+  "version": "1.13.1",
   "description": "UTF8 encoder/decoder for WASM",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -16,5 +16,5 @@
   },
   "author": "Sven Sauleau",
   "license": "MIT",
-  "gitHead": "6d1606bde5ab7ef21ea4b25715bd2fe58e8742cd"
+  "gitHead": "9b0c0c1c1e035e3336edbda8c330827a1f267513"
 }
