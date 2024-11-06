@@ -18,10 +18,10 @@
   "license": "MIT",
   "dependencies": {
     "@webassemblyjs/ast": "1.13.1",
-    "@webassemblyjs/helper-wasm-bytecode": "1.12.1",
-    "@webassemblyjs/ieee754": "1.12.1",
-    "@webassemblyjs/leb128": "1.12.1",
-    "@webassemblyjs/utf8": "1.12.1"
+    "@webassemblyjs/helper-wasm-bytecode": "1.13.1",
+    "@webassemblyjs/ieee754": "1.13.1",
+    "@webassemblyjs/leb128": "1.13.1",
+    "@webassemblyjs/utf8": "1.13.1"
   },
   "gitHead": "9b0c0c1c1e035e3336edbda8c330827a1f267513"
 }

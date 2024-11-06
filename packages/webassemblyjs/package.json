@@ -27,7 +27,7 @@
     "@xtuc/long": "4.2.2"
   },
   "devDependencies": {
-    "@webassemblyjs/floating-point-hex-parser": "1.12.1",
+    "@webassemblyjs/floating-point-hex-parser": "1.13.1",
     "mamacro": "^0.0.7",
     "wabt": "1.0.0-nightly.20180421"
   },

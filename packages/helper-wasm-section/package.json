@@ -19,7 +19,7 @@
   "dependencies": {
     "@webassemblyjs/ast": "1.13.1",
     "@webassemblyjs/helper-buffer": "1.13.1",
-    "@webassemblyjs/helper-wasm-bytecode": "1.12.1",
+    "@webassemblyjs/helper-wasm-bytecode": "1.13.1",
     "@webassemblyjs/wasm-gen": "1.13.1"
   },
   "devDependencies": {
