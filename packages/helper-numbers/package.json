@@ -1,6 +1,6 @@
 {
   "name": "@webassemblyjs/helper-numbers",
-  "version": "1.12.1",
+  "version": "1.13.0",
   "description": "Number parsing utility",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -15,8 +15,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@webassemblyjs/floating-point-hex-parser": "1.12.1",
-    "@webassemblyjs/helper-api-error": "1.12.1",
+    "@webassemblyjs/floating-point-hex-parser": "1.13.0",
+    "@webassemblyjs/helper-api-error": "1.13.0",
     "@xtuc/long": "4.2.2"
   },
   "author": "Sven Sauleau",
