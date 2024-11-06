@@ -653,9 +653,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
       const code: Array<Instruction> = [];
 
-      /**
-       * Parse locals
-       */
+      // Parse locals
       const funcLocalNumU32 = readU32();
       const funcLocalNum = funcLocalNumU32.value;
       eatBytes(funcLocalNumU32.nextIndex);
@@ -1462,6 +1460,82 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         );
 
         elems.push(elemNode);
+      } else if (bitfield === 3) {
+        const elemKind = readByte();
+        eatBytes(1);
+
+        if (elemKind !== 0) {
+          throw new Error(`unexpected Elem kind: ${toHex(elemKind)}`);
+        }
+
+        // Parse ( vector function index ) *
+        const countU32 = readU32();
+        const count = countU32.value;
+        eatBytes(countU32.nextIndex);
+
+        dump([count], "count");
+
+        for (let i = 0; i < count; i++) {
+          const indexu32 = readU32();
+          const index = indexu32.value;
+          eatBytes(indexu32.nextIndex);
+
+          dump([index], "index");
+        }
+
+        // TODO: emit a AST node, for now just make it parse.
+      } else if (bitfield === 4) {
+        const expr = [];
+        parseInstructionBlock(expr);
+
+        const countU32 = readU32();
+        const count = countU32.value;
+        eatBytes(countU32.nextIndex);
+
+        dump([count], "count");
+
+        for (let i = 0; i < count; i++) {
+          const code = [];
+          parseInstructionBlock(code);
+        }
+
+        // TODO: emit a AST node, for now just make it parse.
+      } else if (bitfield === 5) {
+        const reftype = readByte();
+        eatBytes(1);
+
+        dump([reftype], "reftype");
+
+        const countU32 = readU32();
+        const count = countU32.value;
+        eatBytes(countU32.nextIndex);
+
+        dump([count], "count");
+
+        for (let i = 0; i < count; i++) {
+          const code = [];
+          parseInstructionBlock(code);
+        }
+
+        // TODO: emit a AST node, for now just make it parse.
+      } else if (bitfield === 7) {
+        const reftype = readByte();
+        eatBytes(1);
+
+        dump([reftype], "reftype");
+
+        const countU32 = readU32();
+        const count = countU32.value;
+        eatBytes(countU32.nextIndex);
+
+        dump([count], "count");
+
+        for (let i = 0; i < count; i++) {
+          const code = [];
+          parseInstructionBlock(code);
+        }
+
+        // TODO: emit a AST node, for now just make it parse.
       } else {
         throw new Error(`unexpected Elem with bitfield ${toHex(bitfield)}`);
       }

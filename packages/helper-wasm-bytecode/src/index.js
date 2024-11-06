@@ -336,6 +336,9 @@ const symbolsByByte = {
   0xd1: createSymbol("ref.is_null"),
   0xd2: createSymbol("ref.func", 1),
 
+  0xfc_0a: createSymbol("memory.copy"),
+  0xfc_0b: createSymbol("memory.fill"),
+
   // Table instructions
   // https://webassembly.github.io/spec/core/binary/instructions.html#table-instructions
   0xfc_0c: createSymbol("table.init", 2),
