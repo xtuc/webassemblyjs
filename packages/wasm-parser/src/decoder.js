@@ -382,9 +382,14 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       if (type == constants.types.func) {
         dump([type], "func");
 
-        const paramValtypes: Array<Valtype> = parseVec(
-          (b) => constants.valtypes[b]
-        );
+        const paramValtypes: Array<Valtype> = parseVec((b) => {
+          const valtype = constants.valtypes[b];
+          if (valtype === undefined) {
+            throw new Error(`unexpected value type ${b}`);
+          }
+
+          return valtype;
+        });
         const params = paramValtypes.map((v) => t.funcParam(/*valtype*/ v));
 
         const result: Array<Valtype> = parseVec((b) => constants.valtypes[b]);
@@ -721,11 +726,24 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         eatBytes(1);
       }
 
+      // Table instructions
+      // https://webassembly.github.io/spec/core/binary/instructions.html#table-instructions
+      if (instructionByte === 0xfc) {
+        instructionByte = 0xfc00 + readByte();
+        eatBytes(1);
+      }
+
       const instruction = constants.symbolsByByte[instructionByte];
 
       if (typeof instruction === "undefined") {
         throw new CompileError(
           "Unexpected instruction: " + toHex(instructionByte)
+        );
+      }
+
+      if (instruction === "illegal") {
+        throw new Error(
+          `tried to decode an illegal bytecode: ${toHex(instructionByte)}`
         );
       }
 
@@ -752,19 +770,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       if (instruction.name === "loop") {
         const startLoc = getPosition();
 
-        const blocktypeByte = readByte();
-        eatBytes(1);
-
-        const blocktype = constants.blockTypes[blocktypeByte];
-
-        dump([blocktypeByte], "blocktype");
-
-        if (typeof blocktype === "undefined") {
-          throw new CompileError(
-            "Unexpected blocktype: " + toHex(blocktypeByte)
-          );
-        }
-
+        const blocktype = parseBlockType();
         const instr = [];
 
         parseInstructionBlock(instr);
@@ -781,19 +787,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       } else if (instruction.name === "if") {
         const startLoc = getPosition();
 
-        const blocktypeByte = readByte();
-        eatBytes(1);
-
-        const blocktype = constants.blockTypes[blocktypeByte];
-
-        dump([blocktypeByte], "blocktype");
-
-        if (typeof blocktype === "undefined") {
-          throw new CompileError(
-            "Unexpected blocktype: " + toHex(blocktypeByte)
-          );
-        }
-
+        const blocktype = parseBlockType();
         const testIndex = t.withRaw(t.identifier(getUniqueName("if")), "");
         const ifBody = [];
         parseInstructionBlock(ifBody);
@@ -829,19 +823,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       } else if (instruction.name === "block") {
         const startLoc = getPosition();
 
-        const blocktypeByte = readByte();
-        eatBytes(1);
-
-        const blocktype = constants.blockTypes[blocktypeByte];
-
-        dump([blocktypeByte], "blocktype");
-
-        if (typeof blocktype === "undefined") {
-          throw new CompileError(
-            "Unexpected blocktype: " + toHex(blocktypeByte)
-          );
-        }
-
+        const blocktype = parseBlockType();
         const instr = [];
         parseInstructionBlock(instr);
 
@@ -1138,7 +1120,7 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
     if (typeof elementType === "undefined") {
       throw new CompileError(
-        "Unknown element type in table: " + toHex(elementType)
+        "Unknown element type in table: " + toHex(elementTypeByte)
       );
     }
 
@@ -1374,44 +1356,115 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
       const startLoc = getPosition();
 
       const tableindexu32 = readU32();
-      const tableindex = tableindexu32.value;
+      const bitfield = tableindexu32.value;
       eatBytes(tableindexu32.nextIndex);
 
-      dump([tableindex], "table index");
+      dump([bitfield], "bitfield");
 
-      /**
-       * Parse instructions
-       */
-      const instr = [];
-      parseInstructionBlock(instr);
+      if (bitfield === 0) {
+        // Parse instructions
+        const instr = [];
+        parseInstructionBlock(instr);
 
-      /**
-       * Parse ( vector function index ) *
-       */
-      const indicesu32 = readU32();
-      const indices = indicesu32.value;
-      eatBytes(indicesu32.nextIndex);
+        // Parse ( vector function index ) *
+        const indicesu32 = readU32();
+        const indices = indicesu32.value;
+        eatBytes(indicesu32.nextIndex);
 
-      dump([indices], "num indices");
+        dump([indices], "num indices");
 
-      const indexValues = [];
+        const indexValues = [];
 
-      for (let i = 0; i < indices; i++) {
-        const indexu32 = readU32();
-        const index = indexu32.value;
-        eatBytes(indexu32.nextIndex);
+        for (let i = 0; i < indices; i++) {
+          const indexu32 = readU32();
+          const index = indexu32.value;
+          eatBytes(indexu32.nextIndex);
 
-        dump([index], "index");
+          dump([index], "index");
 
-        indexValues.push(t.indexLiteral(index));
+          indexValues.push(t.indexLiteral(index));
+        }
+
+        const elemNode = WITH_LOC(
+          t.elem(t.indexLiteral(bitfield), instr, indexValues),
+          startLoc
+        );
+
+        elems.push(elemNode);
+      } else if (bitfield === 1) {
+        const elemKind = readByte();
+        eatBytes(1);
+
+        if (elemKind !== 0) {
+          throw new Error(`unexpected Elem kind: ${toHex(elemKind)}`);
+        }
+
+        // Parse ( vector function index ) *
+        const indicesu32 = readU32();
+        const indices = indicesu32.value;
+        eatBytes(indicesu32.nextIndex);
+
+        dump([indices], "num indices");
+
+        const indexValues = [];
+
+        for (let i = 0; i < indices; i++) {
+          const indexu32 = readU32();
+          const index = indexu32.value;
+          eatBytes(indexu32.nextIndex);
+
+          dump([index], "index");
+
+          indexValues.push(t.indexLiteral(index));
+        }
+
+        // TODO: emit a AST node, for now just make it parse.
+      } else if (bitfield === 2) {
+        const u32 = readU32();
+        const tableidx = u32.value;
+        eatBytes(u32.nextIndex);
+
+        dump([tableidx], "tableidx");
+
+        // Parse instructions
+        const instr = [];
+        parseInstructionBlock(instr);
+
+        const elemKind = readByte();
+        eatBytes(1);
+
+        if (elemKind !== 0) {
+          throw new Error(`unexpected Elem kind: ${toHex(elemKind)}`);
+        }
+
+        // Parse ( vector function index ) *
+        const indicesu32 = readU32();
+        const indices = indicesu32.value;
+        eatBytes(indicesu32.nextIndex);
+
+        dump([indices], "num indices");
+
+        const indexValues = [];
+
+        for (let i = 0; i < indices; i++) {
+          const indexu32 = readU32();
+          const index = indexu32.value;
+          eatBytes(indexu32.nextIndex);
+
+          dump([index], "index");
+
+          indexValues.push(t.indexLiteral(index));
+        }
+
+        const elemNode = WITH_LOC(
+          t.elem(t.indexLiteral(bitfield), instr, indexValues),
+          startLoc
+        );
+
+        elems.push(elemNode);
+      } else {
+        throw new Error(`unexpected Elem with bitfield ${toHex(bitfield)}`);
       }
-
-      const elemNode = WITH_LOC(
-        t.elem(t.indexLiteral(tableindex), instr, indexValues),
-        startLoc
-      );
-
-      elems.push(elemNode);
     }
 
     return elems;
@@ -1861,10 +1914,10 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
 
           dumpSep(
             "ignore custom " +
-            JSON.stringify(sectionName.value) +
-            " section (" +
-            remainingBytes +
-            " bytes)"
+              JSON.stringify(sectionName.value) +
+              " section (" +
+              remainingBytes +
+              " bytes)"
           );
         }
 
@@ -1885,6 +1938,31 @@ export function decode(ab: ArrayBuffer, opts: DecoderOpts): Program {
         metadata: [],
         nextSectionIndex: 0,
       };
+    }
+  }
+
+  function parseBlockType() {
+    const blocktypeByte = readByte();
+    const blocktype = constants.blockTypes[blocktypeByte];
+
+    if (typeof blocktype !== "undefined") {
+      eatBytes(1);
+
+      dump([blocktypeByte], "blocktype");
+
+      // value type
+      return blocktype;
+    } else {
+      // type index
+      const u32 = readU32();
+      eatBytes(u32.nextIndex);
+
+      const signature = state.typesInModule[u32.value];
+      console.log({ signature });
+
+      dump([u32.value], "typeidx");
+
+      return u32.value;
     }
   }
 
