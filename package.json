@@ -15,7 +15,7 @@
     "yarn": "^1.5.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.15.4",
+    "@babel/cli": "7.25.9",
     "@babel/core": "7.15.5",
     "@babel/generator": "7.15.4",
     "@babel/plugin-proposal-export-default-from": "7.14.5",
