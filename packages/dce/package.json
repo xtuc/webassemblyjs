@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@webassemblyjs/helper-test-framework": "1.14.1",
-    "chai": "^4.1.2",
+    "chai": "^5.1.2",
     "glob": "^7.1.2",
     "mocha": "^6.0.2"
   },
